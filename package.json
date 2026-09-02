@@ -1,0 +1,15 @@
+{
+  "name": "igx-nexus",
+  "version": "0.1.0-dev",
+  "private": true,
+  "description": "IGX NEXUS — The Technology Map",
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "echo \"Development stack will be implemented in CMDB-003\"",
+    "test": "echo \"Test runner will be implemented with the application stack\""
+  }
+}
