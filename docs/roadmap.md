@@ -4,7 +4,7 @@
 
 - CMDB-001 ✅ Kickoff / Architecture / Scope
 - CMDB-002 ✅ Repository & Local Workspace
-- CMDB-003 🟡 Docker Development Stack
+- CMDB-003 ✅ Docker Development Stack
 - CMDB-004 ⬜ GLPI Core
 - CMDB-005 ⬜ IGX Design System
 - CMDB-006 ⬜ Dashboard
