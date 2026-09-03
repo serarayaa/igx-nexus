@@ -5,7 +5,7 @@
     {
       "name": "Innergex",
       "parent": null,
-      "comment": "Entidad raíz corporativa de IGX NEXUS."
+      "comment": "Entidad raíz corporativa de IGX NEXUS. El alcance inicial del proyecto corresponde exclusivamente a Innergex Chile."
     },
     {
       "name": "Chile",
@@ -23,6 +23,7 @@
       "state": "Región Metropolitana",
       "country": "Chile",
       "postal_code": "7550089",
+      "building": "3477",
       "room": "Piso 21",
       "comment": "Oficina de Innergex Chile en Santiago."
     },
@@ -34,7 +35,7 @@
       "town": "Los Ángeles",
       "state": "Región del Biobío",
       "country": "Chile",
-      "comment": "Instalación de Innergex Chile correspondiente al Parque Eólico Cuel."
+      "comment": "Instalación de Innergex Chile correspondiente al Parque Eólico Cuel.\nUbicada aproximadamente a 12 km al oeste de Los Ángeles."
     },
     {
       "name": "CCO",
