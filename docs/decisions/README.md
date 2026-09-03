@@ -1,5 +1,5 @@
-# Architecture Decision Records
+# Registros de Decisiones de Arquitectura
 
-This directory will contain Architecture Decision Records (ADRs) for important technical choices made in IGX NEXUS.
+Este directorio contendrá los Architecture Decision Records (ADR) asociados a decisiones técnicas relevantes de IGX NEXUS.
 
-Examples include authentication strategy, GLPI integration boundaries, data reconciliation rules, QR identity format, database/cache choices and deployment topology.
+Entre ellas se incluyen la estrategia de autenticación, los límites de integración con GLPI, las reglas de reconciliación de datos, el formato de identidad QR, las decisiones de base de datos/caché y la topología de despliegue.

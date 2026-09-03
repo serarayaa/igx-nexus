@@ -1,3 +1,3 @@
-# Shared Configuration
+# Configuración Compartida
 
-Shared linting, formatting, TypeScript and workspace configuration for IGX NEXUS.
+Configuración compartida de linting, formato, TypeScript y workspace para IGX NEXUS.

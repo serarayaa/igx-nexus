@@ -1,5 +1,5 @@
-# Tests
+# Pruebas
 
-Cross-cutting integration, contract, security and end-to-end tests for IGX NEXUS.
+Pruebas transversales de integración, contratos, seguridad y end-to-end para IGX NEXUS.
 
-Unit tests should live close to the code they validate when the selected framework supports it.
+Las pruebas unitarias deben ubicarse cerca del código que validan cuando el framework seleccionado lo permita.

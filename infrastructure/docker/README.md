@@ -1,90 +1,90 @@
-# Docker Development Stack
+# Stack de Desarrollo Docker
 
-IGX NEXUS uses Docker Compose for the local v0.1 development/demo environment.
+IGX NEXUS utiliza Docker Compose para el entorno local de desarrollo y demostración de la v0.1.
 
-## Services in CMDB-003
+## Servicios incluidos en CMDB-003
 
-| Service | Image | Host access |
+| Servicio | Imagen | Acceso desde el host |
 | --- | --- | --- |
 | GLPI | `glpi/glpi:11.0.8` | `http://127.0.0.1:8080` / `http://localhost:8080` |
-| MariaDB | `mariadb:11.4` | Internal Docker network only |
-| Redis | `redis:7.4-alpine` | Internal Docker network only |
+| MariaDB | `mariadb:11.4` | Solo red interna de Docker |
+| Redis | `redis:7.4-alpine` | Solo red interna de Docker |
 
-GLPI binds only to loopback during local development. Ports `3000` and `8000` are reserved for the future NEXUS Web and NEXUS API services. Ports `80` and `443` remain free for a later reverse-proxy/HTTPS layer.
+Durante el desarrollo local, GLPI escucha únicamente en la interfaz loopback. Los puertos `3000` y `8000` quedan reservados para los futuros servicios NEXUS Web y NEXUS API. Los puertos `80` y `443` permanecen libres para una futura capa de reverse proxy/HTTPS.
 
-## First start
+## Primer inicio
 
-From the repository root:
+Desde la raíz del repositorio:
 
 ```bash
 cp .env.example .env
 ```
 
-Generate separate local development secrets for `GLPI_DB_PASSWORD` and `MARIADB_ROOT_PASSWORD` and store them only in `.env`. Never commit `.env`.
+Genera secretos locales de desarrollo independientes para `GLPI_DB_PASSWORD` y `MARIADB_ROOT_PASSWORD`, y almacénalos únicamente en `.env`. Nunca versionar `.env`.
 
-Validate the Compose model before starting containers:
+Valida el modelo de Compose antes de iniciar los contenedores:
 
 ```bash
 docker compose config --quiet
 ```
 
-Start the stack:
+Inicia el stack:
 
 ```bash
 docker compose up -d
 ```
 
-Check status and health:
+Comprueba el estado y healthcheck de los servicios:
 
 ```bash
 docker compose ps
 ```
 
-Follow logs when troubleshooting:
+Para seguir los logs durante una investigación:
 
 ```bash
 docker compose logs -f --tail=100
 ```
 
-## Stop / restart
+## Detener / reiniciar
 
-Stop the stack while preserving persistent data:
+Detén el stack conservando los datos persistentes:
 
 ```bash
 docker compose down
 ```
 
-Start it again:
+Vuelve a iniciarlo:
 
 ```bash
 docker compose up -d
 ```
 
-Named volumes preserve MariaDB, GLPI and Redis data across a normal `docker compose down`.
+Los volúmenes nombrados conservan los datos de MariaDB, GLPI y Redis después de un `docker compose down` normal.
 
-## Persistence validation
+## Validación de persistencia
 
-CMDB-003 validates persistence by comparing a known GLPI database value before and after a normal `docker compose down` / `docker compose up -d` cycle. The value must remain unchanged and all three services must return to a healthy state.
+CMDB-003 valida la persistencia comparando un valor conocido de la base de datos de GLPI antes y después de un ciclo normal `docker compose down` / `docker compose up -d`. El valor debe permanecer sin cambios y los tres servicios deben volver a un estado saludable (`healthy`).
 
-## Destructive reset
+## Reinicio destructivo
 
-Only when a full local reset is intentionally required:
+Utilizar únicamente cuando se requiera intencionalmente un reinicio local completo:
 
 ```bash
 docker compose down -v
 ```
 
-**Warning:** `-v` deletes the local named volumes and therefore the local GLPI database and persistent application data.
+**Advertencia:** `-v` elimina los volúmenes locales nombrados y, por lo tanto, la base de datos local de GLPI y los datos persistentes de la aplicación.
 
-## WSL2 Redis host requirement
+## Requisito de Redis en el host WSL2
 
-Redis recommends Linux memory overcommit for reliable background persistence. On the WSL2 Ubuntu host, set `vm.overcommit_memory=1` and persist it through `/etc/sysctl.d/`.
+Redis recomienda habilitar el memory overcommit de Linux para una persistencia confiable en segundo plano. En el host Ubuntu de WSL2 se debe establecer `vm.overcommit_memory=1` y persistir la configuración mediante `/etc/sysctl.d/`.
 
-## Architecture guardrails
+## Límites de arquitectura
 
-- GLPI binds to loopback only during local development.
-- Do not expose MariaDB or Redis directly to the Windows host.
-- Do not write directly to GLPI database tables from NEXUS services.
-- GLPI must remain independently upgradeable.
-- NEXUS Web will communicate through NEXUS API.
-- Service Desk / support-ticket workflows are out of scope; Jira owns those workflows.
+- GLPI escucha únicamente en loopback durante el desarrollo local.
+- No exponer MariaDB ni Redis directamente al host Windows.
+- Los servicios NEXUS no deben escribir directamente en las tablas de la base de datos de GLPI.
+- GLPI debe permanecer actualizable de forma independiente.
+- NEXUS Web se comunicará a través de NEXUS API.
+- Los flujos de Service Desk y tickets de soporte están fuera de alcance; Jira es responsable de esos flujos.

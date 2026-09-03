@@ -1,5 +1,5 @@
-# IGX NEXUS UI
+# UI de IGX NEXUS
 
-Shared design-system package for the IGX NEXUS product experience.
+Paquete compartido del sistema de diseño para la experiencia de producto de IGX NEXUS.
 
-This package will contain tokens, typography, icons, components, accessibility rules and reusable visual patterns derived from the approved IGX NEXUS identity.
+Este paquete contendrá tokens, tipografías, iconos, componentes, reglas de accesibilidad y patrones visuales reutilizables derivados de la identidad aprobada de IGX NEXUS.

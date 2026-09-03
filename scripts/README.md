@@ -1,5 +1,5 @@
 # Scripts
 
-Development, maintenance, bootstrap, migration and demo-data scripts for IGX NEXUS.
+Scripts de desarrollo, mantenimiento, bootstrap, migración y datos de demostración para IGX NEXUS.
 
-Scripts must be idempotent when practical and must never embed production credentials.
+Los scripts deben ser idempotentes cuando sea práctico y nunca deben incorporar credenciales de producción.

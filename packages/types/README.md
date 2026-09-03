@@ -1,3 +1,3 @@
-# Shared Domain Types
+# Tipos de Dominio Compartidos
 
-Shared IGX NEXUS domain contracts and type definitions for assets, configuration items, relationships, health, QR identities and integrations.
+Contratos de dominio y definiciones de tipos compartidos de IGX NEXUS para activos, elementos de configuración, relaciones, CMDB Health, identidades QR e integraciones.

@@ -1,4 +1,4 @@
-# Environment and secrets
+# Entorno y secretos
 .env
 .env.*
 !.env.example
@@ -32,27 +32,27 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
-# IDE / editors
+# IDE / editores
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
+# Sistema operativo
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# Docker / local runtime data
+# Docker / datos de ejecución local
 .docker/
 data/
 volumes/
 
-# GLPI local/runtime data
+# Datos locales/de ejecución de GLPI
 files/
 config/config_db.php
 
-# Temporary files
+# Archivos temporales
 .tmp/
 tmp/
 *.tmp

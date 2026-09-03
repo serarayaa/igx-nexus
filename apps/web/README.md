@@ -1,7 +1,7 @@
 # IGX NEXUS Web
 
-Modern Innergex-branded web experience for IGX NEXUS.
+Experiencia web moderna de IGX NEXUS con identidad visual de Innergex.
 
-Planned stack: Next.js + React + TypeScript.
+Stack planificado: Next.js + React + TypeScript.
 
-This application must consume the dedicated NEXUS API instead of accessing GLPI tables directly.
+Esta aplicación debe consumir la NEXUS API dedicada en lugar de acceder directamente a las tablas de GLPI.

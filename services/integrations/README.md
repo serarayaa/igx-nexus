@@ -1,5 +1,5 @@
-# Integrations
+# Integraciones
 
-Connectors and reconciliation adapters for authoritative enterprise sources such as GLPI, Microsoft Intune, Microsoft Entra ID, Microsoft Defender, virtualization platforms, SNMP/network discovery and future sources.
+Conectores y adaptadores de reconciliación para fuentes corporativas autoritativas como GLPI, Microsoft Intune, Microsoft Entra ID, Microsoft Defender, plataformas de virtualización, descubrimiento SNMP/red y futuras fuentes.
 
-Integration code must never bypass the NEXUS data contracts or write directly to GLPI database tables.
+El código de integración nunca debe omitir los contratos de datos de NEXUS ni escribir directamente en las tablas de la base de datos de GLPI.

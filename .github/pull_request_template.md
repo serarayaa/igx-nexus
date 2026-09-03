@@ -1,19 +1,19 @@
-## Summary
+## Resumen
 
-Describe the change and the CMDB ticket it implements.
+Describe el cambio y el ticket CMDB que implementa.
 
-## Scope
+## Alcance
 
 - Ticket: `CMDB-XXX`
-- Type: feature / fix / docs / refactor / chore
+- Tipo: feature / fix / docs / refactor / chore
 
-## Validation
+## Validación
 
-- [ ] Local checks pass
-- [ ] No secrets or real corporate data were committed
-- [ ] Documentation was updated when required
-- [ ] UI changes were visually reviewed when applicable
+- [ ] Las validaciones locales pasan correctamente
+- [ ] No se versionaron secretos ni datos corporativos reales
+- [ ] La documentación fue actualizada cuando correspondía
+- [ ] Los cambios de UI fueron revisados visualmente cuando aplica
 
-## Notes
+## Notas
 
-Add migration, security, architecture or rollout notes if needed.
+Agrega notas de migración, seguridad, arquitectura o despliegue cuando sea necesario.
