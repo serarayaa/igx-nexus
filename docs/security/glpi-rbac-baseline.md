@@ -93,6 +93,20 @@ Se detectaron derechos no nulos fuera del alcance de NEXUS, incluyendo `ticket`,
 
 Conclusión: `Read-Only` es técnicamente de sólo lectura, pero funcionalmente demasiado amplio para el rol de auditoría de IGX NEXUS. Se reemplaza por un perfil custom de mínimo privilegio.
 
+## Validación local del perfil de auditoría
+
+Durante CMDB-004 se implementó `scripts/bootstrap-glpi/rbac-auditor.php` para crear y reconciliar de forma declarativa el perfil `NEXUS Auditor` dentro del runtime oficial de GLPI y sin SQL directo.
+
+Resultado validado en GLPI 11.0.8:
+
+- perfil creado con ID local `10`;
+- 26 rights reconciliados exclusivamente en modo lectura;
+- escritura CMDB/ITAM denegada;
+- Service Desk / Help Desk denegado por política deny-by-default;
+- administración global denegada;
+- verificación posterior con 0 divergencias;
+- segunda ejecución de `--apply` con 0 cambios, confirmando idempotencia.
+
 ## Asignación usuario / perfil / entidad
 
 GLPI 11.0.8 expone el comando oficial:
