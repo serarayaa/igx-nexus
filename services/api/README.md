@@ -1,5 +1,5 @@
 # NEXUS API
 
-Backend boundary for IGX NEXUS.
+Límite de backend para IGX NEXUS.
 
-Responsibilities include authorization, normalized asset contracts, reconciliation, QR workflows, CMDB Health logic, auditability and safe access to upstream systems.
+Sus responsabilidades incluyen autorización, contratos normalizados de activos, reconciliación, flujos QR, lógica de CMDB Health, auditabilidad y acceso seguro a sistemas aguas arriba.
