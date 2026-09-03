@@ -107,6 +107,44 @@ Resultado validado en GLPI 11.0.8:
 - verificación posterior con 0 divergencias;
 - segunda ejecución de `--apply` con 0 cambios, confirmando idempotencia.
 
+## Validación de persistencia
+
+La configuración relevante de CMDB-004 fue sometida a un reinicio normal del stack:
+
+```text
+docker compose down
+docker compose up -d
+```
+
+sin `-v` ni eliminación de volúmenes.
+
+Después del reinicio se verificó:
+
+- GLPI 11.0.8 saludable y accesible únicamente por `127.0.0.1:8080`;
+- MariaDB y Redis saludables;
+- entidades `Innergex` y `Chile` persistentes;
+- 15/15 ubicaciones persistentes;
+- relaciones `CCO -> Parque Eólico Cuel`, `BESS Salvador -> Parque Solar Salvador` y `BESS San Andrés -> Parque Solar San Andrés` persistentes;
+- 9/9 estados de ciclo de vida persistentes;
+- `NEXUS Asset Manager` con sus 26 rights conformes;
+- `NEXUS Auditor` con sus 26 rights conformes;
+- respuesta HTTP local de GLPI con código `200`.
+
+Resultado: la persistencia funcional requerida por CMDB-004 quedó validada.
+
+## Cierre de credenciales OAuth temporales
+
+Durante CMDB-004 se creó el cliente OAuth temporal `IGX NEXUS Bootstrap` para validar los contratos de la API High-Level de GLPI.
+
+Como su Client Secret fue expuesto durante una prueba interactiva, la credencial se consideró comprometida. Al finalizar las validaciones el cliente fue **eliminado permanentemente** desde GLPI, en lugar de conservarlo o reutilizarlo.
+
+Decisiones de seguridad:
+
+- el cliente temporal no queda activo después de CMDB-004;
+- no se versionó su Client Secret ni access tokens en el repositorio;
+- no se conservará una identidad OAuth amplia por conveniencia;
+- la futura identidad `NEXUS API Service` tendrá cliente y perfil propios de mínimo privilegio cuando exista un contrato técnico estable.
+
 ## Asignación usuario / perfil / entidad
 
 GLPI 11.0.8 expone el comando oficial:
@@ -129,7 +167,8 @@ La opción `--recursive` debe utilizarse de forma deliberada. La ausencia de rec
 6. No ampliar scopes OAuth ni permisos de perfiles para sortear una limitación de una prueba o herramienta.
 7. No gestionar derechos mediante SQL directo.
 8. Registrar y auditar cambios privilegiados.
+9. Eliminar credenciales temporales cuando dejan de ser necesarias y rotarlas o revocarlas inmediatamente si se exponen.
 
-## Alcance de CMDB-004
+## Resultado de CMDB-004
 
-Para cerrar CMDB-004 se requiere dejar definida esta línea base, validar el perfil operativo y el perfil de auditoría en el entorno local, y demostrar que sus configuraciones persisten después de un reinicio normal del stack Docker. La identidad definitiva de NEXUS API se implementará cuando exista un contrato técnico estable para esa integración.
+La línea base RBAC quedó validada en el entorno local, ambos perfiles custom demostraron idempotencia, la configuración sobrevivió un reinicio normal del stack y el cliente OAuth temporal utilizado para las pruebas fue eliminado al cerrar la validación. La identidad definitiva de NEXUS API se implementará más adelante, cuando exista un contrato técnico estable para esa integración.
