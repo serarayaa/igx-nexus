@@ -9,7 +9,7 @@ services:
       MARIADB_DATABASE: ${GLPI_DB_NAME:-glpi}
       MARIADB_USER: ${GLPI_DB_USER:-glpi}
       MARIADB_PASSWORD: ${GLPI_DB_PASSWORD:?Set GLPI_DB_PASSWORD in .env}
-      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?Set MARIADB_ROOT_PASSWORD in .env}
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
