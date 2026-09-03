@@ -53,7 +53,7 @@ services:
       GLPI_DB_USER: ${GLPI_DB_USER:-glpi}
       GLPI_DB_PASSWORD: ${GLPI_DB_PASSWORD:?Set GLPI_DB_PASSWORD in .env}
     ports:
-      - "${GLPI_HTTP_PORT:-8080}:80"
+      - "127.0.0.1:${GLPI_HTTP_PORT:-8080}:80"
     volumes:
       - glpi_data:/var/glpi
     networks:
