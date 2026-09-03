@@ -9,3 +9,8 @@ Principios fundamentales:
 - La NEXUS API aísla la aplicación web de los detalles de implementación de los sistemas aguas arriba.
 - Las fuentes autoritativas se reconcilian en lugar de duplicarse ciegamente.
 - La seguridad, auditabilidad y capacidad de actualización son restricciones de diseño desde el primer día.
+
+## Architecture Decision Records
+
+- [ADR-0001 — Límites del producto](adr-0001-product-boundaries.md)
+- [ADR-0002 — Taxonomía inicial de activos y CI](adr-0002-asset-ci-taxonomy.md)
