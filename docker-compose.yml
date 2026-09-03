@@ -1,0 +1,82 @@
+name: igx-nexus
+
+services:
+  mariadb:
+    image: ${MARIADB_IMAGE:-mariadb:11.4}
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Santiago}
+      MARIADB_DATABASE: ${GLPI_DB_NAME:-glpi}
+      MARIADB_USER: ${GLPI_DB_USER:-glpi}
+      MARIADB_PASSWORD: ${GLPI_DB_PASSWORD:?Set GLPI_DB_PASSWORD in .env}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?Set MARIADB_ROOT_PASSWORD in .env}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - nexus-backend
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mariadb-admin ping -h 127.0.0.1 -u$${MARIADB_USER} -p$${MARIADB_PASSWORD} --silent",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: ${REDIS_IMAGE:-redis:7.4-alpine}
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - nexus-backend
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  glpi:
+    image: ${GLPI_IMAGE:-glpi/glpi:11.0.8}
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Santiago}
+      GLPI_DB_HOST: mariadb
+      GLPI_DB_PORT: 3306
+      GLPI_DB_NAME: ${GLPI_DB_NAME:-glpi}
+      GLPI_DB_USER: ${GLPI_DB_USER:-glpi}
+      GLPI_DB_PASSWORD: ${GLPI_DB_PASSWORD:?Set GLPI_DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${GLPI_HTTP_PORT:-8080}:80"
+    volumes:
+      - glpi_data:/var/glpi
+    networks:
+      - nexus-backend
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "php -r '$$s=@fsockopen(\"127.0.0.1\",80); if(!$$s){exit(1);} fclose($$s);'",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+networks:
+  nexus-backend:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+  redis_data:
+  glpi_data:
