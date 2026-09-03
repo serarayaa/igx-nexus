@@ -24,6 +24,8 @@ function fail(string $message, int $code = 1): never
 
 function bootstrapGlpi(): string
 {
+    global $DB;
+
     $candidates = [
         getcwd(),
         '/var/www/glpi',
@@ -31,16 +33,51 @@ function bootstrapGlpi(): string
         '/opt/glpi',
     ];
 
-    foreach ($candidates as $root) {
-        $includes = rtrim($root, '/') . '/inc/includes.php';
-        if (is_file($includes)) {
-            chdir($root);
-            require_once $includes;
-            return $root;
+    $root = null;
+    foreach ($candidates as $candidate) {
+        $candidate = rtrim($candidate, '/');
+        if (
+            is_file($candidate . '/vendor/autoload.php')
+            && is_file($candidate . '/src/Glpi/Application/ResourcesChecker.php')
+        ) {
+            $root = $candidate;
+            break;
         }
     }
 
-    fail('No se encontró inc/includes.php. Ejecuta este script dentro del contenedor GLPI.');
+    if ($root === null) {
+        fail('No se encontró una instalación GLPI válida. Ejecuta este script dentro del contenedor GLPI.');
+    }
+
+    chdir($root);
+
+    // GLPI 11.0.8 ya no se inicializa mediante inc/includes.php. Replicamos el
+    // bootstrap CLI oficial: ResourcesChecker -> Composer autoload -> Kernel::boot().
+    require_once $root . '/src/Glpi/Application/ResourcesChecker.php';
+    (new \Glpi\Application\ResourcesChecker($root))->checkResources();
+
+    require_once $root . '/vendor/autoload.php';
+
+    $kernel = new \Glpi\Kernel\Kernel();
+    $kernel->boot();
+
+    // Mantener viva la instancia durante toda la ejecución del script.
+    $GLOBALS['NEXUS_GLPI_KERNEL'] = $kernel;
+
+    if (!($DB instanceof DBmysql)) {
+        fail('GLPI no inicializó una conexión DBmysql válida.');
+    }
+    if (!$DB->connected) {
+        fail('GLPI no pudo conectarse a su base de datos.');
+    }
+    if (!Config::isLegacyConfigurationLoaded()) {
+        fail('GLPI no pudo cargar la configuración desde la base de datos.');
+    }
+    if (Update::isUpdateMandatory()) {
+        fail('GLPI requiere actualizar su esquema antes de ejecutar el bootstrap RBAC.');
+    }
+
+    return $root;
 }
 
 function resolveProfileByName(string $name): ?Profile
