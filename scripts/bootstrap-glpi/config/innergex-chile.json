@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "scope": "Innergex Chile",
+  "entities": [
+    {
+      "name": "Innergex",
+      "parent": null,
+      "comment": "Entidad raíz corporativa de IGX NEXUS."
+    },
+    {
+      "name": "Chile",
+      "parent": "Innergex",
+      "comment": "Entidad operativa de IGX NEXUS para Innergex Chile. El alcance actual del proyecto, la Demo v0.1 y las primeras integraciones corresponden exclusivamente a Chile."
+    }
+  ],
+  "locations": [
+    {
+      "name": "Santiago",
+      "parent": null,
+      "entity": "Chile",
+      "address": "Av. Isidora Goyenechea 3477",
+      "town": "Las Condes",
+      "state": "Región Metropolitana",
+      "country": "Chile",
+      "postal_code": "7550089",
+      "room": "Piso 21",
+      "comment": "Oficina de Innergex Chile en Santiago."
+    },
+    {
+      "name": "Parque Eólico Cuel",
+      "parent": null,
+      "entity": "Chile",
+      "address": "Subestación Parque Eólico Cuel - El Morro, Ruta Q-312",
+      "town": "Los Ángeles",
+      "state": "Región del Biobío",
+      "country": "Chile",
+      "comment": "Instalación de Innergex Chile correspondiente al Parque Eólico Cuel."
+    },
+    {
+      "name": "CCO",
+      "parent": "Parque Eólico Cuel",
+      "entity": "Chile",
+      "country": "Chile",
+      "comment": "Centro de Control de Operaciones de Innergex Chile, ubicado físicamente en las instalaciones del Parque Eólico Cuel."
+    },
+    {
+      "name": "Parque Eólico Aurora",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Parque Eólico Sarco",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Central Hidroeléctrica Peuchén",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Central Hidroeléctrica Mampil",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Central Hidroeléctrica Licán",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Central Hidroeléctrica Guayacán",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Planta Termosolar Pampa Elvira",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Parque Solar Salvador",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "BESS Salvador",
+      "parent": "Parque Solar Salvador",
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Parque Solar San Andrés",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "BESS San Andrés",
+      "parent": "Parque Solar San Andrés",
+      "entity": "Chile",
+      "country": "Chile"
+    },
+    {
+      "name": "Central Hidroeléctrica La Confianza",
+      "parent": null,
+      "entity": "Chile",
+      "country": "Chile"
+    }
+  ],
+  "physical_asset_types": [
+    "Computers",
+    "Network devices",
+    "Phones",
+    "Monitors",
+    "Peripherals",
+    "Printers",
+    "Enclosures",
+    "PDUs",
+    "Racks",
+    "Appliances",
+    "Passive devices"
+  ],
+  "statuses": [
+    {
+      "name": "Recepcionado",
+      "comment": "Activo recibido físicamente por TI y registrado en inventario, pendiente de preparación o asignación."
+    },
+    {
+      "name": "En preparación",
+      "comment": "Activo en proceso de configuración, instalación, enrolamiento, etiquetado o validación por TI antes de quedar disponible o ser asignado."
+    },
+    {
+      "name": "Disponible / En stock",
+      "comment": "Activo preparado, validado por TI y disponible para ser asignado, instalado o utilizado."
+    },
+    {
+      "name": "En uso / En servicio",
+      "comment": "Activo operativo y actualmente utilizado por un usuario, área, servicio o infraestructura de Innergex Chile."
+    },
+    {
+      "name": "En reparación / Mantención",
+      "comment": "Activo temporalmente fuera de operación por diagnóstico, reparación, mantenimiento preventivo o intervención técnica."
+    },
+    {
+      "name": "Devuelto / En revisión",
+      "comment": "Activo devuelto por un usuario, área o proveedor y pendiente de inspección, validación de estado, reasignación, reparación o retorno a stock."
+    },
+    {
+      "name": "Pendiente de baja",
+      "comment": "Activo fuera de operación o sin continuidad de uso, pendiente de evaluación y aprobación para su baja definitiva."
+    },
+    {
+      "name": "Dado de baja",
+      "comment": "Activo retirado oficialmente de operación y del ciclo de uso, con baja aprobada y registrado únicamente para efectos históricos, administrativos y de auditoría."
+    },
+    {
+      "name": "Disposición final",
+      "comment": "Activo cuyo proceso de retiro ha finalizado mediante reciclaje, destrucción certificada, donación, venta, devolución a proveedor u otro mecanismo formal de disposición."
+    }
+  ],
+  "status_visibility_defaults": {
+    "show_in_assistance": false,
+    "visible_for_physical_asset_types": true,
+    "visible_for_other_item_types": false
+  }
+}
