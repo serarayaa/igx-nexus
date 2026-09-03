@@ -1,0 +1,86 @@
+# Línea base RBAC de GLPI para IGX NEXUS
+
+Estado: Propuesta validada para CMDB-004
+
+## Objetivo
+
+Definir los perfiles mínimos necesarios para operar el núcleo GLPI de IGX NEXUS aplicando el principio de menor privilegio y evitando privilegios administrativos innecesarios.
+
+## Perfiles nativos observados
+
+La instancia GLPI 11.0.8 dispone de los perfiles nativos `Self-Service`, `Observer`, `Admin`, `Super-Admin`, `Hotliner`, `Technician`, `Supervisor` y `Read-Only`.
+
+La High-Level REST API 2.3.0 permite consultar metadatos de `Profile`, pero no expone una matriz granular de derechos suficiente para configurar completamente los permisos de cada perfil. Por este motivo, el ajuste fino de derechos se realizará únicamente mediante mecanismos soportados por GLPI, principalmente la interfaz administrativa y el CLI oficial cuando exista soporte explícito. No se realizarán escrituras directas sobre las tablas de permisos en MariaDB.
+
+## Roles de IGX NEXUS
+
+### Super-Admin
+
+Uso: administración excepcional y recuperación.
+
+- Reutiliza el perfil nativo `Super-Admin`.
+- No debe utilizarse como perfil operativo diario.
+- Debe reservarse para cuentas administrativas controladas o de break-glass.
+- En producción deberá estar sujeto a MFA y a controles corporativos de identidad.
+
+### NEXUS Asset Manager
+
+Uso: operación diaria de CMDB/ITAM para Innergex Chile.
+
+Perfil custom a crear únicamente si el perfil nativo `Admin` resulta más amplio que lo necesario.
+
+Permisos funcionales objetivo:
+
+- consultar, crear y actualizar activos/CI físicos gestionados por NEXUS;
+- gestionar ubicaciones, estados, tipos y modelos utilizados por la taxonomía aprobada;
+- gestionar relaciones y metadatos necesarios para inventario y ciclo de vida cuando GLPI lo soporte;
+- consultar información administrativa/financiera del activo cuando sea necesaria para ITAM;
+- no administrar usuarios, perfiles, autenticación global, configuración del sistema, plugins ni credenciales;
+- no incorporar responsabilidades de Service Desk / Help Desk.
+
+El perfil se asignará a la entidad `Chile`. La recursividad se habilitará sólo cuando exista una necesidad real de entidades hijas dentro del alcance chileno.
+
+### Read-Only
+
+Uso: auditoría, revisión y consulta.
+
+- Reutiliza el perfil nativo `Read-Only`.
+- No se creará un perfil `NEXUS Auditor` equivalente mientras el perfil nativo satisfaga el caso de uso.
+- Debe limitarse a la entidad requerida y sin recursividad innecesaria.
+
+### NEXUS API Service
+
+Uso futuro: identidad técnica utilizada por NEXUS API para consumir GLPI.
+
+- Debe usar un perfil dedicado de mínimo privilegio.
+- El perfil no se provisionará anticipadamente en CMDB-004 con permisos amplios por conveniencia.
+- Sus derechos se definirán cuando el contrato real de endpoints y operaciones de NEXUS API esté fijado.
+- Sólo se habilitarán las operaciones efectivamente requeridas por la integración.
+- La aplicación nunca accederá directamente a MariaDB.
+
+## Asignación usuario / perfil / entidad
+
+GLPI 11.0.8 expone el comando oficial:
+
+```text
+php bin/console user:grant <username> --profile=<profile> --entity=<entity> [--recursive]
+```
+
+Este mecanismo soportado permite asignar explícitamente usuario, perfil, entidad y recursividad sin manipular directamente la base de datos.
+
+La opción `--recursive` debe utilizarse de forma deliberada. La ausencia de recursividad será el valor preferido mientras no exista un requisito funcional que justifique acceso a entidades hijas.
+
+## Principios de operación
+
+1. Menor privilegio por defecto.
+2. `Super-Admin` no es un rol operativo diario.
+3. Reutilizar perfiles nativos cuando satisfagan correctamente el caso de uso.
+4. Crear perfiles custom sólo cuando sea necesario reducir o separar privilegios.
+5. Asignar perfiles en la entidad mínima requerida.
+6. No ampliar scopes OAuth ni permisos de perfiles para sortear una limitación de una prueba o herramienta.
+7. No gestionar derechos mediante SQL directo.
+8. Registrar y auditar cambios privilegiados.
+
+## Alcance de CMDB-004
+
+Para cerrar CMDB-004 se requiere dejar definida esta línea base, validar al menos el perfil operativo y el perfil de consulta en el entorno local, y demostrar que sus configuraciones persisten después de un reinicio normal del stack Docker. La identidad definitiva de NEXUS API se implementará cuando exista un contrato técnico estable para esa integración.
