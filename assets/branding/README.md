@@ -1,11 +1,11 @@
-# IGX NEXUS Branding
+# Identidad visual de IGX NEXUS
 
-Official product identity assets for IGX NEXUS.
+Activos oficiales de identidad del producto IGX NEXUS.
 
-Current approved identity:
+Identidad aprobada actualmente:
 
-- Product: **IGX NEXUS**
+- Producto: **IGX NEXUS**
 - Tagline: **The Technology Map**
-- Signature: **by Innergex**
+- Firma: **by Innergex**
 
-The Innergex corporate mark must remain recognizable and must not be casually redrawn or distorted. Product-specific variants for dark/light backgrounds, app icon, favicon and QR labels will be derived from the approved master artwork.
+La marca corporativa de Innergex debe mantenerse reconocible y no debe redibujarse ni distorsionarse de forma arbitraria. Las variantes específicas del producto para fondos oscuros/claros, ícono de aplicación, favicon y etiquetas QR se derivarán del arte maestro aprobado.
