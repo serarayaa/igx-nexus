@@ -12,6 +12,7 @@ El bootstrap es **idempotente**: al ejecutarse varias veces debe detectar lo que
 
 - `config/innergex-chile.json`: entidades, ubicaciones, estados de ciclo de vida y tipos de activos físicos validados durante CMDB-004.
 - `bootstrap.py`: validación local, reconciliación read-only y aplicación controlada de ubicaciones contra la API High-Level de GLPI.
+- `rbac.php`: reconciliación declarativa del perfil operativo `NEXUS Asset Manager` mediante las clases internas de GLPI, sin editar manualmente cientos de casillas y sin SQL directo.
 
 ## Validación local
 
@@ -48,7 +49,7 @@ El modo `--check-glpi`:
 6. informa objetos `[OK]`, `[MISSING]` y `[DRIFT]`;
 7. no realiza escrituras.
 
-## Aplicación controlada
+## Aplicación controlada de ubicaciones
 
 Durante CMDB-004 se validaron de manera independiente los contratos de escritura de GLPI API 2.3.0:
 
@@ -74,12 +75,53 @@ El modo `--apply` actualmente se limita deliberadamente a **ubicaciones**:
 
 Una segunda ejecución sobre un GLPI ya conforme debe producir únicamente acciones `[SKIP]` y cero creaciones/actualizaciones.
 
+## Bootstrap RBAC del perfil operativo
+
+La High-Level API 2.3.0 expone metadatos de perfiles, pero no toda la matriz granular de derechos. GLPI 11 sí dispone internamente de `Profile` y `ProfileRight`, incluyendo métodos para obtener y actualizar rights. Para evitar una configuración manual extensa, `rbac.php` se ejecuta **dentro del contenedor GLPI** y utiliza esas clases de aplicación; no realiza consultas SQL directas desde IGX NEXUS.
+
+Primero copiar el script temporalmente al contenedor:
+
+```bash
+docker compose cp scripts/bootstrap-glpi/rbac.php glpi:/tmp/igx-nexus-rbac.php
+```
+
+Validar el plan sin cambios:
+
+```bash
+docker compose exec glpi php /tmp/igx-nexus-rbac.php --check
+```
+
+Aplicar únicamente después de revisar el plan:
+
+```bash
+docker compose exec glpi php /tmp/igx-nexus-rbac.php --apply
+```
+
+El perfil administrado es `NEXUS Asset Manager` y sigue una política **deny-by-default**:
+
+- habilita activos/CI y objetos de gestión CMDB/ITAM explícitamente aprobados;
+- reutiliza los masks conocidos del perfil nativo `Admin` sólo para los rights permitidos;
+- elimina `DELETE` y `PURGE` del perfil operativo;
+- no habilita Service Desk / Help Desk;
+- no habilita administración de usuarios, perfiles, autenticación global ni configuración general;
+- limita entidades e inventario a lectura cuando corresponde;
+- no modifica perfiles nativos;
+- una segunda ejecución debe resultar sin divergencias.
+
+La asignación del perfil a usuarios se realiza posteriormente con el CLI oficial de GLPI:
+
+```text
+php bin/console user:grant <username> --profile=<profile> --entity=<entity> [--recursive]
+```
+
+No se asigna automáticamente ningún usuario durante el bootstrap del perfil.
+
 ## Seguridad
 
-- Nunca escribir directamente en MariaDB.
+- Nunca escribir directamente en MariaDB desde IGX NEXUS o sus scripts de bootstrap.
 - Nunca versionar contraseñas, tokens OAuth, secretos de cliente ni datos corporativos sensibles.
 - Los secretos locales deben suministrarse mediante variables de entorno o un mecanismo de secretos aprobado.
-- Ejecutar primero `--check-glpi` antes de utilizar `--apply` cuando cambie la configuración declarativa.
+- Ejecutar primero los modos `--check` / `--check-glpi` antes de cualquier `--apply`.
 - El cliente OAuth dedicado debe usar permisos mínimos suficientes.
 - La configuración del repositorio debe contener únicamente datos corporativos aprobados para versionamiento.
 - Las operaciones no soportadas o no validadas se rechazan en vez de inferirse de forma riesgosa.
