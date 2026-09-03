@@ -5,12 +5,12 @@
     {
       "name": "Innergex",
       "parent": null,
-      "comment": "Entidad raíz corporativa de IGX NEXUS. El alcance inicial del proyecto corresponde exclusivamente a Innergex Chile."
+      "comment": "Entidad raíz corporativa de IGX NEXUS. \r\nEl alcance inicial del proyecto corresponde exclusivamente a Innergex Chile."
     },
     {
       "name": "Chile",
       "parent": "Innergex",
-      "comment": "Entidad operativa de IGX NEXUS para Innergex Chile. El alcance actual del proyecto, la Demo v0.1 y las primeras integraciones corresponden exclusivamente a Chile."
+      "comment": "Entidad operativa de IGX NEXUS para Innergex Chile.\r\nEl alcance actual del proyecto, la Demo v0.1 y las primeras integraciones corresponden exclusivamente a Chile."
     }
   ],
   "locations": [
@@ -35,7 +35,7 @@
       "town": "Los Ángeles",
       "state": "Región del Biobío",
       "country": "Chile",
-      "comment": "Instalación de Innergex Chile correspondiente al Parque Eólico Cuel.\nUbicada aproximadamente a 12 km al oeste de Los Ángeles."
+      "comment": "Instalación de Innergex Chile correspondiente al Parque Eólico Cuel.\r\nUbicada aproximadamente a 12 km al oeste de Los Ángeles."
     },
     {
       "name": "CCO",
