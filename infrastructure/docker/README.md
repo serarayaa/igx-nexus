@@ -62,6 +62,10 @@ docker compose up -d
 
 Named volumes preserve MariaDB, GLPI and Redis data across a normal `docker compose down`.
 
+## Persistence validation
+
+CMDB-003 validates persistence by comparing a known GLPI database value before and after a normal `docker compose down` / `docker compose up -d` cycle. The value must remain unchanged and all three services must return to a healthy state.
+
 ## Destructive reset
 
 Only when a full local reset is intentionally required:
