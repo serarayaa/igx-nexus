@@ -13,6 +13,7 @@ El bootstrap es **idempotente**: al ejecutarse varias veces debe detectar lo que
 - `config/innergex-chile.json`: entidades, ubicaciones, estados de ciclo de vida y tipos de activos físicos validados durante CMDB-004.
 - `bootstrap.py`: validación local, reconciliación read-only y aplicación controlada de ubicaciones contra la API High-Level de GLPI.
 - `rbac.php`: reconciliación declarativa del perfil operativo `NEXUS Asset Manager` mediante las clases internas de GLPI, sin editar manualmente cientos de casillas y sin SQL directo.
+- `rbac-auditor.php`: reconciliación declarativa del perfil de consulta `NEXUS Auditor`, con sólo lectura sobre la superficie CMDB/ITAM aprobada y deny-by-default para el resto.
 
 ## Validación local
 
@@ -108,13 +109,29 @@ El perfil administrado es `NEXUS Asset Manager` y sigue una política **deny-by-
 - no modifica perfiles nativos;
 - una segunda ejecución debe resultar sin divergencias.
 
-La asignación del perfil a usuarios se realiza posteriormente con el CLI oficial de GLPI:
+## Bootstrap RBAC del perfil de auditoría
+
+El perfil nativo `Read-Only` fue auditado y descartado para IGX NEXUS porque, aun siendo de lectura, expone módulos fuera del alcance del producto como tickets, problemas, cambios, proyectos, usuarios y configuración global.
+
+`rbac-auditor.php` administra el perfil custom `NEXUS Auditor` con una política **deny-by-default** y sólo lectura sobre la superficie CMDB/ITAM aprobada.
+
+```bash
+docker compose cp scripts/bootstrap-glpi/rbac-auditor.php glpi:/tmp/igx-nexus-rbac-auditor.php
+docker compose exec glpi php /tmp/igx-nexus-rbac-auditor.php --check
+docker compose exec glpi php /tmp/igx-nexus-rbac-auditor.php --apply
+```
+
+Una segunda ejecución de `--apply` debe quedar sin divergencias ni cambios efectivos.
+
+## Asignación usuario / perfil / entidad
+
+La asignación de perfiles a usuarios se realiza posteriormente con el CLI oficial de GLPI:
 
 ```text
 php bin/console user:grant <username> --profile=<profile> --entity=<entity> [--recursive]
 ```
 
-No se asigna automáticamente ningún usuario durante el bootstrap del perfil.
+No se asigna automáticamente ningún usuario durante los bootstraps RBAC.
 
 ## Seguridad
 
@@ -122,9 +139,30 @@ No se asigna automáticamente ningún usuario durante el bootstrap del perfil.
 - Nunca versionar contraseñas, tokens OAuth, secretos de cliente ni datos corporativos sensibles.
 - Los secretos locales deben suministrarse mediante variables de entorno o un mecanismo de secretos aprobado.
 - Ejecutar primero los modos `--check` / `--check-glpi` antes de cualquier `--apply`.
-- El cliente OAuth dedicado debe usar permisos mínimos suficientes.
+- Un cliente OAuth dedicado debe usar permisos mínimos suficientes y existir sólo mientras sea necesario para el flujo que lo requiere.
+- El cliente temporal `IGX NEXUS Bootstrap` utilizado durante CMDB-004 fue eliminado permanentemente al terminar las pruebas; no queda como credencial persistente del proyecto.
+- La futura identidad `NEXUS API Service` tendrá su propio cliente/perfil de mínimo privilegio cuando exista un contrato técnico estable para la integración.
 - La configuración del repositorio debe contener únicamente datos corporativos aprobados para versionamiento.
 - Las operaciones no soportadas o no validadas se rechazan en vez de inferirse de forma riesgosa.
+
+## Validación de persistencia CMDB-004
+
+La configuración fue validada después de un ciclo normal:
+
+```bash
+docker compose down
+docker compose up -d
+```
+
+sin `-v` ni eliminación de volúmenes. Después del reinicio se verificaron correctamente:
+
+- entidades `Innergex` y `Chile`;
+- 15/15 ubicaciones y sus relaciones padre relevantes;
+- 9/9 estados de ciclo de vida;
+- `NEXUS Asset Manager` con 26 rights conformes;
+- `NEXUS Auditor` con 26 rights conformes;
+- GLPI, MariaDB y Redis saludables;
+- GLPI respondiendo localmente por `127.0.0.1:8080`.
 
 ## Alcance inicial
 
