@@ -6,12 +6,12 @@ Este directorio contiene la configuración declarativa y las herramientas de boo
 
 Reproducir de forma segura y consistente la configuración base de **Innergex Chile** sin depender de clics manuales ni de conocimiento no documentado de una estación de trabajo.
 
-El bootstrap debe ser **idempotente**: al ejecutarse varias veces, debe validar o actualizar los objetos existentes y no crear duplicados.
+El bootstrap es **idempotente**: al ejecutarse varias veces debe detectar lo que ya está conforme, crear únicamente lo faltante y actualizar sólo los campos divergentes soportados.
 
 ## Contenido actual
 
 - `config/innergex-chile.json`: entidades, ubicaciones, estados de ciclo de vida y tipos de activos físicos validados durante CMDB-004.
-- `bootstrap.py`: validador local y reconciliador read-only contra la API High-Level de GLPI.
+- `bootstrap.py`: validación local, reconciliación read-only y aplicación controlada de ubicaciones contra la API High-Level de GLPI.
 
 ## Validación local
 
@@ -48,25 +48,41 @@ El modo `--check-glpi`:
 6. informa objetos `[OK]`, `[MISSING]` y `[DRIFT]`;
 7. no realiza escrituras.
 
-## Evolución prevista en CMDB-004
+## Aplicación controlada
 
-La siguiente etapa habilitará un modo explícito de aplicación para:
+Durante CMDB-004 se validaron de manera independiente los contratos de escritura de GLPI API 2.3.0:
 
-1. crear únicamente objetos faltantes;
-2. actualizar configuraciones divergentes de manera controlada;
-3. validar nuevamente el resultado;
-4. emitir un reporte reproducible de la ejecución.
+- `POST /Dropdowns/Location` → `HTTP 201`;
+- `PATCH /Dropdowns/Location/{id}` → `HTTP 200`.
 
-Las escrituras se harán exclusivamente mediante la API soportada por GLPI. No se habilitará `--apply` hasta validar por completo el modo read-only.
+Una vez validado previamente el estado con `--check-glpi`, las ubicaciones declaradas pueden reconciliarse mediante:
+
+```bash
+python3 scripts/bootstrap-glpi/bootstrap.py --apply
+```
+
+El modo `--apply` actualmente se limita deliberadamente a **ubicaciones**:
+
+1. verifica que existan las entidades y los nueve estados base requeridos;
+2. trabaja únicamente en la entidad declarada (`Chile` en CMDB-004);
+3. procesa las ubicaciones en el orden del archivo declarativo para garantizar que los padres existan antes de crear hijos;
+4. crea ubicaciones faltantes mediante `POST`;
+5. actualiza sólo campos divergentes mediante `PATCH`;
+6. no mueve ubicaciones entre entidades;
+7. no elimina relaciones padre automáticamente;
+8. ejecuta una reconciliación read-only final para verificar el resultado.
+
+Una segunda ejecución sobre un GLPI ya conforme debe producir únicamente acciones `[SKIP]` y cero creaciones/actualizaciones.
 
 ## Seguridad
 
 - Nunca escribir directamente en MariaDB.
 - Nunca versionar contraseñas, tokens OAuth, secretos de cliente ni datos corporativos sensibles.
 - Los secretos locales deben suministrarse mediante variables de entorno o un mecanismo de secretos aprobado.
-- El bootstrap debe soportar validación/dry-run y reconciliación read-only antes de aplicar cambios.
+- Ejecutar primero `--check-glpi` antes de utilizar `--apply` cuando cambie la configuración declarativa.
 - El cliente OAuth dedicado debe usar permisos mínimos suficientes.
 - La configuración del repositorio debe contener únicamente datos corporativos aprobados para versionamiento.
+- Las operaciones no soportadas o no validadas se rechazan en vez de inferirse de forma riesgosa.
 
 ## Alcance inicial
 
