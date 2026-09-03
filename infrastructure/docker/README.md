@@ -6,11 +6,11 @@ IGX NEXUS uses Docker Compose for the local v0.1 development/demo environment.
 
 | Service | Image | Host access |
 | --- | --- | --- |
-| GLPI | `glpi/glpi:11.0.8` | `http://localhost:8080` |
+| GLPI | `glpi/glpi:11.0.8` | `http://127.0.0.1:8080` / `http://localhost:8080` |
 | MariaDB | `mariadb:11.4` | Internal Docker network only |
 | Redis | `redis:7.4-alpine` | Internal Docker network only |
 
-Ports `3000` and `8000` are reserved for the future NEXUS Web and NEXUS API services. Ports `80` and `443` remain free for a later reverse-proxy/HTTPS layer.
+GLPI binds only to loopback during local development. Ports `3000` and `8000` are reserved for the future NEXUS Web and NEXUS API services. Ports `80` and `443` remain free for a later reverse-proxy/HTTPS layer.
 
 ## First start
 
@@ -78,6 +78,7 @@ Redis recommends Linux memory overcommit for reliable background persistence. On
 
 ## Architecture guardrails
 
+- GLPI binds to loopback only during local development.
 - Do not expose MariaDB or Redis directly to the Windows host.
 - Do not write directly to GLPI database tables from NEXUS services.
 - GLPI must remain independently upgradeable.
