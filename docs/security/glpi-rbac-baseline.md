@@ -41,13 +41,24 @@ Permisos funcionales aplicados:
 
 El perfil se asignará a la entidad `Chile`. La recursividad se habilitará sólo cuando exista una necesidad real de entidades hijas dentro del alcance chileno.
 
-### Read-Only
+### NEXUS Auditor
 
-Uso: auditoría, revisión y consulta.
+Uso: auditoría, revisión y consulta de CMDB/ITAM.
 
-- Reutiliza el perfil nativo `Read-Only`.
-- No se creará un perfil `NEXUS Auditor` equivalente mientras el perfil nativo satisfaga el caso de uso.
-- Debe limitarse a la entidad requerida y sin recursividad innecesaria.
+El perfil nativo `Read-Only` fue auditado y se descartó para este caso de uso porque, aunque sus derechos son de lectura, expone áreas que quedan fuera del alcance de IGX NEXUS, entre ellas tickets, problemas, cambios, proyectos, usuarios, perfiles y configuración global.
+
+Por este motivo se define un perfil custom `NEXUS Auditor` con política deny-by-default y sólo lectura sobre:
+
+- activos/CI y software gestionados por NEXUS;
+- infraestructura de datacenter relevante;
+- licencias, documentos, contratos, información financiera del activo y certificados;
+- ubicaciones, estados, tipos/modelos y dispositivos;
+- entidad, inventario y logs necesarios para auditoría;
+- proveedores/contactos en modo consulta.
+
+El perfil no tendrá derechos de escritura, Service Desk / Help Desk ni administración global.
+
+La configuración declarativa se implementa mediante `scripts/bootstrap-glpi/rbac-auditor.php` y debe validarse primero con `--check` antes de aplicar cambios.
 
 ### NEXUS API Service
 
@@ -74,6 +85,14 @@ Resultado validado en GLPI 11.0.8:
 
 Los rights de infraestructura de datacenter (`Rack`, `PDU`, `Enclosure` y `PassiveDCEquipment`) comparten el right interno `datacenter` en GLPI 11. Los activos no gestionados (`Unmanaged`) no se habilitan en CMDB-004 y se reservarán para la futura fase de discovery/reconciliación.
 
+## Auditoría del perfil nativo Read-Only
+
+El perfil nativo `Read-Only` (ID local `8`) fue inspeccionado directamente mediante `ProfileRight::getProfileRights()`.
+
+Se detectaron derechos no nulos fuera del alcance de NEXUS, incluyendo `ticket`, `problem`, `change`, `project`, `user`, `profile`, `config`, `rule_ticket`, `notification`, `planning` y otros módulos de Service Desk/administración.
+
+Conclusión: `Read-Only` es técnicamente de sólo lectura, pero funcionalmente demasiado amplio para el rol de auditoría de IGX NEXUS. Se reemplaza por un perfil custom de mínimo privilegio.
+
 ## Asignación usuario / perfil / entidad
 
 GLPI 11.0.8 expone el comando oficial:
@@ -90,8 +109,8 @@ La opción `--recursive` debe utilizarse de forma deliberada. La ausencia de rec
 
 1. Menor privilegio por defecto.
 2. `Super-Admin` no es un rol operativo diario.
-3. Reutilizar perfiles nativos cuando satisfagan correctamente el caso de uso.
-4. Crear perfiles custom sólo cuando sea necesario reducir o separar privilegios.
+3. Reutilizar perfiles nativos sólo cuando satisfagan correctamente el caso de uso y su superficie funcional sea apropiada.
+4. Crear perfiles custom cuando sea necesario reducir o separar privilegios.
 5. Asignar perfiles en la entidad mínima requerida.
 6. No ampliar scopes OAuth ni permisos de perfiles para sortear una limitación de una prueba o herramienta.
 7. No gestionar derechos mediante SQL directo.
@@ -99,4 +118,4 @@ La opción `--recursive` debe utilizarse de forma deliberada. La ausencia de rec
 
 ## Alcance de CMDB-004
 
-Para cerrar CMDB-004 se requiere dejar definida esta línea base, validar el perfil operativo y el perfil de consulta en el entorno local, y demostrar que sus configuraciones persisten después de un reinicio normal del stack Docker. La identidad definitiva de NEXUS API se implementará cuando exista un contrato técnico estable para esa integración.
+Para cerrar CMDB-004 se requiere dejar definida esta línea base, validar el perfil operativo y el perfil de auditoría en el entorno local, y demostrar que sus configuraciones persisten después de un reinicio normal del stack Docker. La identidad definitiva de NEXUS API se implementará cuando exista un contrato técnico estable para esa integración.
