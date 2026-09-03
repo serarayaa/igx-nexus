@@ -20,18 +20,12 @@ From the repository root:
 cp .env.example .env
 ```
 
-Generate a local development password:
-
-```bash
-openssl rand -hex 24
-```
-
-Edit `.env` and replace `GLPI_DB_PASSWORD` with the generated value. Never commit `.env`.
+Generate separate local development secrets for `GLPI_DB_PASSWORD` and `MARIADB_ROOT_PASSWORD` and store them only in `.env`. Never commit `.env`.
 
 Validate the Compose model before starting containers:
 
 ```bash
-docker compose config
+docker compose config --quiet
 ```
 
 Start the stack:
@@ -77,6 +71,10 @@ docker compose down -v
 ```
 
 **Warning:** `-v` deletes the local named volumes and therefore the local GLPI database and persistent application data.
+
+## WSL2 Redis host requirement
+
+Redis recommends Linux memory overcommit for reliable background persistence. On the WSL2 Ubuntu host, set `vm.overcommit_memory=1` and persist it through `/etc/sysctl.d/`.
 
 ## Architecture guardrails
 
