@@ -2,33 +2,33 @@
 
 > **The Technology Map** — by Innergex
 
-IGX NEXUS is an internal CMDB & IT Asset Intelligence platform for Innergex.
+IGX NEXUS es una plataforma interna de **CMDB e Inteligencia de Activos TI** para Innergex.
 
-The platform is focused on configuration management, asset intelligence, discovery, relationships between configuration items, QR-based asset identification, data quality, security, lifecycle management, and integrations with authoritative enterprise sources.
+La plataforma está enfocada en gestión de configuración, inteligencia de activos, descubrimiento, relaciones entre elementos de configuración (CI), identificación mediante códigos QR, calidad de datos, seguridad, ciclo de vida e integraciones con fuentes corporativas autoritativas.
 
-## Scope
+## Alcance
 
-### In scope
+### Incluido
 - CMDB / ITAM
-- Asset discovery and inventory
-- Configuration item relationships
-- Asset 360° views
-- QR-based identification and physical inventory
-- CMDB Health and data quality
-- Lifecycle, ownership, locations, contracts, warranties and compliance
-- Integrations with GLPI, Microsoft Intune, Microsoft Entra ID and other authoritative sources
-- Modern Innergex-branded UI/UX
-- Auditability and security-by-design
+- Descubrimiento e inventario de activos
+- Relaciones entre elementos de configuración
+- Vistas Asset 360°
+- Identificación mediante QR e inventario físico
+- CMDB Health y calidad de datos
+- Ciclo de vida, responsables, ubicaciones, contratos, garantías y cumplimiento
+- Integraciones con GLPI, Microsoft Intune, Microsoft Entra ID y otras fuentes autoritativas
+- UI/UX moderna con identidad visual de Innergex
+- Auditabilidad y seguridad desde el diseño
 
-### Out of scope
+### Fuera de alcance
 - Service Desk / Help Desk
-- Support ticket creation and management
+- Creación y gestión de tickets de soporte
 
-Innergex already uses Jira for support workflows. IGX NEXUS must not duplicate that responsibility.
+Innergex ya utiliza Jira para los flujos de soporte. IGX NEXUS no debe duplicar esa responsabilidad.
 
-## Architecture principle
+## Principio de arquitectura
 
-The custom IGX NEXUS experience remains decoupled from the GLPI core. The web UI communicates with a dedicated NEXUS API, which controls authorization, normalization, reconciliation, business logic, QR workflows, integrations and auditability.
+La experiencia personalizada de IGX NEXUS permanece desacoplada del núcleo de GLPI. La interfaz web se comunica con una API dedicada, **NEXUS API**, responsable de autorización, normalización, reconciliación, lógica de negocio, flujos QR, integraciones y auditabilidad.
 
 ```text
 IGX NEXUS Web
@@ -43,21 +43,28 @@ IGX NEXUS Web
 MariaDB
 ```
 
-## Project status
+## Estado del proyecto
 
-Current target: **v0.1 — Local Demo**
+Objetivo actual: **v0.1 — Demo Local**
 
-The first milestone is a polished local demonstration that can later be promoted to an Innergex virtual machine with minimal architectural change.
+El primer hito es una demostración local pulida que posteriormente pueda promoverse a una máquina virtual de Innergex con cambios arquitectónicos mínimos.
 
-## Development workflow
+## Flujo de desarrollo
 
-- `main` is the stable development baseline.
-- Work is implemented per CMDB ticket on dedicated branches.
-- Pull requests are reviewed before merge.
-- Conventional Commits are used.
-- Secrets and real corporate data must never be committed.
+- `main` es la línea base estable de desarrollo.
+- El trabajo se implementa por ticket CMDB en ramas dedicadas.
+- Los Pull Requests se revisan antes del merge.
+- Se utiliza Conventional Commits.
+- Nunca deben versionarse secretos ni datos corporativos reales.
+
+## Idioma del proyecto
+
+- La documentación del repositorio se mantiene en **español**.
+- Los issues y descripciones de Pull Requests se redactan en **español**.
+- El código, identificadores, nombres de variables, contratos de API y términos técnicos que requieran consistencia pueden mantenerse en inglés.
+- Los nombres oficiales del producto y de tecnologías de terceros no se traducen.
 
 ---
 
 **IGX NEXUS — The Technology Map**  
-Internal technology asset intelligence for Innergex.
+Inteligencia interna de activos tecnológicos para Innergex.
