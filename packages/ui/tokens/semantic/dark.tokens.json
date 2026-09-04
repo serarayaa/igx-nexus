@@ -194,6 +194,230 @@
             "$value": "{color.neutral.0}"
           }
         }
+      },
+      "health": {
+        "healthy": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.success.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.success.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.success.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.success.onSolid}"
+          }
+        },
+        "degraded": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.warning.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.warning.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.warning.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.warning.onSolid}"
+          }
+        },
+        "unhealthy": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.danger.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.danger.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.danger.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.danger.onSolid}"
+          }
+        },
+        "unknown": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.neutral.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.neutral.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.neutral.onSolid}"
+          }
+        }
+      },
+      "criticality": {
+        "low": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.neutral.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.neutral.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.neutral.onSolid}"
+          }
+        },
+        "medium": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.info.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.info.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.info.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.info.onSolid}"
+          }
+        },
+        "high": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.warning.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.warning.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.warning.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.warning.onSolid}"
+          }
+        },
+        "critical": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.critical.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.critical.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.critical.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.critical.onSolid}"
+          }
+        }
+      },
+      "freshness": {
+        "current": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.success.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.success.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.success.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.success.onSolid}"
+          }
+        },
+        "aging": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.warning.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.warning.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.warning.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.warning.onSolid}"
+          }
+        },
+        "stale": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.danger.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.danger.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.danger.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.danger.onSolid}"
+          }
+        },
+        "unknown": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.neutral.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.neutral.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.neutral.onSolid}"
+          }
+        }
+      },
+      "domain": {
+        "it": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.neutral.800}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.100}"
+          },
+          "accent": {
+            "$value": "{color.brand.blueBright}"
+          }
+        },
+        "ot": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.neutral.800}"
+          },
+          "foreground": {
+            "$value": "{color.brand.cyan}"
+          },
+          "accent": {
+            "$value": "{color.brand.cyanBright}"
+          }
+        },
+        "unknown": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.neutral.800}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.300}"
+          },
+          "accent": {
+            "$value": "{color.neutral.400}"
+          }
+        }
       }
     }
   }
