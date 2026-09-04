@@ -6,12 +6,12 @@ La implementación inicial corresponde exclusivamente a **Innergex Chile**. La e
 
 ## v0.1 — Demo Local Innergex Chile
 
-Avance formal actual: **3 de 13 tickets completados (~23%)**.
+Avance formal al integrar CMDB-004: **4 de 13 tickets completados (~30,8%)**.
 
 - CMDB-001 ✅ Inicio / Arquitectura / Alcance
 - CMDB-002 ✅ Repositorio y Entorno Local
 - CMDB-003 ✅ Stack de Desarrollo Docker
-- CMDB-004 ⬜ Núcleo GLPI
+- CMDB-004 ✅ Núcleo GLPI
 - CMDB-005 ⬜ Sistema de Diseño IGX
 - CMDB-006 ⬜ Panel Principal
 - CMDB-007 ⬜ Explorador de Activos

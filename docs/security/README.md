@@ -2,7 +2,11 @@
 
 Requisitos de seguridad y notas de modelado de amenazas para IGX NEXUS.
 
-Línea base inicial:
+## Documentos
+
+- [`glpi-rbac-baseline.md`](glpi-rbac-baseline.md): línea base de perfiles, asignaciones y principio de menor privilegio para el núcleo GLPI.
+
+## Línea base inicial
 
 - No almacenar credenciales reales ni secretos en Git.
 - No permitir acceso directo desde el navegador a las tablas de la base de datos de GLPI.
