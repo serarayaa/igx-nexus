@@ -1,0 +1,18 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "borderWidth": {
+    "$type": "dimension",
+    "none": {
+      "$value": { "value": 0, "unit": "px" }
+    },
+    "thin": {
+      "$value": { "value": 1, "unit": "px" }
+    },
+    "medium": {
+      "$value": { "value": 2, "unit": "px" }
+    },
+    "strong": {
+      "$value": { "value": 3, "unit": "px" }
+    }
+  }
+}

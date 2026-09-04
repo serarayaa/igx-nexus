@@ -1,0 +1,30 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "zIndex": {
+    "$type": "number",
+    "base": {
+      "$value": 0
+    },
+    "sticky": {
+      "$value": 100
+    },
+    "dropdown": {
+      "$value": 200
+    },
+    "popover": {
+      "$value": 300
+    },
+    "overlay": {
+      "$value": 400
+    },
+    "modal": {
+      "$value": 500
+    },
+    "toast": {
+      "$value": 600
+    },
+    "tooltip": {
+      "$value": 700
+    }
+  }
+}

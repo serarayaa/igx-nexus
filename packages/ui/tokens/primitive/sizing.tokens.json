@@ -1,0 +1,37 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "size": {
+    "$type": "dimension",
+    "control": {
+      "sm": {
+        "$value": { "value": 32, "unit": "px" }
+      },
+      "md": {
+        "$value": { "value": 40, "unit": "px" }
+      },
+      "lg": {
+        "$value": { "value": 48, "unit": "px" }
+      }
+    },
+    "icon": {
+      "xs": {
+        "$value": { "value": 12, "unit": "px" }
+      },
+      "sm": {
+        "$value": { "value": 16, "unit": "px" }
+      },
+      "md": {
+        "$value": { "value": 20, "unit": "px" }
+      },
+      "lg": {
+        "$value": { "value": 24, "unit": "px" }
+      },
+      "xl": {
+        "$value": { "value": 32, "unit": "px" }
+      }
+    },
+    "touchTarget": {
+      "$value": { "value": 44, "unit": "px" }
+    }
+  }
+}
