@@ -1,0 +1,222 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "dataViz": {
+    "color": {
+      "categorical": {
+        "$type": "color",
+        "1": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.376471,
+              0.647059,
+              0.980392
+            ],
+            "hex": "#60A5FA"
+          }
+        },
+        "2": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.176471,
+              0.831373,
+              0.74902
+            ],
+            "hex": "#2DD4BF"
+          }
+        },
+        "3": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.654902,
+              0.545098,
+              0.980392
+            ],
+            "hex": "#A78BFA"
+          }
+        },
+        "4": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.984314,
+              0.572549,
+              0.235294
+            ],
+            "hex": "#FB923C"
+          }
+        },
+        "5": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.956863,
+              0.447059,
+              0.713725
+            ],
+            "hex": "#F472B6"
+          }
+        },
+        "6": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.639216,
+              0.901961,
+              0.207843
+            ],
+            "hex": "#A3E635"
+          }
+        }
+      },
+      "sequential": {
+        "$type": "color",
+        "1": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.117647,
+              0.227451,
+              0.541176
+            ],
+            "hex": "#1E3A8A"
+          }
+        },
+        "2": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.113725,
+              0.305882,
+              0.847059
+            ],
+            "hex": "#1D4ED8"
+          }
+        },
+        "3": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.231373,
+              0.509804,
+              0.964706
+            ],
+            "hex": "#3B82F6"
+          }
+        },
+        "4": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.376471,
+              0.647059,
+              0.980392
+            ],
+            "hex": "#60A5FA"
+          }
+        },
+        "5": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.729412,
+              0.901961,
+              0.992157
+            ],
+            "hex": "#BAE6FD"
+          }
+        }
+      },
+      "diverging": {
+        "$type": "color",
+        "negative": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.654902,
+              0.545098,
+              0.980392
+            ],
+            "hex": "#A78BFA"
+          }
+        },
+        "neutral": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.407843,
+              0.47451,
+              0.556863
+            ],
+            "hex": "#68798E"
+          }
+        },
+        "positive": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.176471,
+              0.831373,
+              0.74902
+            ],
+            "hex": "#2DD4BF"
+          }
+        }
+      },
+      "status": {
+        "info": {
+          "$type": "color",
+          "$value": "{semantic.color.status.info.foreground}"
+        },
+        "success": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.foreground}"
+        },
+        "warning": {
+          "$type": "color",
+          "$value": "{semantic.color.status.warning.foreground}"
+        },
+        "danger": {
+          "$type": "color",
+          "$value": "{semantic.color.status.danger.foreground}"
+        },
+        "critical": {
+          "$type": "color",
+          "$value": "{semantic.color.status.critical.foreground}"
+        },
+        "neutral": {
+          "$type": "color",
+          "$value": "{semantic.color.status.neutral.foreground}"
+        }
+      },
+      "axis": {
+        "$type": "color",
+        "$value": "{semantic.color.text.secondary}"
+      },
+      "grid": {
+        "$type": "color",
+        "$value": "{semantic.color.border.subtle}"
+      },
+      "foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.text.primary}"
+      },
+      "tooltip": {
+        "surface": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.elevated}"
+        },
+        "foreground": {
+          "$type": "color",
+          "$value": "{semantic.color.text.primary}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{semantic.color.border.default}"
+        }
+      }
+    }
+  }
+}
