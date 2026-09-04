@@ -1,0 +1,74 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "color": {
+    "brand": {
+      "$type": "color",
+      "navyDeep": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0, 0.043137, 0.184314],
+          "hex": "#000B2F"
+        }
+      },
+      "navy": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0, 0.094118, 0.286275],
+          "hex": "#001849"
+        }
+      },
+      "blueDeep": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.003922, 0.2, 0.454902],
+          "hex": "#013374"
+        }
+      },
+      "blue": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.003922, 0.278431, 0.564706],
+          "hex": "#014790"
+        }
+      },
+      "blueBright": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.011765, 0.529412, 0.94902],
+          "hex": "#0387F2"
+        }
+      },
+      "cyan": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.003922, 0.713725, 0.972549],
+          "hex": "#01B6F8"
+        }
+      },
+      "cyanBright": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.007843, 0.901961, 0.984314],
+          "hex": "#02E6FB"
+        }
+      }
+    },
+    "neutral": {
+      "$type": "color",
+      "black": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0, 0, 0],
+          "hex": "#000000"
+        }
+      },
+      "offWhite": {
+        "$value": {
+          "colorSpace": "srgb",
+          "components": [0.980392, 0.980392, 0.984314],
+          "hex": "#FAFAFB"
+        }
+      }
+    }
+  }
+}
