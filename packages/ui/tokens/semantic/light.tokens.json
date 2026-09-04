@@ -1,0 +1,200 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "background": {
+        "$type": "color",
+        "canvas": {
+          "$value": "{color.neutral.50}"
+        },
+        "subtle": {
+          "$value": "{color.neutral.100}"
+        },
+        "inverse": {
+          "$value": "{color.neutral.950}"
+        }
+      },
+      "surface": {
+        "$type": "color",
+        "base": {
+          "$value": "{color.neutral.0}"
+        },
+        "muted": {
+          "$value": "{color.neutral.100}"
+        },
+        "elevated": {
+          "$value": "{color.neutral.0}"
+        },
+        "inverse": {
+          "$value": "{color.neutral.900}"
+        }
+      },
+      "text": {
+        "$type": "color",
+        "primary": {
+          "$value": "{color.neutral.900}"
+        },
+        "secondary": {
+          "$value": "{color.neutral.600}"
+        },
+        "disabled": {
+          "$value": "{color.neutral.600}"
+        },
+        "inverse": {
+          "$value": "{color.neutral.0}"
+        },
+        "link": {
+          "$value": "{color.brand.blue}"
+        }
+      },
+      "border": {
+        "$type": "color",
+        "subtle": {
+          "$value": "{color.neutral.200}"
+        },
+        "default": {
+          "$value": "{color.neutral.300}"
+        },
+        "control": {
+          "$value": "{color.neutral.500}"
+        },
+        "strong": {
+          "$value": "{color.neutral.600}"
+        }
+      },
+      "action": {
+        "primary": {
+          "$type": "color",
+          "background": {
+            "$value": "{color.brand.blue}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.0}"
+          },
+          "hover": {
+            "$value": "{color.brand.blueDeep}"
+          }
+        },
+        "secondary": {
+          "$type": "color",
+          "background": {
+            "$value": "{color.neutral.0}"
+          },
+          "foreground": {
+            "$value": "{color.brand.blue}"
+          },
+          "border": {
+            "$value": "{color.brand.blue}"
+          }
+        },
+        "disabled": {
+          "$type": "color",
+          "background": {
+            "$value": "{color.neutral.200}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.600}"
+          }
+        }
+      },
+      "focus": {
+        "$type": "color",
+        "ring": {
+          "$value": "{color.brand.blueBright}"
+        }
+      },
+      "status": {
+        "info": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.info.100}"
+          },
+          "foreground": {
+            "$value": "{color.info.900}"
+          },
+          "solid": {
+            "$value": "{color.info.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "success": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.success.100}"
+          },
+          "foreground": {
+            "$value": "{color.success.900}"
+          },
+          "solid": {
+            "$value": "{color.success.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "warning": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.warning.100}"
+          },
+          "foreground": {
+            "$value": "{color.warning.900}"
+          },
+          "solid": {
+            "$value": "{color.warning.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "danger": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.danger.100}"
+          },
+          "foreground": {
+            "$value": "{color.danger.900}"
+          },
+          "solid": {
+            "$value": "{color.danger.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "critical": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.critical.100}"
+          },
+          "foreground": {
+            "$value": "{color.critical.900}"
+          },
+          "solid": {
+            "$value": "{color.critical.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "neutral": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.neutral.100}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.700}"
+          },
+          "solid": {
+            "$value": "{color.neutral.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        }
+      }
+    }
+  }
+}
