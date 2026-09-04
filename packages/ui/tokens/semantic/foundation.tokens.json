@@ -1,0 +1,75 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "shape": {
+      "control": {
+        "$type": "dimension",
+        "$value": "{radius.md}"
+      },
+      "card": {
+        "$type": "dimension",
+        "$value": "{radius.lg}"
+      },
+      "overlay": {
+        "$type": "dimension",
+        "$value": "{radius.xl}"
+      },
+      "pill": {
+        "$type": "dimension",
+        "$value": "{radius.full}"
+      }
+    },
+    "elevation": {
+      "surface": {
+        "$type": "shadow",
+        "$value": "{shadow.sm}"
+      },
+      "overlay": {
+        "$type": "shadow",
+        "$value": "{shadow.md}"
+      },
+      "modal": {
+        "$type": "shadow",
+        "$value": "{shadow.lg}"
+      }
+    },
+    "motion": {
+      "feedback": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{duration.fast}"
+        },
+        "easing": {
+          "$type": "cubicBezier",
+          "$value": "{cubicBezier.standard}"
+        }
+      },
+      "transition": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{duration.normal}"
+        },
+        "easing": {
+          "$type": "cubicBezier",
+          "$value": "{cubicBezier.standard}"
+        }
+      },
+      "spatial": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{duration.slow}"
+        },
+        "easing": {
+          "$type": "cubicBezier",
+          "$value": "{cubicBezier.decelerate}"
+        }
+      },
+      "reduced": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{duration.instant}"
+        }
+      }
+    }
+  }
+}
