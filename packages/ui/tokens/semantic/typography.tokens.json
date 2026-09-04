@@ -1,0 +1,104 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "typography": {
+      "$type": "typography",
+      "body": {
+        "$value": {
+          "fontFamily": "{fontFamily.sans}",
+          "fontSize": "{fontSize.md}",
+          "fontWeight": "{fontWeight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.normal}"
+        }
+      },
+      "bodySmall": {
+        "$value": {
+          "fontFamily": "{fontFamily.sans}",
+          "fontSize": "{fontSize.sm}",
+          "fontWeight": "{fontWeight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.normal}"
+        }
+      },
+      "label": {
+        "$value": {
+          "fontFamily": "{fontFamily.sans}",
+          "fontSize": "{fontSize.sm}",
+          "fontWeight": "{fontWeight.medium}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.snug}"
+        }
+      },
+      "caption": {
+        "$value": {
+          "fontFamily": "{fontFamily.sans}",
+          "fontSize": "{fontSize.xs}",
+          "fontWeight": "{fontWeight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.normal}"
+        }
+      },
+      "headingSmall": {
+        "$value": {
+          "fontFamily": "{fontFamily.sans}",
+          "fontSize": "{fontSize.xl}",
+          "fontWeight": "{fontWeight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.snug}"
+        }
+      },
+      "headingMedium": {
+        "$value": {
+          "fontFamily": "{fontFamily.sans}",
+          "fontSize": "{fontSize.2xl}",
+          "fontWeight": "{fontWeight.semibold}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.tight}"
+        }
+      },
+      "headingLarge": {
+        "$value": {
+          "fontFamily": "{fontFamily.sans}",
+          "fontSize": "{fontSize.3xl}",
+          "fontWeight": "{fontWeight.semibold}",
+          "letterSpacing": {
+            "value": -0.25,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.tight}"
+        }
+      },
+      "metric": {
+        "$value": {
+          "fontFamily": "{fontFamily.sans}",
+          "fontSize": "{fontSize.4xl}",
+          "fontWeight": "{fontWeight.semibold}",
+          "letterSpacing": {
+            "value": -0.5,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.tight}"
+        }
+      }
+    }
+  }
+}
