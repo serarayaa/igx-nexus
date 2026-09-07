@@ -9,3 +9,9 @@ export {
   IconButton,
   type IconButtonProps,
 } from "./components/IconButton/IconButton.js";
+
+export {
+  Input,
+  type InputProps,
+  type InputSize,
+} from "./components/Input/Input.js";
