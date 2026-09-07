@@ -1,6 +1,7 @@
 @import "../generated/index.css";
 @import "./density.css";
 @import "./accessibility.css";
+@import "./forced-colors.css";
 @import "./components/button.css";
 @import "./components/icon-button.css";
 @import "./components/input.css";
