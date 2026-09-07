@@ -1,2 +1,3 @@
 @import "../generated/index.css";
 @import "./accessibility.css";
+@import "./components/button.css";

@@ -1,0 +1,68 @@
+.igx-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--igx-semantic-density-comfortable-control-gap);
+  border-style: solid;
+  border-width: var(--igx-border-width-thin);
+  border-radius: var(--igx-semantic-shape-control);
+  font-family: var(--igx-font-family-sans);
+  font-size: var(--igx-font-size-sm);
+  font-weight: var(--igx-font-weight-semibold);
+  line-height: var(--igx-line-height-snug);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--igx-semantic-motion-feedback-duration)
+      var(--igx-semantic-motion-feedback-easing),
+    border-color var(--igx-semantic-motion-feedback-duration)
+      var(--igx-semantic-motion-feedback-easing),
+    color var(--igx-semantic-motion-feedback-duration)
+      var(--igx-semantic-motion-feedback-easing);
+}
+
+.igx-button--primary {
+  background: var(--igx-semantic-color-action-primary-background);
+  color: var(--igx-semantic-color-action-primary-foreground);
+  border-color: var(--igx-semantic-color-action-primary-background);
+}
+
+.igx-button--primary[data-hovered] {
+  background: var(--igx-semantic-color-action-primary-hover);
+  border-color: var(--igx-semantic-color-action-primary-hover);
+}
+
+.igx-button--secondary {
+  background: var(--igx-semantic-color-action-secondary-background);
+  color: var(--igx-semantic-color-action-secondary-foreground);
+  border-color: var(--igx-semantic-color-action-secondary-border);
+}
+
+.igx-button[data-focus-visible] {
+  outline: var(--igx-border-width-medium) solid
+    var(--igx-semantic-color-focus-ring);
+  outline-offset: var(--igx-spacing-1);
+}
+
+.igx-button[data-disabled] {
+  background: var(--igx-semantic-color-action-disabled-background);
+  color: var(--igx-semantic-color-action-disabled-foreground);
+  border-color: var(--igx-semantic-color-action-disabled-background);
+  cursor: not-allowed;
+}
+
+.igx-button--sm {
+  min-block-size: var(--igx-size-control-sm);
+  padding-inline: var(--igx-spacing-3);
+}
+
+.igx-button--md {
+  min-block-size: var(--igx-size-control-md);
+  padding-inline: var(--igx-spacing-4);
+}
+
+.igx-button--lg {
+  min-block-size: var(--igx-size-control-lg);
+  padding-inline: var(--igx-spacing-5);
+}
