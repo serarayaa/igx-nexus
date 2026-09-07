@@ -13,12 +13,22 @@
     "build:ui": "tsc -p tsconfig.json"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/addon-vitest": "^10.6.0",
+    "@storybook/react-vite": "^10.6.0",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
+    "@vitest/browser-playwright": "^4.1.11",
+    "playwright": "^1.63.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "typescript": "^7.0.2"
+    "storybook": "^10.6.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   },
   "exports": {
     ".": {
