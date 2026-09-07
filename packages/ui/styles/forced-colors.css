@@ -1,0 +1,25 @@
+/*
+ * Ajustes de alto contraste para componentes IGX.
+ *
+ * Los tokens semánticos se remapean en accessibility.css. Esta capa agrega
+ * diferencias de forma/borde para estados que no deben depender sólo del color.
+ */
+
+@media (forced-colors: active) {
+  .igx-input-field[data-invalid] .igx-input-field__control,
+  .igx-search-field[data-invalid] .igx-search-field__control-wrap {
+    border-style: dashed;
+    border-width: var(--igx-border-width-medium);
+  }
+
+  .igx-input-field__error,
+  .igx-search-field__error {
+    font-weight: var(--igx-font-weight-semibold);
+  }
+
+  .igx-input-field[data-disabled] .igx-input-field__control,
+  .igx-search-field[data-disabled] .igx-search-field__control-wrap,
+  .igx-button[data-disabled] {
+    border-color: GrayText;
+  }
+}
