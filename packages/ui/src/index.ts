@@ -56,3 +56,12 @@ export {
   type AppShellProps,
   type AppSidebarProps,
 } from "./components/AppShell/AppShell.js";
+
+export {
+  DataTable,
+  type DataTableCellAlign,
+  type DataTableColumn,
+  type DataTableProps,
+  type DataTableSort,
+  type DataTableSortDirection,
+} from "./components/DataTable/DataTable.js";
