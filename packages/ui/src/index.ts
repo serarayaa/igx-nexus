@@ -21,3 +21,15 @@ export {
   type SearchProps,
   type SearchSize,
 } from "./components/Search/Search.js";
+
+export {
+  Badge,
+  type BadgeProps,
+  type BadgeTone,
+} from "./components/Badge/Badge.js";
+
+export {
+  StatusBadge,
+  type StatusBadgeProps,
+  type StatusBadgeStatus,
+} from "./components/StatusBadge/StatusBadge.js";
