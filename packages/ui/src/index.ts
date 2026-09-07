@@ -15,3 +15,9 @@ export {
   type InputProps,
   type InputSize,
 } from "./components/Input/Input.js";
+
+export {
+  Search,
+  type SearchProps,
+  type SearchSize,
+} from "./components/Search/Search.js";
