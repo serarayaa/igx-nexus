@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { Input } from "../src/index.js";
 
 const meta = {
@@ -22,11 +23,33 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", {
+      name: "Nombre del activo",
+    });
+
+    await expect(input).toHaveAccessibleName("Nombre del activo");
+    await userEvent.tab();
+    await expect(input).toHaveFocus();
+
+    await userEvent.type(input, "ITSTGO75");
+    await expect(input).toHaveValue("ITSTGO75");
+  },
+};
 
 export const Invalid: Story = {
   args: {
     errorMessage: "El nombre del activo es obligatorio.",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", {
+      name: "Nombre del activo",
+    });
+
+    await expect(input).toHaveAttribute("aria-invalid", "true");
   },
 };
 

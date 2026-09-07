@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { Search } from "../src/index.js";
 
 const meta = {
@@ -23,7 +24,27 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const search = canvas.getByRole("searchbox", {
+      name: "Buscar activos",
+    });
+
+    await expect(search).toHaveAccessibleName("Buscar activos");
+    await userEvent.tab();
+    await expect(search).toHaveFocus();
+
+    await userEvent.type(search, "ITSTGO75");
+    await expect(search).toHaveValue("ITSTGO75");
+
+    const clearButton = canvas.getByRole("button", {
+      name: "Limpiar búsqueda",
+    });
+    await userEvent.click(clearButton);
+    await expect(search).toHaveValue("");
+  },
+};
 
 export const VisibleLabel: Story = {
   args: {
