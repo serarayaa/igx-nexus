@@ -47,3 +47,12 @@ export {
   type AlertProps,
   type AlertTone,
 } from "./components/Alert/Alert.js";
+
+export {
+  AppHeader,
+  AppShell,
+  AppSidebar,
+  type AppHeaderProps,
+  type AppShellProps,
+  type AppSidebarProps,
+} from "./components/AppShell/AppShell.js";
