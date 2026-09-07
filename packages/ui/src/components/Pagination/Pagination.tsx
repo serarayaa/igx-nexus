@@ -93,7 +93,7 @@ export function Pagination({
               <Button
                 variant={isCurrent ? "primary" : "secondary"}
                 size="sm"
-                aria-current={isCurrent ? "page" : undefined}
+                {...(isCurrent ? { "aria-current": "page" as const } : {})}
                 aria-label={
                   isCurrent ? `Página ${item}, página actual` : `Página ${item}`
                 }
