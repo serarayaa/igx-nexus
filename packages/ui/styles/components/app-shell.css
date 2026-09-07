@@ -167,8 +167,8 @@
 }
 
 .igx-app-sidebar__nav svg {
-  inline-size: var(--igx-sizing-icon-md);
-  block-size: var(--igx-sizing-icon-md);
+  inline-size: var(--igx-size-icon-md);
+  block-size: var(--igx-size-icon-md);
   flex: none;
 }
 
