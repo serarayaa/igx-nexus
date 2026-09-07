@@ -1,0 +1,8 @@
+.igx-storybook-canvas {
+  min-block-size: 100vh;
+  box-sizing: border-box;
+  padding: var(--igx-density-section-gap);
+  background: var(--igx-semantic-color-background-canvas);
+  color: var(--igx-semantic-color-text-primary);
+  font-family: var(--igx-font-family-sans);
+}

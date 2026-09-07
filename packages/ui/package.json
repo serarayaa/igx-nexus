@@ -10,7 +10,9 @@
     "build": "npm run build:tokens && npm run build:ui",
     "typecheck:tokens": "tsc -p tsconfig.tokens.json --noEmit",
     "typecheck:ui": "tsc -p tsconfig.json --noEmit",
-    "build:ui": "tsc -p tsconfig.json"
+    "build:ui": "tsc -p tsconfig.json",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^10.6.0",
