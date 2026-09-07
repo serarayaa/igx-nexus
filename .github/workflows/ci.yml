@@ -37,6 +37,9 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Instalar Chromium para tests de UI
+        run: npx playwright install --with-deps chromium
+
       - name: Typecheck de tokens y UI
         run: npm run typecheck --workspace @igx-nexus/ui
 
@@ -45,6 +48,9 @@ jobs:
 
       - name: Build estático de Storybook
         run: npm run storybook:build --workspace @igx-nexus/ui
+
+      - name: Tests de Storybook en Chromium
+        run: npm run test:storybook --workspace @igx-nexus/ui
 
       - name: Verificar tokens generados versionados
         run: git diff --exit-code -- packages/ui/generated
