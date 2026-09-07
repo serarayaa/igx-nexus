@@ -1,6 +1,6 @@
 .igx-input-field {
   display: grid;
-  gap: var(--igx-spacing-2);
+  gap: var(--igx-density-control-gap);
   color: var(--igx-semantic-color-text-primary);
   font-family: var(--igx-font-family-sans);
 }
@@ -74,8 +74,8 @@
 }
 
 .igx-input-field--md .igx-input-field__control {
-  min-block-size: var(--igx-size-control-md);
-  padding-inline: var(--igx-spacing-4);
+  min-block-size: var(--igx-density-control-height);
+  padding-inline: var(--igx-density-control-padding-inline);
 }
 
 .igx-input-field--lg .igx-input-field__control {

@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--igx-semantic-density-comfortable-control-gap);
+  gap: var(--igx-density-control-gap);
   border-style: solid;
   border-width: var(--igx-border-width-thin);
   border-radius: var(--igx-semantic-shape-control);
@@ -58,8 +58,8 @@
 }
 
 .igx-button--md {
-  min-block-size: var(--igx-size-control-md);
-  padding-inline: var(--igx-spacing-4);
+  min-block-size: var(--igx-density-control-height);
+  padding-inline: var(--igx-density-control-padding-inline);
 }
 
 .igx-button--lg {

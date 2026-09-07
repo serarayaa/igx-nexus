@@ -1,4 +1,5 @@
 @import "../generated/index.css";
+@import "./density.css";
 @import "./accessibility.css";
 @import "./components/button.css";
 @import "./components/icon-button.css";

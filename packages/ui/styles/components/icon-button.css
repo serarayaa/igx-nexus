@@ -10,8 +10,8 @@
 }
 
 .igx-icon-button.igx-button--md {
-  inline-size: var(--igx-size-control-md);
-  min-inline-size: var(--igx-size-control-md);
+  inline-size: var(--igx-density-control-height);
+  min-inline-size: var(--igx-density-control-height);
 }
 
 .igx-icon-button.igx-button--lg {

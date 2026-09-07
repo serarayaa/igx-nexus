@@ -1,0 +1,16 @@
+:root,
+[data-density="comfortable"] {
+  --igx-density-control-height: var(--igx-semantic-density-comfortable-control-height);
+  --igx-density-control-padding-inline: var(--igx-semantic-density-comfortable-control-padding-inline);
+  --igx-density-control-gap: var(--igx-semantic-density-comfortable-control-gap);
+  --igx-density-content-gap: var(--igx-semantic-density-comfortable-content-gap);
+  --igx-density-section-gap: var(--igx-semantic-density-comfortable-section-gap);
+}
+
+[data-density="compact"] {
+  --igx-density-control-height: var(--igx-semantic-density-compact-control-height);
+  --igx-density-control-padding-inline: var(--igx-semantic-density-compact-control-padding-inline);
+  --igx-density-control-gap: var(--igx-semantic-density-compact-control-gap);
+  --igx-density-content-gap: var(--igx-semantic-density-compact-content-gap);
+  --igx-density-section-gap: var(--igx-semantic-density-compact-section-gap);
+}

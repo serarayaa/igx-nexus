@@ -1,6 +1,6 @@
 .igx-search-field {
   display: grid;
-  gap: var(--igx-spacing-2);
+  gap: var(--igx-density-control-gap);
   color: var(--igx-semantic-color-text-primary);
   font-family: var(--igx-font-family-sans);
 }
@@ -28,7 +28,7 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--igx-spacing-2);
+  gap: var(--igx-density-control-gap);
   inline-size: 100%;
   box-sizing: border-box;
   background: var(--igx-semantic-color-surface-base);
@@ -148,7 +148,8 @@
 }
 
 .igx-search-field--md .igx-search-field__control-wrap {
-  min-block-size: var(--igx-size-control-md);
+  min-block-size: var(--igx-density-control-height);
+  padding-inline-start: var(--igx-density-control-padding-inline);
 }
 
 .igx-search-field--md .igx-search-field__search-icon {
