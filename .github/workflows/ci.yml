@@ -43,6 +43,9 @@ jobs:
       - name: Build de tokens y UI
         run: npm run build --workspace @igx-nexus/ui
 
+      - name: Build estático de Storybook
+        run: npm run storybook:build --workspace @igx-nexus/ui
+
       - name: Verificar tokens generados versionados
         run: git diff --exit-code -- packages/ui/generated
 
