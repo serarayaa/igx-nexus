@@ -1,0 +1,16 @@
+{
+  "name": "@igx-nexus/ui",
+  "version": "0.1.0-dev",
+  "private": true,
+  "description": "Sistema de diseño compartido de IGX NEXUS",
+  "type": "module",
+  "scripts": {
+    "build:tokens": "tsc -p tsconfig.tokens.json && node dist-tokens/scripts/build-tokens.js",
+    "typecheck": "tsc -p tsconfig.tokens.json --noEmit",
+    "build": "npm run build:tokens"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "typescript": "^7.0.2"
+  }
+}

@@ -56,3 +56,6 @@ config/config_db.php
 .tmp/
 tmp/
 *.tmp
+
+# Build intermedio del sistema de diseño IGX
+packages/ui/dist-tokens/
