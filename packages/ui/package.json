@@ -12,5 +12,12 @@
   "devDependencies": {
     "@types/node": "^24.13.3",
     "typescript": "^7.0.2"
-  }
+  },
+  "exports": {
+    "./styles.css": "./styles/index.css"
+  },
+  "files": [
+    "generated",
+    "styles"
+  ]
 }

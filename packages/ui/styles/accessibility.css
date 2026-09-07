@@ -1,0 +1,54 @@
+/*
+ * Accesibilidad runtime de IGX NEXUS.
+ *
+ * Esta capa adapta los tokens semánticos a preferencias y modos
+ * controlados por el sistema operativo sin modificar los tokens fuente.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --igx-semantic-motion-feedback-duration:
+      var(--igx-semantic-motion-reduced-duration);
+    --igx-semantic-motion-transition-duration:
+      var(--igx-semantic-motion-reduced-duration);
+    --igx-semantic-motion-spatial-duration:
+      var(--igx-semantic-motion-reduced-duration);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --igx-semantic-color-background-canvas: Canvas;
+    --igx-semantic-color-background-subtle: Canvas;
+    --igx-semantic-color-background-inverse: Canvas;
+
+    --igx-semantic-color-surface-base: Canvas;
+    --igx-semantic-color-surface-muted: Canvas;
+    --igx-semantic-color-surface-elevated: Canvas;
+    --igx-semantic-color-surface-inverse: Canvas;
+
+    --igx-semantic-color-text-primary: CanvasText;
+    --igx-semantic-color-text-secondary: CanvasText;
+    --igx-semantic-color-text-disabled: GrayText;
+    --igx-semantic-color-text-inverse: CanvasText;
+    --igx-semantic-color-text-link: LinkText;
+
+    --igx-semantic-color-border-subtle: GrayText;
+    --igx-semantic-color-border-default: CanvasText;
+    --igx-semantic-color-border-control: CanvasText;
+    --igx-semantic-color-border-strong: CanvasText;
+
+    --igx-semantic-color-action-primary-background: Highlight;
+    --igx-semantic-color-action-primary-foreground: HighlightText;
+    --igx-semantic-color-action-primary-hover: Highlight;
+
+    --igx-semantic-color-action-secondary-background: ButtonFace;
+    --igx-semantic-color-action-secondary-foreground: ButtonText;
+    --igx-semantic-color-action-secondary-border: ButtonText;
+
+    --igx-semantic-color-action-disabled-background: ButtonFace;
+    --igx-semantic-color-action-disabled-foreground: GrayText;
+
+    --igx-semantic-color-focus-ring: Highlight;
+  }
+}
