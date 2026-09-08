@@ -8,16 +8,19 @@ La demo no necesita contener todas las capacidades futuras del producto. Debe pr
 
 ## Estado actual
 
-Completado:
+Completado e integrado:
 
 - CMDB-001 ✅ Inicio / Arquitectura / Alcance
 - CMDB-002 ✅ Repositorio y Entorno Local
 - CMDB-003 ✅ Stack de Desarrollo Docker
+- CMDB-004 ✅ Núcleo GLPI
+
+En desarrollo:
+
+- CMDB-005 🟡 Sistema de Diseño IGX
 
 Pendiente para la demo:
 
-- CMDB-004 ⬜ Núcleo GLPI
-- CMDB-005 ⬜ Sistema de Diseño IGX
 - CMDB-006 ⬜ Panel Principal
 - CMDB-007 ⬜ Explorador de Activos
 - CMDB-008 ⬜ Asset 360°
@@ -27,9 +30,28 @@ Pendiente para la demo:
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
-Por conteo de tickets, el avance es 3 de 13: aproximadamente **23% completado** y **77% pendiente**.
+Por conteo formal de tickets **integrados**, el avance es 4 de 13: aproximadamente **30,8% completado** y **69,2% pendiente de integración**.
 
-Este porcentaje no representa horas de trabajo lineales: la infraestructura base ya está operativa, por lo que varios tickets posteriores pueden construirse sobre un entorno validado.
+CMDB-005 posee un avance técnico importante en su rama de trabajo —tokens, Light/Dark, densidad, accesibilidad runtime, Storybook, componentes base, AppShell, PageLayout, DataTable y QA automatizado— pero **no se contabiliza como ticket completado hasta que su PR sea revisado y fusionado manualmente**.
+
+Al integrar CMDB-005, el avance formal pasará a 5 de 13: aproximadamente **38,5%**.
+
+Este porcentaje no representa horas de trabajo lineales: la infraestructura base y el sistema de diseño reducen trabajo repetido de los tickets funcionales posteriores.
+
+## Estado del baseline visual para la demo
+
+CMDB-005 está preparando un contrato reusable para que CMDB-006+ no deban redefinir cada pantalla:
+
+- design tokens Primitive → Semantic y foundations de data visualization;
+- Light Theme y Dark Theme;
+- densidad Comfortable/Compact;
+- `forced-colors` y `prefers-reduced-motion`;
+- biblioteca `@igx-nexus/ui`;
+- catálogo Storybook y tests en Chromium;
+- AppShell y primitives de layout de página;
+- DataTable semántico, sorting, selección, paginación y feedback states.
+
+La validación automática se complementará con smoke tests manuales de accesibilidad antes del cierre de CMDB-005.
 
 ## Criterios mínimos para presentar la demo
 
