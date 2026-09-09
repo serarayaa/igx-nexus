@@ -46,6 +46,7 @@ export interface LabelOutputRenderer {
   render(model: LabelModel): string;
 }
 
+/** Contrato futuro: Zebra/Brother/EPL/ZPL/browser no deben contaminar el core. */
 export interface PrintAdapter {
   readonly id: string;
   readonly label: string;
@@ -95,6 +96,7 @@ export function buildLabelModel(
   if (modulePixels < 2) throw new Error(`Label profile ${profile.label} is too small for a robust QR at ${dpi} DPI.`);
   const moduleMm = modulePixels / dpi * MM_PER_INCH;
   const qrPhysicalMm = moduleMm * totalQrModules;
+  const nameLimit = profile.widthMm <= 30 ? 14 : profile.widthMm <= 40 ? 22 : 30;
 
   return {
     profile,
@@ -110,20 +112,15 @@ export function buildLabelModel(
     pixelHeight: mmToPixels(profile.heightMm, dpi),
     visible: {
       branding: options.branding,
-      nexusId: options.nexusId ? safeText(asset.id, 28) : null,
-      name: options.name ? safeText(asset.name, 34) : null,
-      assetTag: options.assetTag ? safeText(asset.assetTag, 28) : null,
+      nexusId: options.nexusId ? safeText(asset.id, 20) : null,
+      name: options.name ? safeText(asset.name, nameLimit) : null,
+      assetTag: options.assetTag ? safeText(asset.assetTag, 20) : null,
     },
   };
 }
 
 function escapeXml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&apos;");
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&apos;");
 }
 
 function n(value: number): string {
@@ -137,7 +134,6 @@ export function renderLabelSvg(model: LabelModel): string {
   const matrixX = qrX + quietZoneModules * moduleMm;
   const matrixY = qrY + quietZoneModules * moduleMm;
   const textX = qrX + qrPhysicalMm + Math.max(1.2, profile.widthMm * 0.025);
-  const textWidth = Math.max(1, profile.widthMm - textX - 1);
   const baseFont = Math.max(1.4, Math.min(2.5, profile.heightMm * 0.085));
   const smallFont = Math.max(1.15, baseFont * 0.72);
   const lines: string[] = [];
@@ -157,9 +153,7 @@ export function renderLabelSvg(model: LabelModel): string {
     lines.push(`<text x="${n(textX)}" y="${n(y)}" font-size="${n(smallFont)}">${escapeXml(model.visible.name)}</text>`);
     y += baseFont;
   }
-  if (model.visible.assetTag && y < profile.heightMm - baseFont * 1.2) {
-    lines.push(`<text x="${n(textX)}" y="${n(y)}" font-size="${n(smallFont)}">Tag: ${escapeXml(model.visible.assetTag)}</text>`);
-  }
+  if (model.visible.assetTag && y < profile.heightMm - baseFont * 1.2) lines.push(`<text x="${n(textX)}" y="${n(y)}" font-size="${n(smallFont)}">Tag: ${escapeXml(model.visible.assetTag)}</text>`);
 
   const qrRects: string[] = [];
   for (let row = 0; row < qr.size; row += 1) {
@@ -170,18 +164,15 @@ export function renderLabelSvg(model: LabelModel): string {
   }
 
   const footerY = profile.heightMm - Math.max(1.2, smallFont * 0.45);
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${profile.widthMm}mm" height="${profile.heightMm}mm" viewBox="0 0 ${profile.widthMm} ${profile.heightMm}" preserveAspectRatio="xMidYMid meet" data-label-profile="${profile.id}" data-dpi="${model.dpi}" data-quiet-zone="${quietZoneModules}" data-module-px="${model.modulePixels}" role="img" aria-label="Etiqueta IGX NEXUS ${escapeXml(model.visible.nexusId ?? "activo")}">
+  const accessibleName = `Etiqueta IGX NEXUS ${model.visible.nexusId ?? "activo"}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${profile.widthMm}mm" height="${profile.heightMm}mm" viewBox="0 0 ${profile.widthMm} ${profile.heightMm}" preserveAspectRatio="xMidYMid meet" data-label-profile="${profile.id}" data-dpi="${model.dpi}" data-quiet-zone="${quietZoneModules}" data-module-px="${model.modulePixels}" role="img" aria-label="${escapeXml(accessibleName)}">
+  <title>${escapeXml(accessibleName)}</title>
   <rect width="${profile.widthMm}" height="${profile.heightMm}" fill="#fff"/>
   <rect x="${n(qrX)}" y="${n(qrY)}" width="${n(qrPhysicalMm)}" height="${n(qrPhysicalMm)}" fill="#fff"/>
   <g fill="#000" shape-rendering="crispEdges">${qrRects.join("")}</g>
-  <g fill="#000" font-family="Arial, Helvetica, sans-serif" textLength="${n(textWidth)}" lengthAdjust="spacingAndGlyphs">${lines.join("")}</g>
+  <g fill="#000" font-family="Arial, Helvetica, sans-serif">${lines.join("")}</g>
   <text x="${n(textX)}" y="${n(footerY)}" fill="#000" font-family="Arial, Helvetica, sans-serif" font-size="${n(smallFont)}">Activo tecnológico</text>
 </svg>`;
 }
 
-export const svgLabelRenderer: LabelOutputRenderer = {
-  kind: "svg",
-  mimeType: "image/svg+xml",
-  extension: "svg",
-  render: renderLabelSvg,
-};
+export const svgLabelRenderer: LabelOutputRenderer = { kind: "svg", mimeType: "image/svg+xml", extension: "svg", render: renderLabelSvg };
