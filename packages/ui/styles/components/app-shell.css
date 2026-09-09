@@ -194,12 +194,13 @@
     transition:
       transform var(--igx-semantic-motion-spatial-duration)
         var(--igx-semantic-motion-spatial-easing),
-      visibility var(--igx-semantic-motion-spatial-duration);
+      visibility 0s linear var(--igx-semantic-motion-spatial-duration);
   }
 
   .igx-app-shell__navigation[data-open="true"] {
     visibility: visible;
     transform: translateX(0);
+    transition-delay: 0s;
   }
 
   .igx-app-shell__scrim {
