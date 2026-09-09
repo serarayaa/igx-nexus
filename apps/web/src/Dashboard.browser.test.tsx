@@ -73,7 +73,7 @@ it("navega con teclado y libera el fondo al pasar del drawer móvil a escritorio
   await page.viewport(390, 844); render(<Dashboard />); await ready();
   const open = screen.getByRole("button", { name: "Abrir navegación" });
   await userEvent.click(open);
-  const close = screen.getByRole("button", { name: "Cerrar navegación" });
+  const close = await screen.findByRole("button", { name: "Cerrar navegación" });
   await waitFor(() => expect(document.activeElement).toBe(close));
   await userEvent.keyboard("{Escape}");
   await waitFor(() => expect(document.activeElement).toBe(open));

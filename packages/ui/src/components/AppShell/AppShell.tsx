@@ -107,6 +107,9 @@ export function AppShell({
   };
 
   useEffect(() => {
+    const wasNavigationOpen = wasNavigationOpenRef.current;
+    wasNavigationOpenRef.current = isNavigationOpen;
+
     const backgroundElements = [
       skipLinkRef.current,
       headerRowRef.current,
@@ -115,10 +118,16 @@ export function AppShell({
     const previousBodyOverflow = document.body.style.overflow;
 
     if (isNavigationOpen) {
+      // Sacar el foco del trigger antes de volver inerte su contenedor evita
+      // que el navegador lo descarte hacia <body>.
+      focusFirstElement(navigationRef.current);
+
       backgroundElements.forEach((element) => {
         element.setAttribute("inert", "");
       });
       document.body.style.overflow = "hidden";
+    } else if (wasNavigationOpen) {
+      focusButton(openTriggerRef.current);
     }
 
     return () => {
@@ -128,33 +137,6 @@ export function AppShell({
 
       if (isNavigationOpen) {
         document.body.style.overflow = previousBodyOverflow;
-      }
-    };
-  }, [isNavigationOpen]);
-
-  useEffect(() => {
-    const wasNavigationOpen = wasNavigationOpenRef.current;
-    wasNavigationOpenRef.current = isNavigationOpen;
-
-    let animationFrame: number | undefined;
-
-    if (isNavigationOpen) {
-      animationFrame = window.requestAnimationFrame(() => {
-        // Esperar el primer paint evita competir con el focus del trigger
-        // mientras React Aria termina el evento press y el fondo se vuelve inert.
-        animationFrame = window.requestAnimationFrame(() => {
-          focusFirstElement(navigationRef.current);
-        });
-      });
-    } else if (wasNavigationOpen) {
-      animationFrame = window.requestAnimationFrame(() => {
-        focusButton(openTriggerRef.current);
-      });
-    }
-
-    return () => {
-      if (animationFrame !== undefined) {
-        window.cancelAnimationFrame(animationFrame);
       }
     };
   }, [isNavigationOpen]);
