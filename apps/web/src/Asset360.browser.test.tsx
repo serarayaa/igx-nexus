@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { page, userEvent } from "vitest/browser";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import axe from "axe-core";
 import { App } from "./App";
 import { Asset360 } from "./Asset360";
@@ -25,8 +25,9 @@ it("abre un deep link y muestra la identidad y contexto del activo", async () =>
   await assetHeading();
 
   expect(screen.getByText("DEMO-0002")).toBeTruthy();
-  expect(screen.getByText("Responsable Demo 2")).toBeTruthy();
-  expect(screen.getByText("Oficina Demo Centro")).toBeTruthy();
+  const assignment = screen.getByRole("region", { name: "Asignación y ubicación" });
+  expect(within(assignment).getByText("Responsable Demo 2")).toBeTruthy();
+  expect(within(assignment).getByText("Oficina Demo Centro")).toBeTruthy();
   expect(screen.getByText("Fabricante Demo A")).toBeTruthy();
   expect(screen.getByText("Modelo Demo Escritorio 2")).toBeTruthy();
   expect(screen.getByText("SYNTH-SN-000002")).toBeTruthy();
