@@ -57,7 +57,7 @@ El primer hito es una demostración local pulida que permita validar el producto
 
 La eventual adopción por Innergex Canadá u otras entidades se considera una oportunidad futura y no debe condicionar el alcance de la primera implementación chilena.
 
-Avance formal integrado: **9/13 tickets (~69,2%)**. CMDB-009 — Motor QR y Etiquetado está integrado mediante PR #23 (`5b0b0a9`); issue #22 cerrado. El siguiente ticket es CMDB-010 — Grafo de Relaciones.
+Avance de la rama CMDB-010: **10/13 tickets (~76,9%)** listos para revisión. El Grafo de Relaciones implementa el primer Technology Map visual y accesible con datos sintéticos. El siguiente ticket, aún no iniciado, es CMDB-011 — CMDB Health.
 
 ## Flujo de desarrollo
 
@@ -90,11 +90,12 @@ Rutas principales de demostración:
 /#assets                         Explorador de activos
 /#assets/DEMO-0002               Asset 360 de un activo sintético
 /#assets/DEMO-0002/label         Diseñador QR/etiqueta
+/#assets/DEMO-0002/relations     Grafo de Relaciones
 /#q/<demo-locator>               Simulador interno del resolver QR
 ```
 
 El QR físico de la demo no codifica estas rutas internas: utiliza una URL `.invalid` con locator opaco. El diseñador permite perfiles físicos, 203/300 DPI y exportación SVG real; no simula PNG/PDF ni impresoras que todavía no existen.
 
-Ver [instrucciones de Web](apps/web/README.md), [Dashboard](docs/dashboard.md), [Asset Explorer](docs/asset-explorer.md), [Asset 360](docs/asset-360.md), [Motor QR y Etiquetado](docs/qr-label-engine.md), [ADR-0006](docs/architecture/adr-0006-asset-360-routing.md) y [ADR-0007](docs/architecture/adr-0007-qr-locator-label-engine.md).
+Ver [instrucciones de Web](apps/web/README.md), [Dashboard](docs/dashboard.md), [Asset Explorer](docs/asset-explorer.md), [Asset 360](docs/asset-360.md), [Motor QR y Etiquetado](docs/qr-label-engine.md), [Grafo de Relaciones](docs/relationship-graph.md) y [ADR-0008](docs/architecture/adr-0008-relationship-graph.md).
 
 Validación completa: `npm run typecheck`, `npm run build`, `npm test` y `npm run storybook:build --workspace @igx-nexus/ui`. Las pruebas de navegador requieren `npx playwright install --with-deps chromium`.

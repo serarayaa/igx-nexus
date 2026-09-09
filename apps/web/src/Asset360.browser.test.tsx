@@ -42,6 +42,7 @@ it("abre un deep link y muestra identidad, contexto y señales operativas", asyn
   expect(within(source).getByText("Dataset sintético / provider demo")).toBeTruthy();
 
   expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeTruthy();
+  expect(screen.getByRole("link", { name: "Abrir grafo de relaciones" }).getAttribute("href")).toBe("#assets/DEMO-0002/relations");
   await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Desktop Demo 0002", level: 1 })));
 });
 

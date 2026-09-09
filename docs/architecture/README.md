@@ -20,5 +20,6 @@ Principios fundamentales:
 - [ADR-0005 — Explorador de activos sobre inventario compartido](adr-0005-asset-explorer.md)
 - [ADR-0006 — Asset 360 con rutas hash por identidad NEXUS](adr-0006-asset-360-routing.md)
 - [ADR-0007 — Locator QR opaco y motor de etiquetas desacoplado](adr-0007-qr-locator-label-engine.md)
+- [ADR-0008 — Modelo y visualización del grafo de relaciones](adr-0008-relationship-graph.md)
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
