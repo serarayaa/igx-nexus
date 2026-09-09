@@ -76,3 +76,14 @@ La eventual adopción por Innergex Canadá u otras entidades se considera una op
 
 **IGX NEXUS — The Technology Map**  
 Inteligencia interna de activos tecnológicos para Innergex Chile.
+
+## Ejecutar el panel de demostración
+
+Con la versión de Node indicada en `.nvmrc`, ejecutar `npm ci` y `npm run dev`
+desde la raíz. Abrir `http://127.0.0.1:3000`. El panel usa datos sintéticos y no
+requiere conectarse a GLPI. Ver [instrucciones de Web](apps/web/README.md),
+[definiciones de métricas](docs/dashboard.md) y [decisión de arquitectura](docs/architecture/adr-0004-dashboard-demo.md).
+
+Validación completa: `npm run typecheck`, `npm run build`, `npm test` y
+`npm run storybook:build --workspace @igx-nexus/ui`. Las pruebas de navegador
+requieren `npx playwright install --with-deps chromium`.

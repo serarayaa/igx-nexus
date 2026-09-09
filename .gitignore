@@ -62,3 +62,8 @@ packages/ui/dist-tokens/
 
 # Build estático de Storybook
 packages/ui/storybook-static/
+
+# Artefactos de pruebas Vitest Browser
+
+apps/web/.vitest-attachments/
+apps/web/src/__screenshots__/

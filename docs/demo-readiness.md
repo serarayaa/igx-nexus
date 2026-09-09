@@ -14,10 +14,7 @@ Completado e integrado:
 - CMDB-002 ✅ Repositorio y Entorno Local
 - CMDB-003 ✅ Stack de Desarrollo Docker
 - CMDB-004 ✅ Núcleo GLPI
-
-En desarrollo:
-
-- CMDB-005 🟡 Sistema de Diseño IGX
+- CMDB-005 ✅ Sistema de Diseño IGX — PR #16
 
 Pendiente para la demo:
 
@@ -30,17 +27,15 @@ Pendiente para la demo:
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
-Por conteo formal de tickets **integrados**, el avance es 4 de 13: aproximadamente **30,8% completado** y **69,2% pendiente de integración**.
+Por conteo formal de tickets **integrados**, el avance es 5 de 13: aproximadamente **38,5% completado** y **61,5% pendiente de integración**.
 
-CMDB-005 posee un avance técnico importante en su rama de trabajo —tokens, Light/Dark, densidad, accesibilidad runtime, Storybook, componentes base, AppShell, PageLayout, DataTable y QA automatizado— pero **no se contabiliza como ticket completado hasta que su PR sea revisado y fusionado manualmente**.
-
-Al integrar CMDB-005, el avance formal pasará a 5 de 13: aproximadamente **38,5%**.
+CMDB-005 quedó integrado mediante PR #16. CMDB-006 permanece pendiente de integración hasta el merge manual de su PR.
 
 Este porcentaje no representa horas de trabajo lineales: la infraestructura base y el sistema de diseño reducen trabajo repetido de los tickets funcionales posteriores.
 
 ## Estado del baseline visual para la demo
 
-CMDB-005 está preparando un contrato reusable para que CMDB-006+ no deban redefinir cada pantalla:
+CMDB-005 establece un contrato reusable para que CMDB-006+ no deban redefinir cada pantalla:
 
 - design tokens Primitive → Semantic y foundations de data visualization;
 - Light Theme y Dark Theme;
@@ -51,7 +46,7 @@ CMDB-005 está preparando un contrato reusable para que CMDB-006+ no deban redef
 - AppShell y primitives de layout de página;
 - DataTable semántico, sorting, selección, paginación y feedback states.
 
-La validación automática se complementará con smoke tests manuales de accesibilidad antes del cierre de CMDB-005.
+La validación automática se complementa con smoke tests manuales de accesibilidad para las pantallas funcionales.
 
 ## Criterios mínimos para presentar la demo
 

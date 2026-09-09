@@ -9,8 +9,10 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "echo \"Stack local disponible mediante: docker compose up -d\"",
-    "test": "echo \"El runner de pruebas se implementará junto con el stack de aplicación\""
+    "dev": "npm run build --workspace @igx-nexus/ui && npm run dev --workspace @igx-nexus/web",
+    "typecheck": "npm run typecheck --workspace @igx-nexus/ui && npm run build:ui --workspace @igx-nexus/ui && npm run typecheck --workspace @igx-nexus/web",
+    "build": "npm run build --workspace @igx-nexus/ui && npm run build --workspace @igx-nexus/web",
+    "test": "npm run build --workspace @igx-nexus/ui && npm run test:storybook --workspace @igx-nexus/ui && npm run test --workspace @igx-nexus/web"
   },
   "allowScripts": {
     "esbuild@0.28.2": true

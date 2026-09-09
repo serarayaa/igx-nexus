@@ -14,11 +14,7 @@
   user-select: none;
   white-space: nowrap;
   transition:
-    background-color var(--igx-semantic-motion-feedback-duration)
-      var(--igx-semantic-motion-feedback-easing),
     border-color var(--igx-semantic-motion-feedback-duration)
-      var(--igx-semantic-motion-feedback-easing),
-    color var(--igx-semantic-motion-feedback-duration)
       var(--igx-semantic-motion-feedback-easing);
 }
 
