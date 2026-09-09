@@ -14,7 +14,6 @@ Completado e integrado:
 - CMDB-002 ✅ Repositorio y Entorno Local
 - CMDB-003 ✅ Stack de Desarrollo Docker
 - CMDB-004 ✅ Núcleo GLPI
-
 - CMDB-005 ✅ Sistema de Diseño IGX — PR #16
 
 Pendiente para la demo:
@@ -47,7 +46,7 @@ CMDB-005 establece un contrato reusable para que CMDB-006+ no deban redefinir ca
 - AppShell y primitives de layout de página;
 - DataTable semántico, sorting, selección, paginación y feedback states.
 
-La validación automática se complementará con smoke tests manuales de accesibilidad antes del cierre de CMDB-005.
+La validación automática se complementa con smoke tests manuales de accesibilidad para las pantallas funcionales.
 
 ## Criterios mínimos para presentar la demo
 

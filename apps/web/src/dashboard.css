@@ -37,3 +37,5 @@ a:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outli
 @media (max-width: 767px) { .nexus-two-column, .nexus-future { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 479px) { .nexus-metrics { grid-template-columns: minmax(0, 1fr); } }
 @media (forced-colors: active) { .nexus-bar-track { border: 1px solid CanvasText; } .nexus-bar { background: Highlight; forced-color-adjust: none; } .nexus-nav-link[aria-current] { outline: 2px solid Highlight; } }
+/* El logo oficial contiene texto navy: conservar una superficie clara en Dark. */
+[data-theme="dark"] .nexus-brand img { background: var(--igx-semantic-color-surface-inverse); }
