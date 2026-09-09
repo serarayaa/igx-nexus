@@ -1,6 +1,6 @@
 # ADR-0007 — Locator QR opaco y motor de etiquetas desacoplado
 
-Estado: Propuesto en PR #23 para integración con CMDB-009 (issue #22), pendiente de merge manual.
+Estado: Aceptado e integrado mediante PR #23 (`5b0b0a9`) para CMDB-009; issue #22 cerrado.
 
 ## Contexto
 
