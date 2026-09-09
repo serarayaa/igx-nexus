@@ -1,6 +1,6 @@
 # ADR-0005 — Explorador de activos sobre inventario compartido
 
-Estado: Propuesto para integración con CMDB-007 (issue #18).
+Estado: Aceptado e integrado con CMDB-007 mediante PR #19 (`2f7e61f`).
 
 ## Contexto
 
@@ -55,7 +55,9 @@ nulas, inválidas o futuras son no verificables. No representa sincronización r
 
 La búsqueda y filtros se reinician al salir del Explorer. No se persisten ni se
 codifican en la URL. Theme y density se conservan mientras el shell esté montado.
-No hay clic engañoso a una ficha todavía inexistente: Asset 360 corresponde a CMDB-008.
+Durante CMDB-007 no se añadió un clic engañoso a una ficha todavía inexistente; esa
+limitación fue resuelta posteriormente por CMDB-008 mediante un enlace semántico al
+Asset 360 y una ruta estable de identidad documentada en ADR-0006.
 
 El provider mantiene el límite de integración Web → NEXUS API → adaptadores → fuentes.
 Antes de conectar inventario real, NEXUS API deberá definir validación, autorización,
@@ -69,7 +71,15 @@ pruebas Browser de estados, recuperación, cancelación, navegación, teclado y 
 themes/densidades/viewports. Se ejecuta además la suite del Dashboard y Storybook.
 El registro de resultados y límites de QA vive en [Asset Explorer](../asset-explorer.md).
 
+## Actualización posterior — CMDB-008
+
+CMDB-008 consume la reconsideración prevista por este ADR y mantiene routing nativo
+por fragmentos con `#assets/<nexusAssetId>`. La decisión y sus criterios de migración
+futura viven en [ADR-0006](adr-0006-asset-360-routing.md). ADR-0005 se conserva como
+registro histórico de las decisiones de CMDB-007.
+
 ## Fuera de alcance
 
 Asset 360, QR, grafo, CMDB Health completo, API real, autenticación productiva,
-integraciones corporativas, discovery, Service Desk y despliegues productivos.
+integraciones corporativas, discovery, Service Desk y despliegues productivos eran
+fuera de alcance de CMDB-007. Asset 360 se implementa en el ticket posterior CMDB-008.

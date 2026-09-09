@@ -38,7 +38,13 @@ jobs:
         run: npm ci
 
       - name: Instalar Chromium para tests de UI
-        run: npx playwright install --with-deps chromium
+        run: |
+          # Chromium de Playwright no depende del repositorio Google Chrome que trae el runner.
+          # Los runners pueden declararlo como .list o .sources; eliminar sólo los archivos
+          # que referencian ese repositorio evita que una desincronización externa bloquee apt.
+          grep -rlZ 'dl.google.com/linux/chrome-stable/deb' /etc/apt/sources.list.d 2>/dev/null \
+            | xargs -0 -r sudo rm -f
+          npx playwright install --with-deps chromium
 
       - name: Typecheck de tokens y UI
         run: npm run typecheck --workspace @igx-nexus/ui

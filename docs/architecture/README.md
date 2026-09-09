@@ -17,5 +17,6 @@ Principios fundamentales:
 - [ADR-0003 — Sistema de Diseño de IGX NEXUS](adr-0003-ui-design-system.md)
 - [ADR-0004 — Panel principal con proveedor sintético](adr-0004-dashboard-demo.md)
 - [ADR-0005 — Explorador de activos sobre inventario compartido](adr-0005-asset-explorer.md)
+- [ADR-0006 — Asset 360 con rutas hash por identidad NEXUS](adr-0006-asset-360-routing.md)
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
