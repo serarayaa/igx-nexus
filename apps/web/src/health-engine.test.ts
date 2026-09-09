@@ -164,3 +164,23 @@ describe("Matemática, agregación y determinismo", () => {
   });
   it.each([["2024-02-29",true],["2025-02-29",false],["2026-13-01",false],["2026-01-32",false],["2026-01-01T00:00:00Z",true],["garbage",false],["2026-01-01T00:00:00",false]] as const)("valida calendario %s", (date,valid) => { expect(validHealthDate(date)).toBe(valid); });
 });
+
+it("score cero es alcanzable con evidencia inválida y todos los campos requeridos ausentes", () => {
+  const zero = result({ id: "", name: "", hostname: null, serial: null, assetTag: null, manufacturer: null, model: null, location: null, owner: null,
+    lastSeen: "invalid", warrantyEnds: "invalid", lifecycle: "not-normalized" as Asset["lifecycle"] });
+  expect(zero.score).toBe(0);
+  expect(zero.findings).toContainEqual(expect.objectContaining({ code: "lifecycle_invalid" }));
+});
+
+it("calendario rechaza 24 horas y timestamps sin zona", () => {
+  expect(validHealthDate("2026-09-09T24:00:00Z")).toBe(false);
+  expect(validHealthDate("2026-09-09T12:00:00")).toBe(false);
+});
+
+it("la evaluación no muta inventario ni relaciones", () => {
+  const inventory = Object.freeze({ asOf, assets: Object.freeze([Object.freeze({ ...asset }), Object.freeze({ ...peer })]) });
+  const rel = Object.freeze({ asOf, relationships: Object.freeze([Object.freeze({ ...relationship })]) });
+  const before = JSON.stringify([inventory,rel]);
+  buildCmdbHealth(inventory,rel);
+  expect(JSON.stringify([inventory,rel])).toBe(before);
+});

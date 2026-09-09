@@ -1,5 +1,5 @@
 import type { Asset } from "./asset-model";
-import type { CheckStatus, HealthDimension, HealthFinding, HealthFindingCode, HealthSeverity, HealthState } from "./health-model";
+import type { CheckStatus, HealthCheck, HealthDimension, HealthFinding, HealthFindingCode, HealthSeverity, HealthState } from "./health-model";
 
 export const dimensionLabels: Record<HealthDimension, string> = {
   completeness: "Completitud", freshness: "Frescura", identity: "Identidad", relationships: "Integridad de relaciones", consistency: "Consistencia",
@@ -41,5 +41,15 @@ export function findingTitle(finding: HealthFinding): string {
   return `${findingCatalog[finding.code].title}${finding.field ? ` · ${fieldLabels[finding.field] ?? finding.field}` : ""}`;
 }
 // Floor displayed scores so rounding never suggests a band threshold has been reached prematurely.
-export const scoreLabel = (score: number | null) => score === null ? "Sin evaluación" : `${Math.floor(Math.min(100, score) + 1e-9)} / 100`;
-export const coverageLabel = (coverage: number | null) => coverage === null ? "No aplicable" : `${Math.floor(coverage + 1e-9)} %`;
+export const scoreLabel = (score: number | null) => score === null ? "Sin evaluación" : `${Math.floor(Math.min(100, score))} / 100`;
+export const coverageLabel = (coverage: number | null) => coverage === null ? "No aplicable" : `${Math.floor(Math.min(100, coverage))} %`;
+
+const checkNames = new Map<string, string>([...Object.entries(fieldLabels), ["no-relations", "Sin relaciones registradas"], ["snapshot", "Snapshot de relaciones"]]);
+const relationshipCheckNames = new Map<string, string>([["structure", "Estructura e identidad"], ["references", "Referencias"], ["observation", "Observación"], ["status", "Estado de origen"]]);
+export function healthCheckLabel(check: HealthCheck): string {
+  if (check.finding) return findingTitle(check.finding);
+  const label = checkNames.get(check.key);
+  if (label) return label;
+  const separator = check.key.lastIndexOf(":");
+  return `Relación ${check.key.slice(0, separator)} · ${relationshipCheckNames.get(check.key.slice(separator + 1)) ?? "Comprobación"}`;
+}

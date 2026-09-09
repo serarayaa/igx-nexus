@@ -40,7 +40,7 @@ try {
   await page.getByRole("button", { name: /Abrir navegación/ }).click();
   await page.getByRole("link", { name: "CMDB Health", exact: true }).first().click();
   await page.getByRole("heading", { name: "Score de registros CI" }).waitFor();
-  assert(await page.getByRole("link", { name: "CMDB Health", exact: true }).getAttribute("aria-current") === "page");
+  assert(await page.getByRole("link", { name: "CMDB Health", exact: true, includeHidden: true }).getAttribute("aria-current") === "page");
   checks.push("mobile navigation drawer → Health");
   await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
   await page.getByRole("combobox", { name: "Estado Health", exact: true }).focus();

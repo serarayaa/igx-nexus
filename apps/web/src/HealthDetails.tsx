@@ -6,7 +6,7 @@ import { demoRelationshipInventoryProvider } from "./demo-relationship-provider"
 import type { AssetHealth, HealthFinding } from "./health-model";
 import { healthWeights } from "./health-model";
 import { dimensionLabels, healthLabels, healthTones, findingTitle, findingCatalog, scoreLabel, coverageLabel,
-  severityLabels, severityTones, checkLabels, fieldLabels } from "./health-presentation";
+  severityLabels, severityTones, checkLabels, healthCheckLabel } from "./health-presentation";
 import { useHealthReport } from "./use-health-report";
 import "./cmdb-health.css";
 
@@ -30,7 +30,7 @@ export function HealthDetails({ health }: { health: AssetHealth }) {
       {health.dimensions.map(d => <section key={d.dimension}>
         <h3>{dimensionLabels[d.dimension]} · peso base {healthWeights[d.dimension]} %</h3>
         <ul>{d.checks.map((c, index) => <li key={`${c.key}-${index}`}>
-          {c.finding ? findingTitle(c.finding) : fieldLabels[c.key as keyof typeof fieldLabels] ?? (c.key === "no-relations" ? "Sin relaciones registradas" : c.key)}: {checkLabels[c.status]}{c.value !== null ? ` · ${scoreLabel(c.value)}` : ""}
+          {healthCheckLabel(c)}: {checkLabels[c.status]}{c.value !== null ? ` · ${scoreLabel(c.value)}` : ""}
         </li>)}</ul>
       </section>)}
     </details>

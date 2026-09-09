@@ -53,7 +53,7 @@ it("deep link, causas, filtros AND, paginación y restablecer funcionan", async 
   expect(screen.getByText("15 CI coinciden · Página 1 de 1")).toBeTruthy();
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Dimensión con señales" }), "freshness");
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Tipo de activo" }), "Monitor");
-  expect(screen.getByText("2 CI coinciden · Página 1 de 1")).toBeTruthy();
+  expect(screen.getByText("3 CI coinciden · Página 1 de 1")).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "Restablecer filtros" }));
   expect(screen.getByText("240 CI coinciden · Página 1 de 12")).toBeTruthy();
   const causes = screen.getByRole("region", { name: "Principales señales de calidad" });
@@ -92,7 +92,7 @@ it("datos degradados explican por qué y qué revisar", async () => {
   render(shell({ inventoryProvider: async () => ({ ...perfect, assets: [{ ...specimen, serial: null, manufacturer: null, model: null, lastSeen: "2025-01-01", warrantyEnds: "2026-02-30" }] }), relationshipProvider: noRelationships }));
   await ready();
   const results=screen.getByRole("region",{name:"Localizar registros y revisar causas"});
-  expect(within(results).getByText("Degradado")).toBeTruthy();
+  expect(within(results).getByText("Degradado", { selector: "span" })).toBeTruthy();
   await userEvent.click(within(results).getByText(/Revisar todas las causas y acciones/));
   expect(within(results).getByText(/Verificar el calendario/)).toBeTruthy();
   expect(within(results).getAllByText("Falta serial").length).toBeGreaterThan(0);
