@@ -1,39 +1,10 @@
-export type Domain = "IT" | "OT";
-export type AssetType = "Computer" | "NetworkEquipment" | "Phone" | "Monitor" | "Printer";
-export type Lifecycle = "assigned" | "stock" | "repair" | "retired";
-export interface DashboardAsset {
-  readonly id: string;
-  readonly type: AssetType;
-  readonly location: string | null;
-  readonly domain: Domain;
-  readonly lifecycle: Lifecycle;
-  readonly critical: boolean;
-  readonly owner: string | null;
-  readonly lastSeen: string | null;
-  readonly warrantyEnds: string | null;
-}
-export interface DashboardSnapshot {
-  readonly asOf: string;
-  readonly assets: readonly DashboardAsset[];
-}
+import { ageInDays, isFresh, type AssetSummary, type InventorySnapshot } from "./asset-model";
+export { DAY, ageInDays, isFresh, typeLabels, lifecycleLabels } from "./asset-model";
+export type { Domain, AssetType, Lifecycle } from "./asset-model";
+import type { Domain } from "./asset-model";
+export type DashboardAsset = AssetSummary;
+export type DashboardSnapshot = InventorySnapshot<AssetSummary>;
 export type DashboardProvider = (signal: AbortSignal) => Promise<DashboardSnapshot>;
-export const DAY = 86_400_000;
-export const typeLabels: Record<AssetType, string> = {
-  Computer: "Computadores", NetworkEquipment: "Equipos de red", Phone: "Teléfonos",
-  Monitor: "Monitores", Printer: "Impresoras",
-};
-export const lifecycleLabels: Record<Lifecycle, string> = {
-  assigned: "Asignados", stock: "En stock", repair: "En reparación", retired: "Dados de baja",
-};
-export function ageInDays(date: string | null, asOf: string): number | null {
-  if (!date) return null;
-  const value = (Date.parse(asOf) - Date.parse(date)) / DAY;
-  return Number.isFinite(value) ? value : null;
-}
-export function isFresh(asset: DashboardAsset, asOf: string): boolean {
-  const age = ageInDays(asset.lastSeen, asOf);
-  return age !== null && age >= 0 && age <= 7;
-}
 export function warrantyDays(asset: DashboardAsset, asOf: string): number | null {
   const age = ageInDays(asset.warrantyEnds, asOf);
   return age === null ? null : -age;

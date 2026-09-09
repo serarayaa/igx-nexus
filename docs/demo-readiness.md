@@ -15,11 +15,11 @@ Completado e integrado:
 - CMDB-003 ✅ Stack de Desarrollo Docker
 - CMDB-004 ✅ Núcleo GLPI
 - CMDB-005 ✅ Sistema de Diseño IGX — PR #16
+- CMDB-006 ✅ Panel Principal — PR #17 (`93b6474`)
 
 Pendiente para la demo:
 
-- CMDB-006 ⬜ Panel Principal
-- CMDB-007 ⬜ Explorador de Activos
+- CMDB-007 ⬜ Explorador de Activos — implementación en rama; pendiente de merge manual
 - CMDB-008 ⬜ Asset 360°
 - CMDB-009 ⬜ Motor QR
 - CMDB-010 ⬜ Grafo de Relaciones
@@ -27,9 +27,9 @@ Pendiente para la demo:
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
-Por conteo formal de tickets **integrados**, el avance es 5 de 13: aproximadamente **38,5% completado** y **61,5% pendiente de integración**.
+Por conteo formal de tickets **integrados**, el avance es 6 de 13: aproximadamente **46,2% completado** y **53,8% pendiente de integración**.
 
-CMDB-005 quedó integrado mediante PR #16. CMDB-006 permanece pendiente de integración hasta el merge manual de su PR.
+CMDB-006 quedó integrado mediante PR #17. CMDB-007 permanece pendiente hasta el merge manual de su PR; después el avance será **7/13 (~53,8%)**. El Explorer incorpora búsqueda, filtros, ordenación, paginación y navegación sobre el mismo inventario demo. Ver [alcance y QA](asset-explorer.md).
 
 Este porcentaje no representa horas de trabajo lineales: la infraestructura base y el sistema de diseño reducen trabajo repetido de los tickets funcionales posteriores.
 

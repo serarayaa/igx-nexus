@@ -77,12 +77,17 @@ La eventual adopción por Innergex Canadá u otras entidades se considera una op
 **IGX NEXUS — The Technology Map**  
 Inteligencia interna de activos tecnológicos para Innergex Chile.
 
-## Ejecutar el panel de demostración
+## Ejecutar el panel y explorador de demostración
 
 Con la versión de Node indicada en `.nvmrc`, ejecutar `npm ci` y `npm run dev`
 desde la raíz. Abrir `http://127.0.0.1:3000`. El panel usa datos sintéticos y no
 requiere conectarse a GLPI. Ver [instrucciones de Web](apps/web/README.md),
 [definiciones de métricas](docs/dashboard.md) y [decisión de arquitectura](docs/architecture/adr-0004-dashboard-demo.md).
+
+La rama CMDB-007 incorpora **Panel principal → Activos** (`/#assets`) para buscar,
+filtrar, ordenar y paginar el mismo inventario demo. Ver [Asset Explorer](docs/asset-explorer.md)
+y [ADR-0005](docs/architecture/adr-0005-asset-explorer.md). El avance integrado sigue
+en **6/13 (46,2%)** hasta el merge manual de CMDB-007.
 
 Validación completa: `npm run typecheck`, `npm run build`, `npm test` y
 `npm run storybook:build --workspace @igx-nexus/ui`. Las pruebas de navegador
