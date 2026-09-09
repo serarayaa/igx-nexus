@@ -117,6 +117,12 @@ La capa `forced-colors.css` remapea superficies, estados y controles relevantes 
 
 La validación manual mínima se realiza en Windows High Contrast cuando sea posible.
 
+## Screen reader smoke test
+
+El 2026-09-08 se realizó un smoke test acotado con Narrador de Windows sobre AppShell. Narrador recorrió y anunció la navegación visible del sidebar. La validación automatizada de Storybook comprueba además landmarks principales, heading nivel 1 y el nombre accesible `Ver notificaciones` del control icon-only del header.
+
+Que Narrador no anuncie un control sólo por pasar el puntero del mouse sobre él no se considera un defecto: el criterio se evalúa mediante focus/navegación accesible y árbol de accesibilidad, no por hover. Este smoke test no equivale a una auditoría completa con lector de pantalla.
+
 ## Checklist manual para cerrar CMDB-005
 
 > Esta tabla es evidencia de QA pendiente/realizada. No marcar un ítem como validado sólo porque axe esté verde.
@@ -130,7 +136,7 @@ La validación manual mínima se realiza en Windows High Contrast cuando sea pos
 | Dark + Compact | Contraste y jerarquía conservados | **Validado 2026-09-08** — AppShell conserva jerarquía visual, legibilidad y separación de superficies en tema Dark con densidad Compact; sin defectos visuales bloqueantes observados |
 | Reduced Motion | Movimiento no esencial eliminado/reducido | **Validado 2026-09-08** — `prefers-reduced-motion: reduce` reduce la transición del drawer a un cambio prácticamente instantáneo, manteniendo el cambio de estado |
 | Windows High Contrast | Controles y estados siguen siendo distinguibles | **Validado 2026-09-08** — `forced-colors: active` conserva texto, iconos, controles y bordes; el enlace actual se distingue además mediante subrayado y señal no dependiente del color |
-| Screen reader smoke | Headings, landmarks, botones, inputs y tabla anunciados de forma razonable | Pendiente |
+| Screen reader smoke | Headings, landmarks y controles principales anunciados de forma razonable | **Validado 2026-09-08 (smoke acotado)** — Narrador recorrió la navegación; landmarks, H1 y nombre accesible del botón de notificaciones quedan cubiertos por tests semánticos de Storybook |
 | Touch targets | Acciones móviles prioritarias cercanas a 44×44 cuando corresponda | **Validado 2026-09-08** — IconButton aplica target táctil mínimo de 44×44 CSS px en punteros coarse; hamburguesa, notificaciones y cierre del drawer cumplen el baseline |
 
 ## Criterio de cierre
