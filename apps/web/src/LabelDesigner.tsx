@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Badge, Button, EmptyState, ErrorState, LoadingState, PageHeader, StatusBadge } from "@igx-nexus/ui";
 import type { InventoryProvider, InventorySnapshot } from "./asset-model";
 import { demoProvider } from "./demo-provider";
@@ -18,6 +18,7 @@ export function LabelDesigner({ assetId, provider = demoProvider }: { assetId: s
   const [profileId, setProfileId] = useState<LabelProfileId>(DEFAULT_LABEL_PROFILE.id);
   const [dpi, setDpi] = useState<LabelDpi>(203);
   const [options, setOptions] = useState<LabelContentOptions>(DEFAULT_LABEL_OPTIONS);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -29,6 +30,18 @@ export function LabelDesigner({ assetId, provider = demoProvider }: { assetId: s
     });
     return () => controller.abort();
   }, [provider, attempt, assetId]);
+
+  useEffect(() => {
+    if (state.status !== "ready") return;
+    const frame = requestAnimationFrame(() => {
+      const heading = contentRef.current?.querySelector<HTMLElement>("h1");
+      if (heading) {
+        heading.setAttribute("tabindex", "-1");
+        heading.focus();
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [state, assetId]);
 
   const asset = state.status === "ready" ? state.snapshot.assets.find((candidate) => candidate.id === assetId) : undefined;
   const profile = LABEL_PROFILES.find((candidate) => candidate.id === profileId) ?? DEFAULT_LABEL_PROFILE;
@@ -53,7 +66,7 @@ export function LabelDesigner({ assetId, provider = demoProvider }: { assetId: s
     URL.revokeObjectURL(url);
   };
 
-  return <div className="nexus-label-designer">
+  return <div className="nexus-label-designer" ref={contentRef}>
     <nav className="nexus-label-breadcrumb" aria-label="Breadcrumb">
       <ol><li><a href="#overview">Panel principal</a></li><li><a href="#assets">Activos</a></li><li><a href={assetHash(asset.id)}>{asset.name}</a></li><li aria-current="page">Etiqueta</li></ol>
     </nav>

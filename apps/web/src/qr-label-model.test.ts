@@ -16,6 +16,11 @@ describe("QR locator demo", () => {
     expect(locatorRecordForDemoAsset(asset)).toEqual({ locator, assetId: asset.id, status: "active" });
   });
 
+  it("mantiene locators únicos en todo el dataset demo", () => {
+    const locators = demoSnapshot.assets.map((candidate) => demoLocatorForAsset(candidate.id));
+    expect(new Set(locators).size).toBe(demoSnapshot.assets.length);
+  });
+
   it("mantiene identidad física aunque cambien campos dinámicos del activo", () => {
     const changed = { ...asset, owner: "Otro responsable", location: "Otra ubicación", hostname: "otro-host", ipAddress: "192.0.2.250", lifecycle: "repair" as const };
     expect(demoLocatorForAsset(changed.id)).toBe(demoLocatorForAsset(asset.id));

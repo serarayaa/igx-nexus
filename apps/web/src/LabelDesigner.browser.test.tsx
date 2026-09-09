@@ -13,13 +13,14 @@ afterEach(async () => {
   await page.viewport(1440, 1000);
 });
 
-it("abre el diseñador desde Asset 360 y mantiene navegación semántica", async () => {
+it("abre el diseñador desde Asset 360 y mueve el foco al heading final", async () => {
   window.history.replaceState(null, "", "#assets/DEMO-0002");
   render(<App />);
   await screen.findByRole("heading", { name: "Desktop Demo 0002", level: 1 });
   await userEvent.click(screen.getByRole("link", { name: "Diseñar etiqueta" }));
-  expect(await screen.findByRole("heading", { name: "Diseñar etiqueta", level: 1 })).toBeTruthy();
+  const heading = await screen.findByRole("heading", { name: "Diseñar etiqueta", level: 1 });
   expect(window.location.hash).toBe("#assets/DEMO-0002/label");
+  await waitFor(() => expect(document.activeElement).toBe(heading));
   expect(screen.getByText("50 × 25 mm · 203 DPI · 400 × 200 px")).toBeTruthy();
   expect(screen.getByRole("button", { name: "Descargar SVG" })).toBeTruthy();
 });
@@ -54,11 +55,12 @@ it("mantiene exactamente la misma salida física al cambiar light/dark", async (
   expect(output.querySelector('g[fill="#000"]')).toBeTruthy();
 });
 
-it("simula locator → identidad NEXUS y después abre Asset 360", async () => {
+it("simula locator → identidad NEXUS, enfoca la resolución y abre Asset 360", async () => {
   const locator = demoLocatorForAsset("DEMO-0002");
   window.history.replaceState(null, "", `#q/${locator}`);
   render(<App />);
-  expect(await screen.findByRole("heading", { name: "Resolver QR demo", level: 1 })).toBeTruthy();
+  const heading = await screen.findByRole("heading", { name: "Resolver QR demo", level: 1 });
+  await waitFor(() => expect(document.activeElement).toBe(heading));
   expect(screen.getByText("DEMO-0002")).toBeTruthy();
   expect(screen.getByText("Autorización").parentElement?.textContent).toContain("No simulada");
   await userEvent.click(screen.getByRole("link", { name: "Abrir Asset 360" }));
