@@ -16,7 +16,7 @@ Avance formal actual: **8 de 13 tickets integrados (~61,5%)**.
 - CMDB-006 ✅ Panel Principal — integrado mediante PR #17
 - CMDB-007 ✅ Explorador de Activos — integrado mediante PR #19 (`2f7e61f`)
 - CMDB-008 ✅ Asset 360° — integrado mediante PR #21 (`bdee501`)
-- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; implementación en `feature/cmdb-009-qr-label-engine`
+- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; implementándose en `feature/cmdb-009-qr-label-engine`, pendiente de PR/merge manual
 - CMDB-010 ⬜ Grafo de Relaciones
 - CMDB-011 ⬜ CMDB Health
 - CMDB-012 ⬜ Dataset de Demo
@@ -24,7 +24,7 @@ Avance formal actual: **8 de 13 tickets integrados (~61,5%)**.
 
 CMDB-008 está oficialmente integrado y cerrado. Conecta **Panel principal → Activos → Asset 360**, incorpora deep link estable por identidad NEXUS, estados de carga/error/not-found, detalle de identidad/hardware/asignación/lifecycle/garantía/frescura y mantiene datos exclusivamente sintéticos. Ver [Asset 360](asset-360.md) y [ADR-0006](architecture/adr-0006-asset-360-routing.md).
 
-CMDB-009 diseñará el QR como una identidad física permanente desacoplada de la ruta interna de Asset 360, mediante locator opaco y un motor de etiquetas preparado para impresión. Sólo contará como integrado después del merge manual de su Pull Request. Entonces el avance será **9/13 (~69,2%)** y el siguiente ticket será **CMDB-010 — Grafo de Relaciones**.
+CMDB-009 separa la identidad física del CI mediante locator opaco, genera QR sin datos sensibles y añade un Label Engine con perfiles en milímetros, 203/300 DPI y exportación SVG. Ver [Motor QR y Etiquetado](qr-label-engine.md) y [ADR-0007](architecture/adr-0007-qr-locator-label-engine.md). Sólo contará como integrado después del merge manual de su Pull Request; entonces el avance será **9/13 (~69,2%)** y el siguiente ticket será **CMDB-010 — Grafo de Relaciones**.
 
 La Demo v0.1 actúa como gate para decidir si IGX NEXUS se oficializa y se promueve desde el notebook de desarrollo hacia un servidor corporativo de Innergex Chile.
 

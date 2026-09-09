@@ -21,7 +21,7 @@ Completado e integrado:
 
 Pendiente para la demo:
 
-- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; rama `feature/cmdb-009-qr-label-engine`
+- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; implementación en rama pendiente de PR/merge manual
 - CMDB-010 ⬜ Grafo de Relaciones
 - CMDB-011 ⬜ CMDB Health
 - CMDB-012 ⬜ Dataset de Demo
@@ -29,36 +29,21 @@ Pendiente para la demo:
 
 Por conteo formal de tickets **integrados**, el avance es 8 de 13: aproximadamente **61,5% completado** y **38,5% pendiente de integración**.
 
-CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. Incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible. Ver [Asset 360](asset-360.md).
+CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. Incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible.
 
-CMDB-009 añade la capa de identidad física: locator opaco, QR sin datos sensibles, motor de etiquetas y salida preparada para impresión. Hasta su merge manual el avance formal permanece en **8/13 (~61,5%)**.
-
-Este porcentaje no representa horas de trabajo lineales: la infraestructura base y el sistema de diseño reducen trabajo repetido de los tickets funcionales posteriores.
+CMDB-009 añade locator opaco separado de `Asset.id`, QR sin datos sensibles, diseñador de etiquetas, perfiles físicos 203/300 DPI y exportación SVG. La demo usa una base `.invalid` y un simulador hash interno para no fingir infraestructura productiva. Hasta su merge manual el avance formal permanece en **8/13 (~61,5%)**.
 
 ## Estado del baseline visual para la demo
 
-CMDB-005 establece un contrato reusable para que CMDB-006+ no deban redefinir cada pantalla:
-
-- design tokens Primitive → Semantic y foundations de data visualization;
-- Light Theme y Dark Theme;
-- densidad Comfortable/Compact;
-- `forced-colors` y `prefers-reduced-motion`;
-- biblioteca `@igx-nexus/ui`;
-- catálogo Storybook y tests en Chromium;
-- AppShell y primitives de layout de página;
-- DataTable semántico, sorting, selección, paginación y feedback states.
-
-La validación automática se complementa con smoke tests manuales de accesibilidad para las pantallas funcionales.
+CMDB-005 establece un contrato reusable: design tokens, light/dark, densidad comfortable/compact, `forced-colors`, `prefers-reduced-motion`, `@igx-nexus/ui`, Storybook, AppShell y primitives accesibles. CMDB-009 reutiliza ese baseline y mantiene la salida física del label independiente del tema.
 
 ## Criterios mínimos para presentar la demo
-
-La demo debe permitir, como mínimo:
 
 1. Visualizar un dashboard de estado general de activos.
 2. Explorar y buscar activos mediante un Asset Explorer.
 3. Abrir un Asset 360° con identidad, hardware, asignación, ubicación, estado y fuentes de datos.
 4. Mostrar relaciones entre activos o CI mediante un grafo comprensible.
-5. Generar o representar un QR seguro que apunte al activo autenticado.
+5. Generar un QR seguro por diseño, sin datos sensibles, y una etiqueta física exportable.
 6. Mostrar un indicador CMDB Health con completitud, frescura y calidad de datos.
 7. Utilizar un dataset sintético representativo de Innergex Chile, sin información corporativa real.
 8. Mantener GLPI como motor desacoplado de la experiencia NEXUS.
@@ -69,18 +54,19 @@ La demo debe permitir, como mínimo:
 
 Si la Demo v0.1 es aprobada por TI Chile, el proyecto pasa a una etapa de piloto/producción controlada en servidor corporativo.
 
-Antes de utilizar datos reales deberán agregarse, al menos:
+Antes de utilizar datos reales y emitir QR físicos permanentes deberán agregarse, al menos:
 
-- HTTPS.
-- autenticación corporativa / Entra ID SSO.
-- RBAC y principio de mínimo privilegio.
-- gestión segura de secretos.
-- backup y restauración probados.
-- monitoreo y logs persistentes.
-- estrategia de actualización de GLPI, NEXUS y dependencias.
-- política de retención y auditoría.
-- URL estable para locators QR y resolver `/q/:locator`.
-- persistencia y política de emisión/revocación de locators.
+- HTTPS y URL corporativa estable;
+- autenticación corporativa / Entra ID SSO;
+- RBAC y principio de mínimo privilegio;
+- gestión segura de secretos;
+- backup y restauración probados;
+- monitoreo y logs persistentes;
+- estrategia de actualización de GLPI, NEXUS y dependencias;
+- política de retención y auditoría;
+- resolver `/q/:locator` de servidor;
+- persistencia, unicidad, emisión segura y política de revocación/reemplazo de locators;
+- pruebas físicas de impresión y lectura con hardware/material real.
 
 ## Migración notebook local → servidor corporativo
 
@@ -98,11 +84,11 @@ La parte más delicada no será mover el código, sino integrar correctamente el
 2. Instalar Docker Engine y Docker Compose.
 3. Clonar el repositorio desde GitHub.
 4. Crear secretos corporativos sin copiar el `.env` local.
-5. Restaurar/copiar los volúmenes sólo si contienen información que deba conservarse; para la demo sintética puede hacerse una instalación limpia.
+5. Restaurar/copiar volúmenes sólo si contienen información que deba conservarse; para la demo sintética puede hacerse una instalación limpia.
 6. Levantar el stack y validar healthchecks.
 7. Configurar DNS y HTTPS.
-8. Configurar autenticación y permisos corporativos.
-9. Ejecutar pruebas funcionales y de restauración.
+8. Configurar autenticación, RBAC y resolver QR.
+9. Ejecutar pruebas funcionales, físicas y de restauración.
 10. Habilitar progresivamente fuentes reales de Innergex Chile.
 
 ## Principio de promoción

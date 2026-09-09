@@ -9,6 +9,7 @@ Principios fundamentales:
 - La NEXUS API aísla la aplicación web de los detalles de implementación de los sistemas aguas arriba.
 - Las fuentes autoritativas se reconcilian en lugar de duplicarse ciegamente.
 - La seguridad, auditabilidad y capacidad de actualización son restricciones de diseño desde el primer día.
+- El QR identifica una etiqueta/CI mediante locator opaco; nunca actúa como credencial ni apunta directamente a GLPI, bases de datos o dispositivos.
 
 ## Architecture Decision Records
 
@@ -18,5 +19,6 @@ Principios fundamentales:
 - [ADR-0004 — Panel principal con proveedor sintético](adr-0004-dashboard-demo.md)
 - [ADR-0005 — Explorador de activos sobre inventario compartido](adr-0005-asset-explorer.md)
 - [ADR-0006 — Asset 360 con rutas hash por identidad NEXUS](adr-0006-asset-360-routing.md)
+- [ADR-0007 — Locator QR opaco y motor de etiquetas desacoplado](adr-0007-qr-locator-label-engine.md)
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.

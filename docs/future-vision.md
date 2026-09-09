@@ -8,16 +8,27 @@ Las capacidades descritas aquí forman un backlog de evolución. No todas perten
 
 ## Capacidades futuras prioritarias
 
-### Descubrimiento y reconciliación
+### Descubrimiento, fuentes y reconciliación
 
-- GLPI Agent para inventario de hardware y software.
-- Microsoft Intune y Microsoft Entra ID mediante Microsoft Graph.
-- Microsoft Defender para postura y estado de seguridad cuando esté disponible.
-- SNMPv3 para switches, access points, impresoras, UPS, PDU y otros dispositivos de red.
-- Nmap/XML para detección de activos desconocidos y Shadow Assets.
-- VMware/vCenter, Hyper-V y Azure Resource Graph para infraestructura virtual y cloud.
-- Reconciliation Engine para identificar que múltiples fuentes representan el mismo CI.
-- Confidence Score basado en serial, UUID, identificadores de gestión, MAC y hostname.
+La visión es multifuente. NEXUS no debe asumir que todos los CI ejecutan GLPI Agent:
+
+| Dominio / activo | Fuentes previstas | Restricción principal |
+|---|---|---|
+| Windows / Linux administrado | GLPI Agent | inventario autenticado y controlado |
+| Switch, router, AP, PDU, UPS, impresora | GLPI Network Discovery, SNMPv3 y APIs cuando corresponda | read-only, credenciales protegidas, segmentación |
+| Teléfonos corporativos | Microsoft Intune + Microsoft Graph | permisos mínimos y scopes controlados |
+| Identidad / ownership | Microsoft Entra ID | no convertir Entra en CMDB paralela |
+| Postura de seguridad | Microsoft Defender cuando corresponda | normalizar señales, no duplicar su función |
+| Virtual/cloud | VMware/vCenter, Hyper-V, Azure Resource Graph | reconciliar identidad del CI |
+| OT / ICS | SNMP/API/vendor/passive/import mediante collectors controlados | safety y disponibilidad por sobre cobertura |
+
+NEXUS normaliza y reconcilia estas señales en una identidad única del CI. La fuente original conserva su autoridad sobre los atributos que le correspondan.
+
+En redes IT, herramientas activas como Nmap/XML pueden evaluarse para Shadow Assets únicamente en rangos aprobados y bajo controles explícitos. **No deben trasladarse por defecto a OT**.
+
+Para OT/ICS no se asume que active scanning sea seguro. La estrategia debe priorizar read-only, segmentación, collectors controlados, SNMPv3 cuando sea apropiado, APIs/vendor y passive discovery o imports cuando el riesgo operativo lo aconseje. Ninguna función de NEXUS debe comprometer disponibilidad ni safety de procesos industriales.
+
+El Reconciliation Engine futuro podrá utilizar serial, UUID, identificadores de gestión, MAC, hostname y otras señales para estimar confianza, sin exponer esos atributos en códigos QR físicos.
 
 ### Ciclo de vida y garantías
 
@@ -40,9 +51,10 @@ Las capacidades descritas aquí forman un backlog de evolución. No todas perten
 
 - Stock disponible, asignado, en preparación, reparación, devolución y baja.
 - Niveles mínimos y alertas de reposición.
-- Inventario físico mediante QR.
+- Inventario físico mediante QR con locator opaco y política de revocación.
 - Campañas de inventario con esperados, encontrados, faltantes y activos no registrados.
 - Métrica de precisión entre inventario físico y CMDB.
+- Generación por lotes y adaptadores de impresión ZPL/EPL/browser/vendor sin acoplar el núcleo QR.
 
 ### Métricas y KPI
 
@@ -71,6 +83,8 @@ Las capacidades descritas aquí forman un backlog de evolución. No todas perten
 - CISA KEV para vulnerabilidades conocidas como explotadas.
 - FIRST EPSS para probabilidad estimada de explotación.
 - Asset Risk Score combinando vulnerabilidades, EOL, compliance, cifrado, edad, garantía, frescura y exposición.
+
+La arquitectura de seguridad busca alinearse progresivamente con buenas prácticas de OWASP, NIST Cybersecurity Framework y Zero Trust, CIS Controls, ISO/IEC 27001/27002, IEC 62443 cuando aplique a OT/ICS, recomendaciones de seguridad Microsoft y secure SDLC. Esta orientación no constituye una declaración de certificación o cumplimiento formal.
 
 ### Automatización
 

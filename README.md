@@ -81,22 +81,20 @@ Inteligencia interna de activos tecnológicos para Innergex Chile.
 
 ## Ejecutar la demostración Web
 
-Con la versión de Node indicada en `.nvmrc`, ejecutar `npm ci` y `npm run dev`
-desde la raíz. Abrir `http://127.0.0.1:3000`. La Web usa datos sintéticos y no
-requiere conectarse a GLPI.
+Con la versión de Node indicada en `.nvmrc`, ejecutar `npm ci` y `npm run dev` desde la raíz. Abrir `http://127.0.0.1:3000`. La Web usa datos sintéticos y no requiere conectarse a GLPI.
 
 Rutas principales de demostración:
 
 ```text
-/#overview              Panel principal
-/#assets                Explorador de activos
-/#assets/DEMO-0002      Asset 360 de un activo sintético
+/#overview                       Panel principal
+/#assets                         Explorador de activos
+/#assets/DEMO-0002               Asset 360 de un activo sintético
+/#assets/DEMO-0002/label         Diseñador QR/etiqueta
+/#q/<demo-locator>               Simulador interno del resolver QR
 ```
 
-El Explorer permite buscar, filtrar, ordenar y paginar el mismo inventario demo del Dashboard. Asset 360 añade una ficha individual con identidad, hardware, asignación, ubicación, lifecycle, garantía, frescura/calidad básica y fuente demo.
+El QR físico de la demo no codifica estas rutas internas: utiliza una URL `.invalid` con locator opaco. El diseñador permite perfiles físicos, 203/300 DPI y exportación SVG real; no simula PNG/PDF ni impresoras que todavía no existen.
 
-Ver [instrucciones de Web](apps/web/README.md), [Dashboard](docs/dashboard.md), [Asset Explorer](docs/asset-explorer.md), [Asset 360](docs/asset-360.md) y [ADR-0006](docs/architecture/adr-0006-asset-360-routing.md).
+Ver [instrucciones de Web](apps/web/README.md), [Dashboard](docs/dashboard.md), [Asset Explorer](docs/asset-explorer.md), [Asset 360](docs/asset-360.md), [Motor QR y Etiquetado](docs/qr-label-engine.md), [ADR-0006](docs/architecture/adr-0006-asset-360-routing.md) y [ADR-0007](docs/architecture/adr-0007-qr-locator-label-engine.md).
 
-Validación completa: `npm run typecheck`, `npm run build`, `npm test` y
-`npm run storybook:build --workspace @igx-nexus/ui`. Las pruebas de navegador
-requieren `npx playwright install --with-deps chromium`.
+Validación completa: `npm run typecheck`, `npm run build`, `npm test` y `npm run storybook:build --workspace @igx-nexus/ui`. Las pruebas de navegador requieren `npx playwright install --with-deps chromium`.
