@@ -1,6 +1,6 @@
 # ADR-0004 — Panel principal con proveedor sintético
 
-Estado: Propuesto para integración con CMDB-006.
+Estado: Aceptado — CMDB-006 integrado mediante PR #17. La navegación y el inventario compartido evolucionan en ADR-0005.
 
 ## Contexto
 

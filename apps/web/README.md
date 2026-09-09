@@ -1,8 +1,14 @@
-# IGX NEXUS Web — Panel principal
+# IGX NEXUS Web — Panel principal y Asset Explorer
 
 CMDB-006 incorpora una SPA React + TypeScript + Vite que consume `@igx-nexus/ui`.
 El panel usa exclusivamente 240 activos sintéticos con corte fijo. No requiere GLPI,
 credenciales ni Docker para esta demostración.
+
+CMDB-007 añade navegación a `/#assets`, búsqueda, filtros combinables, tabla
+ordenable y paginación usando el mismo inventario. `asset-model.ts` contiene el
+contrato compartido; `InventoryProvider` permite reemplazar la fuente sintética.
+Ver [uso, alcance y QA del Explorer](../../docs/asset-explorer.md) y
+[ADR-0005](../../docs/architecture/adr-0005-asset-explorer.md).
 
 Desde la raíz del repositorio, con la versión Node de `.nvmrc`:
 

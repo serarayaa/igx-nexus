@@ -16,5 +16,6 @@ Principios fundamentales:
 - [ADR-0002 — Taxonomía inicial de activos y CI](adr-0002-asset-ci-taxonomy.md)
 - [ADR-0003 — Sistema de Diseño de IGX NEXUS](adr-0003-ui-design-system.md)
 - [ADR-0004 — Panel principal con proveedor sintético](adr-0004-dashboard-demo.md)
+- [ADR-0005 — Explorador de activos sobre inventario compartido](adr-0005-asset-explorer.md)
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.

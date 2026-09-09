@@ -6,15 +6,15 @@ La implementación inicial corresponde exclusivamente a **Innergex Chile**. La e
 
 ## v0.1 — Demo Local Innergex Chile
 
-Avance formal actual: **5 de 13 tickets integrados (~38,5%)**.
+Avance formal actual: **6 de 13 tickets integrados (~46,2%)**.
 
 - CMDB-001 ✅ Inicio / Arquitectura / Alcance
 - CMDB-002 ✅ Repositorio y Entorno Local
 - CMDB-003 ✅ Stack de Desarrollo Docker
 - CMDB-004 ✅ Núcleo GLPI
 - CMDB-005 ✅ Sistema de Diseño IGX — integrado mediante PR #16
-- CMDB-006 ⬜ Panel Principal
-- CMDB-007 ⬜ Explorador de Activos
+- CMDB-006 ✅ Panel Principal — integrado mediante PR #17
+- CMDB-007 ⬜ Explorador de Activos — implementación en rama, pendiente de merge manual
 - CMDB-008 ⬜ Asset 360°
 - CMDB-009 ⬜ Motor QR
 - CMDB-010 ⬜ Grafo de Relaciones
@@ -22,7 +22,7 @@ Avance formal actual: **5 de 13 tickets integrados (~38,5%)**.
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
-CMDB-005 está integrado mediante PR #16 (`c6216741`). CMDB-006 sólo se contará como integrado después del merge manual de su PR.
+CMDB-006 está integrado mediante PR #17 (`93b6474`). CMDB-007 sólo se contará como integrado después del merge manual de su PR; entonces el avance será **7/13 (~53,8%)**. El siguiente ticket será CMDB-008 — Asset 360°. Ver [Asset Explorer](asset-explorer.md).
 
 La Demo v0.1 actúa como gate para decidir si IGX NEXUS se oficializa y se promueve desde el notebook de desarrollo hacia un servidor corporativo de Innergex Chile.
 
