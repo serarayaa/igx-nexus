@@ -57,7 +57,7 @@ Los componentes deben consumir semantic tokens. Cambiar un theme o estado no pue
 
 ### AppShell
 
-El AppShell implementa skip link, landmarks de navegación/contenido, apertura/cierre de navegación móvil, Escape y restauración básica del focus. Antes del cierre de CMDB-005 debe hacerse un smoke test manual en viewport móvil para comprobar que el focus no queda visualmente oculto.
+El AppShell implementa skip link, landmarks de navegación/contenido y navegación móvil modal accesible. La validación manual del 2026-09-08 confirmó que, al abrir el drawer móvil, el focus entra al control de cierre, Tab/Shift+Tab permanecen dentro de la navegación, los enlaces muestran focus visible, Escape cierra el drawer y el focus vuelve al botón que abrió la navegación. Mientras el drawer permanece abierto, el contenido de fondo queda fuera del orden de focus mediante `inert`.
 
 ## Formularios
 
@@ -121,10 +121,10 @@ La validación manual mínima se realiza en Windows High Contrast cuando sea pos
 
 > Esta tabla es evidencia de QA pendiente/realizada. No marcar un ítem como validado sólo porque axe esté verde.
 
-| Prueba | Evidencia esperada | Estado inicial |
+| Prueba | Evidencia esperada | Estado |
 | --- | --- | --- |
-| Navegación teclado | Recorrer stories representativas sólo con Tab/Shift+Tab/Enter/Space/Escape | Pendiente |
-| Focus visible | Confirmar focus perceptible y no oculto por AppShell/navigation | Pendiente |
+| Navegación teclado | Recorrer stories representativas sólo con Tab/Shift+Tab/Enter/Space/Escape | **Validado 2026-09-08** — PageLayout y AppShell móvil; focus trap y Escape correctos |
+| Focus visible | Confirmar focus perceptible y no oculto por AppShell/navigation | **Validado 2026-09-08** — Button, Search, Toolbar y enlaces de navegación con focus perceptible |
 | Zoom 200% | Storybook usable sin pérdida de contenido/acciones | Pendiente |
 | Reflow 320 CSS px | Layout representativo usable; tablas pueden usar scroll horizontal | Pendiente |
 | Dark + Compact | Contraste y jerarquía conservados | Automatizado + revisión manual pendiente |
