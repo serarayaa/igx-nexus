@@ -14,3 +14,6 @@ Principios fundamentales:
 
 - [ADR-0001 — Límites del producto](adr-0001-product-boundaries.md)
 - [ADR-0002 — Taxonomía inicial de activos y CI](adr-0002-asset-ci-taxonomy.md)
+- [ADR-0003 — Sistema de Diseño de IGX NEXUS](adr-0003-ui-design-system.md)
+
+Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.

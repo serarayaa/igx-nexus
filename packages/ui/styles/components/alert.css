@@ -1,0 +1,62 @@
+.igx-alert {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--igx-density-control-gap);
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  padding: var(--igx-density-content-gap);
+  border: var(--igx-border-width-thin) solid currentColor;
+  border-inline-start-width: var(--igx-border-width-strong);
+  border-radius: var(--igx-semantic-shape-control);
+  font-family: var(--igx-font-family-sans);
+}
+
+.igx-alert__icon {
+  flex: none;
+  inline-size: var(--igx-size-icon-md);
+  block-size: var(--igx-size-icon-md);
+  margin-block-start: var(--igx-spacing-1);
+}
+
+.igx-alert__content {
+  display: grid;
+  gap: var(--igx-spacing-1);
+  min-inline-size: 0;
+}
+
+.igx-alert__title {
+  font-size: var(--igx-font-size-sm);
+  font-weight: var(--igx-font-weight-semibold);
+  line-height: var(--igx-line-height-snug);
+}
+
+.igx-alert__body {
+  font-size: var(--igx-font-size-sm);
+  line-height: var(--igx-line-height-normal);
+}
+
+.igx-alert--info {
+  background: var(--igx-semantic-color-status-info-surface);
+  color: var(--igx-semantic-color-status-info-foreground);
+}
+
+.igx-alert--success {
+  background: var(--igx-semantic-color-status-success-surface);
+  color: var(--igx-semantic-color-status-success-foreground);
+}
+
+.igx-alert--warning {
+  background: var(--igx-semantic-color-status-warning-surface);
+  color: var(--igx-semantic-color-status-warning-foreground);
+}
+
+.igx-alert--danger {
+  background: var(--igx-semantic-color-status-danger-surface);
+  color: var(--igx-semantic-color-status-danger-foreground);
+}
+
+.igx-alert--critical {
+  background: var(--igx-semantic-color-status-critical-surface);
+  color: var(--igx-semantic-color-status-critical-foreground);
+}

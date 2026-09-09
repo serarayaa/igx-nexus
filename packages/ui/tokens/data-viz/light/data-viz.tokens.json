@@ -1,0 +1,222 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "dataViz": {
+    "color": {
+      "categorical": {
+        "$type": "color",
+        "1": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.145098,
+              0.388235,
+              0.921569
+            ],
+            "hex": "#2563EB"
+          }
+        },
+        "2": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.058824,
+              0.462745,
+              0.431373
+            ],
+            "hex": "#0F766E"
+          }
+        },
+        "3": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.486275,
+              0.227451,
+              0.929412
+            ],
+            "hex": "#7C3AED"
+          }
+        },
+        "4": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.760784,
+              0.254902,
+              0.047059
+            ],
+            "hex": "#C2410C"
+          }
+        },
+        "5": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.745098,
+              0.094118,
+              0.364706
+            ],
+            "hex": "#BE185D"
+          }
+        },
+        "6": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.301961,
+              0.486275,
+              0.058824
+            ],
+            "hex": "#4D7C0F"
+          }
+        }
+      },
+      "sequential": {
+        "$type": "color",
+        "1": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.858824,
+              0.917647,
+              0.996078
+            ],
+            "hex": "#DBEAFE"
+          }
+        },
+        "2": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.576471,
+              0.772549,
+              0.992157
+            ],
+            "hex": "#93C5FD"
+          }
+        },
+        "3": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.231373,
+              0.509804,
+              0.964706
+            ],
+            "hex": "#3B82F6"
+          }
+        },
+        "4": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.113725,
+              0.305882,
+              0.847059
+            ],
+            "hex": "#1D4ED8"
+          }
+        },
+        "5": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.117647,
+              0.227451,
+              0.541176
+            ],
+            "hex": "#1E3A8A"
+          }
+        }
+      },
+      "diverging": {
+        "$type": "color",
+        "negative": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.486275,
+              0.227451,
+              0.929412
+            ],
+            "hex": "#7C3AED"
+          }
+        },
+        "neutral": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.733333,
+              0.780392,
+              0.839216
+            ],
+            "hex": "#BBC7D6"
+          }
+        },
+        "positive": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.058824,
+              0.462745,
+              0.431373
+            ],
+            "hex": "#0F766E"
+          }
+        }
+      },
+      "status": {
+        "info": {
+          "$type": "color",
+          "$value": "{semantic.color.status.info.solid}"
+        },
+        "success": {
+          "$type": "color",
+          "$value": "{semantic.color.status.success.solid}"
+        },
+        "warning": {
+          "$type": "color",
+          "$value": "{semantic.color.status.warning.solid}"
+        },
+        "danger": {
+          "$type": "color",
+          "$value": "{semantic.color.status.danger.solid}"
+        },
+        "critical": {
+          "$type": "color",
+          "$value": "{semantic.color.status.critical.solid}"
+        },
+        "neutral": {
+          "$type": "color",
+          "$value": "{semantic.color.status.neutral.solid}"
+        }
+      },
+      "axis": {
+        "$type": "color",
+        "$value": "{semantic.color.text.secondary}"
+      },
+      "grid": {
+        "$type": "color",
+        "$value": "{semantic.color.border.subtle}"
+      },
+      "foreground": {
+        "$type": "color",
+        "$value": "{semantic.color.text.primary}"
+      },
+      "tooltip": {
+        "surface": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.elevated}"
+        },
+        "foreground": {
+          "$type": "color",
+          "$value": "{semantic.color.text.primary}"
+        },
+        "border": {
+          "$type": "color",
+          "$value": "{semantic.color.border.default}"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,424 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "background": {
+        "$type": "color",
+        "canvas": {
+          "$value": "{color.neutral.950}"
+        },
+        "subtle": {
+          "$value": "{color.neutral.900}"
+        },
+        "inverse": {
+          "$value": "{color.neutral.50}"
+        }
+      },
+      "surface": {
+        "$type": "color",
+        "base": {
+          "$value": "{color.neutral.900}"
+        },
+        "muted": {
+          "$value": "{color.neutral.800}"
+        },
+        "elevated": {
+          "$value": "{color.neutral.800}"
+        },
+        "inverse": {
+          "$value": "{color.neutral.50}"
+        }
+      },
+      "text": {
+        "$type": "color",
+        "primary": {
+          "$value": "{color.neutral.50}"
+        },
+        "secondary": {
+          "$value": "{color.neutral.300}"
+        },
+        "disabled": {
+          "$value": "{color.neutral.400}"
+        },
+        "inverse": {
+          "$value": "{color.neutral.900}"
+        },
+        "link": {
+          "$value": "{color.brand.cyan}"
+        }
+      },
+      "border": {
+        "$type": "color",
+        "subtle": {
+          "$value": "{color.neutral.800}"
+        },
+        "default": {
+          "$value": "{color.neutral.700}"
+        },
+        "control": {
+          "$value": "{color.neutral.500}"
+        },
+        "strong": {
+          "$value": "{color.neutral.400}"
+        }
+      },
+      "action": {
+        "primary": {
+          "$type": "color",
+          "background": {
+            "$value": "{color.brand.cyan}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.950}"
+          },
+          "hover": {
+            "$value": "{color.brand.cyanBright}"
+          }
+        },
+        "secondary": {
+          "$type": "color",
+          "background": {
+            "$value": "{color.neutral.900}"
+          },
+          "foreground": {
+            "$value": "{color.brand.cyan}"
+          },
+          "border": {
+            "$value": "{color.brand.blueBright}"
+          }
+        },
+        "disabled": {
+          "$type": "color",
+          "background": {
+            "$value": "{color.neutral.800}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.400}"
+          }
+        }
+      },
+      "focus": {
+        "$type": "color",
+        "ring": {
+          "$value": "{color.brand.cyanBright}"
+        }
+      },
+      "status": {
+        "info": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.info.900}"
+          },
+          "foreground": {
+            "$value": "{color.info.100}"
+          },
+          "solid": {
+            "$value": "{color.info.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "success": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.success.900}"
+          },
+          "foreground": {
+            "$value": "{color.success.100}"
+          },
+          "solid": {
+            "$value": "{color.success.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "warning": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.warning.900}"
+          },
+          "foreground": {
+            "$value": "{color.warning.100}"
+          },
+          "solid": {
+            "$value": "{color.warning.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "danger": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.danger.900}"
+          },
+          "foreground": {
+            "$value": "{color.danger.100}"
+          },
+          "solid": {
+            "$value": "{color.danger.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "critical": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.critical.900}"
+          },
+          "foreground": {
+            "$value": "{color.critical.100}"
+          },
+          "solid": {
+            "$value": "{color.critical.700}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        },
+        "neutral": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.neutral.800}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.100}"
+          },
+          "solid": {
+            "$value": "{color.neutral.600}"
+          },
+          "onSolid": {
+            "$value": "{color.neutral.0}"
+          }
+        }
+      },
+      "health": {
+        "healthy": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.success.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.success.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.success.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.success.onSolid}"
+          }
+        },
+        "degraded": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.warning.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.warning.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.warning.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.warning.onSolid}"
+          }
+        },
+        "unhealthy": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.danger.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.danger.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.danger.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.danger.onSolid}"
+          }
+        },
+        "unknown": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.neutral.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.neutral.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.neutral.onSolid}"
+          }
+        }
+      },
+      "criticality": {
+        "low": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.neutral.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.neutral.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.neutral.onSolid}"
+          }
+        },
+        "medium": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.info.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.info.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.info.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.info.onSolid}"
+          }
+        },
+        "high": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.warning.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.warning.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.warning.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.warning.onSolid}"
+          }
+        },
+        "critical": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.critical.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.critical.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.critical.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.critical.onSolid}"
+          }
+        }
+      },
+      "freshness": {
+        "current": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.success.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.success.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.success.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.success.onSolid}"
+          }
+        },
+        "aging": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.warning.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.warning.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.warning.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.warning.onSolid}"
+          }
+        },
+        "stale": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.danger.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.danger.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.danger.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.danger.onSolid}"
+          }
+        },
+        "unknown": {
+          "$type": "color",
+          "surface": {
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$value": "{semantic.color.status.neutral.foreground}"
+          },
+          "solid": {
+            "$value": "{semantic.color.status.neutral.solid}"
+          },
+          "onSolid": {
+            "$value": "{semantic.color.status.neutral.onSolid}"
+          }
+        }
+      },
+      "domain": {
+        "it": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.neutral.800}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.100}"
+          },
+          "accent": {
+            "$value": "{color.brand.blueBright}"
+          }
+        },
+        "ot": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.neutral.800}"
+          },
+          "foreground": {
+            "$value": "{color.brand.cyan}"
+          },
+          "accent": {
+            "$value": "{color.brand.cyanBright}"
+          }
+        },
+        "unknown": {
+          "$type": "color",
+          "surface": {
+            "$value": "{color.neutral.800}"
+          },
+          "foreground": {
+            "$value": "{color.neutral.300}"
+          },
+          "accent": {
+            "$value": "{color.neutral.400}"
+          }
+        }
+      }
+    }
+  }
+}

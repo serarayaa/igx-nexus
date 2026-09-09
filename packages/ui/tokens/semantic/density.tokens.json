@@ -1,0 +1,51 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "density": {
+      "comfortable": {
+        "controlHeight": {
+          "$type": "dimension",
+          "$value": "{size.control.md}"
+        },
+        "controlPaddingInline": {
+          "$type": "dimension",
+          "$value": "{spacing.4}"
+        },
+        "controlGap": {
+          "$type": "dimension",
+          "$value": "{spacing.2}"
+        },
+        "contentGap": {
+          "$type": "dimension",
+          "$value": "{spacing.4}"
+        },
+        "sectionGap": {
+          "$type": "dimension",
+          "$value": "{spacing.6}"
+        }
+      },
+      "compact": {
+        "controlHeight": {
+          "$type": "dimension",
+          "$value": "{size.control.sm}"
+        },
+        "controlPaddingInline": {
+          "$type": "dimension",
+          "$value": "{spacing.3}"
+        },
+        "controlGap": {
+          "$type": "dimension",
+          "$value": "{spacing.1}"
+        },
+        "contentGap": {
+          "$type": "dimension",
+          "$value": "{spacing.3}"
+        },
+        "sectionGap": {
+          "$type": "dimension",
+          "$value": "{spacing.4}"
+        }
+      }
+    }
+  }
+}

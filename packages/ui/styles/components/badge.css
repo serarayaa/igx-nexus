@@ -1,0 +1,88 @@
+.igx-badge,
+.igx-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--igx-spacing-1);
+  max-inline-size: 100%;
+  min-block-size: calc(var(--igx-spacing-4) + var(--igx-spacing-2));
+  box-sizing: border-box;
+  padding-block: var(--igx-spacing-1);
+  padding-inline: var(--igx-spacing-2);
+  border: var(--igx-border-width-thin) solid transparent;
+  border-radius: var(--igx-semantic-shape-pill);
+  font-family: var(--igx-font-family-sans);
+  font-size: var(--igx-font-size-xs);
+  font-weight: var(--igx-font-weight-medium);
+  line-height: var(--igx-line-height-snug);
+  white-space: nowrap;
+}
+
+.igx-badge--neutral {
+  background: var(--igx-semantic-color-surface-muted);
+  color: var(--igx-semantic-color-text-secondary);
+  border-color: var(--igx-semantic-color-border-subtle);
+}
+
+.igx-badge--accent {
+  background: var(--igx-semantic-color-action-primary-background);
+  color: var(--igx-semantic-color-action-primary-foreground);
+  border-color: var(--igx-semantic-color-action-primary-background);
+}
+
+.igx-status-badge__icon {
+  flex: none;
+  inline-size: var(--igx-size-icon-sm);
+  block-size: var(--igx-size-icon-sm);
+}
+
+.igx-status-badge__label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.igx-status-badge--neutral {
+  background: var(--igx-semantic-color-status-neutral-surface);
+  color: var(--igx-semantic-color-status-neutral-foreground);
+  border-color: var(--igx-semantic-color-status-neutral-solid);
+}
+
+.igx-status-badge--info {
+  background: var(--igx-semantic-color-status-info-surface);
+  color: var(--igx-semantic-color-status-info-foreground);
+  border-color: var(--igx-semantic-color-status-info-solid);
+}
+
+.igx-status-badge--success {
+  background: var(--igx-semantic-color-status-success-surface);
+  color: var(--igx-semantic-color-status-success-foreground);
+  border-color: var(--igx-semantic-color-status-success-solid);
+}
+
+.igx-status-badge--warning {
+  background: var(--igx-semantic-color-status-warning-surface);
+  color: var(--igx-semantic-color-status-warning-foreground);
+  border-color: var(--igx-semantic-color-status-warning-solid);
+}
+
+.igx-status-badge--danger {
+  background: var(--igx-semantic-color-status-danger-surface);
+  color: var(--igx-semantic-color-status-danger-foreground);
+  border-color: var(--igx-semantic-color-status-danger-solid);
+}
+
+.igx-status-badge--critical {
+  background: var(--igx-semantic-color-status-critical-surface);
+  color: var(--igx-semantic-color-status-critical-foreground);
+  border-color: var(--igx-semantic-color-status-critical-solid);
+}
+
+@media (forced-colors: active) {
+  .igx-badge,
+  .igx-status-badge {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+}

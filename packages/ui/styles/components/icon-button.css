@@ -1,0 +1,54 @@
+.igx-icon-button {
+  flex: none;
+  padding: 0;
+  aspect-ratio: 1;
+}
+
+.igx-icon-button.igx-button--sm {
+  inline-size: var(--igx-size-control-sm);
+  min-inline-size: var(--igx-size-control-sm);
+}
+
+.igx-icon-button.igx-button--md {
+  inline-size: var(--igx-density-control-height);
+  min-inline-size: var(--igx-density-control-height);
+}
+
+.igx-icon-button.igx-button--lg {
+  inline-size: var(--igx-size-control-lg);
+  min-inline-size: var(--igx-size-control-lg);
+}
+
+.igx-icon-button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.igx-icon-button.igx-button--sm .igx-icon-button__icon {
+  inline-size: var(--igx-size-icon-sm);
+  block-size: var(--igx-size-icon-sm);
+}
+
+.igx-icon-button.igx-button--md .igx-icon-button__icon {
+  inline-size: var(--igx-size-icon-md);
+  block-size: var(--igx-size-icon-md);
+}
+
+.igx-icon-button.igx-button--lg .igx-icon-button__icon {
+  inline-size: var(--igx-size-icon-lg);
+  block-size: var(--igx-size-icon-lg);
+}
+
+.igx-icon-button__icon > svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@media (pointer: coarse) {
+  .igx-icon-button {
+    min-inline-size: var(--igx-size-touch-target);
+    min-block-size: var(--igx-size-touch-target);
+  }
+}

@@ -11,5 +11,8 @@
   "scripts": {
     "dev": "echo \"Stack local disponible mediante: docker compose up -d\"",
     "test": "echo \"El runner de pruebas se implementará junto con el stack de aplicación\""
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
   }
 }

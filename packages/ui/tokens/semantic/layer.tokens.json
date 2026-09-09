@@ -1,0 +1,32 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "layer": {
+      "$type": "number",
+      "content": {
+        "$value": "{zIndex.base}"
+      },
+      "sticky": {
+        "$value": "{zIndex.sticky}"
+      },
+      "dropdown": {
+        "$value": "{zIndex.dropdown}"
+      },
+      "popover": {
+        "$value": "{zIndex.popover}"
+      },
+      "overlay": {
+        "$value": "{zIndex.overlay}"
+      },
+      "modal": {
+        "$value": "{zIndex.modal}"
+      },
+      "toast": {
+        "$value": "{zIndex.toast}"
+      },
+      "tooltip": {
+        "$value": "{zIndex.tooltip}"
+      }
+    }
+  }
+}

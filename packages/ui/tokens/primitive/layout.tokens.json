@@ -1,0 +1,29 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "grid": {
+    "columns": {
+      "$type": "number",
+      "mobile": {
+        "$value": 4
+      },
+      "tablet": {
+        "$value": 8
+      },
+      "desktop": {
+        "$value": 12
+      }
+    },
+    "gutter": {
+      "$type": "dimension",
+      "sm": {
+        "$value": { "value": 16, "unit": "px" }
+      },
+      "md": {
+        "$value": { "value": 24, "unit": "px" }
+      },
+      "lg": {
+        "$value": { "value": 32, "unit": "px" }
+      }
+    }
+  }
+}

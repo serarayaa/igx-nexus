@@ -1,0 +1,140 @@
+/*
+ * Accesibilidad runtime de IGX NEXUS.
+ *
+ * Esta capa adapta los tokens semánticos a preferencias y modos
+ * controlados por el sistema operativo sin modificar los tokens fuente.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --igx-semantic-motion-feedback-duration:
+      var(--igx-semantic-motion-reduced-duration);
+    --igx-semantic-motion-transition-duration:
+      var(--igx-semantic-motion-reduced-duration);
+    --igx-semantic-motion-spatial-duration:
+      var(--igx-semantic-motion-reduced-duration);
+  }
+}
+
+@media (forced-colors: active) {
+  :root {
+    --igx-semantic-color-background-canvas: Canvas;
+    --igx-semantic-color-background-subtle: Canvas;
+    --igx-semantic-color-background-inverse: Canvas;
+
+    --igx-semantic-color-surface-base: Canvas;
+    --igx-semantic-color-surface-muted: Canvas;
+    --igx-semantic-color-surface-elevated: Canvas;
+    --igx-semantic-color-surface-inverse: Canvas;
+
+    --igx-semantic-color-text-primary: CanvasText;
+    --igx-semantic-color-text-secondary: CanvasText;
+    --igx-semantic-color-text-disabled: GrayText;
+    --igx-semantic-color-text-inverse: CanvasText;
+    --igx-semantic-color-text-link: LinkText;
+
+    --igx-semantic-color-border-subtle: GrayText;
+    --igx-semantic-color-border-default: CanvasText;
+    --igx-semantic-color-border-control: CanvasText;
+    --igx-semantic-color-border-strong: CanvasText;
+
+    --igx-semantic-color-action-primary-background: Highlight;
+    --igx-semantic-color-action-primary-foreground: HighlightText;
+    --igx-semantic-color-action-primary-hover: Highlight;
+
+    --igx-semantic-color-action-secondary-background: ButtonFace;
+    --igx-semantic-color-action-secondary-foreground: ButtonText;
+    --igx-semantic-color-action-secondary-border: ButtonText;
+
+    --igx-semantic-color-action-disabled-background: ButtonFace;
+    --igx-semantic-color-action-disabled-foreground: GrayText;
+
+    --igx-semantic-color-focus-ring: Highlight;
+
+    --igx-semantic-color-status-neutral-surface: Canvas;
+    --igx-semantic-color-status-neutral-foreground: CanvasText;
+    --igx-semantic-color-status-neutral-solid: CanvasText;
+    --igx-semantic-color-status-neutral-on-solid: Canvas;
+    --igx-semantic-color-status-info-surface: Canvas;
+    --igx-semantic-color-status-info-foreground: CanvasText;
+    --igx-semantic-color-status-info-solid: CanvasText;
+    --igx-semantic-color-status-info-on-solid: Canvas;
+    --igx-semantic-color-status-success-surface: Canvas;
+    --igx-semantic-color-status-success-foreground: CanvasText;
+    --igx-semantic-color-status-success-solid: CanvasText;
+    --igx-semantic-color-status-success-on-solid: Canvas;
+    --igx-semantic-color-status-warning-surface: Canvas;
+    --igx-semantic-color-status-warning-foreground: CanvasText;
+    --igx-semantic-color-status-warning-solid: CanvasText;
+    --igx-semantic-color-status-warning-on-solid: Canvas;
+    --igx-semantic-color-status-danger-surface: Canvas;
+    --igx-semantic-color-status-danger-foreground: CanvasText;
+    --igx-semantic-color-status-danger-solid: CanvasText;
+    --igx-semantic-color-status-danger-on-solid: Canvas;
+    --igx-semantic-color-status-critical-surface: Canvas;
+    --igx-semantic-color-status-critical-foreground: CanvasText;
+    --igx-semantic-color-status-critical-solid: CanvasText;
+    --igx-semantic-color-status-critical-on-solid: Canvas;
+
+    --igx-semantic-color-health-healthy-surface: Canvas;
+    --igx-semantic-color-health-healthy-foreground: CanvasText;
+    --igx-semantic-color-health-healthy-solid: CanvasText;
+    --igx-semantic-color-health-healthy-on-solid: Canvas;
+    --igx-semantic-color-health-degraded-surface: Canvas;
+    --igx-semantic-color-health-degraded-foreground: CanvasText;
+    --igx-semantic-color-health-degraded-solid: CanvasText;
+    --igx-semantic-color-health-degraded-on-solid: Canvas;
+    --igx-semantic-color-health-unhealthy-surface: Canvas;
+    --igx-semantic-color-health-unhealthy-foreground: CanvasText;
+    --igx-semantic-color-health-unhealthy-solid: CanvasText;
+    --igx-semantic-color-health-unhealthy-on-solid: Canvas;
+    --igx-semantic-color-health-unknown-surface: Canvas;
+    --igx-semantic-color-health-unknown-foreground: CanvasText;
+    --igx-semantic-color-health-unknown-solid: CanvasText;
+    --igx-semantic-color-health-unknown-on-solid: Canvas;
+
+    --igx-semantic-color-freshness-current-surface: Canvas;
+    --igx-semantic-color-freshness-current-foreground: CanvasText;
+    --igx-semantic-color-freshness-current-solid: CanvasText;
+    --igx-semantic-color-freshness-current-on-solid: Canvas;
+    --igx-semantic-color-freshness-aging-surface: Canvas;
+    --igx-semantic-color-freshness-aging-foreground: CanvasText;
+    --igx-semantic-color-freshness-aging-solid: CanvasText;
+    --igx-semantic-color-freshness-aging-on-solid: Canvas;
+    --igx-semantic-color-freshness-stale-surface: Canvas;
+    --igx-semantic-color-freshness-stale-foreground: CanvasText;
+    --igx-semantic-color-freshness-stale-solid: CanvasText;
+    --igx-semantic-color-freshness-stale-on-solid: Canvas;
+    --igx-semantic-color-freshness-unknown-surface: Canvas;
+    --igx-semantic-color-freshness-unknown-foreground: CanvasText;
+    --igx-semantic-color-freshness-unknown-solid: CanvasText;
+    --igx-semantic-color-freshness-unknown-on-solid: Canvas;
+
+    --igx-semantic-color-criticality-low-surface: Canvas;
+    --igx-semantic-color-criticality-low-foreground: CanvasText;
+    --igx-semantic-color-criticality-low-solid: CanvasText;
+    --igx-semantic-color-criticality-low-on-solid: Canvas;
+    --igx-semantic-color-criticality-medium-surface: Canvas;
+    --igx-semantic-color-criticality-medium-foreground: CanvasText;
+    --igx-semantic-color-criticality-medium-solid: CanvasText;
+    --igx-semantic-color-criticality-medium-on-solid: Canvas;
+    --igx-semantic-color-criticality-high-surface: Canvas;
+    --igx-semantic-color-criticality-high-foreground: CanvasText;
+    --igx-semantic-color-criticality-high-solid: CanvasText;
+    --igx-semantic-color-criticality-high-on-solid: Canvas;
+    --igx-semantic-color-criticality-critical-surface: Canvas;
+    --igx-semantic-color-criticality-critical-foreground: CanvasText;
+    --igx-semantic-color-criticality-critical-solid: CanvasText;
+    --igx-semantic-color-criticality-critical-on-solid: Canvas;
+
+    --igx-semantic-color-domain-it-surface: Canvas;
+    --igx-semantic-color-domain-it-foreground: CanvasText;
+    --igx-semantic-color-domain-it-accent: CanvasText;
+    --igx-semantic-color-domain-ot-surface: Canvas;
+    --igx-semantic-color-domain-ot-foreground: CanvasText;
+    --igx-semantic-color-domain-ot-accent: CanvasText;
+    --igx-semantic-color-domain-unknown-surface: Canvas;
+    --igx-semantic-color-domain-unknown-foreground: CanvasText;
+    --igx-semantic-color-domain-unknown-accent: CanvasText;
+  }
+}

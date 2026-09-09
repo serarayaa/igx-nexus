@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ui:
+    name: Design System / UI
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Instalar Chromium para tests de UI
+        run: npx playwright install --with-deps chromium
+
+      - name: Typecheck de tokens y UI
+        run: npm run typecheck --workspace @igx-nexus/ui
+
+      - name: Build de tokens y UI
+        run: npm run build --workspace @igx-nexus/ui
+
+      - name: Build estático de Storybook
+        run: npm run storybook:build --workspace @igx-nexus/ui
+
+      - name: Tests de Storybook en Chromium
+        run: npm run test:storybook --workspace @igx-nexus/ui
+
+      - name: Verificar tokens generados versionados
+        run: git diff --exit-code -- packages/ui/generated
+
+      - name: Verificar paquete distribuible
+        run: npm pack --dry-run --workspace @igx-nexus/ui
