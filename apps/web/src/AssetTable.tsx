@@ -1,6 +1,7 @@
 import { Badge, DataTable, StatusBadge, type DataTableColumn, type DataTableSort } from "@igx-nexus/ui";
 import { typeLabels, type Asset } from "./asset-model";
 import { freshnessLabels, freshnessOf } from "./explorer-model";
+import { assetHash } from "./navigation-model";
 
 const dateFormat = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeZone: "UTC" });
 const stateLabels = { assigned: "Asignado", stock: "En stock", repair: "En reparación", retired: "Dado de baja" } as const;
@@ -10,7 +11,7 @@ export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical }: {
 }) {
   const columns: readonly DataTableColumn<Asset>[] = [
     { id: "name", header: "Activo", isRowHeader: true, isSortable: true, cell: a => <div className="nexus-asset-identity">
-      <strong>{a.name}</strong><span className="nexus-id nexus-muted">{a.id}</span>
+      <strong><a className="nexus-asset-link" href={assetHash(a.id)}>{a.name}</a></strong><span className="nexus-id nexus-muted">{a.id}</span>
       {a.critical && <span className="nexus-muted">Criticidad: crítico</span>}
       {showTechnical && <dl className="nexus-asset-technical">
         <div><dt>Hostname</dt><dd>{a.hostname ?? "Sin hostname"}</dd></div>
