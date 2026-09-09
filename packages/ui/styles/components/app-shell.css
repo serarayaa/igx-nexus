@@ -269,6 +269,12 @@
     box-shadow: none;
   }
 
+  .igx-app-sidebar__nav a[aria-current="page"] {
+    border-inline-start: var(--igx-border-width-thick) solid Highlight;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
   .igx-app-shell__scrim {
     background: Canvas;
     opacity: 0.6;
