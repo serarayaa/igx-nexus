@@ -57,6 +57,8 @@ El primer hito es una demostración local pulida que permita validar el producto
 
 La eventual adopción por Innergex Canadá u otras entidades se considera una oportunidad futura y no debe condicionar el alcance de la primera implementación chilena.
 
+Avance formal integrado: **7/13 tickets (~53,8%)**. CMDB-007 — Explorador de Activos está integrado mediante PR #19. CMDB-008 — Asset 360 se desarrolla en `feature/cmdb-008-asset-360` y sólo contará después de su merge manual.
+
 ## Flujo de desarrollo
 
 - `main` es la línea base estable de desarrollo.
@@ -77,17 +79,23 @@ La eventual adopción por Innergex Canadá u otras entidades se considera una op
 **IGX NEXUS — The Technology Map**  
 Inteligencia interna de activos tecnológicos para Innergex Chile.
 
-## Ejecutar el panel y explorador de demostración
+## Ejecutar la demostración Web
 
 Con la versión de Node indicada en `.nvmrc`, ejecutar `npm ci` y `npm run dev`
-desde la raíz. Abrir `http://127.0.0.1:3000`. El panel usa datos sintéticos y no
-requiere conectarse a GLPI. Ver [instrucciones de Web](apps/web/README.md),
-[definiciones de métricas](docs/dashboard.md) y [decisión de arquitectura](docs/architecture/adr-0004-dashboard-demo.md).
+desde la raíz. Abrir `http://127.0.0.1:3000`. La Web usa datos sintéticos y no
+requiere conectarse a GLPI.
 
-La rama CMDB-007 incorpora **Panel principal → Activos** (`/#assets`) para buscar,
-filtrar, ordenar y paginar el mismo inventario demo. Ver [Asset Explorer](docs/asset-explorer.md)
-y [ADR-0005](docs/architecture/adr-0005-asset-explorer.md). El avance integrado sigue
-en **6/13 (46,2%)** hasta el merge manual de CMDB-007.
+Rutas principales de demostración:
+
+```text
+/#overview              Panel principal
+/#assets                Explorador de activos
+/#assets/DEMO-0002      Asset 360 de un activo sintético
+```
+
+El Explorer permite buscar, filtrar, ordenar y paginar el mismo inventario demo del Dashboard. Asset 360 añade una ficha individual con identidad, hardware, asignación, ubicación, lifecycle, garantía, frescura/calidad básica y fuente demo.
+
+Ver [instrucciones de Web](apps/web/README.md), [Dashboard](docs/dashboard.md), [Asset Explorer](docs/asset-explorer.md), [Asset 360](docs/asset-360.md) y [ADR-0006](docs/architecture/adr-0006-asset-360-routing.md).
 
 Validación completa: `npm run typecheck`, `npm run build`, `npm test` y
 `npm run storybook:build --workspace @igx-nexus/ui`. Las pruebas de navegador

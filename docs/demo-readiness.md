@@ -16,20 +16,22 @@ Completado e integrado:
 - CMDB-004 ✅ Núcleo GLPI
 - CMDB-005 ✅ Sistema de Diseño IGX — PR #16
 - CMDB-006 ✅ Panel Principal — PR #17 (`93b6474`)
+- CMDB-007 ✅ Explorador de Activos — PR #19 (`2f7e61f`)
 
 Pendiente para la demo:
 
-- CMDB-007 ⬜ Explorador de Activos — implementación en rama; pendiente de merge manual
-- CMDB-008 ⬜ Asset 360°
+- CMDB-008 ⬜ Asset 360° — implementación en rama; pendiente de merge manual
 - CMDB-009 ⬜ Motor QR
 - CMDB-010 ⬜ Grafo de Relaciones
 - CMDB-011 ⬜ CMDB Health
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
-Por conteo formal de tickets **integrados**, el avance es 6 de 13: aproximadamente **46,2% completado** y **53,8% pendiente de integración**.
+Por conteo formal de tickets **integrados**, el avance es 7 de 13: aproximadamente **53,8% completado** y **46,2% pendiente de integración**.
 
-CMDB-006 quedó integrado mediante PR #17. CMDB-007 permanece pendiente hasta el merge manual de su PR; después el avance será **7/13 (~53,8%)**. El Explorer incorpora búsqueda, filtros, ordenación, paginación y navegación sobre el mismo inventario demo. Ver [alcance y QA](asset-explorer.md).
+CMDB-007 quedó integrado mediante PR #19. El Explorer incorpora búsqueda, filtros, ordenación, paginación y navegación sobre el mismo inventario demo. Ver [alcance y QA](asset-explorer.md).
+
+CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. La implementación de rama incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible. Ver [Asset 360](asset-360.md). Sólo se contará como integrado después del merge manual; entonces el avance será **8/13 (~61,5%)**.
 
 Este porcentaje no representa horas de trabajo lineales: la infraestructura base y el sistema de diseño reducen trabajo repetido de los tickets funcionales posteriores.
 
