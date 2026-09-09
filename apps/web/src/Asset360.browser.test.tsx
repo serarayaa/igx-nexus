@@ -19,7 +19,7 @@ afterEach(async () => {
   await page.viewport(1440, 1000);
 });
 
-it("abre un deep link y muestra la identidad y contexto del activo", async () => {
+it("abre un deep link y muestra identidad, contexto y señales operativas", async () => {
   window.history.replaceState(null, "", "#assets/DEMO-0002");
   render(<App />);
   await assetHeading();
@@ -31,8 +31,35 @@ it("abre un deep link y muestra la identidad y contexto del activo", async () =>
   expect(screen.getByText("Fabricante Demo A")).toBeTruthy();
   expect(screen.getByText("Modelo Demo Escritorio 2")).toBeTruthy();
   expect(screen.getByText("SYNTH-SN-000002")).toBeTruthy();
+
+  const lifecycle = screen.getByRole("region", { name: "Estado y ciclo de vida" });
+  expect(within(lifecycle).getByText("Activo en inventario")).toBeTruthy();
+  const warranty = screen.getByRole("region", { name: "Garantía" });
+  expect(within(warranty).getByText("Vencida")).toBeTruthy();
+  const quality = screen.getByRole("region", { name: "Frescura y calidad básica" });
+  expect(within(quality).getByText("Reciente (≤ 7 días)")).toBeTruthy();
+  const source = screen.getByRole("region", { name: "Fuente de datos" });
+  expect(within(source).getByText("Dataset sintético / provider demo")).toBeTruthy();
+
   expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeTruthy();
-  expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Desktop Demo 0002", level: 1 }));
+  await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Desktop Demo 0002", level: 1 })));
+});
+
+it("presenta datos parciales sin inventar información", async () => {
+  render(<NexusShell view="asset"><Asset360 assetId="DEMO-0001" /></NexusShell>);
+  await screen.findByRole("heading", { name: "Notebook Demo 0001", level: 1 });
+
+  const identity = screen.getByRole("region", { name: "Identidad" });
+  expect(within(identity).getAllByText("No informado")).toHaveLength(1);
+  const assignment = screen.getByRole("region", { name: "Asignación y ubicación" });
+  expect(within(assignment).getAllByText("No informado")).toHaveLength(2);
+  const warranty = screen.getByRole("region", { name: "Garantía" });
+  expect(within(warranty).getByText("Desconocida")).toBeTruthy();
+  const quality = screen.getByRole("region", { name: "Frescura y calidad básica" });
+  expect(within(quality).getByText("Sin fecha verificable")).toBeTruthy();
+  expect(within(quality).getByText("Falta responsable")).toBeTruthy();
+  expect(within(quality).getByText("Falta ubicación")).toBeTruthy();
+  expect(within(quality).getByText("Falta serial")).toBeTruthy();
 });
 
 it("navega Explorer → Asset 360 → Explorer y respeta Atrás/Adelante", async () => {
@@ -102,7 +129,7 @@ it("pasa axe y no desborda en light/dark y ambas densidades", async () => {
   window.history.replaceState(null, "", "#assets/DEMO-0002");
   const { container } = render(<App />);
   await assetHeading();
-  for (const width of [1440, 768, 320]) {
+  for (const width of [1440, 768, 390, 320]) {
     await page.viewport(width, 1000);
     for (const theme of ["light", "dark"]) {
       if (document.documentElement.dataset.theme !== theme) await userEvent.click(screen.getByRole("button", { name: theme === "dark" ? "Activar tema oscuro" : "Activar tema claro" }));
