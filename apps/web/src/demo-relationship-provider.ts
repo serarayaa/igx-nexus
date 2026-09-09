@@ -1,4 +1,4 @@
-import type { Relationship, RelationshipProvider, RelationshipSnapshot } from "./relationship-model";
+import { relationshipsWithinDepth, type Relationship, type RelationshipProvider, type RelationshipSnapshot } from "./relationship-model";
 
 // Escenario pequeño y exclusivamente sintético; no representa topología corporativa.
 export const demoRelationships: readonly Relationship[] = [
@@ -17,21 +17,8 @@ export const demoRelationshipSnapshot: RelationshipSnapshot = {
 
 export const demoRelationshipProvider: RelationshipProvider = async (query, signal) => {
   signal.throwIfAborted();
-  const reached = new Set([query.assetId]);
-  let frontier = new Set([query.assetId]);
-  for (let level = 0; level < query.depth; level += 1) {
-    const next = new Set<string>();
-    for (const relationship of demoRelationships) {
-      if (frontier.has(relationship.sourceId)) next.add(relationship.targetId);
-      if (frontier.has(relationship.targetId)) next.add(relationship.sourceId);
-    }
-    next.forEach((id) => reached.add(id));
-    frontier = next;
-  }
   return {
     asOf: demoRelationshipSnapshot.asOf,
-    relationships: demoRelationships.filter((relationship) =>
-      reached.has(relationship.sourceId) || reached.has(relationship.targetId)
-    ),
+    relationships: relationshipsWithinDepth(demoRelationships, query.assetId, query.depth),
   };
 };

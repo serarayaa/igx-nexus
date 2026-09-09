@@ -10,6 +10,7 @@ import {
   assetTypeShortLabels,
   buildRelationshipGraph,
   layoutRelationshipGraph,
+  relationshipEdgeEndpoints,
   perspectiveFrom,
   relationshipSentence,
   relationshipTypeLabels,
@@ -55,7 +56,8 @@ function VisualGraph({ focusId, selectedId, assets, nodeIds, relationships, onSe
         const source = byId.get(relationship.sourceId);
         const target = byId.get(relationship.targetId);
         if (!source || !target) return null;
-        return <line key={relationship.id} className={`nexus-relationship-edge nexus-relationship-edge--${relationship.type}`} x1={source.x} y1={source.y} x2={target.x} y2={target.y} markerEnd="url(#relationship-arrow)" markerStart={relationship.direction === "bidirectional" ? "url(#relationship-arrow)" : undefined} />;
+        const edge = relationshipEdgeEndpoints(source, target);
+        return <line key={relationship.id} data-relationship-id={relationship.id} className={`nexus-relationship-edge nexus-relationship-edge--${relationship.type}`} x1={edge.x1} y1={edge.y1} x2={edge.x2} y2={edge.y2} markerEnd="url(#relationship-arrow)" markerStart={relationship.direction === "bidirectional" ? "url(#relationship-arrow)" : undefined} />;
       })}
     </svg>
     {positions.map((position) => {

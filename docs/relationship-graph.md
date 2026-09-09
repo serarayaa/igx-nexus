@@ -51,7 +51,7 @@ El provider devuelve hasta dos niveles. La UI permite reducir a un nivel y filtr
 
 ## Visualización y accesibilidad
 
-- Layout radial determinista, sin simulación física ni animación permanente.
+- Layout radial determinista, sin simulación física ni animación permanente. Las líneas se recortan matemáticamente contra un rectángulo conceptual por nodo, de modo que las flechas quedan visibles cerca del borde sin usar mediciones del DOM.
 - Flechas para dirección y flechas dobles para relaciones simétricas.
 - Patrones de línea, texto y leyenda; el significado no depende sólo del color.
 - Nodos HTML accionables con foco visible y selección mediante teclado.

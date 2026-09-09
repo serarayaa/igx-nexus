@@ -6,6 +6,8 @@ import {
   layoutRelationshipGraph,
   perspectiveFrom,
   relationshipSentence,
+  relationshipEdgeEndpoints,
+  relationshipsWithinDepth,
   validateRelationship,
   type Relationship,
 } from "./relationship-model";
@@ -55,5 +57,54 @@ describe("relationship domain", () => {
     expect(first).toEqual(second);
     expect(first[0]).toEqual({ id: "DEMO-0002", x: 50, y: 50 });
     expect(first.every(({ x, y }) => x >= 0 && x <= 100 && y >= 0 && y <= 100)).toBe(true);
+  });
+
+  it.each([
+    { name: "horizontal izquierda a derecha", source: { id: "A", x: 10, y: 50 }, target: { id: "B", x: 90, y: 50 }, expected: { x1: 19, y1: 50, x2: 81, y2: 50 } },
+    { name: "horizontal derecha a izquierda", source: { id: "A", x: 90, y: 50 }, target: { id: "B", x: 10, y: 50 }, expected: { x1: 81, y1: 50, x2: 19, y2: 50 } },
+    { name: "vertical", source: { id: "A", x: 50, y: 10 }, target: { id: "B", x: 50, y: 90 }, expected: { x1: 50, y1: 18, x2: 50, y2: 82 } },
+    { name: "diagonal", source: { id: "A", x: 20, y: 20 }, target: { id: "B", x: 80, y: 80 }, expected: { x1: 28, y1: 28, x2: 72, y2: 72 } },
+  ])("recorta aristas en sus límites conceptuales: $name", ({ source, target, expected }) => {
+    const edge = relationshipEdgeEndpoints(source, target);
+    expect(edge).toEqual(expected);
+    expect(edge).not.toEqual({ x1: source.x, y1: source.y, x2: target.x, y2: target.y });
+    expect(edge.x1 >= 0 && edge.x1 <= 100 && edge.x2 >= 0 && edge.x2 <= 100).toBe(true);
+    expect(edge.y1 >= 0 && edge.y1 <= 100 && edge.y2 >= 0 && edge.y2 <= 100).toBe(true);
+  });
+
+  it("rechaza posiciones coincidentes y límites conceptuales inválidos", () => {
+    const position = { id: "A", x: 50, y: 50 };
+    expect(() => relationshipEdgeEndpoints(position, position)).toThrow(RangeError);
+    expect(() => relationshipEdgeEndpoints(position, { id: "B", x: 70, y: 50 }, 0, 8)).toThrow(RangeError);
+  });
+
+  it("conserva sólo relaciones completas dentro de la profundidad", () => {
+    expect(relationshipsWithinDepth(demoRelationships, "DEMO-0002", 1).map(({ id }) => id)).toEqual(["DEMO-REL-001", "DEMO-REL-002"]);
+    expect(relationshipsWithinDepth(demoRelationships, "DEMO-0002", 2).map(({ id }) => id)).toEqual(["DEMO-REL-001", "DEMO-REL-002", "DEMO-REL-003", "DEMO-REL-004", "DEMO-REL-006"]);
+  });
+
+  it("mantiene referencias incompletas adyacentes pero no arrastra relaciones posteriores", () => {
+    const incomplete: readonly Relationship[] = [
+      { ...demoRelationships[0]!, id: "R-A-MISSING", sourceId: "A", targetId: "MISSING" },
+      { ...demoRelationships[0]!, id: "R-MISSING-C", sourceId: "MISSING", targetId: "C" },
+    ];
+    expect(relationshipsWithinDepth(incomplete, "A", 1).map(({ id }) => id)).toEqual(["R-A-MISSING"]);
+  });
+
+  it("no reintroduce aristas que contradicen la perspectiva recorrida", () => {
+    const directed: readonly Relationship[] = [
+      { ...demoRelationships[0]!, id: "X-TO-FOCUS", sourceId: "X", targetId: "FOCUS" },
+      { ...demoRelationships[0]!, id: "FOCUS-TO-X", sourceId: "FOCUS", targetId: "X" },
+    ];
+    const downstream = buildRelationshipGraph(demoSnapshot, { ...demoRelationshipSnapshot, relationships: directed }, "FOCUS", { type: "depends_on", perspective: "downstream", depth: 1 });
+    expect(downstream.relationships.map(({ id }) => id)).toEqual(["X-TO-FOCUS"]);
+
+    const peerOnly: readonly Relationship[] = [
+      { ...demoRelationships[2]!, id: "FOCUS-B", sourceId: "FOCUS", targetId: "B" },
+      { ...demoRelationships[2]!, id: "FOCUS-C", sourceId: "FOCUS", targetId: "C" },
+      { ...demoRelationships[0]!, id: "B-TO-C", sourceId: "B", targetId: "C" },
+    ];
+    const peers = buildRelationshipGraph(demoSnapshot, { ...demoRelationshipSnapshot, relationships: peerOnly }, "FOCUS", { type: "all", perspective: "peer", depth: 2 });
+    expect(peers.relationships.map(({ id }) => id)).toEqual(["FOCUS-B", "FOCUS-C"]);
   });
 });

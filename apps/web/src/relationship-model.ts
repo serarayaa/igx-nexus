@@ -95,6 +95,32 @@ export interface RelationshipGraphModel {
   readonly unresolvedIds: readonly string[];
 }
 
+/** Selects the complete topological neighborhood requested by a provider. */
+export function relationshipsWithinDepth(
+  relationships: readonly Relationship[],
+  assetId: string,
+  depth: 1 | 2,
+): readonly Relationship[] {
+  const reached = new Set([assetId]);
+  let frontier = new Set([assetId]);
+
+  for (let level = 0; level < depth; level += 1) {
+    const next = new Set<string>();
+    for (const relationship of relationships) {
+      for (const fromId of frontier) {
+        const endpoint = otherEndpoint(relationship, fromId);
+        if (endpoint && !reached.has(endpoint)) next.add(endpoint);
+      }
+    }
+    next.forEach((id) => reached.add(id));
+    frontier = next;
+  }
+
+  return relationships.filter((relationship) =>
+    reached.has(relationship.sourceId) && reached.has(relationship.targetId)
+  );
+}
+
 function canTraverse(
   relationship: Relationship,
   fromId: string,
@@ -118,6 +144,7 @@ export function buildRelationshipGraph(
     filters.type === "all" || relationship.type === filters.type
   );
   const reached = new Set([focusId]);
+  const traversed = new Set<string>();
   let frontier = new Set([focusId]);
 
   for (let level = 0; level < filters.depth; level += 1) {
@@ -126,7 +153,10 @@ export function buildRelationshipGraph(
       for (const fromId of frontier) {
         if (!canTraverse(relationship, fromId, filters.perspective)) continue;
         const endpoint = otherEndpoint(relationship, fromId);
-        if (endpoint && !reached.has(endpoint)) next.add(endpoint);
+        if (endpoint) {
+          traversed.add(relationship.id);
+          if (!reached.has(endpoint)) next.add(endpoint);
+        }
       }
     }
     next.forEach((id) => reached.add(id));
@@ -134,7 +164,9 @@ export function buildRelationshipGraph(
   }
 
   const relationships = candidates.filter((relationship) =>
-    reached.has(relationship.sourceId) && reached.has(relationship.targetId)
+    reached.has(relationship.sourceId) &&
+    reached.has(relationship.targetId) &&
+    (filters.perspective === "all" || traversed.has(relationship.id))
   );
   const assets = new Map(inventory.assets.map((asset) => [asset.id, asset]));
   const nodeIds = [...reached].sort((left, right) => {
@@ -147,6 +179,12 @@ export function buildRelationshipGraph(
 }
 
 export interface GraphPosition { readonly id: string; readonly x: number; readonly y: number }
+export interface EdgeEndpoints {
+  readonly x1: number;
+  readonly y1: number;
+  readonly x2: number;
+  readonly y2: number;
+}
 
 /** Deterministic radial layout for the intentionally small v0.1 neighborhood. */
 export function layoutRelationshipGraph(nodeIds: readonly string[], focusId: string): readonly GraphPosition[] {
@@ -161,6 +199,36 @@ export function layoutRelationshipGraph(nodeIds: readonly string[], focusId: str
     });
   });
   return positions;
+}
+
+/**
+ * Clips a center-to-center edge against conceptual node bounds in SVG space.
+ * The approximation is stable across themes and avoids runtime DOM measurement.
+ */
+export function relationshipEdgeEndpoints(
+  source: GraphPosition,
+  target: GraphPosition,
+  halfWidth = 9,
+  halfHeight = 8,
+): EdgeEndpoints {
+  const dx = target.x - source.x;
+  const dy = target.y - source.y;
+  if (dx === 0 && dy === 0) throw new RangeError("relationship edge requires distinct positions");
+  if (!(halfWidth > 0) || !(halfHeight > 0)) throw new RangeError("node bounds must be positive");
+
+  const intersectionScale = Math.min(
+    dx === 0 ? Number.POSITIVE_INFINITY : halfWidth / Math.abs(dx),
+    dy === 0 ? Number.POSITIVE_INFINITY : halfHeight / Math.abs(dy),
+  );
+  const scale = Math.min(intersectionScale, 0.49);
+  const clamp = (value: number) => Math.max(0, Math.min(100, Number(value.toFixed(3))));
+
+  return {
+    x1: clamp(source.x + dx * scale),
+    y1: clamp(source.y + dy * scale),
+    x2: clamp(target.x - dx * scale),
+    y2: clamp(target.y - dy * scale),
+  };
 }
 
 export function relationshipSentence(

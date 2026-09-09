@@ -16,7 +16,7 @@ La Demo v0.1 usa un vecindario pequeño. Incorporar una librería de grafos gene
 - Exigir dirección explícita: `depends_on` y `uses` son dirigidas; `connected_to` es bidireccional.
 - Consultar datos mediante `RelationshipProvider(RelationshipQuery, AbortSignal)` y mantener `DemoRelationshipProvider` fuera de los componentes.
 - Construir el vecindario con funciones puras, filtros por tipo/perspectiva y profundidad máxima de dos niveles.
-- Usar un layout radial determinista propio. El foco ocupa el centro y los demás nodos se ordenan por ID antes de calcular posiciones.
+- Usar un layout radial determinista propio. El foco ocupa el centro y los demás nodos se ordenan por ID antes de calcular posiciones. Las aristas se recortan contra un bounding box conceptual de cada nodo en espacio SVG para mantener visibles sus marcadores sin medir el DOM.
 - Renderizar aristas en SVG y nodos como botones HTML. Así el SVG puede ser decorativo mientras los nodos conservan interacción y foco nativos.
 - Mantener una lista semántica equivalente con endpoints, verbo, dirección, estado y navegación.
 - Ocultar el plano visual bajo 768 px y priorizar la lista; no se encoge un canvas hasta volverlo ilegible.
@@ -32,6 +32,7 @@ Esta semántica no constituye análisis de impacto empresarial ni propagación d
 
 - La UI no conoce GLPI, Intune, Graph, Entra, SNMP ni coordenadas entregadas por proveedores.
 - El layout es estable, testeable y no depende de animación permanente.
+- Las puntas de flecha terminan aproximadamente en el borde conceptual de las tarjetas, incluso en relaciones bidireccionales; la aproximación evita observers y cálculos dependientes del viewport.
 - No se agrega dependencia de visualización; el bundle conserva su perfil actual.
 - Un CI referenciado pero ausente del inventario se muestra como referencia incompleta y nunca genera un enlace falso.
 - La solución es intencionalmente acotada. Zoom, pan, clustering y virtualización deben reconsiderarse sólo con datasets y requisitos reales.

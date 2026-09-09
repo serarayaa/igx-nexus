@@ -105,3 +105,13 @@ it("permite recorrer y activar nodos con teclado", async () => {
   await waitFor(() => expect(node.getAttribute("aria-pressed")).toBe("true"));
   expect(document.activeElement).toBe(node);
 });
+
+it("recorta las aristas antes de los centros de los nodos", async () => {
+  render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" /></NexusShell>);
+  await ready();
+  const edge = document.querySelector<SVGLineElement>('[data-relationship-id="DEMO-REL-001"]');
+  expect(edge).not.toBeNull();
+  expect([edge?.getAttribute("x1"), edge?.getAttribute("y1")]).not.toEqual(["50", "50"]);
+  expect([edge?.getAttribute("x2"), edge?.getAttribute("y2")]).not.toEqual(["50", "14"]);
+  expect(edge?.getAttribute("marker-end")).toBe("url(#relationship-arrow)");
+});
