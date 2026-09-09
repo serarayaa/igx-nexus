@@ -161,9 +161,10 @@
   font-weight: var(--igx-font-weight-semibold);
 }
 
-.igx-app-sidebar__nav a:focus-visible {
-  outline: var(--igx-border-width-thick) solid var(--igx-semantic-color-focus-ring);
-  outline-offset: var(--igx-spacing-1);
+.igx-app-sidebar__nav a:focus {
+  outline: var(--igx-border-width-medium) solid
+    var(--igx-semantic-color-focus-ring);
+  outline-offset: calc(-1 * var(--igx-border-width-medium));
 }
 
 .igx-app-sidebar__nav svg {
