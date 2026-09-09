@@ -125,7 +125,7 @@ La validación manual mínima se realiza en Windows High Contrast cuando sea pos
 | --- | --- | --- |
 | Navegación teclado | Recorrer stories representativas sólo con Tab/Shift+Tab/Enter/Space/Escape | **Validado 2026-09-08** — PageLayout y AppShell móvil; focus trap y Escape correctos |
 | Focus visible | Confirmar focus perceptible y no oculto por AppShell/navigation | **Validado 2026-09-08** — Button, Search, Toolbar y enlaces de navegación con focus perceptible |
-| Zoom 200% | Storybook usable sin pérdida de contenido/acciones | Pendiente |
+| Zoom 200% | Storybook usable sin pérdida de contenido/acciones | **Validado 2026-09-08** — AppShell mantiene navegación, header, contenido y acciones sin solapamiento ni pérdida visible |
 | Reflow 320 CSS px | Layout representativo usable; tablas pueden usar scroll horizontal | Pendiente |
 | Dark + Compact | Contraste y jerarquía conservados | Automatizado + revisión manual pendiente |
 | Reduced Motion | Movimiento no esencial eliminado/reducido | Pendiente |
