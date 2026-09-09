@@ -131,7 +131,7 @@ La validación manual mínima se realiza en Windows High Contrast cuando sea pos
 | Reduced Motion | Movimiento no esencial eliminado/reducido | **Validado 2026-09-08** — `prefers-reduced-motion: reduce` reduce la transición del drawer a un cambio prácticamente instantáneo, manteniendo el cambio de estado |
 | Windows High Contrast | Controles y estados siguen siendo distinguibles | **Validado 2026-09-08** — `forced-colors: active` conserva texto, iconos, controles y bordes; el enlace actual se distingue además mediante subrayado y señal no dependiente del color |
 | Screen reader smoke | Headings, landmarks, botones, inputs y tabla anunciados de forma razonable | Pendiente |
-| Touch targets | Acciones móviles prioritarias cercanas a 44×44 cuando corresponda | Pendiente |
+| Touch targets | Acciones móviles prioritarias cercanas a 44×44 cuando corresponda | **Validado 2026-09-08** — IconButton aplica target táctil mínimo de 44×44 CSS px en punteros coarse; hamburguesa, notificaciones y cierre del drawer cumplen el baseline |
 
 ## Criterio de cierre
 
