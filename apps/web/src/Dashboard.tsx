@@ -44,7 +44,7 @@ export function Dashboard({ provider = demoProvider }: { provider?: DashboardPro
 
   // El drawer móvil no debe mantener el escritorio inerte al ampliar el viewport.
   useEffect(() => {
-    const desktop = window.matchMedia("(min-width: 1024px)");
+    const desktop = window.matchMedia("(min-width: 64rem)");
     const closeOnDesktop = () => { if (desktop.matches) setNavigationOpen(false); };
     desktop.addEventListener("change", closeOnDesktop);
     return () => desktop.removeEventListener("change", closeOnDesktop);

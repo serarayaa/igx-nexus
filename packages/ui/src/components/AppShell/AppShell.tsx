@@ -140,7 +140,11 @@ export function AppShell({
 
     if (isNavigationOpen) {
       animationFrame = window.requestAnimationFrame(() => {
-        focusFirstElement(navigationRef.current);
+        // Esperar el primer paint evita competir con el focus del trigger
+        // mientras React Aria termina el evento press y el fondo se vuelve inert.
+        animationFrame = window.requestAnimationFrame(() => {
+          focusFirstElement(navigationRef.current);
+        });
       });
     } else if (wasNavigationOpen) {
       animationFrame = window.requestAnimationFrame(() => {

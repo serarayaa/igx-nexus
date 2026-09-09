@@ -5,7 +5,7 @@ a { color: var(--igx-semantic-color-text-link); }
 a:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 4px; }
 .nexus-dashboard { display: grid; gap: var(--igx-density-section-gap); max-width: 100rem; margin-inline: auto; }
 .nexus-dashboard > *, .nexus-two-column > *, .nexus-metrics > * { min-width: 0; }
-.nexus-dashboard [id] { scroll-margin-block: var(--igx-spacing-6); }
+.nexus-dashboard [id] { scroll-margin-block: 6rem; }
 .nexus-brand { display: grid; gap: var(--igx-spacing-3); }
 .nexus-brand img { display: block; max-width: 100%; height: auto; background: var(--igx-semantic-color-surface-base); padding: var(--igx-spacing-2); border-radius: var(--igx-semantic-shape-card); }
 .nexus-brand span { font-size: .875rem; color: var(--igx-semantic-color-text-secondary); }
