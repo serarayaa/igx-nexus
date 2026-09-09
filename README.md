@@ -57,7 +57,7 @@ El primer hito es una demostración local pulida que permita validar el producto
 
 La eventual adopción por Innergex Canadá u otras entidades se considera una oportunidad futura y no debe condicionar el alcance de la primera implementación chilena.
 
-Avance formal integrado: **8/13 tickets (~61,5%)**. CMDB-008 — Asset 360° está integrado mediante PR #21 (`bdee501`). CMDB-009 — Motor QR y Etiquetado está implementado en `feature/cmdb-009-qr-label-engine` mediante PR #23 (issue #22), pendiente de merge manual.
+Avance formal integrado: **9/13 tickets (~69,2%)**. CMDB-009 — Motor QR y Etiquetado está integrado mediante PR #23 (`5b0b0a9`); issue #22 cerrado. El siguiente ticket es CMDB-010 — Grafo de Relaciones.
 
 ## Flujo de desarrollo
 

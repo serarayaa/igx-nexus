@@ -18,20 +18,20 @@ Completado e integrado:
 - CMDB-006 ✅ Panel Principal — PR #17 (`93b6474`)
 - CMDB-007 ✅ Explorador de Activos — PR #19 (`2f7e61f`)
 - CMDB-008 ✅ Asset 360° — PR #21 (`bdee501`)
+- CMDB-009 ✅ Motor QR y Etiquetado — PR #23 (`5b0b0a9`); issue #22 cerrado
 
 Pendiente para la demo:
 
-- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; PR #23 abierto, pendiente de merge manual
 - CMDB-010 ⬜ Grafo de Relaciones
 - CMDB-011 ⬜ CMDB Health
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
-Por conteo formal de tickets **integrados**, el avance es 8 de 13: aproximadamente **61,5% completado** y **38,5% pendiente de integración**.
+Por conteo formal de tickets **integrados**, el avance es 9 de 13: aproximadamente **69,2% completado** y **30,8% pendiente de integración**.
 
 CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. Incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible.
 
-CMDB-009 añade locator opaco separado de `Asset.id`, QR sin datos sensibles, diseñador de etiquetas, perfiles físicos 203/300 DPI y exportación SVG. La demo usa una base `.invalid` y un simulador hash interno para no fingir infraestructura productiva. Hasta su merge manual el avance formal permanece en **8/13 (~61,5%)**.
+CMDB-009 está integrado. Añade locator opaco separado de `Asset.id`, QR sin datos sensibles, diseñador de etiquetas, perfiles físicos 203/300 DPI y exportación SVG. La demo usa una base `.invalid` y un simulador hash interno para no fingir infraestructura productiva.
 
 ## Estado del baseline visual para la demo
 
