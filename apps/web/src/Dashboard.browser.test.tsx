@@ -56,6 +56,15 @@ it("cancela solicitudes anteriores e ignora respuestas fuera de orden", async ()
   await waitFor(() => expect(screen.queryByText("No hay activos para este alcance")).toBeNull());
 });
 
+it("expone QR integrado y CMDB-010 como próximo hito", async () => {
+  render(<Dashboard />); await ready();
+  const qrLink = screen.getByRole("link", { name: "QR y etiquetado" });
+  expect(qrLink.getAttribute("href")).toBe("#assets/DEMO-0002/label");
+  expect(screen.getByText("CMDB-009 · integrado")).toBeTruthy();
+  expect(screen.getByText("Grafo de Relaciones")).toBeTruthy();
+  expect(screen.getByText("CMDB-010 · próximo")).toBeTruthy();
+});
+
 it("pasa axe en light/dark y no desborda el viewport móvil", async () => {
   const { container } = render(<Dashboard />); await ready();
   for (const width of [1440, 768, 320]) {
