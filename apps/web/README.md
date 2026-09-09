@@ -1,10 +1,10 @@
-# IGX NEXUS Web — Dashboard, Explorer, Asset 360 y QR
+# IGX NEXUS Web — Dashboard, Explorer, Asset 360, QR y Relaciones
 
 La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. El escenario actual usa exclusivamente 240 activos sintéticos con corte fijo. No requiere GLPI, credenciales ni Docker para la demostración Web.
 
-CMDB-007 incorpora Asset Explorer y CMDB-008 agrega Asset 360. CMDB-009 añade un locator QR separado de `Asset.id`, un diseñador de etiquetas y exportación SVG real sin duplicar el inventario.
+CMDB-007 incorpora Asset Explorer, CMDB-008 agrega Asset 360, CMDB-009 añade el motor QR y CMDB-010 incorpora un Technology Map visual y accesible sin duplicar el inventario.
 
-Ver [Asset Explorer](../../docs/asset-explorer.md), [Asset 360](../../docs/asset-360.md), [Motor QR y Etiquetado](../../docs/qr-label-engine.md), [ADR-0006](../../docs/architecture/adr-0006-asset-360-routing.md) y [ADR-0007](../../docs/architecture/adr-0007-qr-locator-label-engine.md).
+Ver [Asset Explorer](../../docs/asset-explorer.md), [Asset 360](../../docs/asset-360.md), [Motor QR y Etiquetado](../../docs/qr-label-engine.md), [Grafo de Relaciones](../../docs/relationship-graph.md) y [ADR-0008](../../docs/architecture/adr-0008-relationship-graph.md).
 
 ## Ejecución local
 
@@ -24,6 +24,7 @@ Abrir `http://127.0.0.1:3000`. El servidor se limita a loopback y falla si el pu
 /#assets                         Asset Explorer
 /#assets/DEMO-0002               Asset 360
 /#assets/DEMO-0002/label         Diseñador de etiqueta
+/#assets/DEMO-0002/relations     Grafo de Relaciones
 /#q/<demo-locator>               Simulador interno de resolución
 ```
 
@@ -33,7 +34,7 @@ El QR exportado **no** contiene la ruta hash. En la demo contiene `https://nexus
 
 ## Providers y datos
 
-Dashboard, Explorer, Asset 360, diseñador y resolver utilizan el mismo dominio `Asset`/`AssetSummary` y el mismo fixture determinista de `demo-provider.ts`.
+Dashboard, Explorer, Asset 360, diseñador, resolver y Grafo utilizan el mismo dominio `Asset`/`AssetSummary`. Las relaciones viven en un dominio y provider demo separados para que futuras fuentes no acoplen la UI.
 
 Los providers asíncronos reciben `AbortSignal`. La futura NEXUS API reemplazará el provider; nunca se debe conectar el navegador directamente a GLPI, MariaDB, Graph con secretos o dispositivos OT.
 
@@ -76,6 +77,6 @@ Las suites Browser cubren Dashboard, Explorer, Asset 360 y diseñador QR/etiquet
 - sin autenticación productiva;
 - sin endpoint productivo `/q/:locator`;
 - sin impresora/vendor adapter específico;
-- sin Relationship Graph (CMDB-010);
+- sin edición, persistencia o discovery real de relaciones;
 - sin CMDB Health Score (CMDB-011);
 - sin Service Desk, ya que esa responsabilidad corresponde a Jira.

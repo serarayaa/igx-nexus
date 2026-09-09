@@ -108,7 +108,7 @@ No se presentan GLPI, Intune, Entra o Defender como sincronizaciones reales.
 
 ### Relaciones
 
-La sección de relaciones sólo explica continuidad hacia CMDB-010. CMDB-008 no implementa grafo, motor de relaciones ni librerías de visualización.
+La sección de relaciones enlaza a `#assets/<asset-id>/relations`, implementado por CMDB-010. Asset 360 mantiene sólo el punto de entrada y no duplica el modelo ni el provider de relaciones.
 
 ## Estados de carga y error
 
