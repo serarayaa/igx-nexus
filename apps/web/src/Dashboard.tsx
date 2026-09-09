@@ -83,7 +83,7 @@ export function DashboardContent({ provider = demoProvider }: { provider?: Dashb
         </ContentSection></Card>
       </>}
       <Card id="next-views"><ContentSection title="Próximas vistas" description="Accede al inventario y conoce los siguientes hitos del roadmap.">
-        <div className="nexus-future"><span><Boxes aria-hidden="true" /><a href="#assets">Explorar activos</a><Badge>Inventario demo</Badge></span><span><MapPin aria-hidden="true" /><a href="#assets/DEMO-0002">Asset 360°</a><Badge>CMDB-008 · integrado</Badge></span><span><Activity aria-hidden="true" /><a href="#assets/DEMO-0002/label">QR y etiquetado</a><Badge>CMDB-009 · integrado</Badge></span><span><Activity aria-hidden="true" /><strong>Grafo de Relaciones</strong><Badge>CMDB-010 · próximo</Badge></span><span><Activity aria-hidden="true" /><strong>CMDB Health</strong><Badge>CMDB-011 · pendiente</Badge></span></div>
+        <div className="nexus-future"><span><Boxes aria-hidden="true" /><a href="#assets">Explorar activos</a><Badge>Inventario demo</Badge></span><span><MapPin aria-hidden="true" /><a href="#assets/DEMO-0002">Asset 360°</a><Badge>CMDB-008 · integrado</Badge></span><span><Activity aria-hidden="true" /><a href="#assets/DEMO-0002/label">QR y etiquetado</a><Badge>CMDB-009 · integrado</Badge></span><span><Activity aria-hidden="true" /><a href="#assets/DEMO-0002/relations">Grafo de Relaciones</a><Badge>CMDB-010 · listo para revisión</Badge></span><span><Activity aria-hidden="true" /><strong>CMDB Health</strong><Badge>CMDB-011 · pendiente</Badge></span></div>
       </ContentSection></Card>
     </div>;
 }

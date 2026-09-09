@@ -3,7 +3,7 @@ import { Boxes, CalendarClock, LayoutDashboard, Moon, Network, ShieldCheck, Slid
 import { AppHeader, AppShell, AppSidebar, Badge, IconButton } from "@igx-nexus/ui";
 import logo from "../../../assets/branding/igx-nexus-logo.png";
 
-type NexusView = "dashboard" | "assets" | "asset" | "label" | "qr";
+type NexusView = "dashboard" | "assets" | "asset" | "relations" | "label" | "qr";
 
 export function NexusShell({ children, view = "dashboard" }: { children: ReactNode; view?: NexusView }) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -24,7 +24,7 @@ export function NexusShell({ children, view = "dashboard" }: { children: ReactNo
     return () => desktop.removeEventListener("change", closeOnDesktop);
   }, []);
 
-  const assetsCurrent = view === "assets" || view === "asset" || view === "label" || view === "qr";
+  const assetsCurrent = view === "assets" || view === "asset" || view === "relations" || view === "label" || view === "qr";
 
   return <AppShell isNavigationOpen={navigationOpen} onNavigationOpenChange={setNavigationOpen}
     header={<AppHeader title="The Technology Map" context="Innergex Chile" actions={<>

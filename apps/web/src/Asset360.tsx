@@ -4,7 +4,7 @@ import { typeLabels, type Asset, type InventoryProvider, type InventorySnapshot 
 import { warrantyDays } from "./dashboard-model";
 import { demoProvider } from "./demo-provider";
 import { freshnessLabels, freshnessOf } from "./explorer-model";
-import { demoQrHash, labelHash } from "./navigation-model";
+import { demoQrHash, labelHash, relationsHash } from "./navigation-model";
 import { demoLocatorForAsset } from "./qr-locator";
 import "./asset-360.css";
 
@@ -201,8 +201,10 @@ export function Asset360({ assetId, provider = demoProvider }: { assetId: string
 
       <section className="nexus-asset-section" aria-labelledby="asset-relations-heading">
         <h2 id="asset-relations-heading">Relaciones</h2>
-        <p>La identidad y la URL estable de este activo quedan preparadas para conectar relaciones entre CIs en CMDB-010.</p>
-        <p className="nexus-muted">El grafo no se implementa en CMDB-009.</p>
+        <div className="nexus-asset-status-row"><StatusBadge status="info">CMDB-010</StatusBadge><Badge>Technology Map</Badge></div>
+        <p>Explora dependencias upstream, impacto downstream y conectividad del activo en un mapa navegable.</p>
+        <p className="nexus-muted">Las relaciones de v0.1 son exclusivamente sintéticas y no provienen de discovery real.</p>
+        <div className="nexus-asset-actions"><a className="nexus-asset-link" href={relationsHash(asset.id)}>Abrir grafo de relaciones</a></div>
       </section>
     </div>
   </div>;
