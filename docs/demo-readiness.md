@@ -21,7 +21,7 @@ Completado e integrado:
 
 Pendiente para la demo:
 
-- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; implementación en rama pendiente de PR/merge manual
+- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; PR #23 abierto, pendiente de merge manual
 - CMDB-010 ⬜ Grafo de Relaciones
 - CMDB-011 ⬜ CMDB Health
 - CMDB-012 ⬜ Dataset de Demo

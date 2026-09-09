@@ -16,7 +16,7 @@ Avance formal actual: **8 de 13 tickets integrados (~61,5%)**.
 - CMDB-006 ✅ Panel Principal — integrado mediante PR #17
 - CMDB-007 ✅ Explorador de Activos — integrado mediante PR #19 (`2f7e61f`)
 - CMDB-008 ✅ Asset 360° — integrado mediante PR #21 (`bdee501`)
-- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; implementándose en `feature/cmdb-009-qr-label-engine`, pendiente de PR/merge manual
+- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; PR #23 abierto desde `feature/cmdb-009-qr-label-engine`, pendiente de merge manual
 - CMDB-010 ⬜ Grafo de Relaciones
 - CMDB-011 ⬜ CMDB Health
 - CMDB-012 ⬜ Dataset de Demo
