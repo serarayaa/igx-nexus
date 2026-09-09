@@ -1,0 +1,39 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--igx-font-family-sans); font-size: 1rem; line-height: 1.5; background: var(--igx-semantic-color-background-canvas); color: var(--igx-semantic-color-text-primary); }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { color: var(--igx-semantic-color-text-link); }
+a:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 4px; }
+.nexus-dashboard { display: grid; gap: var(--igx-density-section-gap); max-width: 100rem; margin-inline: auto; }
+.nexus-dashboard > *, .nexus-two-column > *, .nexus-metrics > * { min-width: 0; }
+.nexus-dashboard [id] { scroll-margin-block: var(--igx-spacing-6); }
+.nexus-brand { display: grid; gap: var(--igx-spacing-3); }
+.nexus-brand img { display: block; max-width: 100%; height: auto; background: var(--igx-semantic-color-surface-base); padding: var(--igx-spacing-2); border-radius: var(--igx-semantic-shape-card); }
+.nexus-brand span { font-size: .875rem; color: var(--igx-semantic-color-text-secondary); }
+.nexus-nav-link { display: flex; align-items: center; gap: var(--igx-spacing-3); padding: var(--igx-spacing-3); text-decoration: none; border-radius: var(--igx-semantic-shape-control); font-size: .875rem; min-height: 44px; }
+.nexus-nav-link[aria-current] { background: var(--igx-semantic-color-action-primary-background); color: var(--igx-semantic-color-action-primary-foreground); font-weight: 600; }
+.nexus-nav-link svg, .nexus-metric-label svg, .nexus-future svg { width: 20px; height: 20px; flex: none; }
+.nexus-nav-heading { margin: var(--igx-spacing-6) var(--igx-spacing-3) var(--igx-spacing-1); color: var(--igx-semantic-color-text-secondary); font-size: .875rem; }
+.nexus-filter, .nexus-warranty-summary { display: flex; flex-wrap: wrap; gap: var(--igx-spacing-2); }
+.nexus-muted, .nexus-metrics p { color: var(--igx-semantic-color-text-secondary); font-size: .875rem; }
+.nexus-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--igx-density-content-gap); }
+.nexus-metric-label { display: flex; gap: var(--igx-spacing-2); align-items: center; font-size: .875rem; }
+.nexus-metric-value { display: block; font-size: 2.25rem; font-weight: var(--igx-semantic-typography-metric-font-weight); line-height: 1.2; font-variant-numeric: tabular-nums; margin-block: var(--igx-spacing-4) var(--igx-spacing-2); }
+.nexus-metrics p { margin: 0; }
+.nexus-two-column { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--igx-density-section-gap); }
+.nexus-signals { margin: 0; }
+.nexus-signals > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--igx-spacing-2); padding-block: var(--igx-spacing-3); border-bottom: 1px solid var(--igx-semantic-color-border-subtle); }
+.nexus-signals dt { font-size: .875rem; }
+.nexus-signals dd { margin: 0; }
+.nexus-distribution { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--igx-density-content-gap); }
+.nexus-distribution-label { display: flex; justify-content: space-between; gap: var(--igx-spacing-3); font-size: .875rem; margin-bottom: var(--igx-spacing-2); font-variant-numeric: tabular-nums; }
+.nexus-bar-track { height: 8px; background: var(--igx-data-viz-color-grid); }
+.nexus-bar { height: 100%; background: var(--igx-data-viz-color-categorical-1); }
+.nexus-warranty-summary { margin-bottom: var(--igx-spacing-4); }
+.nexus-id { font-family: var(--igx-font-family-mono); }
+.nexus-future { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--igx-spacing-4); }
+.nexus-future > span { display: flex; align-items: flex-start; flex-direction: column; gap: var(--igx-spacing-2); font-size: .875rem; }
+.nexus-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 1279px) { .nexus-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .nexus-two-column, .nexus-future { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 479px) { .nexus-metrics { grid-template-columns: minmax(0, 1fr); } }
+@media (forced-colors: active) { .nexus-bar-track { border: 1px solid CanvasText; } .nexus-bar { background: Highlight; forced-color-adjust: none; } .nexus-nav-link[aria-current] { outline: 2px solid Highlight; } }

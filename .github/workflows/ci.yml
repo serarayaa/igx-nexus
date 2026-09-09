@@ -19,9 +19,9 @@ concurrency:
 
 jobs:
   ui:
-    name: Design System / UI
+    name: Design System / UI / Dashboard
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -57,3 +57,9 @@ jobs:
 
       - name: Verificar paquete distribuible
         run: npm pack --dry-run --workspace @igx-nexus/ui
+
+      - name: Typecheck y build del Dashboard
+        run: npm run build --workspace @igx-nexus/web
+
+      - name: Métricas, interacción y accesibilidad del Dashboard
+        run: npm run test --workspace @igx-nexus/web
