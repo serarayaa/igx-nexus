@@ -1,40 +1,54 @@
 import { useEffect, useState } from "react";
 import { DashboardContent } from "./Dashboard";
 import { AssetExplorer } from "./AssetExplorer";
+import { Asset360 } from "./Asset360";
 import { NexusShell } from "./NexusShell";
+import { routeFromHash, type AppRoute } from "./navigation-model";
 
-type View = "dashboard" | "assets";
-function savedView(): View | null {
-  const value: unknown = window.history.state?.nexusView;
-  return value === "assets" || value === "dashboard" ? value : null;
-}
-function viewFromHash(hash: string): View | null {
-  if (hash === "#assets") return "assets";
-  if (["", "#overview", "#quality", "#lifecycle", "#next-views"].includes(hash)) return "dashboard";
-  // Anclas como el skip link no cambian la vista actual.
+function savedRoute(): AppRoute | null {
+  const value: unknown = window.history.state?.nexusRoute;
+  if (!value || typeof value !== "object" || !("view" in value)) return null;
+  const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown };
+  if (route.view === "dashboard" || route.view === "assets") return { view: route.view };
+  if (route.view === "asset" && typeof route.assetId === "string" && route.assetId) {
+    return { view: "asset", assetId: route.assetId };
+  }
   return null;
 }
+
 export function App() {
-  const [view, setView] = useState<View>(() => viewFromHash(window.location.hash) ?? savedView() ?? "dashboard");
+  const [route, setRoute] = useState<AppRoute>(() => routeFromHash(window.location.hash) ?? savedRoute() ?? { view: "dashboard" });
+
   useEffect(() => {
     const onHashChange = () => {
-      const next = viewFromHash(window.location.hash) ?? savedView() ?? view;
-      // Recordar la vista de las anclas internas permite Atrás/Adelante tras el skip link.
-      window.history.replaceState({ nexusView: next }, "");
-      setView(next);
+      const next = routeFromHash(window.location.hash) ?? savedRoute() ?? route;
+      window.history.replaceState({ ...window.history.state, nexusRoute: next }, "");
+      setRoute(next);
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
-  }, [view]);
+  }, [route]);
+
   useEffect(() => {
-    document.title = `${view === "assets" ? "Activos" : "Panel principal"} · IGX NEXUS`;
-    // Después del commit y de la restauración del drawer, anunciar la vista nueva.
+    const title = route.view === "dashboard" ? "Panel principal" : route.view === "assets" ? "Activos" : `Asset ${route.assetId}`;
+    document.title = `${title} · IGX NEXUS`;
     const frame = requestAnimationFrame(() => {
       const heading = document.querySelector<HTMLElement>("main h1");
-      heading?.setAttribute("tabindex", "-1");
-      heading?.focus();
+      if (heading) {
+        heading.setAttribute("tabindex", "-1");
+        heading.focus();
+      } else {
+        document.querySelector<HTMLElement>("main")?.focus();
+      }
     });
     return () => cancelAnimationFrame(frame);
-  }, [view]);
-  return <NexusShell view={view}>{view === "assets" ? <AssetExplorer /> : <DashboardContent />}</NexusShell>;
+  }, [route]);
+
+  const content = route.view === "dashboard"
+    ? <DashboardContent />
+    : route.view === "assets"
+      ? <AssetExplorer />
+      : <Asset360 assetId={route.assetId} />;
+
+  return <NexusShell view={route.view}>{content}</NexusShell>;
 }
