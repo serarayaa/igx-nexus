@@ -17,21 +17,21 @@ Completado e integrado:
 - CMDB-005 ✅ Sistema de Diseño IGX — PR #16
 - CMDB-006 ✅ Panel Principal — PR #17 (`93b6474`)
 - CMDB-007 ✅ Explorador de Activos — PR #19 (`2f7e61f`)
+- CMDB-008 ✅ Asset 360° — PR #21 (`bdee501`)
 
 Pendiente para la demo:
 
-- CMDB-008 ⬜ Asset 360° — implementación en rama; pendiente de merge manual
-- CMDB-009 ⬜ Motor QR
+- CMDB-009 ⬜ Motor QR y Etiquetado — issue #22; rama `feature/cmdb-009-qr-label-engine`
 - CMDB-010 ⬜ Grafo de Relaciones
 - CMDB-011 ⬜ CMDB Health
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
-Por conteo formal de tickets **integrados**, el avance es 7 de 13: aproximadamente **53,8% completado** y **46,2% pendiente de integración**.
+Por conteo formal de tickets **integrados**, el avance es 8 de 13: aproximadamente **61,5% completado** y **38,5% pendiente de integración**.
 
-CMDB-007 quedó integrado mediante PR #19. El Explorer incorpora búsqueda, filtros, ordenación, paginación y navegación sobre el mismo inventario demo. Ver [alcance y QA](asset-explorer.md).
+CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. Incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible. Ver [Asset 360](asset-360.md).
 
-CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. La implementación de rama incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible. Ver [Asset 360](asset-360.md). Sólo se contará como integrado después del merge manual; entonces el avance será **8/13 (~61,5%)**.
+CMDB-009 añade la capa de identidad física: locator opaco, QR sin datos sensibles, motor de etiquetas y salida preparada para impresión. Hasta su merge manual el avance formal permanece en **8/13 (~61,5%)**.
 
 Este porcentaje no representa horas de trabajo lineales: la infraestructura base y el sistema de diseño reducen trabajo repetido de los tickets funcionales posteriores.
 
@@ -79,6 +79,8 @@ Antes de utilizar datos reales deberán agregarse, al menos:
 - monitoreo y logs persistentes.
 - estrategia de actualización de GLPI, NEXUS y dependencias.
 - política de retención y auditoría.
+- URL estable para locators QR y resolver `/q/:locator`.
+- persistencia y política de emisión/revocación de locators.
 
 ## Migración notebook local → servidor corporativo
 
