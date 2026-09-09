@@ -67,6 +67,12 @@ function NexusHeader() {
   );
 }
 
+function nextAnimationFrame() {
+  return new Promise<void>((resolve) => {
+    window.requestAnimationFrame(() => resolve());
+  });
+}
+
 export const Default: Story = {
   args: {
     sidebar: <NexusSidebar />,
@@ -93,20 +99,71 @@ export const Default: Story = {
     const skipLink = canvas.getByRole("link", {
       name: "Saltar al contenido principal",
     });
-
-    await expect(
-      canvas.getByRole("navigation", { name: "Navegación principal" }),
-    ).toBeInTheDocument();
-    await expect(canvas.getByRole("main")).toHaveAttribute(
-      "id",
-      "igx-main-content",
+    const navigation = canvas.getByRole("navigation", {
+      name: "Navegación principal",
+    });
+    const main = canvas.getByRole("main");
+    const navigationLinks = within(navigation).getAllByRole("link");
+    const openButton = canvasElement.querySelector<HTMLButtonElement>(
+      'button[aria-label="Abrir navegación"]',
     );
+    const closeButton = canvasElement.querySelector<HTMLButtonElement>(
+      'button[aria-label="Cerrar navegación"]',
+    );
+
+    if (!openButton || !closeButton) {
+      throw new Error("No se encontraron los controles de navegación de AppShell");
+    }
+
+    await expect(navigation).toBeInTheDocument();
+    await expect(main).toHaveAttribute("id", "igx-main-content");
     await expect(
       canvas.getByRole("heading", { level: 1, name: "Mapa tecnológico" }),
     ).toBeInTheDocument();
 
     await userEvent.tab();
     await expect(skipLink).toHaveFocus();
+
+    const openContainer = openButton.parentElement;
+    const closeContainer = closeButton.parentElement;
+
+    if (!openContainer || !closeContainer) {
+      throw new Error("No se encontraron los contenedores de navegación de AppShell");
+    }
+
+    openContainer.style.display = "flex";
+    closeContainer.style.display = "flex";
+
+    await userEvent.click(openButton);
+    await nextAnimationFrame();
+
+    await expect(openButton).toHaveAttribute("aria-expanded", "true");
+    await expect(closeButton).toHaveFocus();
+    await expect(skipLink).toHaveAttribute("inert");
+    await expect(main).toHaveAttribute("inert");
+
+    for (const link of navigationLinks) {
+      await userEvent.tab();
+      await expect(link).toHaveFocus();
+    }
+
+    await userEvent.tab();
+    await expect(closeButton).toHaveFocus();
+
+    await userEvent.tab({ shift: true });
+    await expect(navigationLinks[navigationLinks.length - 1]).toHaveFocus();
+
+    await userEvent.keyboard("{Escape}");
+    await nextAnimationFrame();
+
+    await expect(openButton).toHaveAttribute("aria-expanded", "false");
+    await expect(openButton).toHaveFocus();
+    await expect(skipLink).not.toHaveAttribute("inert");
+    await expect(main).not.toHaveAttribute("inert");
+
+    openContainer.style.removeProperty("display");
+    closeContainer.style.removeProperty("display");
+    openButton.blur();
   },
 };
 
