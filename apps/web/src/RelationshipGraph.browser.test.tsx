@@ -98,6 +98,7 @@ it("pasa axe y evita overflow en desktop, tablet y móvil con ambos temas", asyn
 it("permite recorrer y activar nodos con teclado", async () => {
   render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" /></NexusShell>);
   await ready();
+  await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Grafo de Relaciones", level: 1 })));
   const node = screen.getByRole("button", { name: "Switch Demo 0003" });
   node.focus();
   await userEvent.keyboard("{Enter}");
