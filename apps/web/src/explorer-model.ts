@@ -16,7 +16,7 @@ export interface ExplorerQuery {
   page: number;
   pageSize: number;
 }
-export function freshnessOf(asset: Asset, asOf: string): Freshness {
+export function freshnessOf(asset: Pick<Asset, "lastSeen">, asOf: string): Freshness {
   const age = ageInDays(asset.lastSeen, asOf);
   return age === null || age < 0 ? "unknown" : age <= 7 ? "fresh" : "stale";
 }

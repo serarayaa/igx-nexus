@@ -3,7 +3,7 @@ import { Boxes, CalendarClock, LayoutDashboard, Moon, Network, ShieldCheck, Slid
 import { AppHeader, AppShell, AppSidebar, Badge, IconButton } from "@igx-nexus/ui";
 import logo from "../../../assets/branding/igx-nexus-logo.png";
 
-type NexusView = "dashboard" | "assets" | "asset" | "relations" | "label" | "qr";
+type NexusView = "dashboard" | "health" | "assets" | "asset" | "relations" | "label" | "qr";
 
 export function NexusShell({ children, view = "dashboard" }: { children: ReactNode; view?: NexusView }) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -34,6 +34,7 @@ export function NexusShell({ children, view = "dashboard" }: { children: ReactNo
     sidebar={<AppSidebar brand={<div className="nexus-brand"><img src={logo} alt="IGX NEXUS by Innergex" width="180" /><span>Inteligencia de activos</span></div>} footer={<><Badge>Demo local</Badge><p>Datos sintéticos. Sin conexión a fuentes corporativas.</p></>}>
       <a className="nexus-nav-link" href="#overview" aria-current={view === "dashboard" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><LayoutDashboard aria-hidden="true" />Panel principal</a>
       <a className="nexus-nav-link" href="#assets" aria-current={assetsCurrent ? "page" : undefined} onClick={() => setNavigationOpen(false)}><Boxes aria-hidden="true" />Activos</a>
+      <a className="nexus-nav-link" href="#health" aria-current={view === "health" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><ShieldCheck aria-hidden="true" />CMDB Health</a>
       {view === "dashboard" && <><p className="nexus-nav-heading">En este panel</p>
       <a className="nexus-nav-link" href="#quality" onClick={() => setNavigationOpen(false)}><ShieldCheck aria-hidden="true" />Calidad y frescura</a>
       <a className="nexus-nav-link" href="#lifecycle" onClick={() => setNavigationOpen(false)}><CalendarClock aria-hidden="true" />Garantías y lifecycle</a>

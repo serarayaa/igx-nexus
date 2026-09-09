@@ -47,3 +47,5 @@ describe("route builders", () => {
     expect(demoQrHash("demo locator")).toBe("#q/demo%20locator");
   });
 });
+
+it("reconoce Health como ruta propia", () => { expect(routeFromHash("#health")).toEqual({ view: "health" }); });

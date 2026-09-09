@@ -69,3 +69,15 @@ jobs:
 
       - name: Métricas, interacción y accesibilidad del Dashboard
         run: npm run test --workspace @igx-nexus/web
+
+      - name: Reflow, High Contrast y reduced motion de CMDB Health
+        run: node scripts/qa-cmdb-health.mjs
+
+      - name: Evidencia visual CMDB Health
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: cmdb-health-qa
+          path: qa-artifacts/
+          if-no-files-found: ignore
+          retention-days: 7

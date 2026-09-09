@@ -1,6 +1,7 @@
 export type AppRoute =
   | { readonly view: "dashboard" }
   | { readonly view: "assets" }
+  | { readonly view: "health" }
   | { readonly view: "asset"; readonly assetId: string }
   | { readonly view: "relations"; readonly assetId: string }
   | { readonly view: "label"; readonly assetId: string }
@@ -26,6 +27,7 @@ function decodeSegment(value: string): string | null {
 
 export function routeFromHash(hash: string): AppRoute | null {
   if (dashboardHashes.has(hash)) return { view: "dashboard" };
+  if (hash === "#health") return { view: "health" };
   if (hash === "#assets") return { view: "assets" };
 
   const qrPrefix = "#q/";

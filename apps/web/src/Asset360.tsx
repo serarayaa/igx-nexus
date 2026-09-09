@@ -3,7 +3,9 @@ import { Badge, Button, EmptyState, ErrorState, LoadingState, PageHeader, Status
 import { typeLabels, type Asset, type InventoryProvider, type InventorySnapshot } from "./asset-model";
 import { warrantyDays } from "./dashboard-model";
 import { demoProvider } from "./demo-provider";
-import { freshnessLabels, freshnessOf } from "./explorer-model";
+import { AssetHealthSection } from "./HealthDetails";
+import { validHealthDate } from "./health-engine";
+import type { RelationshipInventoryProvider } from "./relationship-model";
 import { demoQrHash, labelHash, relationsHash } from "./navigation-model";
 import { demoLocatorForAsset } from "./qr-locator";
 import "./asset-360.css";
@@ -18,10 +20,11 @@ const lifecycleLabels = { assigned: "Asignado", stock: "En stock", repair: "En r
 const lifecycleTones = { assigned: "success", stock: "info", repair: "warning", retired: "neutral" } as const;
 
 function displayDate(value: string | null): string {
-  return value ? dateFormat.format(new Date(value)) : "Sin fecha verificable";
+  return value && validHealthDate(value) ? dateFormat.format(new Date(value)) : "Sin fecha verificable";
 }
 
 function warrantyPresentation(asset: Asset, asOf: string) {
+  if (asset.warrantyEnds && !validHealthDate(asset.warrantyEnds)) return { label: "No verificable", detail: "La fecha registrada no es válida; revisar CMDB Health.", tone: "neutral" as const };
   const days = warrantyDays(asset, asOf);
   if (days === null) return { label: "Desconocida", detail: "No hay fecha de garantía disponible.", tone: "neutral" as const };
   if (days < 0) return { label: "Vencida", detail: `Venció hace ${Math.abs(Math.ceil(days))} días.`, tone: "danger" as const };
@@ -33,7 +36,7 @@ function Field({ label, value, mono = false }: { label: string; value: string | 
   return <div><dt>{label}</dt><dd className={mono ? "nexus-asset-mono" : undefined}>{value?.trim() || "No informado"}</dd></div>;
 }
 
-export function Asset360({ assetId, provider = demoProvider }: { assetId: string; provider?: InventoryProvider }) {
+export function Asset360({ assetId, provider = demoProvider, relationshipProvider }: { assetId: string; provider?: InventoryProvider; relationshipProvider?: RelationshipInventoryProvider }) {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -84,15 +87,9 @@ export function Asset360({ assetId, provider = demoProvider }: { assetId: string
     return <EmptyState title="Activo no encontrado" description={`No existe un activo con el identificador ${assetId} en este inventario.`} action={<a href="#assets">Volver al inventario</a>} />;
   }
 
-  const freshness = freshnessOf(asset, state.snapshot.asOf);
   const warranty = warrantyPresentation(asset, state.snapshot.asOf);
   const locator = demoLocatorForAsset(asset.id);
-  const qualitySignals = [
-    { label: "Responsable", ok: Boolean(asset.owner?.trim()) },
-    { label: "Ubicación", ok: Boolean(asset.location?.trim()) },
-    { label: "Serial", ok: Boolean(asset.serial?.trim()) },
-    { label: "Hostname", ok: Boolean(asset.hostname?.trim()) },
-  ];
+
 
   return <div className="nexus-asset-360" ref={contentRef}>
     <nav className="nexus-breadcrumb" aria-label="Breadcrumb">
@@ -168,15 +165,7 @@ export function Asset360({ assetId, provider = demoProvider }: { assetId: string
         </dl>
       </section>
 
-      <section className="nexus-asset-section" aria-labelledby="asset-quality-heading">
-        <h2 id="asset-quality-heading">Frescura y calidad básica</h2>
-        <StatusBadge status={freshness === "fresh" ? "success" : freshness === "stale" ? "warning" : "neutral"}>{freshnessLabels[freshness]}</StatusBadge>
-        <dl className="nexus-asset-fields"><Field label="Última observación" value={asset.lastSeen ? displayDate(asset.lastSeen) : null} /></dl>
-        <ul className="nexus-asset-quality-list" aria-label="Señales de completitud">
-          {qualitySignals.map((signal) => <li key={signal.label}><StatusBadge status={signal.ok ? "success" : "warning"}>{signal.ok ? `${signal.label} disponible` : `Falta ${signal.label.toLocaleLowerCase("es-CL")}`}</StatusBadge></li>)}
-        </ul>
-        <p className="nexus-muted">Estas señales no constituyen un CMDB Health Score. El índice formal corresponde a CMDB-011.</p>
-      </section>
+      <AssetHealthSection inventory={state.snapshot} assetId={asset.id} {...(relationshipProvider ? { relationshipProvider } : {})} />
 
       <section className="nexus-asset-section nexus-asset-qr" aria-labelledby="asset-qr-heading">
         <h2 id="asset-qr-heading">Etiqueta y QR</h2>

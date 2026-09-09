@@ -21,6 +21,7 @@ Abrir `http://127.0.0.1:3000`. El servidor se limita a loopback y falla si el pu
 
 ```text
 /#overview                       Panel principal
+/#health                         CMDB Health
 /#assets                         Asset Explorer
 /#assets/DEMO-0002               Asset 360
 /#assets/DEMO-0002/label         Diseñador de etiqueta
@@ -78,5 +79,9 @@ Las suites Browser cubren Dashboard, Explorer, Asset 360 y diseñador QR/etiquet
 - sin endpoint productivo `/q/:locator`;
 - sin impresora/vendor adapter específico;
 - sin edición, persistencia o discovery real de relaciones;
-- sin CMDB Health Score (CMDB-011);
+- CMDB Health evalúa registros, no hardware ni disponibilidad;
 - sin Service Desk, ya que esa responsabilidad corresponde a Jira.
+
+## CMDB-011 — CMDB Health
+
+Implementado en rama, validación en curso y pendiente de merge manual. [Modelo, fórmula, reglas y QA](../../docs/cmdb-health.md). El motor puro consume inventario y relaciones completos con el mismo corte; Asset 360 comparte el motor y conserva la ficha ante errores de Health. `node scripts/qa-cmdb-health.mjs` valida el build y produce evidencia temporal de reflow/High Contrast/reduced-motion.

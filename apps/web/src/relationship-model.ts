@@ -22,6 +22,9 @@ export interface RelationshipSnapshot {
   readonly relationships: readonly Relationship[];
 }
 
+/** Complete relationship inventory for cross-CI quality evaluation; never a bounded neighborhood. */
+export type RelationshipInventoryProvider = (signal: AbortSignal) => Promise<RelationshipSnapshot>;
+
 export interface RelationshipQuery {
   readonly assetId: string;
   readonly depth: 1 | 2;

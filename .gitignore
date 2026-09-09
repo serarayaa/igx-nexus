@@ -67,3 +67,6 @@ packages/ui/storybook-static/
 
 apps/web/.vitest-attachments/
 apps/web/src/__screenshots__/
+
+# Evidencia temporal del QA browser
+qa-artifacts/

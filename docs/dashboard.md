@@ -64,3 +64,7 @@ y desplazamiento horizontal de garantías.
 
 Revisar CMDB-006 y fusionarlo manualmente sólo con CI aprobada. Después iniciar
 CMDB-007 desde `main` actualizado. No se crea una cadena de PR dependientes.
+
+## Integración CMDB-011
+
+El panel conserva todas sus métricas históricas y su alcance de activos vigentes. Agrega navegación real hacia `#health`; las señales básicas no se renombraron como score. CMDB-010 figura integrado; CMDB-011 sólo figurará listo para revisión al completar QA en su rama. El nuevo índice está explicado en [CMDB Health](cmdb-health.md).
