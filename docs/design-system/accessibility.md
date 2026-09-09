@@ -128,8 +128,8 @@ La validación manual mínima se realiza en Windows High Contrast cuando sea pos
 | Zoom 200% | Storybook usable sin pérdida de contenido/acciones | **Validado 2026-09-08** — AppShell mantiene navegación, header, contenido y acciones sin solapamiento ni pérdida visible |
 | Reflow 320 CSS px | Layout representativo usable; tablas pueden usar scroll horizontal | **Validado 2026-09-08** — AppShell probado a 306 CSS px, más estrecho que el objetivo; contenido refluye sin solapamientos ni scroll horizontal global |
 | Dark + Compact | Contraste y jerarquía conservados | **Validado 2026-09-08** — AppShell conserva jerarquía visual, legibilidad y separación de superficies en tema Dark con densidad Compact; sin defectos visuales bloqueantes observados |
-| Reduced Motion | Movimiento no esencial eliminado/reducido | Pendiente |
-| Windows High Contrast | Controles y estados siguen siendo distinguibles | Pendiente |
+| Reduced Motion | Movimiento no esencial eliminado/reducido | **Validado 2026-09-08** — `prefers-reduced-motion: reduce` reduce la transición del drawer a un cambio prácticamente instantáneo, manteniendo el cambio de estado |
+| Windows High Contrast | Controles y estados siguen siendo distinguibles | **Validado 2026-09-08** — `forced-colors: active` conserva texto, iconos, controles y bordes; el enlace actual se distingue además mediante subrayado y señal no dependiente del color |
 | Screen reader smoke | Headings, landmarks, botones, inputs y tabla anunciados de forma razonable | Pendiente |
 | Touch targets | Acciones móviles prioritarias cercanas a 44×44 cuando corresponda | Pendiente |
 
