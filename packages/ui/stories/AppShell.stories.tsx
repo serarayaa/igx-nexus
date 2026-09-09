@@ -103,6 +103,9 @@ export const Default: Story = {
       name: "Navegación principal",
     });
     const main = canvas.getByRole("main");
+    const notificationsButton = canvas.getByRole("button", {
+      name: "Ver notificaciones",
+    });
     const navigationLinks = within(navigation).getAllByRole("link");
     const openButton = canvasElement.querySelector<HTMLButtonElement>(
       'button[aria-label="Abrir navegación"]',
@@ -117,6 +120,7 @@ export const Default: Story = {
 
     await expect(navigation).toBeInTheDocument();
     await expect(main).toHaveAttribute("id", "igx-main-content");
+    await expect(notificationsButton).toBeInTheDocument();
     await expect(
       canvas.getByRole("heading", { level: 1, name: "Mapa tecnológico" }),
     ).toBeInTheDocument();
