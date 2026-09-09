@@ -38,12 +38,36 @@ export interface AppSidebarProps {
   className?: string;
 }
 
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+  '[contenteditable="true"]',
+].join(",");
+
 function joinClasses(...classes: Array<string | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
 function focusButton(container: HTMLDivElement | null) {
   container?.querySelector<HTMLButtonElement>("button")?.focus();
+}
+
+function getFocusableElements(container: HTMLElement | null) {
+  if (!container) {
+    return [];
+  }
+
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ).filter((element) => element.getAttribute("aria-hidden") !== "true");
+}
+
+function focusFirstElement(container: HTMLElement | null) {
+  getFocusableElements(container)[0]?.focus();
 }
 
 export function AppShell({
@@ -66,8 +90,12 @@ export function AppShell({
   const isNavigationOpen =
     controlledNavigationOpen ?? uncontrolledNavigationOpen;
 
+  const navigationRef = useRef<HTMLElement>(null);
   const openTriggerRef = useRef<HTMLDivElement>(null);
   const closeTriggerRef = useRef<HTMLDivElement>(null);
+  const skipLinkRef = useRef<HTMLAnchorElement>(null);
+  const headerRowRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
   const wasNavigationOpenRef = useRef(false);
 
   const setNavigationOpen = (nextOpen: boolean) => {
@@ -79,13 +107,52 @@ export function AppShell({
   };
 
   useEffect(() => {
+    const backgroundElements = [
+      skipLinkRef.current,
+      headerRowRef.current,
+      mainRef.current,
+    ].filter((element): element is HTMLElement => element !== null);
+    const previousBodyOverflow = document.body.style.overflow;
+
     if (isNavigationOpen) {
-      focusButton(closeTriggerRef.current);
-    } else if (wasNavigationOpenRef.current) {
-      focusButton(openTriggerRef.current);
+      backgroundElements.forEach((element) => {
+        element.setAttribute("inert", "");
+      });
+      document.body.style.overflow = "hidden";
     }
 
+    return () => {
+      backgroundElements.forEach((element) => {
+        element.removeAttribute("inert");
+      });
+
+      if (isNavigationOpen) {
+        document.body.style.overflow = previousBodyOverflow;
+      }
+    };
+  }, [isNavigationOpen]);
+
+  useEffect(() => {
+    const wasNavigationOpen = wasNavigationOpenRef.current;
     wasNavigationOpenRef.current = isNavigationOpen;
+
+    let animationFrame: number | undefined;
+
+    if (isNavigationOpen) {
+      animationFrame = window.requestAnimationFrame(() => {
+        focusFirstElement(navigationRef.current);
+      });
+    } else if (wasNavigationOpen) {
+      animationFrame = window.requestAnimationFrame(() => {
+        focusButton(openTriggerRef.current);
+      });
+    }
+
+    return () => {
+      if (animationFrame !== undefined) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+    };
   }, [isNavigationOpen]);
 
   useEffect(() => {
@@ -96,21 +163,60 @@ export function AppShell({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
+        event.stopPropagation();
         setNavigationOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const navigation = navigationRef.current;
+      const focusableElements = getFocusableElements(navigation);
+      const firstFocusable = focusableElements[0];
+      const lastFocusable = focusableElements[focusableElements.length - 1];
+
+      if (!navigation || !firstFocusable || !lastFocusable) {
+        return;
+      }
+
+      const activeElement = document.activeElement;
+
+      if (!navigation.contains(activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? lastFocusable : firstFocusable).focus();
+        return;
+      }
+
+      if (event.shiftKey && activeElement === firstFocusable) {
+        event.preventDefault();
+        lastFocusable.focus();
+        return;
+      }
+
+      if (!event.shiftKey && activeElement === lastFocusable) {
+        event.preventDefault();
+        firstFocusable.focus();
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [isNavigationOpen]);
 
   return (
     <div className={joinClasses("igx-app-shell", className)}>
-      <a className="igx-app-shell__skip-link" href={`#${mainId}`}>
+      <a
+        ref={skipLinkRef}
+        className="igx-app-shell__skip-link"
+        href={`#${mainId}`}
+      >
         {skipLinkLabel}
       </a>
 
       <aside
+        ref={navigationRef}
         id={navigationId}
         className="igx-app-shell__navigation"
         data-open={isNavigationOpen ? "true" : "false"}
@@ -137,7 +243,10 @@ export function AppShell({
         onClick={() => setNavigationOpen(false)}
       />
 
-      <div className="igx-app-shell__header-row">
+      <div
+        ref={headerRowRef}
+        className="igx-app-shell__header-row"
+      >
         <div className="igx-app-shell__navigation-open" ref={openTriggerRef}>
           <IconButton
             aria-label={openNavigationLabel}
@@ -152,7 +261,12 @@ export function AppShell({
         {header}
       </div>
 
-      <main id={mainId} className="igx-app-shell__main" tabIndex={-1}>
+      <main
+        ref={mainRef}
+        id={mainId}
+        className="igx-app-shell__main"
+        tabIndex={-1}
+      >
         {children}
       </main>
     </div>
