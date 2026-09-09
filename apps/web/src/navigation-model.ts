@@ -1,7 +1,9 @@
 export type AppRoute =
   | { readonly view: "dashboard" }
   | { readonly view: "assets" }
-  | { readonly view: "asset"; readonly assetId: string };
+  | { readonly view: "asset"; readonly assetId: string }
+  | { readonly view: "label"; readonly assetId: string }
+  | { readonly view: "qr"; readonly locator: string };
 
 const dashboardHashes = new Set([
   "",
@@ -11,24 +13,48 @@ const dashboardHashes = new Set([
   "#next-views",
 ]);
 
-export function routeFromHash(hash: string): AppRoute | null {
-  if (dashboardHashes.has(hash)) return { view: "dashboard" };
-  if (hash === "#assets") return { view: "assets" };
-
-  const prefix = "#assets/";
-  if (!hash.startsWith(prefix)) return null;
-
-  const encodedId = hash.slice(prefix.length);
-  if (!encodedId || encodedId.includes("/")) return null;
-
+function decodeSegment(value: string): string | null {
+  if (!value || value.includes("/")) return null;
   try {
-    const assetId = decodeURIComponent(encodedId).trim();
-    return assetId ? { view: "asset", assetId } : null;
+    const decoded = decodeURIComponent(value).trim();
+    return decoded || null;
   } catch {
     return null;
   }
 }
 
+export function routeFromHash(hash: string): AppRoute | null {
+  if (dashboardHashes.has(hash)) return { view: "dashboard" };
+  if (hash === "#assets") return { view: "assets" };
+
+  const qrPrefix = "#q/";
+  if (hash.startsWith(qrPrefix)) {
+    const locator = decodeSegment(hash.slice(qrPrefix.length));
+    return locator ? { view: "qr", locator } : null;
+  }
+
+  const assetPrefix = "#assets/";
+  if (!hash.startsWith(assetPrefix)) return null;
+  const remainder = hash.slice(assetPrefix.length);
+  const labelSuffix = "/label";
+  if (remainder.endsWith(labelSuffix)) {
+    const assetId = decodeSegment(remainder.slice(0, -labelSuffix.length));
+    return assetId ? { view: "label", assetId } : null;
+  }
+
+  const assetId = decodeSegment(remainder);
+  return assetId ? { view: "asset", assetId } : null;
+}
+
 export function assetHash(assetId: string): string {
   return `#assets/${encodeURIComponent(assetId)}`;
+}
+
+export function labelHash(assetId: string): string {
+  return `${assetHash(assetId)}/label`;
+}
+
+/** Ruta interna que simula el resolver para la demo; NO es el payload del QR físico. */
+export function demoQrHash(locator: string): string {
+  return `#q/${encodeURIComponent(locator)}`;
 }

@@ -2,18 +2,31 @@ import { useEffect, useState } from "react";
 import { DashboardContent } from "./Dashboard";
 import { AssetExplorer } from "./AssetExplorer";
 import { Asset360 } from "./Asset360";
+import { DemoQrResolver } from "./DemoQrResolver";
+import { LabelDesigner } from "./LabelDesigner";
 import { NexusShell } from "./NexusShell";
 import { routeFromHash, type AppRoute } from "./navigation-model";
 
 function savedRoute(): AppRoute | null {
   const value: unknown = window.history.state?.nexusRoute;
   if (!value || typeof value !== "object" || !("view" in value)) return null;
-  const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown };
+  const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown; locator?: unknown };
   if (route.view === "dashboard" || route.view === "assets") return { view: route.view };
-  if (route.view === "asset" && typeof route.assetId === "string" && route.assetId) {
-    return { view: "asset", assetId: route.assetId };
+  if ((route.view === "asset" || route.view === "label") && typeof route.assetId === "string" && route.assetId) {
+    return { view: route.view, assetId: route.assetId };
+  }
+  if (route.view === "qr" && typeof route.locator === "string" && route.locator) {
+    return { view: "qr", locator: route.locator };
   }
   return null;
+}
+
+function routeTitle(route: AppRoute): string {
+  if (route.view === "dashboard") return "Panel principal";
+  if (route.view === "assets") return "Activos";
+  if (route.view === "asset") return `Asset ${route.assetId}`;
+  if (route.view === "label") return `Etiqueta ${route.assetId}`;
+  return "Resolver QR demo";
 }
 
 export function App() {
@@ -30,8 +43,7 @@ export function App() {
   }, [route]);
 
   useEffect(() => {
-    const title = route.view === "dashboard" ? "Panel principal" : route.view === "assets" ? "Activos" : `Asset ${route.assetId}`;
-    document.title = `${title} · IGX NEXUS`;
+    document.title = `${routeTitle(route)} · IGX NEXUS`;
     const frame = requestAnimationFrame(() => {
       const heading = document.querySelector<HTMLElement>("main h1");
       if (heading) {
@@ -48,7 +60,11 @@ export function App() {
     ? <DashboardContent />
     : route.view === "assets"
       ? <AssetExplorer />
-      : <Asset360 assetId={route.assetId} />;
+      : route.view === "asset"
+        ? <Asset360 assetId={route.assetId} />
+        : route.view === "label"
+          ? <LabelDesigner assetId={route.assetId} />
+          : <DemoQrResolver locator={route.locator} />;
 
   return <NexusShell view={route.view}>{content}</NexusShell>;
 }

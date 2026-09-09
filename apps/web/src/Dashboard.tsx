@@ -83,7 +83,7 @@ export function DashboardContent({ provider = demoProvider }: { provider?: Dashb
         </ContentSection></Card>
       </>}
       <Card id="next-views"><ContentSection title="Próximas vistas" description="Accede al inventario y conoce los siguientes hitos del roadmap.">
-        <div className="nexus-future"><span><Boxes aria-hidden="true" /><a href="#assets">Explorar activos</a><Badge>Inventario demo</Badge></span><span><MapPin aria-hidden="true" /><strong>Asset 360°</strong><Badge>CMDB-008 · pendiente</Badge></span><span><Activity aria-hidden="true" /><strong>CMDB Health</strong><Badge>CMDB-011 · pendiente</Badge></span></div>
+        <div className="nexus-future"><span><Boxes aria-hidden="true" /><a href="#assets">Explorar activos</a><Badge>Inventario demo</Badge></span><span><MapPin aria-hidden="true" /><a href="#assets/DEMO-0002">Asset 360°</a><Badge>CMDB-008 · integrado</Badge></span><span><Activity aria-hidden="true" /><strong>QR y etiquetado</strong><Badge>CMDB-009 · en desarrollo</Badge></span><span><Activity aria-hidden="true" /><strong>CMDB Health</strong><Badge>CMDB-011 · pendiente</Badge></span></div>
       </ContentSection></Card>
     </div>;
 }

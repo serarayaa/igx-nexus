@@ -4,6 +4,8 @@ import { typeLabels, type Asset, type InventoryProvider, type InventorySnapshot 
 import { warrantyDays } from "./dashboard-model";
 import { demoProvider } from "./demo-provider";
 import { freshnessLabels, freshnessOf } from "./explorer-model";
+import { demoQrHash, labelHash } from "./navigation-model";
+import { demoLocatorForAsset } from "./qr-locator";
 import "./asset-360.css";
 
 type LoadState =
@@ -84,6 +86,7 @@ export function Asset360({ assetId, provider = demoProvider }: { assetId: string
 
   const freshness = freshnessOf(asset, state.snapshot.asOf);
   const warranty = warrantyPresentation(asset, state.snapshot.asOf);
+  const locator = demoLocatorForAsset(asset.id);
   const qualitySignals = [
     { label: "Responsable", ok: Boolean(asset.owner?.trim()) },
     { label: "Ubicación", ok: Boolean(asset.location?.trim()) },
@@ -175,6 +178,18 @@ export function Asset360({ assetId, provider = demoProvider }: { assetId: string
         <p className="nexus-muted">Estas señales no constituyen un CMDB Health Score. El índice formal corresponde a CMDB-011.</p>
       </section>
 
+      <section className="nexus-asset-section nexus-asset-qr" aria-labelledby="asset-qr-heading">
+        <h2 id="asset-qr-heading">Etiqueta y QR</h2>
+        <div className="nexus-asset-status-row"><StatusBadge status="info">CMDB-009</StatusBadge><Badge>Modo demo · no productivo</Badge></div>
+        <dl className="nexus-asset-fields">
+          <Field label="Locator demo" value={locator} mono />
+          <Field label="Estado" value="Activo (fixture)" />
+        </dl>
+        <p>El locator representa la identidad física del CI y permanece separado del ID visible del activo.</p>
+        <p className="nexus-muted">No contiene serial, IP, hostname, usuario ni ubicación. Conocer el locator no concede autorización.</p>
+        <div className="nexus-asset-actions"><a className="nexus-asset-link" href={labelHash(asset.id)}>Diseñar etiqueta</a><a className="nexus-asset-link" href={demoQrHash(locator)}>Probar resolución demo</a></div>
+      </section>
+
       <section className="nexus-asset-section" aria-labelledby="asset-source-heading">
         <h2 id="asset-source-heading">Fuente de datos</h2>
         <dl className="nexus-asset-fields">
@@ -187,7 +202,7 @@ export function Asset360({ assetId, provider = demoProvider }: { assetId: string
       <section className="nexus-asset-section" aria-labelledby="asset-relations-heading">
         <h2 id="asset-relations-heading">Relaciones</h2>
         <p>La identidad y la URL estable de este activo quedan preparadas para conectar relaciones entre CIs en CMDB-010.</p>
-        <p className="nexus-muted">El grafo no se implementa en CMDB-008.</p>
+        <p className="nexus-muted">El grafo no se implementa en CMDB-009.</p>
       </section>
     </div>
   </div>;

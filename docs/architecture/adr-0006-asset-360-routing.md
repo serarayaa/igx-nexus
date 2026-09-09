@@ -1,12 +1,12 @@
 # ADR-0006 — Asset 360 con rutas hash por identidad NEXUS
 
-Estado: Propuesto para integración con CMDB-008 (issue #20).
+Estado: Aceptado e integrado con CMDB-008 mediante PR #21 (`bdee501`).
 
 ## Contexto
 
-CMDB-007 quedó integrado mediante PR #19 y `main` apunta a `2f7e61fd9d2fd439b62b7391ccdf6cdc50954ae3`. La aplicación Web ya dispone de Panel principal y Asset Explorer, utiliza fragmentos nativos para la navegación (`#overview`, `#assets` y anclas internas del Dashboard) y conserva tema/densidad dentro del shell compartido.
+CMDB-007 quedó integrado mediante PR #19 y la aplicación Web ya dispone de Panel principal y Asset Explorer, utiliza fragmentos nativos para la navegación (`#overview`, `#assets` y anclas internas del Dashboard) y conserva tema/densidad dentro del shell compartido.
 
-CMDB-008 introduce una ruta de identidad estable para un activo individual. Esta URL será además una dependencia natural del futuro CMDB-009 — Motor QR, por lo que la decisión debe soportar apertura directa, recarga, Atrás/Adelante, foco accesible y un estado explícito de activo inexistente.
+CMDB-008 introdujo una ruta de identidad estable para un activo individual. Esta URL es además una dependencia natural de CMDB-009 — Motor QR y Etiquetado, por lo que la decisión debe soportar apertura directa, recarga, Atrás/Adelante, foco accesible y un estado explícito de activo inexistente.
 
 La NEXUS API todavía no existe y la Web continúa trabajando con `InventoryProvider` y datos sintéticos. La identidad visible sigue siendo la identidad propia de NEXUS; no se simulan IDs de GLPI, Intune o Entra.
 
@@ -34,7 +34,7 @@ La decisión no prohíbe un router futuro. Debe reconsiderarse cuando aparezca u
 
 La ruta utiliza `Asset.id` como identidad NEXUS. En el fixture actual toma la forma `DEMO-xxxx`; estos valores son exclusivamente sintéticos.
 
-CMDB-009 podrá representar una URL estable que abra esta ficha, pero CMDB-008 no genera códigos QR ni incorpora librerías de QR. Si en una fase productiva se adopta routing de servidor, la estrategia de URL deberá revisarse antes de emitir identificadores físicos permanentes.
+CMDB-008 no genera códigos QR ni incorpora librerías de QR. Antes de emitir identificadores físicos permanentes, CMDB-009 debe separar esta ruta interna del locator físico y definir el contrato de resolución productivo. Si en una fase productiva se adopta routing de servidor, la estrategia de URL deberá revisarse antes de emitir etiquetas permanentes.
 
 ## Consecuencias
 
