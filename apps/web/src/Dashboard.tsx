@@ -1,9 +1,9 @@
 import { useEffect, useState, type CSSProperties } from "react";
-import { Activity, Boxes, CalendarClock, Clock3, LayoutDashboard, MapPin, Moon, Network, ShieldCheck, SlidersHorizontal, Sun } from "lucide-react";
-import { AppHeader, AppShell, AppSidebar, Badge, Button, Card, ContentSection, DataTable, EmptyState, ErrorState, IconButton, LoadingState, PageHeader, StatusBadge, Toolbar, type DataTableColumn } from "@igx-nexus/ui";
+import { Activity, Boxes, CalendarClock, Clock3, MapPin, ShieldCheck } from "lucide-react";
+import { Badge, Button, Card, ContentSection, DataTable, EmptyState, ErrorState, LoadingState, PageHeader, StatusBadge, Toolbar, type DataTableColumn } from "@igx-nexus/ui";
 import { demoProvider } from "./demo-provider";
 import { lifecycleLabels, percentage, summarize, typeLabels, warrantyDays, type AssetType, type DashboardAsset, type DashboardProvider, type DashboardSnapshot, type Domain, type Lifecycle } from "./dashboard-model";
-import logo from "../../../assets/branding/igx-nexus-logo.png";
+import { NexusShell } from "./NexusShell";
 
 type LoadState = { status: "loading" } | { status: "error" } | { status: "ready"; snapshot: DashboardSnapshot };
 const dateFormat = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeZone: "UTC" });
@@ -20,19 +20,10 @@ function Distribution({ title, rows, total }: { title: string; rows: readonly { 
   </ContentSection></Card>;
 }
 
-export function Dashboard({ provider = demoProvider }: { provider?: DashboardProvider }) {
+export function DashboardContent({ provider = demoProvider }: { provider?: DashboardProvider }) {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [domain, setDomain] = useState<Domain | "all">("all");
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [density, setDensity] = useState<"comfortable" | "compact">("comfortable");
-  const [navigationOpen, setNavigationOpen] = useState(false);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    document.documentElement.dataset.density = density;
-  }, [theme, density]);
-
   useEffect(() => {
     const controller = new AbortController();
     setState({ status: "loading" });
@@ -41,14 +32,6 @@ export function Dashboard({ provider = demoProvider }: { provider?: DashboardPro
     }).catch(() => { if (!controller.signal.aborted) setState({ status: "error" }); });
     return () => controller.abort();
   }, [provider, attempt]);
-
-  // El drawer móvil no debe mantener el escritorio inerte al ampliar el viewport.
-  useEffect(() => {
-    const desktop = window.matchMedia("(min-width: 64rem)");
-    const closeOnDesktop = () => { if (desktop.matches) setNavigationOpen(false); };
-    desktop.addEventListener("change", closeOnDesktop);
-    return () => desktop.removeEventListener("change", closeOnDesktop);
-  }, []);
 
   const result = state.status === "ready" ? summarize(state.snapshot, domain) : null;
   const asOf = state.status === "ready" ? state.snapshot.asOf : "";
@@ -62,19 +45,7 @@ export function Dashboard({ provider = demoProvider }: { provider?: DashboardPro
   const dueRows = result ? [...result.due].sort((a, b) => (a.warrantyEnds ?? "").localeCompare(b.warrantyEnds ?? "") || a.id.localeCompare(b.id)).slice(0, 5) : [];
   const recover = <Button onPress={() => setAttempt(n => n + 1)}>Reintentar</Button>;
 
-  return <AppShell isNavigationOpen={navigationOpen} onNavigationOpenChange={setNavigationOpen}
-    header={<AppHeader title="The Technology Map" context="Innergex Chile" actions={<>
-      <IconButton variant="secondary" aria-label={theme === "light" ? "Activar tema oscuro" : "Activar tema claro"} onPress={() => setTheme(theme === "light" ? "dark" : "light")}>{theme === "light" ? <Moon /> : <Sun />}</IconButton>
-      <IconButton variant="secondary" aria-label={density === "comfortable" ? "Activar densidad compacta" : "Activar densidad cómoda"} onPress={() => setDensity(density === "comfortable" ? "compact" : "comfortable")}><SlidersHorizontal /></IconButton>
-    </>} />}
-    sidebar={<AppSidebar brand={<div className="nexus-brand"><img src={logo} alt="IGX NEXUS by Innergex" width="180" /><span>Inteligencia de activos</span></div>} footer={<><Badge>Demo local</Badge><p>Datos sintéticos. Sin conexión a fuentes corporativas.</p></>}>
-      <a className="nexus-nav-link" href="#overview" aria-current="page" onClick={() => setNavigationOpen(false)}><LayoutDashboard aria-hidden="true" />Panel principal</a>
-      <p className="nexus-nav-heading">En este panel</p>
-      <a className="nexus-nav-link" href="#quality" onClick={() => setNavigationOpen(false)}><ShieldCheck aria-hidden="true" />Calidad y frescura</a>
-      <a className="nexus-nav-link" href="#lifecycle" onClick={() => setNavigationOpen(false)}><CalendarClock aria-hidden="true" />Garantías y lifecycle</a>
-      <a className="nexus-nav-link" href="#next-views" onClick={() => setNavigationOpen(false)}><Network aria-hidden="true" />Próximas vistas</a>
-    </AppSidebar>}>
-    <div className="nexus-dashboard" id="overview">
+  return <div className="nexus-dashboard" id="overview">
       <PageHeader title="Panel principal" eyebrow="VISIÓN DE ACTIVOS" description="Inventario, calidad de información y próximos vencimientos." meta={<Badge>Datos sintéticos · escenario de demostración</Badge>} />
       <Toolbar ariaLabel="Alcance del panel" primary={<div className="nexus-filter" role="group" aria-label="Filtrar por dominio">
         {(["all", "IT", "OT"] as const).map(value => <Button key={value} variant={domain === value ? "primary" : "secondary"} aria-pressed={domain === value} onPress={() => setDomain(value)}>{value === "all" ? "Todos los activos" : value}</Button>)}
@@ -111,9 +82,13 @@ export function Dashboard({ provider = demoProvider }: { provider?: DashboardPro
           <p className="nexus-muted">Las fechas son simuladas; no se consultan fabricantes ni contratos. Los activos sin fecha no se cuentan como cubiertos.</p>
         </ContentSection></Card>
       </>}
-      <Card id="next-views"><ContentSection title="Próximas vistas" description="Se habilitarán al integrar los siguientes hitos del roadmap.">
-        <div className="nexus-future"><span><Boxes aria-hidden="true" /><strong>Explorador de activos</strong><Badge>CMDB-007 · pendiente</Badge></span><span><MapPin aria-hidden="true" /><strong>Asset 360°</strong><Badge>CMDB-008 · pendiente</Badge></span><span><Activity aria-hidden="true" /><strong>CMDB Health</strong><Badge>CMDB-011 · pendiente</Badge></span></div>
+      <Card id="next-views"><ContentSection title="Próximas vistas" description="Accede al inventario y conoce los siguientes hitos del roadmap.">
+        <div className="nexus-future"><span><Boxes aria-hidden="true" /><a href="#assets">Explorar activos</a><Badge>Inventario demo</Badge></span><span><MapPin aria-hidden="true" /><strong>Asset 360°</strong><Badge>CMDB-008 · pendiente</Badge></span><span><Activity aria-hidden="true" /><strong>CMDB Health</strong><Badge>CMDB-011 · pendiente</Badge></span></div>
       </ContentSection></Card>
-    </div>
-  </AppShell>;
+    </div>;
+}
+
+/** Entrada aislada para los consumidores y pruebas del Dashboard. */
+export function Dashboard({ provider = demoProvider }: { provider?: DashboardProvider }) {
+  return <NexusShell><DashboardContent provider={provider} /></NexusShell>;
 }
