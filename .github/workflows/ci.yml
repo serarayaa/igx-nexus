@@ -70,6 +70,9 @@ jobs:
       - name: Métricas, interacción y accesibilidad del Dashboard
         run: npm run test --workspace @igx-nexus/web
 
+      - name: Verificar diff de trabajo
+        run: git diff --check
+
       - name: Reflow, High Contrast y reduced motion de CMDB Health
         run: node scripts/qa-cmdb-health.mjs
 
