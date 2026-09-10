@@ -24,12 +24,20 @@ try {
   page.on("pageerror", error => failures.push(error.message));
   await mkdir("qa-artifacts", { recursive: true });
   const checks = [];
+  const ensureTheme = async theme => {
+    const current = await page.evaluate(() => document.documentElement.dataset.theme);
+    if (current !== theme) {
+      await page.getByRole("button", { name: theme === "dark" ? "Activar tema oscuro" : "Activar tema claro" }).click();
+    }
+    await page.waitForFunction(expected => document.documentElement.dataset.theme === expected, theme);
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), theme, `theme ${theme}`);
+  };
   for (const width of [1440, 768, 390, 320]) {
     await page.setViewportSize({ width, height: 1000 });
     for (const theme of ["light", "dark"]) {
       await page.goto("http://127.0.0.1:4173/#health");
       await page.getByRole("heading", { name: "Score de registros CI" }).waitFor();
-      if (theme === "dark") await page.getByRole("button", { name: "Activar tema oscuro" }).click();
+      await ensureTheme(theme);
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `overflow ${width} ${theme}`);
       await page.screenshot({ path: `qa-artifacts/health-${width}-${theme}.png`, fullPage: false });
       checks.push(`reflow ${width} ${theme}`);
