@@ -94,7 +94,7 @@ El cálculo es relativo al corte fijo del snapshot demo.
 
 La frescura reutiliza `freshnessOf` y el mismo límite de siete días que Dashboard/Explorer.
 
-Se muestran señales individuales de completitud para responsable, ubicación, serial y hostname. **No existe un CMDB Health Score en CMDB-008**; el índice formal corresponde a CMDB-011.
+CMDB-011 sustituye esas señales básicas por [CMDB Health](cmdb-health.md): score/cobertura, dimensiones, causas accionables y comprobaciones. Aplica reglas por tipo/lifecycle y comparte la frescura existente. La implementación está en su rama y no se considera integrada hasta el merge manual.
 
 ### Fuente de datos
 
@@ -182,3 +182,7 @@ La suite agrega cobertura para:
 - autenticación productiva;
 - Service Desk / tickets / SLA;
 - despliegue productivo.
+
+## Integración CMDB-011
+
+`AssetHealthSection` reutiliza el snapshot de la ficha y carga relaciones mediante un provider de inventario completo. Error/retry queda limitado a la sección; no oculta identidad/QR/relaciones ni mueve el foco de la ficha. Fechas imposibles se presentan como no verificables sin lanzar RangeError. El enlace «Ver CMDB Health global» abre `#health`.

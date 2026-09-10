@@ -19,7 +19,7 @@ afterEach(async () => {
   await page.viewport(1440, 1000);
 });
 
-it("abre un deep link y muestra identidad, contexto y señales operativas", async () => {
+it("abre un deep link y muestra identidad, contexto y calidad del registro", async () => {
   window.history.replaceState(null, "", "#assets/DEMO-0002");
   render(<App />);
   await assetHeading();
@@ -36,8 +36,8 @@ it("abre un deep link y muestra identidad, contexto y señales operativas", asyn
   expect(within(lifecycle).getByText("Activo en inventario")).toBeTruthy();
   const warranty = screen.getByRole("region", { name: "Garantía" });
   expect(within(warranty).getByText("Vencida")).toBeTruthy();
-  const quality = screen.getByRole("region", { name: "Frescura y calidad básica" });
-  expect(within(quality).getByText("Reciente (≤ 7 días)")).toBeTruthy();
+  const quality = screen.getByRole("region", { name: "CMDB Health" });
+  expect(await within(quality).findByText("Confiable")).toBeTruthy();
   const source = screen.getByRole("region", { name: "Fuente de datos" });
   expect(within(source).getByText("Dataset sintético / provider demo")).toBeTruthy();
 
@@ -56,8 +56,8 @@ it("presenta datos parciales sin inventar información", async () => {
   expect(within(assignment).getAllByText("No informado")).toHaveLength(2);
   const warranty = screen.getByRole("region", { name: "Garantía" });
   expect(within(warranty).getByText("Desconocida")).toBeTruthy();
-  const quality = screen.getByRole("region", { name: "Frescura y calidad básica" });
-  expect(within(quality).getByText("Sin fecha verificable")).toBeTruthy();
+  const quality = screen.getByRole("region", { name: "CMDB Health" });
+  expect(await within(quality).findByText("Observación desconocida")).toBeTruthy();
   expect(within(quality).getByText("Falta responsable")).toBeTruthy();
   expect(within(quality).getByText("Falta ubicación")).toBeTruthy();
   expect(within(quality).getByText("Falta serial")).toBeTruthy();

@@ -1,4 +1,4 @@
-import { relationshipsWithinDepth, type Relationship, type RelationshipProvider, type RelationshipSnapshot } from "./relationship-model";
+import { relationshipsWithinDepth, type Relationship, type RelationshipProvider, type RelationshipInventoryProvider, type RelationshipSnapshot } from "./relationship-model";
 
 // Escenario pequeño y exclusivamente sintético; no representa topología corporativa.
 export const demoRelationships: readonly Relationship[] = [
@@ -21,4 +21,10 @@ export const demoRelationshipProvider: RelationshipProvider = async (query, sign
     asOf: demoRelationshipSnapshot.asOf,
     relationships: relationshipsWithinDepth(demoRelationships, query.assetId, query.depth),
   };
+};
+
+/** Full snapshot; shares fixtures with the graph and does not issue n per-CI requests. */
+export const demoRelationshipInventoryProvider: RelationshipInventoryProvider = async (signal) => {
+  signal.throwIfAborted();
+  return demoRelationshipSnapshot;
 };

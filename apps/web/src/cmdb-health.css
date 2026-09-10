@@ -1,0 +1,31 @@
+.nexus-health-page, .nexus-health-details { display: grid; gap: var(--igx-density-section-gap); min-width: 0; }
+.nexus-health-page { max-width: 100rem; margin-inline: auto; }
+.nexus-health-page *, .nexus-health-details * { min-width: 0; overflow-wrap: anywhere; }
+.nexus-health-page h2, .nexus-health-page h3, .nexus-health-page p, .nexus-health-details p { margin: 0; }
+.nexus-health-page h2 { font-size: var(--igx-font-size-lg); }
+.nexus-health-page h3 { font-size: var(--igx-font-size-md); }
+.nexus-health-panel, .nexus-health-overview > div { display: grid; gap: var(--igx-density-content-gap); padding: var(--igx-density-content-gap); border: 1px solid var(--igx-semantic-color-border-default); border-radius: var(--igx-semantic-shape-container); background: var(--igx-semantic-color-surface-base); }
+.nexus-health-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--igx-density-content-gap); }
+.nexus-health-score { display: block; font-size: var(--igx-font-size-3xl); line-height: 1.2; font-variant-numeric: tabular-nums; }
+.nexus-health-status { display: flex; flex-wrap: wrap; gap: var(--igx-spacing-2); align-items: center; }
+.nexus-health-dimensions { display: grid; gap: var(--igx-spacing-3); margin: 0; }
+.nexus-health-dimensions > div { border-bottom: 1px solid var(--igx-semantic-color-border-default); padding-bottom: var(--igx-spacing-2); }
+.nexus-health-dimensions dt { font-weight: 600; }
+.nexus-health-dimensions dd { margin: var(--igx-spacing-1) 0 0; }
+.nexus-health-distribution, .nexus-health-causes { display: flex; flex-wrap: wrap; gap: var(--igx-spacing-2); list-style: none; padding: 0; margin: 0; }
+.nexus-health-page .igx-button { max-width: 100%; height: auto; min-height: var(--igx-density-control-height); white-space: normal; }
+.nexus-health-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--igx-density-content-gap); }
+.nexus-health-filters label { display: grid; gap: var(--igx-spacing-2); font-weight: 600; }
+.nexus-health-filters select { width: 100%; min-height: var(--igx-density-control-height); padding: var(--igx-spacing-2); border: 1px solid var(--igx-semantic-color-border-default); border-radius: var(--igx-semantic-shape-control); color: var(--igx-semantic-color-text-primary); background: var(--igx-semantic-color-surface-base); font: inherit; }
+.nexus-health-page a { color: var(--igx-semantic-color-text-link); }
+.nexus-health-page :is(a, select, summary):focus-visible, .nexus-health-details summary:focus-visible, #health-results-heading:focus { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 3px; }
+.nexus-health-page summary, .nexus-health-details summary { cursor: pointer; padding-block: var(--igx-spacing-2); }
+.nexus-health-page details[open], .nexus-health-details details[open] { display: grid; gap: var(--igx-spacing-2); }
+.nexus-health-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--igx-density-content-gap); }
+.nexus-health-rows > li { display: grid; gap: var(--igx-spacing-2); padding-block: var(--igx-density-content-gap); border-top: 1px solid var(--igx-semantic-color-border-default); }
+.nexus-health-row-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--igx-spacing-2); }
+.nexus-health-findings { margin: 0; padding-inline-start: var(--igx-spacing-5); display: grid; gap: var(--igx-density-content-gap); }
+.nexus-health-findings li > * + * { margin-top: var(--igx-spacing-2); }
+@media (max-width: 1023px) { .nexus-health-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .nexus-health-overview, .nexus-health-filters { grid-template-columns: minmax(0, 1fr); } .nexus-health-page .igx-button, .nexus-health-filters select, .nexus-health-page summary, .nexus-health-details summary { min-height: 44px; } }
+@media (forced-colors: active) { .nexus-health-panel, .nexus-health-overview > div, .nexus-health-rows > li, .nexus-health-dimensions > div { border-color: CanvasText; } .nexus-health-filters select { border-color: ButtonText; } }

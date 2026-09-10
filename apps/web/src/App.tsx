@@ -5,6 +5,7 @@ import { Asset360 } from "./Asset360";
 import { DemoQrResolver } from "./DemoQrResolver";
 import { LabelDesigner } from "./LabelDesigner";
 import { RelationshipGraph } from "./RelationshipGraph";
+import { CmdbHealth } from "./CmdbHealth";
 import { NexusShell } from "./NexusShell";
 import { routeFromHash, type AppRoute } from "./navigation-model";
 
@@ -12,7 +13,7 @@ function savedRoute(): AppRoute | null {
   const value: unknown = window.history.state?.nexusRoute;
   if (!value || typeof value !== "object" || !("view" in value)) return null;
   const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown; locator?: unknown };
-  if (route.view === "dashboard" || route.view === "assets") return { view: route.view };
+  if (route.view === "dashboard" || route.view === "assets" || route.view === "health") return { view: route.view };
   if ((route.view === "asset" || route.view === "label" || route.view === "relations") && typeof route.assetId === "string" && route.assetId) {
     return { view: route.view, assetId: route.assetId };
   }
@@ -24,6 +25,7 @@ function savedRoute(): AppRoute | null {
 
 function routeTitle(route: AppRoute): string {
   if (route.view === "dashboard") return "Panel principal";
+  if (route.view === "health") return "CMDB Health";
   if (route.view === "assets") return "Activos";
   if (route.view === "asset") return `Asset ${route.assetId}`;
   if (route.view === "label") return `Etiqueta ${route.assetId}`;
@@ -60,6 +62,8 @@ export function App() {
 
   const content = route.view === "dashboard"
     ? <DashboardContent />
+    : route.view === "health"
+      ? <CmdbHealth />
     : route.view === "assets"
       ? <AssetExplorer />
       : route.view === "asset"

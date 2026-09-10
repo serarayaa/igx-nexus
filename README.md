@@ -57,7 +57,7 @@ El primer hito es una demostración local pulida que permita validar el producto
 
 La eventual adopción por Innergex Canadá u otras entidades se considera una oportunidad futura y no debe condicionar el alcance de la primera implementación chilena.
 
-Avance de la rama CMDB-010: **10/13 tickets (~76,9%)** listos para revisión. El Grafo de Relaciones implementa el primer Technology Map visual y accesible con datos sintéticos. El siguiente ticket, aún no iniciado, es CMDB-011 — CMDB Health.
+Avance formal integrado en `main`: **10/13 tickets (~76,9%)**. CMDB-010 está integrado mediante PR #27 (`89ca343`). CMDB-011 — CMDB Health está implementado en su rama, en validación y todavía no integrado. Tras merge manual: **11/13 (~84,6%)**. CMDB-012 y CMDB-013 siguen pendientes.
 
 ## Flujo de desarrollo
 
@@ -87,6 +87,7 @@ Rutas principales de demostración:
 
 ```text
 /#overview                       Panel principal
+/#health                         CMDB Health
 /#assets                         Explorador de activos
 /#assets/DEMO-0002               Asset 360 de un activo sintético
 /#assets/DEMO-0002/label         Diseñador QR/etiqueta
@@ -99,3 +100,5 @@ El QR físico de la demo no codifica estas rutas internas: utiliza una URL `.inv
 Ver [instrucciones de Web](apps/web/README.md), [Dashboard](docs/dashboard.md), [Asset Explorer](docs/asset-explorer.md), [Asset 360](docs/asset-360.md), [Motor QR y Etiquetado](docs/qr-label-engine.md), [Grafo de Relaciones](docs/relationship-graph.md) y [ADR-0008](docs/architecture/adr-0008-relationship-graph.md).
 
 Validación completa: `npm run typecheck`, `npm run build`, `npm test` y `npm run storybook:build --workspace @igx-nexus/ui`. Las pruebas de navegador requieren `npx playwright install --with-deps chromium`.
+
+CMDB-011: [guía de calidad y fórmula del score](docs/cmdb-health.md) y [ADR-0009](docs/architecture/adr-0009-cmdb-health.md). No mide salud física de dispositivos.

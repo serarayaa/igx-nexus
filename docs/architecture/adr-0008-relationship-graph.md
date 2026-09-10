@@ -1,6 +1,6 @@
 # ADR-0008 — Modelo y visualización del grafo de relaciones
 
-Estado: Propuesto por CMDB-010; listo para aceptación al integrar el PR.
+Estado: Aceptado e integrado mediante PR #27 (`89ca343`); issue #26 completed.
 
 ## Contexto
 

@@ -23,3 +23,5 @@ Principios fundamentales:
 - [ADR-0008 — Modelo y visualización del grafo de relaciones](adr-0008-relationship-graph.md)
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
+
+- [ADR-0009 — Calidad explicable del registro CMDB](adr-0009-cmdb-health.md) — propuesto en CMDB-011.
