@@ -20,15 +20,14 @@ Completado e integrado:
 - CMDB-008 ✅ Asset 360° — PR #21 (`bdee501`)
 - CMDB-009 ✅ Motor QR y Etiquetado — PR #23 (`5b0b0a9`); issue #22 cerrado
 - CMDB-010 ✅ Grafo de Relaciones — integrado mediante PR #27 (`89ca343`)
-
 - CMDB-011 ✅ CMDB Health — integrado mediante PR #29 (`d7ed149`)
+- CMDB-012 ✅ Dataset de Demo — integrado mediante PR #32 (`9afb26d`); issue #31 completado; CI post-merge #128 verde
 
 Pendiente para la demo:
 
-- CMDB-012 🟡 Dataset de Demo — implementado en rama, listo para revisión; issue #31
 - CMDB-013 ⬜ Demo v0.1
 
-Integrado en `main`: **11/13 (~84,6%)**. CMDB-011 completado; siguiente ticket CMDB-012 — Dataset de Demo. CMDB-013 sigue pendiente. El [Dataset de Demo](demo-dataset.md) documenta casos hero y métricas; aún no integrado. Tras su merge manual: 12/13 (~92,3%).
+Integrado en `main`: **12/13 (~92,3%)**. CMDB-012 completado e integrado mediante PR #32; el [Dataset de Demo](demo-dataset.md) documenta casos hero, distribuciones, relaciones, métricas y límites. CMDB-013 — Demo v0.1 es el siguiente y último ticket del roadmap actual.
 
 CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. Incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible.
 
@@ -101,3 +100,7 @@ El notebook actual es un entorno de desarrollo, no el servidor definitivo. Todo 
 ## CMDB-011 integrado
 
 Motor de calidad explicable, cobertura, findings, vista `#health` y resumen Asset 360. Reutiliza fixtures/proveedores y reglas comunes; no evalúa hardware ni disponibilidad. Fórmula y QA en [CMDB Health](cmdb-health.md).
+
+## CMDB-012 integrado
+
+Dataset sintético único y determinista para Dashboard, Explorer, Asset 360, QR, Technology Map y CMDB Health. Mantiene 240 CI, 18 relaciones y 11 activos hero sobre la misma fuente compartida. Integrado mediante PR #32, con issue #31 completado y CI post-merge #128 verde. CMDB-013 queda como siguiente y último ticket para validar y pulir la Demo v0.1 de punta a punta.
