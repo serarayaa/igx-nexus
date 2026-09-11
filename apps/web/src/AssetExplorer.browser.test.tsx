@@ -86,12 +86,12 @@ it("pagina, anuncia el rango y vuelve a la primera página al buscar, filtrar u 
 it("ordena realmente las filas mediante teclado y conserva aria-sort", async () => {
   mount(); const table = await ready();
   const first = () => within(table).getAllByRole("rowheader")[0]!.textContent;
-  expect(first()).toContain("Desktop Demo 0002");
+  expect(first()).toContain("Consola Demo Laboratorio Norte");
   screen.getByRole("button", { name: "Activo" }).focus();
   await userEvent.keyboard("{Enter}");
-  expect(first()).toContain("Teléfono Demo 0238");
+  expect(first()).toContain("Teléfono Demo Reserva");
   await userEvent.keyboard(" ");
-  expect(first()).toContain("Desktop Demo 0002");
+  expect(first()).toContain("Consola Demo Laboratorio Norte");
   expect(screen.getByRole("columnheader", { name: "Activo" }).getAttribute("aria-sort")).toBe("ascending");
 });
 

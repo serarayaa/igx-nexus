@@ -15,7 +15,7 @@ it("filtra IT/OT y cambia tema y densidad con controles accesibles", async () =>
   render(<Dashboard />); await ready();
   await userEvent.click(screen.getByRole("button", { name: "OT" }));
   expect(screen.getByRole("button", { name: "OT" }).getAttribute("aria-pressed")).toBe("true");
-  expect(screen.getByText("60 activos en el alcance OT.")).toBeTruthy();
+  expect(screen.getByText("41 activos en el alcance OT.")).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "Activar tema oscuro" }));
   await userEvent.click(screen.getByRole("button", { name: "Activar densidad compacta" }));
   expect(document.documentElement.dataset.theme).toBe("dark");

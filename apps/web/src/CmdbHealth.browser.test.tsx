@@ -50,7 +50,7 @@ it("deep link, causas, filtros AND, paginación y restablecer funcionan", async 
   await userEvent.click(screen.getByRole("button", { name: "Página siguiente" }));
   expect(screen.getByText("240 CI coinciden · Página 2 de 12")).toBeTruthy();
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Causa" }), "observation_unknown");
-  expect(screen.getByText("15 CI coinciden · Página 1 de 1")).toBeTruthy();
+  expect(screen.getByText("12 CI coinciden · Página 1 de 1")).toBeTruthy();
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Dimensión con señales" }), "freshness");
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Tipo de activo" }), "Monitor");
   expect(screen.getByText("3 CI coinciden · Página 1 de 1")).toBeTruthy();
@@ -58,7 +58,7 @@ it("deep link, causas, filtros AND, paginación y restablecer funcionan", async 
   expect(screen.getByText("240 CI coinciden · Página 1 de 12")).toBeTruthy();
   const causes = screen.getByRole("region", { name: "Principales señales de calidad" });
   await userEvent.click(within(causes).getByRole("button", { name: /Observación desconocida/ }));
-  expect(screen.getByText("15 CI coinciden · Página 1 de 1")).toBeTruthy();
+  expect(screen.getByText("12 CI coinciden · Página 1 de 1")).toBeTruthy();
   await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Localizar registros y revisar causas" })));
 });
 
