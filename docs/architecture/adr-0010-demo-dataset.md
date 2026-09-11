@@ -1,6 +1,6 @@
 # ADR-0010 — Catálogo sintético único y escenarios de demo
 
-Estado: Propuesto en CMDB-012; aceptación pendiente de merge manual.
+Estado: Aceptado en CMDB-012; integrado mediante PR #32 (`9afb26d`).
 
 ## Contexto
 

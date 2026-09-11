@@ -1,6 +1,6 @@
 # CMDB-012 — Dataset de Demo
 
-Estado: implementado en `feature/cmdb-012-demo-dataset`, listo para revisión; issue #31. No integrado hasta merge manual. Depende del housekeeping CMDB-011, PR #30: integrar primero ese PR. Baseline funcional `d7ed1494afb6b56661bf5bdf387c2943976ce5cb` (PR #29), con 11/13 tickets integrados. CMDB-013 NO fue iniciado.
+Estado: integrado en `main` mediante PR #32, merge commit `9afb26dcf3519f7b274740138f64f62e3071bfc4`. Issue #31 cerrado como completed. CI post-merge #128 verde. Avance formal: 12/13 (~92,3%). CMDB-013 NO ha sido iniciado y es el siguiente y último ticket.
 
 ## Propósito y límites
 
@@ -167,7 +167,7 @@ No se generan archivos de datos ni se guardan snapshots derivados: regenerar con
 
 ## QA y performance
 
-CI de implementación #123 verde ([run](https://github.com/serarayaa/igx-nexus/actions/runs/34602156418)): 210 tests Web (144 de modelo + 66 browser) y 44 Storybook, 254 en total. Typecheck, builds, axe, paridad de tokens, paquete UI y QA del build correctos. El QA ampliado de contraste alto/teclado del grafo OT también pasó. PR #32 abierto hacia main; integrar primero PR #30.
+CI de implementación #123 verde ([run](https://github.com/serarayaa/igx-nexus/actions/runs/34602156418)): 210 tests Web (144 de modelo + 66 browser) y 44 Storybook, 254 en total. Typecheck, builds, axe, paridad de tokens, paquete UI y QA del build correctos. El QA ampliado de contraste alto/teclado del grafo OT también pasó. PR #32 fue mergeado en `main`; la CI post-merge #128 también quedó verde.
 
 Chromium no pudo descargarse localmente por restricciones de red; `npm test` local se detuvo por ejecutable ausente. Las suites completas sí se ejecutaron en GitHub Actions. Las capturas están en el artefacto temporal `cmdb-health-qa`; la descarga al entorno de trabajo respondió HTTP 403, por lo que no se declara inspección visual manual de esas imágenes. Los controles automatizados de overflow/axe pasaron. No se declara prueba manual de lector de pantalla, Windows High Contrast real ni impresión física.
 
@@ -180,4 +180,4 @@ Medición orientativa local Node 24.19: 100 iteraciones tras 20 de calentamiento
 - Se mantuvo la semántica por dimensión de CMDB-011 y se documentó la diferencia con las señales básicas del Dashboard.
 - Se verificaron fechas, referencias, identidad, payloads, familias y ausencia de información corporativa. Los defectos simulados son ausencias/antigüedad explicables.
 - La CI #121 detectó un conteo heredado de seis relaciones y una carrera del test con el foco del diseñador; se corrigieron las expectativas y se esperó el foco de la vista antes de continuar. CI #122: todos los tests verdes, sin aumentar timeouts ni omitir pruebas.
-- Se actualizaron guías que describían el fixture antiguo y se distinguió progreso integrado de implementación en rama. El PR #30 debe integrarse primero.
+- Se actualizaron las guías que describían el fixture antiguo. Tras el merge de PR #32, el estado integrado queda en 12/13 (~92,3%) y CMDB-013 permanece fuera del alcance de CMDB-012.
