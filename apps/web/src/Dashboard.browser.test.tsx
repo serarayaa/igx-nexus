@@ -56,14 +56,17 @@ it("cancela solicitudes anteriores e ignora respuestas fuera de orden", async ()
   await waitFor(() => expect(screen.queryByText("No hay activos para este alcance")).toBeNull());
 });
 
-it("expone QR y el grafo integrados y acceso a Health", async () => {
+it("expone un recorrido de demo sobre capacidades ya integradas", async () => {
   render(<Dashboard />); await ready();
-  const qrLink = screen.getByRole("link", { name: "QR y etiquetado" });
-  expect(qrLink.getAttribute("href")).toBe("#assets/DEMO-0002/label");
-  expect(screen.getByText("CMDB-009 · integrado")).toBeTruthy();
-  const relationshipLink = screen.getByRole("link", { name: "Grafo de Relaciones" });
-  expect(relationshipLink.getAttribute("href")).toBe("#assets/DEMO-0002/relations");
-  expect(screen.getByText("CMDB-010 · integrado")).toBeTruthy();
+  expect(screen.getByText("Recorrido de la demo")).toBeTruthy();
+  expect(screen.getByRole("link", { name: "Explorar activos" }).getAttribute("href")).toBe("#assets");
+  expect(screen.getByRole("link", { name: "Asset 360° hero OT" }).getAttribute("href")).toBe("#assets/DEMO-0013");
+  expect(screen.getByRole("link", { name: "QR y etiquetado" }).getAttribute("href")).toBe("#assets/DEMO-0013/label");
+  expect(screen.getByRole("link", { name: "Technology Map" }).getAttribute("href")).toBe("#assets/DEMO-0013/relations");
+  expect(screen.getByRole("link", { name: "CMDB Health" }).getAttribute("href")).toBe("#health");
+  expect(screen.getByText("Locator opaco")).toBeTruthy();
+  expect(screen.getByText("Calidad explicable")).toBeTruthy();
+  expect(screen.queryByText("CMDB-009 · integrado")).toBeNull();
 });
 
 it("pasa axe en light/dark y no desborda el viewport móvil", async () => {

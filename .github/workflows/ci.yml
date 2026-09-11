@@ -67,7 +67,7 @@ jobs:
       - name: Typecheck y build del Dashboard
         run: npm run build --workspace @igx-nexus/web
 
-      - name: Métricas, interacción y accesibilidad del Dashboard
+      - name: Tests Web: modelo, interacción, accesibilidad y Demo v0.1
         run: npm run test --workspace @igx-nexus/web
 
       - name: Verificar diff de trabajo

@@ -38,7 +38,7 @@ export function NexusShell({ children, view = "dashboard" }: { children: ReactNo
       {view === "dashboard" && <><p className="nexus-nav-heading">En este panel</p>
       <a className="nexus-nav-link" href="#quality" onClick={() => setNavigationOpen(false)}><ShieldCheck aria-hidden="true" />Calidad y frescura</a>
       <a className="nexus-nav-link" href="#lifecycle" onClick={() => setNavigationOpen(false)}><CalendarClock aria-hidden="true" />Garantías y lifecycle</a>
-      <a className="nexus-nav-link" href="#next-views" onClick={() => setNavigationOpen(false)}><Network aria-hidden="true" />Próximas vistas</a>
+      <a className="nexus-nav-link" href="#next-views" onClick={() => setNavigationOpen(false)}><Network aria-hidden="true" />Recorrido de la demo</a>
       </>}
     </AppSidebar>}>
 
