@@ -10,6 +10,8 @@ Principios fundamentales:
 - Las fuentes autoritativas se reconcilian en lugar de duplicarse ciegamente.
 - La seguridad, auditabilidad y capacidad de actualización son restricciones de diseño desde el primer día.
 - El QR identifica una etiqueta/CI mediante locator opaco; nunca actúa como credencial ni apunta directamente a GLPI, bases de datos o dispositivos.
+- Desde v0.2, la identidad NEXUS y el modelo canónico permanecen independientes de las taxonomías/IDs internos de GLPI, Intune, Entra u otras fuentes.
+- La procedencia y la evidencia forman parte del contrato de dominio: NEXUS debe poder explicar de dónde proviene un dato antes de inferir sobre él.
 
 ## Architecture Decision Records
 
@@ -21,9 +23,8 @@ Principios fundamentales:
 - [ADR-0006 — Asset 360 con rutas hash por identidad NEXUS](adr-0006-asset-360-routing.md)
 - [ADR-0007 — Locator QR opaco y motor de etiquetas desacoplado](adr-0007-qr-locator-label-engine.md)
 - [ADR-0008 — Modelo y visualización del grafo de relaciones](adr-0008-relationship-graph.md)
+- [ADR-0009 — Calidad explicable del registro CMDB](adr-0009-cmdb-health.md) — aceptado en CMDB-011 (PR #29).
+- [ADR-0010 — Catálogo sintético único](adr-0010-demo-dataset.md) — aceptado en CMDB-012 (PR #32).
+- [ADR-0011 — Modelo canónico de Technology Intelligence](adr-0011-canonical-technology-model.md) — propuesto en V02-001 (issue #40); pendiente de merge manual.
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
-
-- [ADR-0009 — Calidad explicable del registro CMDB](adr-0009-cmdb-health.md) — aceptado en CMDB-011 (PR #29).
-
-- [ADR-0010 — Catálogo sintético único](adr-0010-demo-dataset.md) — aceptado en CMDB-012 (PR #32).
