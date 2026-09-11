@@ -1,2 +1,2 @@
-export * from "./model";
-export * from "./validation";
+export * from "./model.js";
+export * from "./validation.js";

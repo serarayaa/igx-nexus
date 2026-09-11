@@ -1,3 +1,6 @@
+export const technologySchemaVersion = "0.2" as const;
+export type TechnologySchemaVersion = typeof technologySchemaVersion;
+
 export const technologyDomains = ["IT", "OT"] as const;
 export type TechnologyDomain = (typeof technologyDomains)[number];
 
@@ -199,6 +202,10 @@ export interface Observation {
   readonly evidence?: readonly EvidenceReference[];
 }
 
+/**
+ * Relaciones entre TechnologyAsset canónicos. Ubicaciones, sitios y otros contextos
+ * no tecnológicos se modelarán con contratos propios antes de participar del grafo.
+ */
 export const knownRelationshipTypes = [
   "depends_on",
   "uses",
@@ -207,7 +214,6 @@ export const knownRelationshipTypes = [
   "hosts",
   "controls",
   "monitors",
-  "located_in",
 ] as const;
 export type KnownRelationshipType = (typeof knownRelationshipTypes)[number];
 export type RelationshipType = KnownRelationshipType | `custom:${string}`;
@@ -235,6 +241,7 @@ export interface TechnologyRelationship {
 
 /** Snapshot coherente de dominio; los providers demo/live futuros compartirán este contrato. */
 export interface TechnologySnapshot {
+  readonly schemaVersion: TechnologySchemaVersion;
   readonly asOf: string;
   readonly assets: readonly TechnologyAsset[];
   readonly relationships: readonly TechnologyRelationship[];

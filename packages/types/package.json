@@ -4,6 +4,9 @@
   "private": true,
   "description": "Contratos canónicos de dominio de IGX NEXUS",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.build.json",

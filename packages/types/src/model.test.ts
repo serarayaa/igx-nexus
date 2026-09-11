@@ -1,19 +1,20 @@
 import { describe, expect, it } from "vitest";
 import {
   sourceReferenceKey,
+  technologySchemaVersion,
   type Observation,
   type SourceReference,
   type TechnologyAsset,
   type TechnologyRelationship,
   type TechnologySnapshot,
-} from "./model";
+} from "./model.js";
 import {
   isIsoTimestamp,
   validateObservation,
   validateTechnologyAsset,
   validateTechnologyRelationship,
   validateTechnologySnapshot,
-} from "./validation";
+} from "./validation.js";
 
 const glpi: SourceReference = {
   source: "glpi",
@@ -86,6 +87,17 @@ function otAsset(): TechnologyAsset {
     sourceReferences: [source],
     attributes: { zone: "OT-LAB", safetyImpact: false },
     provenance: [],
+  };
+}
+
+function snapshot(overrides: Partial<TechnologySnapshot> = {}): TechnologySnapshot {
+  return {
+    schemaVersion: technologySchemaVersion,
+    asOf: "2026-09-11T15:15:00Z",
+    assets: [itAsset()],
+    relationships: [],
+    observations: [],
+    ...overrides,
   };
 }
 
@@ -164,8 +176,18 @@ describe("timestamps and observations", () => {
   it("requires explicit timezone in ISO timestamps", () => {
     expect(isIsoTimestamp("2026-09-11T15:00:00Z")).toBe(true);
     expect(isIsoTimestamp("2026-09-11T15:00:00-03:00")).toBe(true);
+    expect(isIsoTimestamp("2026-09-11T15:00:00.123456789Z")).toBe(true);
     expect(isIsoTimestamp("2026-09-11T15:00:00")).toBe(false);
     expect(isIsoTimestamp("11/09/2026 15:00")).toBe(false);
+  });
+
+  it("rejects timestamps that Date.parse would otherwise normalize or accept too loosely", () => {
+    expect(isIsoTimestamp("2026-02-29T15:00:00Z")).toBe(false);
+    expect(isIsoTimestamp("2024-02-29T15:00:00Z")).toBe(true);
+    expect(isIsoTimestamp("2026-04-31T15:00:00Z")).toBe(false);
+    expect(isIsoTimestamp("2026-09-11T24:00:00Z")).toBe(false);
+    expect(isIsoTimestamp("2026-09-11T15:00:00+14:01")).toBe(false);
+    expect(isIsoTimestamp("2026-09-11T15:00:00+14:00")).toBe(true);
   });
 
   it("models battery capacity as a typed temporal observation", () => {
@@ -263,6 +285,12 @@ describe("canonical relationships", () => {
 });
 
 describe("technology snapshot", () => {
+  it("requires the explicit canonical schema version", () => {
+    expect(validateTechnologySnapshot(snapshot())).toEqual([]);
+    const incompatible = { ...snapshot(), schemaVersion: "0.1" } as unknown as TechnologySnapshot;
+    expect(validateTechnologySnapshot(incompatible).some((entry) => entry.code === "snapshot.schema_version_invalid")).toBe(true);
+  });
+
   it("surfaces unresolved imported evidence as warnings instead of hiding it", () => {
     const relationship: TechnologyRelationship = {
       id: "REL-ORPHAN",
@@ -284,13 +312,10 @@ describe("technology snapshot", () => {
       source: glpi,
       authority: "observed",
     };
-    const snapshot: TechnologySnapshot = {
-      asOf: "2026-09-11T15:15:00Z",
-      assets: [itAsset()],
+    const issues = validateTechnologySnapshot(snapshot({
       relationships: [relationship],
       observations: [observation],
-    };
-    const issues = validateTechnologySnapshot(snapshot);
+    }));
     expect(issues).toEqual(expect.arrayContaining([
       expect.objectContaining({ code: "snapshot.relationship_endpoint_missing", severity: "warning" }),
       expect.objectContaining({ code: "snapshot.observation_asset_missing", severity: "warning" }),
@@ -298,12 +323,9 @@ describe("technology snapshot", () => {
   });
 
   it("detects duplicate canonical ids", () => {
-    const snapshot: TechnologySnapshot = {
-      asOf: "2026-09-11T15:15:00Z",
+    const issues = validateTechnologySnapshot(snapshot({
       assets: [itAsset(), itAsset({ displayName: "Duplicado" })],
-      relationships: [],
-      observations: [],
-    };
-    expect(validateTechnologySnapshot(snapshot).some((entry) => entry.code === "snapshot.asset_id_duplicate")).toBe(true);
+    }));
+    expect(issues.some((entry) => entry.code === "snapshot.asset_id_duplicate")).toBe(true);
   });
 });

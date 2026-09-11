@@ -12,6 +12,7 @@ import {
   sourceReferenceKey,
   technologyAssetClasses,
   technologyDomains,
+  technologySchemaVersion,
   type AuthorityLevel,
   type EvidenceReference,
   type Observation,
@@ -21,7 +22,7 @@ import {
   type TechnologyAsset,
   type TechnologyRelationship,
   type TechnologySnapshot,
-} from "./model";
+} from "./model.js";
 
 export type ValidationSeverity = "error" | "warning";
 
@@ -32,10 +33,38 @@ export interface ValidationIssue {
   readonly severity: ValidationSeverity;
 }
 
-const ISO_TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
+const ISO_TIMESTAMP = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,9})?(Z|([+-])(\d{2}):(\d{2}))$/;
+const DAYS_BY_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
 
+function isLeapYear(year: number): boolean {
+  return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+/** Valida forma, calendario y zona horaria; Date.parse por sí solo normaliza fechas inválidas. */
 export function isIsoTimestamp(value: string): boolean {
-  return ISO_TIMESTAMP.test(value) && Number.isFinite(Date.parse(value));
+  const match = ISO_TIMESTAMP.exec(value);
+  if (!match) return false;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  const timezone = match[7];
+  const offsetHour = Number(match[9] ?? 0);
+  const offsetMinute = Number(match[10] ?? 0);
+
+  if (year < 1 || month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59) return false;
+  const monthDays = month === 2 && isLeapYear(year) ? 29 : DAYS_BY_MONTH[month - 1];
+  if (monthDays === undefined || day < 1 || day > monthDays) return false;
+
+  if (timezone !== "Z") {
+    if (offsetHour > 14 || offsetMinute > 59) return false;
+    if (offsetHour === 14 && offsetMinute !== 0) return false;
+  }
+
+  return Number.isFinite(Date.parse(value));
 }
 
 function issue(code: string, path: string, message: string, severity: ValidationSeverity = "error"): ValidationIssue {
@@ -209,7 +238,7 @@ export function validateObservation(observation: Observation, path = "observatio
 }
 
 const BIDIRECTIONAL_TYPES = new Set(["connected_to", "communicates_with"]);
-const DIRECTED_TYPES = new Set(["depends_on", "uses", "hosts", "controls", "monitors", "located_in"]);
+const DIRECTED_TYPES = new Set(["depends_on", "uses", "hosts", "controls", "monitors"]);
 
 function validateRelationshipEvidence(record: RelationshipEvidence, path: string): ValidationIssue[] {
   const issues: ValidationIssue[] = [...validateSourceReference(record.source, `${path}.source`)];
@@ -267,6 +296,9 @@ function duplicateIdIssues<T extends { readonly id: string }>(
 
 export function validateTechnologySnapshot(snapshot: TechnologySnapshot): readonly ValidationIssue[] {
   const issues: ValidationIssue[] = [];
+  if (snapshot.schemaVersion !== technologySchemaVersion) {
+    issues.push(issue("snapshot.schema_version_invalid", "snapshot.schemaVersion", `schemaVersion must be ${technologySchemaVersion}`));
+  }
   if (!isIsoTimestamp(snapshot.asOf)) issues.push(issue("timestamp.invalid", "snapshot.asOf", "asOf must be an ISO-8601 timestamp with timezone"));
 
   snapshot.assets.forEach((asset, index) => issues.push(...validateTechnologyAsset(asset, `snapshot.assets[${index}]`)));
