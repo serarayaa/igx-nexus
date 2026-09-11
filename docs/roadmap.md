@@ -6,7 +6,7 @@ La implementación inicial corresponde exclusivamente a **Innergex Chile**. La e
 
 ## v0.1 — Demo Local Innergex Chile
 
-Avance formal integrado en `main`: **10 de 13 tickets (~76,9%)**. CMDB-011 se valida en su rama; después del merge manual serán **11/13 (~84,6%)**.
+Avance formal integrado en `main`: **11 de 13 tickets (~84,6%)**. CMDB-011 está integrado mediante PR #29 (`d7ed149`). Siguiente ticket: CMDB-012 — Dataset de Demo.
 
 - CMDB-001 ✅ Inicio / Arquitectura / Alcance
 - CMDB-002 ✅ Repositorio y Entorno Local
@@ -18,7 +18,7 @@ Avance formal integrado en `main`: **10 de 13 tickets (~76,9%)**. CMDB-011 se va
 - CMDB-008 ✅ Asset 360° — integrado mediante PR #21 (`bdee501`)
 - CMDB-009 ✅ Motor QR y Etiquetado — integrado mediante PR #23 (`5b0b0a9`); issue #22 cerrado
 - CMDB-010 ✅ Grafo de Relaciones — integrado mediante PR #27 (`89ca343`)
-- CMDB-011 🟡 CMDB Health — implementado en rama, validación en curso; issue #28
+- CMDB-011 ✅ CMDB Health — integrado mediante PR #29; issue #28 completado
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
@@ -26,7 +26,7 @@ CMDB-008 está oficialmente integrado y cerrado. Conecta **Panel principal → A
 
 CMDB-009 está oficialmente integrado y cerrado. Separa la identidad física del CI mediante locator opaco, genera QR sin datos sensibles y añade un Label Engine con perfiles en milímetros, 203/300 DPI y exportación SVG. Ver [Motor QR y Etiquetado](qr-label-engine.md) y [ADR-0007](architecture/adr-0007-qr-locator-label-engine.md). Ese hito dejó 9/13 integrados; CMDB-010 ya se integró posteriormente.
 
-CMDB-010 está integrado mediante PR #27 e issue #26 cerrado como completed. Añade modelo dirigido, provider demo, layout determinista, mapa navegable y lista semántica equivalente. Ver [Grafo](relationship-graph.md). CMDB-011 añade [calidad explicable de registros](cmdb-health.md), pendiente de merge. CMDB-012 y CMDB-013 no se han iniciado.
+CMDB-010 está integrado mediante PR #27 e issue #26 cerrado como completed. Añade modelo dirigido, provider demo, layout determinista, mapa navegable y lista semántica equivalente. Ver [Grafo](relationship-graph.md). CMDB-011 añade [calidad explicable de registros](cmdb-health.md), integrado mediante PR #29. CMDB-012 y CMDB-013 no se han iniciado.
 
 La Demo v0.1 actúa como gate para decidir si IGX NEXUS se oficializa y se promueve desde el notebook de desarrollo hacia un servidor corporativo de Innergex Chile.
 

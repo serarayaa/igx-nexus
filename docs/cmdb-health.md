@@ -1,6 +1,6 @@
 # CMDB-011 — CMDB Health
 
-Estado: implementado en `feature/cmdb-011-cmdb-health`, validación en curso. Issue #28. No integrado en `main` hasta merge manual.
+Estado: integrado en `main` mediante PR #29, commit `d7ed1494afb6b56661bf5bdf387c2943976ce5cb`. Issue #28 cerrado como completed. CI post-merge #118 verde.
 
 ## Qué responde
 
