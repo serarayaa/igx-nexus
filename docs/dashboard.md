@@ -30,7 +30,7 @@ La fecha se muestra en UTC para conservar reproducibilidad entre equipos.
 Con denominador cero se muestra «Sin datos». Las ubicaciones nulas aparecen como
 «Sin ubicación» para no perder registros. Los porcentajes se redondean y pueden
 sumar 99% o 101%; los conteos son exactos. Las garantías muestran los próximos cinco
-vencimientos, por fecha y código, sin implementar búsqueda ni Asset Explorer.
+vencimientos, por fecha y código; la búsqueda está disponible en Asset Explorer.
 
 ## Límites explícitos
 
@@ -60,10 +60,9 @@ zoom real 200%/400%, contraste alto de Windows, reduced motion y revisión visua
 en un teléfono físico. Comprobar lectura de métricas, foco tras cerrar navegación
 y desplazamiento horizontal de garantías.
 
-## Siguiente hito
+## Dataset vigente
 
-Revisar CMDB-006 y fusionarlo manualmente sólo con CI aprobada. Después iniciar
-CMDB-007 desde `main` actualizado. No se crea una cadena de PR dependientes.
+CMDB-006 está integrado. CMDB-012 consolida la fuente sintética sin cambiar las fórmulas del panel. Conteos revisados, scope y diferencias respecto de Health: [Dataset de Demo](demo-dataset.md).
 
 ## Integración CMDB-011
 

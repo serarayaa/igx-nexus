@@ -15,7 +15,7 @@ Asset 360 ofrece el enlace “Abrir grafo de relaciones”. El mapa mantiene un 
 | Capa | Responsabilidad |
 |---|---|
 | `relationship-model.ts` | Contratos, taxonomía, validación, direccionalidad, filtros, vecindario y layout puro |
-| `demo-relationship-provider.ts` | Fixture y provider asíncrono sintético |
+| `demo-relationship-provider.ts` | Provider asíncrono del catálogo compartido `demo-dataset.ts` |
 | `RelationshipGraph.tsx` | Estados, filtros, mapa, selección, navegación y representación accesible |
 | `relationship-graph.css` | Presentación responsive, temas y forced-colors |
 
@@ -45,7 +45,7 @@ Desde un CI enfocado, una relación dirigida saliente representa **upstream** (�
 
 ## Dataset demo
 
-El escenario reutiliza seis activos del inventario sintético y seis relaciones. Permite observar un desktop y otro equipo que dependen de un switch, utilizan monitores y comparten conectividad con impresoras. No representa nombres, topología, ubicaciones ni direccionamiento corporativo.
+CMDB-012 consolida 18 relaciones en tres componentes de hasta siete nodos, sobre el inventario compartido de 240 CI. Se conserva el grupo de oficina y se añaden un escenario OT y otro de puestos. Ver [catálogo, semántica y casos hero](demo-dataset.md). No representa nombres, topología, ubicaciones ni direccionamiento corporativo.
 
 El provider devuelve hasta dos niveles. La UI permite reducir a un nivel y filtrar por tipo o perspectiva. Las referencias incompletas permanecen visibles como “CI no disponible” y no generan links falsos.
 
@@ -73,5 +73,5 @@ CMDB-010 no ejecuta discovery. Las fuentes futuras deben ingresar por NEXUS API 
 - sin integraciones reales;
 - sin zoom/pan, innecesarios para el vecindario pequeño;
 - sin cálculo avanzado de impacto;
-- sin CMDB Health (CMDB-011);
+- Health se evalúa en su vista global y Asset 360, sin convertir el grafo en monitor operacional;
 - sin Service Desk ni tickets, gestionados en Jira.

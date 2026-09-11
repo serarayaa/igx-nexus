@@ -20,7 +20,7 @@ Se revisaron README, roadmap, demo-readiness, arquitectura/ADRs 0001–0008, mod
 - `health-engine.ts`: evaluación pura de `InventorySnapshot` + `RelationshipSnapshot | null`, agregación, filtros y orden. No accede al reloj, React, GLPI, Graph ni red.
 - `health-presentation.ts`: catálogo de mensajes/acciones, labels y presentación; no decide reglas.
 - `RelationshipInventoryProvider(AbortSignal)`: contrato explícito del snapshot completo. El provider del grafo sigue entregando vecindarios por CI sin cambios de API.
-- `demoRelationshipInventoryProvider`: usa las mismas seis relaciones de CMDB-010, sin n peticiones por activo ni inventario paralelo.
+- `demoRelationshipInventoryProvider`: comparte las relaciones del catálogo CMDB-012, sin n peticiones por activo ni inventario paralelo.
 - `useHealthReport`: carga cancelable de los dos snapshots y cálculo; ignora resoluciones/rechazos obsoletos y cancela la otra carga al fallar. Mensajes seguros con retry.
 - `CmdbHealth`: vista global; `HealthDetails`/`AssetHealthSection`: evaluación individual sobre el inventario ya cargado por Asset 360. El fallo de Health no oculta el resto de la ficha ni roba su foco.
 
@@ -120,7 +120,7 @@ Una relación con ambos extremos ausentes sigue visible en «Señales del regist
 
 ## Datos y límites
 
-Se conservan **los mismos 240 activos y seis relaciones**, sin cambiar una sola cifra del fixture central para decorar la pantalla. Los casos extremos viven sólo en tests. No se comienza CMDB-012 ni CMDB-013.
+En el desarrollo original de CMDB-011 se conservaron 240 activos y seis relaciones. CMDB-012 consolida ahora 240 activos y 18 relaciones; cifras y causas actuales en [Dataset de Demo](demo-dataset.md). El motor y sus reglas no cambian; los casos estructuralmente inválidos siguen en tests. CMDB-013 permanece pendiente.
 
 No hay integraciones reales, escaneo, autenticación productiva, secretos, infraestructura corporativa, reconciliación multifuente ni nuevas políticas corporativas. La evaluación comprueba propiedades del snapshot normalizado, no que un serial presente corresponda físicamente al equipo.
 

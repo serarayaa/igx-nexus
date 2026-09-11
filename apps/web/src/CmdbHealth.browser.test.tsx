@@ -50,7 +50,7 @@ it("deep link, causas, filtros AND, paginación y restablecer funcionan", async 
   await userEvent.click(screen.getByRole("button", { name: "Página siguiente" }));
   expect(screen.getByText("240 CI coinciden · Página 2 de 12")).toBeTruthy();
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Causa" }), "observation_unknown");
-  expect(screen.getByText("15 CI coinciden · Página 1 de 1")).toBeTruthy();
+  expect(screen.getByText("12 CI coinciden · Página 1 de 1")).toBeTruthy();
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Dimensión con señales" }), "freshness");
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Tipo de activo" }), "Monitor");
   expect(screen.getByText("3 CI coinciden · Página 1 de 1")).toBeTruthy();
@@ -58,7 +58,7 @@ it("deep link, causas, filtros AND, paginación y restablecer funcionan", async 
   expect(screen.getByText("240 CI coinciden · Página 1 de 12")).toBeTruthy();
   const causes = screen.getByRole("region", { name: "Principales señales de calidad" });
   await userEvent.click(within(causes).getByRole("button", { name: /Observación desconocida/ }));
-  expect(screen.getByText("15 CI coinciden · Página 1 de 1")).toBeTruthy();
+  expect(screen.getByText("12 CI coinciden · Página 1 de 1")).toBeTruthy();
   await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Localizar registros y revisar causas" })));
 });
 
@@ -75,7 +75,7 @@ it("maneja inventario vacío y preserva relaciones huérfanas", async () => {
   render(shell({ inventoryProvider: async () => ({ ...demoSnapshot, assets: [] }) }));
   expect(await screen.findByText("El inventario está vacío")).toBeTruthy();
   expect(screen.queryByText("0 / 100")).toBeNull();
-  expect(screen.getByText(/6 relaciones sin ningún extremo/)).toBeTruthy();
+  expect(screen.getByText(/18 relaciones sin ningún extremo/)).toBeTruthy();
 });
 
 it("inventario sin problemas no inventa findings; filtro vacío es recuperable", async () => {

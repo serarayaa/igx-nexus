@@ -23,7 +23,7 @@ datos como sintéticos y muestra la fecha de corte de la demostración.
 | Archivo Web | Responsabilidad |
 | --- | --- |
 | `asset-model.ts` | Asset, proyección de métricas, snapshot y provider |
-| `demo-provider.ts` | Fixture compartido, 240 activos, corte fijo |
+| `demo-provider.ts` | Adaptador del catálogo compartido `demo-dataset.ts`, 240 activos y corte fijo |
 | `dashboard-model.ts` | Derivación de métricas existente |
 | `explorer-model.ts` | Búsqueda, facetas, filtros, orden y paginación pura |
 | `AssetExplorer.tsx` | Carga cancelable y estado de la consulta |
@@ -71,8 +71,8 @@ validación humana; no se presenta como realizado por pruebas automatizadas.
 - Búsqueda por palabras, sin fuzzy search, exportación ni persistencia de consulta.
 - Consulta local apropiada para el fixture actual; la API real definirá ejecución
   en servidor y control de acceso antes de manejar datos productivos.
-- Tabla con scroll horizontal en móvil; sin virtualización ni ficha Asset 360.
-- CMDB-007 sólo se cuenta integrado después del merge manual. Siguiente: CMDB-008.
+- Tabla con scroll horizontal en móvil; sin virtualización. Asset 360 integrado mediante CMDB-008.
+- CMDB-007 integrado; catálogo vigente y casos de búsqueda en [Dataset de Demo](demo-dataset.md).
 
 Ver [ADR-0005](architecture/adr-0005-asset-explorer.md).
 

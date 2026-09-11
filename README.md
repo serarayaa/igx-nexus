@@ -57,7 +57,7 @@ El primer hito es una demostración local pulida que permita validar el producto
 
 La eventual adopción por Innergex Canadá u otras entidades se considera una oportunidad futura y no debe condicionar el alcance de la primera implementación chilena.
 
-Avance formal integrado en `main`: **11/13 tickets (~84,6%)**. CMDB-011 — CMDB Health está integrado mediante PR #29 (`d7ed149`). Siguiente ticket: CMDB-012 — Dataset de Demo. CMDB-013 sigue pendiente.
+Avance formal integrado en `main`: **11/13 tickets (~84,6%)**. CMDB-011 — CMDB Health está integrado mediante PR #29 (`d7ed149`). Siguiente ticket: CMDB-012 — Dataset de Demo. CMDB-013 sigue pendiente. CMDB-012 está implementado en rama, listo para revisión; no cuenta como integrado hasta su merge manual. Ver [Dataset de Demo](docs/demo-dataset.md).
 
 ## Flujo de desarrollo
 

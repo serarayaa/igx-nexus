@@ -43,6 +43,27 @@ try {
       checks.push(`reflow ${width} ${theme}`);
     }
   }
+  // CMDB-012: real catalog across every consumer, including longer OT names.
+  const routes = [
+    ["overview", "Panel principal"], ["assets", "Explorador de activos"],
+    ["assets/DEMO-0013", "Consola Demo Supervisión Norte"],
+    ["assets/DEMO-0013/label", "Diseñar etiqueta"],
+    ["assets/DEMO-0013/relations", "Grafo de Relaciones"],
+    ["assets/DEMO-0020", "Estación Demo Por revisar"],
+  ];
+  for (const width of [1440, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 1000 });
+    for (const [route, title] of routes) {
+      await page.goto(`http://127.0.0.1:4173/#${route}`);
+      await page.getByRole("heading", { name: title, level: 1, exact: true }).waitFor();
+      for (const theme of ["light", "dark"]) {
+        await ensureTheme(theme);
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `dataset overflow ${route} ${width} ${theme}`);
+        await page.screenshot({ path: `qa-artifacts/dataset-${route.replaceAll("/", "-")}-${width}-${theme}.png` });
+        checks.push(`dataset ${route} ${width} ${theme}`);
+      }
+    }
+  }
   await page.setViewportSize({ width: 390, height: 1000 });
   await page.goto("http://127.0.0.1:4173/#overview");
   await page.getByRole("button", { name: /Abrir navegación/ }).click();
@@ -58,6 +79,20 @@ try {
   assert(await page.evaluate(() => matchMedia("(forced-colors: active)").matches && matchMedia("(prefers-reduced-motion: reduce)").matches));
   await page.screenshot({ path: "qa-artifacts/health-forced-colors.png" });
   checks.push("forced-colors + reduced-motion + keyboard focus");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("http://127.0.0.1:4173/#assets/DEMO-0013/relations");
+  const otNode = page.getByRole("button", { name: "Switch Demo Celda Norte", exact: true });
+  await otNode.focus();
+  await otNode.press("Enter");
+  assert.equal(await otNode.getAttribute("aria-pressed"), "true");
+  await page.screenshot({ path: "qa-artifacts/dataset-ot-forced-colors.png" });
+  checks.push("OT graph forced-colors + reduced-motion + keyboard selection");
+  await page.setViewportSize({ width: 320, height: 1000 });
+  assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "OT forced-colors reflow");
+  await page.screenshot({ path: "qa-artifacts/dataset-ot-forced-colors-320.png" });
+  // Restore Health before checking its existing 200% text contract.
+  await page.goto("http://127.0.0.1:4173/#health");
+  await page.getByRole("heading", { name: "Score de registros CI" }).waitFor();
   await page.emulateMedia({ forcedColors: "none", reducedMotion: "reduce" });
   await page.setViewportSize({ width: 320, height: 1000 });
   await page.addStyleTag({ content: "html { font-size: 200%; }" });
