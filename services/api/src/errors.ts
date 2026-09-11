@@ -11,17 +11,11 @@ function errorBody(
 }
 
 export function registerErrorHandlers(app: FastifyInstance): void {
-  app.setNotFoundHandler(
-    {
-      preHandler: (_request, reply, done) => {
-        reply.header("content-type", "application/json; charset=utf-8");
-        done();
-      },
-    },
-    (request, reply) => {
-      void reply.status(404).send(errorBody(request, "ROUTE_NOT_FOUND", 404, "Route not found"));
-    },
-  );
+  app.addSchema({ $id: "ApiErrorResponse", ...errorResponseSchema });
+
+  app.setNotFoundHandler((request, reply) => {
+    void reply.status(404).send(errorBody(request, "ROUTE_NOT_FOUND", 404, "Route not found"));
+  });
 
   app.setErrorHandler((error, request, reply) => {
     const statusCode =
@@ -49,7 +43,4 @@ export function registerErrorHandlers(app: FastifyInstance): void {
 
     void reply.status(statusCode).send(errorBody(request, code, statusCode, message));
   });
-
-  // Keeps the schema close to the normalized handler contract for future route reuse.
-  app.addSchema({ $id: "ApiErrorResponse", ...errorResponseSchema });
 }

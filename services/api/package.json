@@ -8,10 +8,16 @@
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "scripts": {
+    "prepare:contracts": "npm run build --workspace @igx-nexus/types",
+    "predev": "npm run prepare:contracts",
     "dev": "npm run build && node --enable-source-maps --watch dist/server.js",
+    "prestart": "npm run prepare:contracts",
     "start": "node --enable-source-maps dist/server.js",
+    "pretypecheck": "npm run prepare:contracts",
     "typecheck": "tsc -p tsconfig.json",
+    "prebuild": "npm run prepare:contracts",
     "build": "tsc -p tsconfig.build.json",
+    "pretest": "npm run prepare:contracts",
     "test": "vitest run"
   },
   "dependencies": {

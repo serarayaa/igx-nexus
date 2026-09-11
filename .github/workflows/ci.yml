@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   ui:
-    name: Contracts / Design System / Web
+    name: Contracts / API / Design System / Web
     runs-on: ubuntu-24.04
     timeout-minutes: 15
 
@@ -43,6 +43,13 @@ jobs:
           npm run test --workspace @igx-nexus/types
           npm run build --workspace @igx-nexus/types
           npm pack --dry-run --workspace @igx-nexus/types
+
+      - name: Validar NEXUS API Runtime
+        run: |
+          npm run typecheck --workspace @igx-nexus/api
+          npm run test --workspace @igx-nexus/api
+          npm run build --workspace @igx-nexus/api
+          npm pack --dry-run --workspace @igx-nexus/api
 
       - name: Instalar Chromium para tests de UI
         run: |

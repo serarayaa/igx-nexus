@@ -1,7 +1,7 @@
 import swagger from "@fastify/swagger";
 import Fastify, { type FastifyInstance } from "fastify";
 import { loadConfig, type ApiConfig } from "./config.js";
-import { API_SERVICE_VERSION, API_VERSION } from "./contracts.js";
+import { API_SERVICE_VERSION } from "./contracts.js";
 import { registerErrorHandlers } from "./errors.js";
 import { registerBaseRoutes } from "./routes.js";
 
@@ -21,7 +21,7 @@ function loggerOptions(config: ApiConfig) {
       ],
       censor: "[REDACTED]",
     },
-  } as const;
+  };
 }
 
 export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyInstance> {
@@ -41,7 +41,6 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
         version: API_SERVICE_VERSION,
       },
       tags: [{ name: "Runtime", description: "Estado y metadata del runtime NEXUS API" }],
-      "x-api-version": API_VERSION,
     },
   });
 
