@@ -95,7 +95,7 @@ Una observación NO es:
 
 La agregación, tendencias, findings y scoring corresponden a tickets posteriores.
 
-### 5. Las relaciones son claims con evidencia
+### 5. Las relaciones son claims entre activos canónicos y requieren evidencia
 
 `TechnologyRelationship` utiliza IDs canónicos NEXUS y mantiene:
 
@@ -106,13 +106,17 @@ La agregación, tendencias, findings y scoring corresponden a tickets posteriore
 - `observedAt`;
 - una o más evidencias de relación.
 
-Los tipos iniciales incluyen dependencia, uso, conectividad, comunicación, hosting, control, monitoreo y ubicación. Los tipos custom siguen la misma regla `custom:<nombre>`.
+Los tipos iniciales incluyen dependencia, uso, conectividad, comunicación, hosting, control y monitoreo. Los tipos custom siguen la misma regla `custom:<nombre>`.
 
-Para tipos con semántica conocida se validan invariantes de dirección; por ejemplo `connected_to` y `communicates_with` son bidireccionales, mientras `depends_on`, `uses`, `hosts`, `controls`, `monitors` y `located_in` son dirigidas.
+Para tipos con semántica conocida se validan invariantes de dirección; por ejemplo `connected_to` y `communicates_with` son bidireccionales, mientras `depends_on`, `uses`, `hosts`, `controls` y `monitors` son dirigidas.
 
-### 6. Evidencia no reconciliada no se oculta
+Los extremos de `TechnologyRelationship` son `TechnologyAsset`. Sitios, ubicaciones, unidades organizacionales u otros contextos no tecnológicos **no se fuerzan a entrar al grafo como activos ficticios**. Si deben participar de relaciones de primer nivel, se definirán contratos propios antes de incorporarlos.
 
-`TechnologySnapshot` agrupa activos, relaciones y observaciones bajo un `asOf` común.
+### 6. Los snapshots son versionados y la evidencia no reconciliada no se oculta
+
+`TechnologySnapshot` agrupa activos, relaciones y observaciones bajo un `asOf` común y declara explícitamente `schemaVersion: "0.2"`.
+
+El versionado del snapshot permite que NEXUS API y futuros adapters detecten una incompatibilidad de contrato antes de interpretar silenciosamente datos con otra semántica. V02-001 no introduce negociación de versiones HTTP; sólo establece la versión del modelo de dominio.
 
 Los validadores reportan referencias de relaciones/observaciones cuyo activo no aparece todavía en el snapshot como **warning**, no como borrado automático de información.
 
@@ -129,7 +133,8 @@ La futura NEXUS API decidirá cómo transportar y presentar esos estados.
 
 `@igx-nexus/types` incorpora validadores sin IO para:
 
-- timestamps ISO-8601 con timezone;
+- timestamps ISO-8601 con timezone, incluyendo validez real de calendario y offset;
+- versión de schema;
 - source references;
 - fuentes duplicadas;
 - identificadores duplicados;
@@ -157,6 +162,8 @@ analytics/rules
 ```
 
 Los contratos dejan de pertenecer conceptualmente a `apps/web`.
+
+El paquete se compila como ESM compatible con Node mediante `module/moduleResolution: NodeNext` y extensiones `.js` en imports relativos emitidos. Esto evita depender de que Vite resuelva imports TypeScript de forma distinta al futuro runtime de NEXUS API.
 
 ## Compatibilidad y migración
 
@@ -194,6 +201,8 @@ No se realizará un big-bang migration del frontend.
 - Las señales endpoint tienen un contrato temporal antes de diseñar Device Health.
 - El grafo futuro puede distinguir relación canónica de evidencia que la respalda.
 - Demo y Live podrán converger en contratos comunes en tickets posteriores.
+- API/adapters futuros pueden detectar explícitamente la versión del snapshot.
+- El artefacto compilado no depende de resolución ESM específica de Vite.
 
 ## Costos y riesgos
 
@@ -202,6 +211,7 @@ No se realizará un big-bang migration del frontend.
 - Procedencia aumenta volumen y complejidad, pero omitirla haría difícil explicar reconciliación y analytics.
 - `custom:*` evita bloquear extensiones, pero requerirá gobernanza para impedir proliferación de valores equivalentes.
 - El modelo canónico no resuelve por sí solo dónde persistir histórico/telemetría; esa decisión queda fuera de este ADR.
+- Ubicación/sitio aún no son entidades del grafo canónico; se evita inventarlas como activos hasta resolver su modelo correctamente.
 
 ## Fuera de alcance
 

@@ -2,9 +2,9 @@
 
 ## Alcance actual
 
-La implementación inicial corresponde exclusivamente a **Innergex Chile**. La eventual expansión a otras entidades o países se considera una etapa posterior.
+La implementación corresponde exclusivamente a **Innergex Chile**. La eventual expansión a otras entidades o países se considera una etapa posterior.
 
-## v0.1 — Demo Local Innergex Chile
+## v0.1 — Demo Local Innergex Chile ✅
 
 Avance formal integrado en `main`: **13 de 13 tickets — 100%**. CMDB-013 — Demo v0.1 quedó integrado mediante PR #37 (`58fabd8`); issue #35 completado y CI post-merge #138 verde.
 
@@ -24,21 +24,68 @@ Avance formal integrado en `main`: **13 de 13 tickets — 100%**. CMDB-013 — D
 
 CMDB-008 conecta **Panel principal → Activos → Asset 360**, con identidad NEXUS estable y estados accesibles. CMDB-009 separa el locator QR de la identidad visible y genera etiquetas SVG sin datos sensibles. CMDB-010 incorpora Technology Map con relaciones dirigidas/simétricas y representación semántica equivalente. CMDB-011 aporta [calidad explicable de registros](cmdb-health.md). CMDB-012 consolida el [dataset sintético](demo-dataset.md) compartido por todas las vistas.
 
-CMDB-013 no agrega una integración productiva nueva: valida y pule el recorrido completo, elimina lenguaje de roadmap de la experiencia de demo, agrega un smoke Browser de punta a punta y deja un guion reproducible en [Demo v0.1](demo-v0.1.md). Su integración completa **13/13 — 100%** del roadmap v0.1.
+CMDB-013 valida y pule el recorrido completo, elimina lenguaje de roadmap de la experiencia de demo, agrega un smoke Browser de punta a punta y deja un guion reproducible en [Demo v0.1](demo-v0.1.md). Su integración completa **13/13 — 100%** del roadmap v0.1.
 
-La Demo v0.1 actúa como gate para decidir si IGX NEXUS se oficializa y se promueve desde el notebook de desarrollo hacia un servidor corporativo de Innergex Chile.
+La v0.1 respondió la pregunta: **«¿Podemos construir la idea?»**
 
-Ver también:
+## v0.2 — Technology Intelligence 🚧
 
-- `docs/demo-v0.1.md` — preparación, walkthrough, activos hero y checklist pre-demo.
-- `docs/demo-readiness.md` — criterios de la demo, estado real, gate de oficialización y estrategia de migración a servidor.
+Después del cierre de v0.1 se realizó un Discovery específico antes de promover el producto a infraestructura corporativa. La decisión resultante es validar primero el comportamiento real de la plataforma y sus integraciones, evitando trasladar al servidor una arquitectura que todavía dependa de datos sintéticos.
+
+La v0.2 responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
+
+El roadmap activo y sus epics se mantienen en [`roadmap-v0.2.md`](roadmap-v0.2.md).
+
+Orden inicial:
+
+```text
+Canonical Technology Model
+        ↓
+NEXUS API
+        ↓
+Security + Demo/Live providers
+        ↓
+GLPI adapter + identidad técnica
+        ↓
+GLPI Agent Live Lab
+        ↓
+primer Asset 360 LIVE
+        ↓
+Provenance & Reconciliation
+```
+
+La v0.2 prioriza integraciones reales controladas, procedencia, modelo IT/OT correcto, Product Design 2.0, analytics orientado a decisiones y Endpoint Intelligence explicable. GLPI continúa como CMDB/ITAM; Jira continúa como Service Desk.
+
+## v0.3 — Corporate Deployment
+
+El traslado desde el entorno local hacia infraestructura corporativa queda reservado conceptualmente para v0.3, una vez que v0.2 haya demostrado un vertical slice real estable.
+
+v0.3 deberá cubrir, entre otros:
+
+- servidor/hosting corporativo;
+- DNS / HTTPS;
+- Entra ID / SSO;
+- RBAC productivo;
+- gestión de secretos;
+- reverse proxy;
+- persistencia y almacenamiento;
+- backup/restore;
+- observabilidad y logging;
+- auditoría;
+- hardening;
+- firewall/networking;
+- estrategia dev/staging/prod;
+- CI/CD y rollback;
+- runbooks y recuperación ante fallos.
+
+v0.2 debe diseñarse para que este traslado sea una promoción/hardening del producto, no una reescritura.
+
+## Referencias
+
+- `docs/roadmap-v0.2.md` — roadmap activo de Technology Intelligence.
+- `docs/demo-v0.1.md` — preparación, walkthrough, activos hero y checklist de la demo cerrada.
+- `docs/demo-readiness.md` — evidencia histórica de readiness de v0.1.
 - `docs/design-system/README.md` — baseline visual/técnico de CMDB-005.
-- `docs/future-vision.md` — backlog de evolución: discovery, garantías, actas digitales, KPI, seguridad, automatización y ciencia de datos.
-
-## Después de la demo
-
-Si la demo es aprobada, la siguiente fase debe priorizar hardening y operación corporativa: servidor definitivo, HTTPS, Entra ID SSO, RBAC, secretos, backups/restauración, monitoreo y habilitación progresiva de fuentes reales de Innergex Chile.
-
-Posteriormente podrán incorporarse capacidades de descubrimiento avanzado, reconciliación, gestión completa de ciclo de vida, garantías, actas digitales, analítica, seguridad y una posible integración desacoplada con DATRYA.
+- `docs/future-vision.md` — backlog histórico de evolución.
 
 Los flujos de Service Desk y tickets de soporte se excluyen de forma intencional, ya que Innergex utiliza Jira para esa responsabilidad.

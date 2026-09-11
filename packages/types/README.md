@@ -12,6 +12,7 @@ La regla principal es que el dominio de NEXUS no pertenece a GLPI, Intune, Entra
 - **Observations are temporal.** Una señal de batería, crash o evento no es un atributo permanente ni un score de CMDB Health.
 - **Relationships require evidence.** Una relación canónica conserva dirección, estado, tiempo y evidencia.
 - **Unresolved evidence is visible.** Los validadores pueden producir warnings para referencias aún no reconciliadas en lugar de ocultarlas.
+- **Snapshots are versioned.** `TechnologySnapshot.schemaVersion` permite detectar contratos incompatibles antes de interpretar datos.
 
 ## Estructura
 
@@ -33,6 +34,14 @@ puede ser adaptado posteriormente a la representación soportada por GLPI sin co
 
 Los roles conocidos son una base, no una lista exhaustiva. Extensiones justificadas utilizan el namespace `custom:<nombre>` para impedir strings arbitrarios silenciosos.
 
+`TechnologyRelationship` conecta activos tecnológicos canónicos. Sitios y ubicaciones no se falsifican como activos para poder usar una relación; su modelo se resolverá explícitamente cuando corresponda.
+
+## Compatibilidad de runtime
+
+El package emite ESM compatible con Node (`NodeNext`) y utiliza imports relativos con extensión `.js`. El objetivo es que los mismos contratos puedan ser consumidos posteriormente por NEXUS API y adapters sin depender de la resolución especial del bundler Web.
+
+Los timestamps aceptados por los validadores requieren ISO-8601 con timezone explícita y calendario válido; no se confía sólo en la normalización permisiva de `Date.parse`.
+
 ## Compatibilidad con v0.1
 
 V02-001 es **aditivo**. No reemplaza todavía:
@@ -53,6 +62,7 @@ Desde la raíz:
 npm run typecheck --workspace @igx-nexus/types
 npm run test --workspace @igx-nexus/types
 npm run build --workspace @igx-nexus/types
+npm pack --dry-run --workspace @igx-nexus/types
 ```
 
-El paquete no contiene secretos, IDs corporativos reales ni integración de red.
+El package no contiene secretos, IDs corporativos reales ni integración de red.

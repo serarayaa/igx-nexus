@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   ui:
-    name: Design System / UI / Dashboard
+    name: Contracts / Design System / Web
     runs-on: ubuntu-24.04
     timeout-minutes: 15
 
@@ -42,6 +42,7 @@ jobs:
           npm run typecheck --workspace @igx-nexus/types
           npm run test --workspace @igx-nexus/types
           npm run build --workspace @igx-nexus/types
+          npm pack --dry-run --workspace @igx-nexus/types
 
       - name: Instalar Chromium para tests de UI
         run: |
