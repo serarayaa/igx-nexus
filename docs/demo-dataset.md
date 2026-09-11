@@ -1,6 +1,6 @@
 # CMDB-012 — Dataset de Demo
 
-Estado: integrado en `main` mediante PR #32, merge commit `9afb26dcf3519f7b274740138f64f62e3071bfc4`. Issue #31 cerrado como completed. CI post-merge #128 verde. Avance formal: 12/13 (~92,3%). CMDB-013 NO ha sido iniciado y es el siguiente y último ticket.
+Estado: integrado en `main` mediante PR #32, merge commit `9afb26dcf3519f7b274740138f64f62e3071bfc4`. Issue #31 cerrado como completed. CI post-merge #128 verde. El roadmap v0.1 quedó posteriormente completado con CMDB-013 mediante PR #37 (`58fabd8`), issue #35 completado y CI post-merge #138 verde: **13/13 — 100%**.
 
 ## Propósito y límites
 
@@ -63,7 +63,7 @@ OT se limita a consolas, pantallas y equipos de red sintéticos que caben en el 
 
 ## Catálogo de activos hero
 
-Referencias para preparar CMDB-013 posteriormente; no constituyen un guion de presentación.
+Referencias utilizadas por CMDB-013 y la guía final de Demo v0.1; el detalle operativo del walkthrough se mantiene en [Demo v0.1](demo-v0.1.md).
 
 | ID | Nombre / caso | Qué permite comprobar |
 |---|---|---|
@@ -180,4 +180,4 @@ Medición orientativa local Node 24.19: 100 iteraciones tras 20 de calentamiento
 - Se mantuvo la semántica por dimensión de CMDB-011 y se documentó la diferencia con las señales básicas del Dashboard.
 - Se verificaron fechas, referencias, identidad, payloads, familias y ausencia de información corporativa. Los defectos simulados son ausencias/antigüedad explicables.
 - La CI #121 detectó un conteo heredado de seis relaciones y una carrera del test con el foco del diseñador; se corrigieron las expectativas y se esperó el foco de la vista antes de continuar. CI #122: todos los tests verdes, sin aumentar timeouts ni omitir pruebas.
-- Se actualizaron las guías que describían el fixture antiguo. Tras el merge de PR #32, el estado integrado queda en 12/13 (~92,3%) y CMDB-013 permanece fuera del alcance de CMDB-012.
+- Se actualizaron las guías que describían el fixture antiguo. Históricamente, el merge de PR #32 dejó el proyecto en 12/13 y CMDB-013 permaneció fuera del alcance de CMDB-012; posteriormente CMDB-013 se integró mediante PR #37 y cerró el roadmap v0.1 en **13/13 — 100%**.
