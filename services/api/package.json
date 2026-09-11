@@ -1,0 +1,42 @@
+{
+  "name": "@igx-nexus/api",
+  "version": "0.2.0-dev",
+  "private": true,
+  "description": "Runtime HTTP de NEXUS API para IGX NEXUS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "prepare:contracts": "npm run build --workspace @igx-nexus/types",
+    "predev": "npm run prepare:contracts",
+    "dev": "npm run build && node --enable-source-maps --watch dist/server.js",
+    "prestart": "npm run prepare:contracts",
+    "start": "node --enable-source-maps dist/server.js",
+    "pretypecheck": "npm run prepare:contracts",
+    "typecheck": "tsc -p tsconfig.json",
+    "prebuild": "npm run prepare:contracts",
+    "build": "tsc -p tsconfig.build.json",
+    "pretest": "npm run prepare:contracts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/swagger": "^9.8.1",
+    "@igx-nexus/types": "0.2.0-dev",
+    "fastify": "^5.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}

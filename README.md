@@ -65,7 +65,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-Primer ticket: **V02-001 — Canonical Technology Model**, issue #40. El trabajo se realiza en `feature/v02-001-canonical-technology-model` y no cuenta como integrado hasta su merge manual.
+**V02-001 — Canonical Technology Model** quedó integrado mediante PR #41. El trabajo activo es **V02-002 — NEXUS API Runtime**, issue #42, en `feature/v02-002-nexus-api-runtime`; no cuenta como integrado hasta su merge manual.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -127,6 +127,23 @@ Validación completa: `npm run typecheck`, `npm run build`, `npm test`, `npm run
 
 ## Contratos canónicos v0.2
 
-V02-001 incorpora progresivamente `@igx-nexus/types` bajo `packages/types`. El package modela identidad NEXUS, IT/OT, referencias de fuentes, procedencia, observaciones temporales y relaciones con evidencia sin migrar todavía los consumidores Web de v0.1.
+V02-001 incorporó `@igx-nexus/types` bajo `packages/types`. El package modela identidad NEXUS, IT/OT, referencias de fuentes, procedencia, observaciones temporales y relaciones con evidencia sin migrar todavía los consumidores Web de v0.1.
 
 Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture/adr-0011-canonical-technology-model.md).
+
+## NEXUS API v0.2
+
+V02-002 convierte `services/api` en el primer runtime backend real de NEXUS. La API usa Node.js 24, TypeScript ESM, Fastify 5, logging estructurado y OpenAPI generado desde los schemas del runtime.
+
+Endpoints base del ticket:
+
+```text
+GET /health
+GET /ready
+GET /api/v1
+GET /openapi.json
+```
+
+La configuración usa variables `NEXUS_API_*`; por defecto escucha sólo en `127.0.0.1:3100`. Todavía no conecta GLPI/Intune/Entra ni expone endpoints productivos de activos.
+
+Ver [README de NEXUS API](services/api/README.md) y [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md).

@@ -26,8 +26,8 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 
 | Ticket | Nombre | Prioridad | Estado |
 | --- | --- | --- | --- |
-| V02-001 | Canonical Technology Model | P0 | 🟡 En desarrollo — issue #40 |
-| V02-002 | NEXUS API Runtime | P0 | ⚪ Pendiente |
+| V02-001 | Canonical Technology Model | P0 | ✅ Integrado — PR #41 / issue #40 |
+| V02-002 | NEXUS API Runtime | P0 | PR #44 — cierre efectivo al merge manual / issue #42 |
 | V02-003 | API Security Baseline | P0 | ⚪ Pendiente |
 | V02-004 | Provider Mode Contract | P0 | ⚪ Pendiente |
 | V02-005 | GLPI API v2 Adapter | P0 | ⚪ Pendiente |
@@ -66,13 +66,15 @@ Objetivo: crear el lenguaje de dominio compartido de v0.2 con identidad canónic
 
 Dependencias: v0.1 cerrada.
 
-Resultado esperado: `@igx-nexus/types` compilable, validado y documentado sin migrar todavía consumidores v0.1.
+Resultado integrado: `@igx-nexus/types` compilable, validado y documentado mediante PR #41.
 
 ### V02-002 — NEXUS API Runtime
 
 Objetivo: convertir `services/api` en un servicio real con health endpoint, configuración, logging, contratos HTTP y OpenAPI.
 
-Dependencias: V02-001.
+Dependencias: V02-001 ✅.
+
+Entrega: issue #42 / PR #44. El ticket se considera completado únicamente con el merge manual del PR a `main`.
 
 ### V02-003 — API Security Baseline
 
