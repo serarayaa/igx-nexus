@@ -22,12 +22,9 @@ Completado e integrado:
 - CMDB-010 ✅ Grafo de Relaciones — PR #27 (`89ca343`)
 - CMDB-011 ✅ CMDB Health — PR #29 (`d7ed149`)
 - CMDB-012 ✅ Dataset de Demo — PR #32 (`9afb26d`); issue #31 completado
+- CMDB-013 ✅ Demo v0.1 — PR #37 (`58fabd8`); issue #35 completado; CI post-merge #138 verde
 
-Candidato final:
-
-- CMDB-013 🟡 Demo v0.1 — `feature/cmdb-013-demo-v0-1`; issue #35; pendiente de revisión/merge manual
-
-Integrado en `main`: **12/13 (~92,3%)**. CMDB-013 no cuenta como integrado mientras su PR permanezca abierto. La guía [Demo v0.1](demo-v0.1.md) documenta el recorrido reproducible y el uso de los activos hero. El merge manual de CMDB-013 completa 13/13 del roadmap actual.
+Integrado en `main`: **13/13 — 100%**. La guía [Demo v0.1](demo-v0.1.md) documenta el recorrido reproducible y el uso de los activos hero. El roadmap v0.1 está cerrado; la siguiente decisión es el gate de oficialización para un piloto/entorno corporativo controlado.
 
 ## Criterios mínimos para presentar la demo
 
@@ -47,6 +44,8 @@ Integrado en `main`: **12/13 (~92,3%)**. CMDB-013 no cuenta como integrado mient
 `DemoV01.browser.test.tsx` recorre Dashboard → Explorer → Asset 360 → QR/Label → resolver → Asset 360 → Graph → Health y conserva identidad, tema y densidad. Las suites existentes siguen siendo la fuente principal para axe, keyboard/focus, reflow 1440/768/390/320, light/dark, High Contrast, reduced motion, Graph y Health.
 
 Se expone `npm run test:demo` para ejecutar únicamente el smoke integrado. No se agrega un `scripts/qa-demo-v0.1.mjs`, ya que duplicaría el mismo recorrido Browser sin aportar una clase de evidencia diferente.
+
+La integración final de CMDB-013 quedó validada mediante CI de rama #136, CI de PR #137 y CI post-merge #138 en `main`, todas verdes.
 
 Objetivo de accesibilidad: WCAG 2.2 AA mediante pruebas automatizadas y revisión funcional, sin declarar certificación formal.
 
