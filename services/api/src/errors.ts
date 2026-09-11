@@ -10,6 +10,20 @@ function errorBody(
   return { code, statusCode, message, requestId: request.id };
 }
 
+function readClientStatusCode(error: unknown): number | undefined {
+  if (typeof error !== "object" || error === null || !("statusCode" in error)) return undefined;
+
+  const statusCode = (error as { readonly statusCode?: unknown }).statusCode;
+  return typeof statusCode === "number" && statusCode >= 400 && statusCode < 500
+    ? statusCode
+    : undefined;
+}
+
+function hasValidationDetails(error: unknown): boolean {
+  if (typeof error !== "object" || error === null || !("validation" in error)) return false;
+  return Array.isArray((error as { readonly validation?: unknown }).validation);
+}
+
 export function registerErrorHandlers(app: FastifyInstance): void {
   app.addSchema({ $id: "ApiErrorResponse", ...errorResponseSchema });
 
@@ -18,10 +32,7 @@ export function registerErrorHandlers(app: FastifyInstance): void {
   });
 
   app.setErrorHandler((error, request, reply) => {
-    const statusCode =
-      typeof error.statusCode === "number" && error.statusCode >= 400 && error.statusCode < 500
-        ? error.statusCode
-        : 500;
+    const statusCode = readClientStatusCode(error) ?? 500;
 
     if (statusCode >= 500) {
       request.log.error({ err: error }, "request failed");
@@ -29,7 +40,7 @@ export function registerErrorHandlers(app: FastifyInstance): void {
       request.log.warn({ err: error }, "request rejected");
     }
 
-    const validationError = Array.isArray(error.validation);
+    const validationError = hasValidationDetails(error);
     const code = validationError
       ? "VALIDATION_ERROR"
       : statusCode >= 500

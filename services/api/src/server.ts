@@ -4,7 +4,7 @@ import { buildApp } from "./app.js";
 import { loadConfig, type ApiConfig } from "./config.js";
 
 export interface SignalRuntime {
-  exitCode?: number;
+  exitCode: NodeJS.Process["exitCode"];
   once(signal: NodeJS.Signals, listener: () => void): unknown;
 }
 

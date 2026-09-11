@@ -14,6 +14,7 @@ describe("shutdown lifecycle", () => {
   it("registers SIGTERM and SIGINT and closes idempotently", async () => {
     const listeners = new Map<NodeJS.Signals, () => void>();
     const runtime: SignalRuntime = {
+      exitCode: undefined,
       once(signal, listener) {
         listeners.set(signal, listener);
         return runtime;
@@ -27,5 +28,6 @@ describe("shutdown lifecycle", () => {
     await controller.shutdown("SIGTERM");
     await controller.shutdown("SIGINT");
     expect(app.server.listening).toBe(false);
+    expect(runtime.exitCode).toBeUndefined();
   });
 });
