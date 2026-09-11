@@ -69,7 +69,11 @@ it("recorre Dashboard → Explorer → Asset 360 → QR → Graph → Health con
   const healthHeading = await screen.findByRole("heading", { name: "CMDB Health", level: 1 });
   await waitFor(() => expect(document.activeElement).toBe(healthHeading));
   expect(screen.getByRole("heading", { name: "Score de registros CI", level: 2 })).toBeTruthy();
-  expect(screen.getByText("240 de 240 CI evaluados · 100%")).toBeTruthy();
+  const coverageHeading = screen.getByRole("heading", { name: "Cobertura de evidencia", level: 2 });
+  const coveragePanel = coverageHeading.parentElement;
+  expect(coveragePanel).toBeTruthy();
+  expect(within(coveragePanel!).getByText("96 %")).toBeTruthy();
+  expect(within(coveragePanel!).getByText("240 de 240 CI evaluados · 100 %")).toBeTruthy();
   expect(document.documentElement.dataset.theme).toBe("dark");
   expect(document.documentElement.dataset.density).toBe("compact");
 }, 60000);
