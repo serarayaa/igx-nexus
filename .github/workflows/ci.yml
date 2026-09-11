@@ -37,6 +37,12 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Validar contratos canónicos v0.2
+        run: |
+          npm run typecheck --workspace @igx-nexus/types
+          npm run test --workspace @igx-nexus/types
+          npm run build --workspace @igx-nexus/types
+
       - name: Instalar Chromium para tests de UI
         run: |
           # Chromium de Playwright no depende del repositorio Google Chrome que trae el runner.
