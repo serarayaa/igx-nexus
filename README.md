@@ -57,7 +57,7 @@ El primer hito es una demostración local pulida que permita validar el producto
 
 La eventual adopción por Innergex Canadá u otras entidades se considera una oportunidad futura y no debe condicionar el alcance de la primera implementación chilena.
 
-Avance formal integrado en `main`: **12/13 tickets (~92,3%)**. CMDB-012 — Dataset de Demo está integrado mediante PR #32 (`9afb26d`). CMDB-013 — Demo v0.1 es el último ticket y se desarrolla en `feature/cmdb-013-demo-v0-1` mediante issue #35; no cuenta como integrado hasta su merge manual. Ver [guía de Demo v0.1](docs/demo-v0.1.md).
+Avance formal integrado en `main`: **13/13 tickets — 100%**. CMDB-013 — Demo v0.1 quedó integrado mediante PR #37 (`58fabd8`); issue #35 completado y CI post-merge #138 verde. La Demo v0.1 está cerrada como hito del roadmap actual. Ver [guía de Demo v0.1](docs/demo-v0.1.md).
 
 ## Flujo de desarrollo
 
