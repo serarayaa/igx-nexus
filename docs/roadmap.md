@@ -6,7 +6,7 @@ La implementación inicial corresponde exclusivamente a **Innergex Chile**. La e
 
 ## v0.1 — Demo Local Innergex Chile
 
-Avance formal integrado en `main`: **12 de 13 tickets (~92,3%)**. CMDB-012 está integrado mediante PR #32 (`9afb26d`). CMDB-013 es el último ticket y se prepara en `feature/cmdb-013-demo-v0-1`; no cuenta como integrado hasta su merge manual.
+Avance formal integrado en `main`: **13 de 13 tickets — 100%**. CMDB-013 — Demo v0.1 quedó integrado mediante PR #37 (`58fabd8`); issue #35 completado y CI post-merge #138 verde.
 
 - CMDB-001 ✅ Inicio / Arquitectura / Alcance
 - CMDB-002 ✅ Repositorio y Entorno Local
@@ -20,11 +20,11 @@ Avance formal integrado en `main`: **12 de 13 tickets (~92,3%)**. CMDB-012 está
 - CMDB-010 ✅ Grafo de Relaciones — integrado mediante PR #27 (`89ca343`)
 - CMDB-011 ✅ CMDB Health — integrado mediante PR #29; issue #28 completado
 - CMDB-012 ✅ Dataset de Demo — integrado mediante PR #32 (`9afb26d`); issue #31 completado
-- CMDB-013 🟡 Demo v0.1 — candidato en `feature/cmdb-013-demo-v0-1`; issue #35
+- CMDB-013 ✅ Demo v0.1 — integrado mediante PR #37 (`58fabd8`); issue #35 completado; CI post-merge #138 verde
 
 CMDB-008 conecta **Panel principal → Activos → Asset 360**, con identidad NEXUS estable y estados accesibles. CMDB-009 separa el locator QR de la identidad visible y genera etiquetas SVG sin datos sensibles. CMDB-010 incorpora Technology Map con relaciones dirigidas/simétricas y representación semántica equivalente. CMDB-011 aporta [calidad explicable de registros](cmdb-health.md). CMDB-012 consolida el [dataset sintético](demo-dataset.md) compartido por todas las vistas.
 
-CMDB-013 no agrega una integración productiva nueva: valida y pule el recorrido completo, elimina lenguaje de roadmap de la experiencia de demo, agrega un smoke Browser de punta a punta y deja un guion reproducible en [Demo v0.1](demo-v0.1.md). Mientras el PR permanezca abierto, `main` sigue en 12/13 (~92,3%). Su merge manual completa 13/13 (100%) del roadmap actual.
+CMDB-013 no agrega una integración productiva nueva: valida y pule el recorrido completo, elimina lenguaje de roadmap de la experiencia de demo, agrega un smoke Browser de punta a punta y deja un guion reproducible en [Demo v0.1](demo-v0.1.md). Su integración completa **13/13 — 100%** del roadmap v0.1.
 
 La Demo v0.1 actúa como gate para decidir si IGX NEXUS se oficializa y se promueve desde el notebook de desarrollo hacia un servidor corporativo de Innergex Chile.
 
