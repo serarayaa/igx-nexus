@@ -1,6 +1,6 @@
 # ADR-0009 — Calidad explicable del registro CMDB
 
-Estado: Propuesto por CMDB-011; pendiente de aceptación mediante merge manual.
+Estado: Aceptado mediante merge del PR #29 (CMDB-011).
 
 ## Contexto
 

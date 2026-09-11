@@ -84,4 +84,4 @@ Las suites Browser cubren Dashboard, Explorer, Asset 360 y diseñador QR/etiquet
 
 ## CMDB-011 — CMDB Health
 
-Implementado en rama, validación en curso y pendiente de merge manual. [Modelo, fórmula, reglas y QA](../../docs/cmdb-health.md). El motor puro consume inventario y relaciones completos con el mismo corte; Asset 360 comparte el motor y conserva la ficha ante errores de Health. `node scripts/qa-cmdb-health.mjs` valida el build y produce evidencia temporal de reflow/High Contrast/reduced-motion.
+Integrado mediante PR #29; CI post-merge #118 verde. [Modelo, fórmula, reglas y QA](../../docs/cmdb-health.md). El motor puro consume inventario y relaciones completos con el mismo corte; Asset 360 comparte el motor y conserva la ficha ante errores de Health. `node scripts/qa-cmdb-health.mjs` valida el build y produce evidencia temporal de reflow/High Contrast/reduced-motion.

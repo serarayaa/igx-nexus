@@ -21,13 +21,14 @@ Completado e integrado:
 - CMDB-009 ✅ Motor QR y Etiquetado — PR #23 (`5b0b0a9`); issue #22 cerrado
 - CMDB-010 ✅ Grafo de Relaciones — integrado mediante PR #27 (`89ca343`)
 
+- CMDB-011 ✅ CMDB Health — integrado mediante PR #29 (`d7ed149`)
+
 Pendiente para la demo:
 
-- CMDB-011 🟡 CMDB Health — implementado en rama, validación en curso; no integrado
 - CMDB-012 ⬜ Dataset de Demo
 - CMDB-013 ⬜ Demo v0.1
 
-Integrado en `main`: **10/13 (~76,9%)**. El merge manual de CMDB-011 llevará el avance a **11/13 (~84,6%)**; mientras su PR esté abierto no cuenta como integrado. CMDB-012/013 siguen pendientes.
+Integrado en `main`: **11/13 (~84,6%)**. CMDB-011 completado; siguiente ticket CMDB-012 — Dataset de Demo. CMDB-013 sigue pendiente.
 
 CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. Incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible.
 
@@ -97,6 +98,6 @@ La parte más delicada no será mover el código, sino integrar correctamente el
 
 El notebook actual es un entorno de desarrollo, no el servidor definitivo. Todo componente debe mantenerse reproducible desde código/configuración para evitar dependencias ocultas de la máquina del desarrollador.
 
-## CMDB-011 en revisión de implementación
+## CMDB-011 integrado
 
 Motor de calidad explicable, cobertura, findings, vista `#health` y resumen Asset 360. Reutiliza fixtures/proveedores y reglas comunes; no evalúa hardware ni disponibilidad. Fórmula y QA en [CMDB Health](cmdb-health.md).

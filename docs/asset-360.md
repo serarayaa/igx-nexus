@@ -94,7 +94,7 @@ El cálculo es relativo al corte fijo del snapshot demo.
 
 La frescura reutiliza `freshnessOf` y el mismo límite de siete días que Dashboard/Explorer.
 
-CMDB-011 sustituye esas señales básicas por [CMDB Health](cmdb-health.md): score/cobertura, dimensiones, causas accionables y comprobaciones. Aplica reglas por tipo/lifecycle y comparte la frescura existente. La implementación está en su rama y no se considera integrada hasta el merge manual.
+CMDB-011 sustituye esas señales básicas por [CMDB Health](cmdb-health.md): score/cobertura, dimensiones, causas accionables y comprobaciones. Aplica reglas por tipo/lifecycle y comparte la frescura existente. La implementación está integrada mediante PR #29.
 
 ### Fuente de datos
 
@@ -171,7 +171,9 @@ La suite agrega cobertura para:
 - responsive a 1440, 768 y 320 px;
 - regresión de Dashboard y Explorer mediante sus suites existentes.
 
-## Fuera de alcance
+## Fuera del alcance original de CMDB-008
+
+Los tickets CMDB-009/010/011 se integraron posteriormente en la ficha; esta lista registra el alcance original.
 
 - CMDB-009 — Motor QR;
 - CMDB-010 — Grafo de Relaciones;
