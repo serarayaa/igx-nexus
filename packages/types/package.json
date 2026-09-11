@@ -1,0 +1,24 @@
+{
+  "name": "@igx-nexus/types",
+  "version": "0.2.0-dev",
+  "private": true,
+  "description": "Contratos canónicos de dominio de IGX NEXUS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run src/model.test.ts"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}
