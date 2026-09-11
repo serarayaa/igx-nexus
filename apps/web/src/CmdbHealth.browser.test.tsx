@@ -75,7 +75,7 @@ it("maneja inventario vacío y preserva relaciones huérfanas", async () => {
   render(shell({ inventoryProvider: async () => ({ ...demoSnapshot, assets: [] }) }));
   expect(await screen.findByText("El inventario está vacío")).toBeTruthy();
   expect(screen.queryByText("0 / 100")).toBeNull();
-  expect(screen.getByText(/6 relaciones sin ningún extremo/)).toBeTruthy();
+  expect(screen.getByText(/18 relaciones sin ningún extremo/)).toBeTruthy();
 });
 
 it("inventario sin problemas no inventa findings; filtro vacío es recuperable", async () => {

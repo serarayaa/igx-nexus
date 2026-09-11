@@ -28,12 +28,13 @@ it("keeps identity through Explorer → Asset 360 → label → resolver → Ass
   await userEvent.click(screen.getByRole("link", { name: "Consola Demo Supervisión Norte" }));
   await screen.findByRole("heading", { name: "Consola Demo Supervisión Norte", level: 1 });
   await userEvent.click(screen.getByRole("link", { name: "Diseñar etiqueta" }));
-  await screen.findByRole("heading", { name: "Diseñar etiqueta", level: 1 });
+  const labelHeading = await screen.findByRole("heading", { name: "Diseñar etiqueta", level: 1 });
+  await waitFor(() => expect(document.activeElement).toBe(labelHeading));
   const locator = demoLocatorForAsset("DEMO-0013");
   expect(screen.getByText(locator)).toBeTruthy();
   const resolver = document.querySelector<HTMLAnchorElement>(`a[href="#q/${locator}"]`);
   expect(resolver).not.toBeNull();
-  resolver!.focus(); await userEvent.keyboard("{Enter}");
+  await userEvent.click(resolver!);
   await screen.findByRole("heading", { name: "Resolver QR demo", level: 1 });
   expect(screen.getByText("DEMO-0013")).toBeTruthy();
   await userEvent.click(screen.getByRole("link", { name: "Abrir Asset 360" }));
