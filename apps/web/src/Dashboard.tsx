@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties } from "react";
-import { Activity, Boxes, CalendarClock, Clock3, MapPin, ShieldCheck } from "lucide-react";
+import { Activity, Boxes, CalendarClock, Clock3, MapPin, Network, ShieldCheck } from "lucide-react";
 import { Badge, Button, Card, ContentSection, DataTable, EmptyState, ErrorState, LoadingState, PageHeader, StatusBadge, Toolbar, type DataTableColumn } from "@igx-nexus/ui";
 import { demoProvider } from "./demo-provider";
 import { lifecycleLabels, percentage, summarize, typeLabels, warrantyDays, type AssetType, type DashboardAsset, type DashboardProvider, type DashboardSnapshot, type Domain, type Lifecycle } from "./dashboard-model";
@@ -82,8 +82,14 @@ export function DashboardContent({ provider = demoProvider }: { provider?: Dashb
           <p className="nexus-muted">Las fechas son simuladas; no se consultan fabricantes ni contratos. Los activos sin fecha no se cuentan como cubiertos.</p>
         </ContentSection></Card>
       </>}
-      <Card id="next-views"><ContentSection title="Próximas vistas" description="Accede al inventario y conoce los siguientes hitos del roadmap.">
-        <div className="nexus-future"><span><Boxes aria-hidden="true" /><a href="#assets">Explorar activos</a><Badge>Inventario demo</Badge></span><span><MapPin aria-hidden="true" /><a href="#assets/DEMO-0002">Asset 360°</a><Badge>CMDB-008 · integrado</Badge></span><span><Activity aria-hidden="true" /><a href="#assets/DEMO-0002/label">QR y etiquetado</a><Badge>CMDB-009 · integrado</Badge></span><span><Activity aria-hidden="true" /><a href="#assets/DEMO-0002/relations">Grafo de Relaciones</a><Badge>CMDB-010 · integrado</Badge></span><span><Activity aria-hidden="true" /><a href="#health">CMDB Health</a><Badge>CMDB-011 · integrado</Badge></span></div>
+      <Card id="next-views"><ContentSection title="Recorrido de la demo" description="Navega capacidades ya integradas sobre el mismo dataset sintético, sin cambiar a un modo de datos paralelo.">
+        <div className="nexus-future">
+          <span><Boxes aria-hidden="true" /><a href="#assets">Explorar activos</a><Badge>240 CI sintéticos</Badge></span>
+          <span><MapPin aria-hidden="true" /><a href="#assets/DEMO-0013">Asset 360° hero OT</a><Badge>DEMO-0013</Badge></span>
+          <span><Activity aria-hidden="true" /><a href="#assets/DEMO-0013/label">QR y etiquetado</a><Badge>Locator opaco</Badge></span>
+          <span><Network aria-hidden="true" /><a href="#assets/DEMO-0013/relations">Technology Map</a><Badge>Relaciones IT / OT</Badge></span>
+          <span><ShieldCheck aria-hidden="true" /><a href="#health">CMDB Health</a><Badge>Calidad explicable</Badge></span>
+        </div>
       </ContentSection></Card>
     </div>;
 }

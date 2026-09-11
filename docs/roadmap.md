@@ -6,7 +6,7 @@ La implementación inicial corresponde exclusivamente a **Innergex Chile**. La e
 
 ## v0.1 — Demo Local Innergex Chile
 
-Avance formal integrado en `main`: **12 de 13 tickets (~92,3%)**. CMDB-012 está integrado mediante PR #32 (`9afb26d`). Siguiente y último ticket: CMDB-013 — Demo v0.1.
+Avance formal integrado en `main`: **12 de 13 tickets (~92,3%)**. CMDB-012 está integrado mediante PR #32 (`9afb26d`). CMDB-013 es el último ticket y se prepara en `feature/cmdb-013-demo-v0-1`; no cuenta como integrado hasta su merge manual.
 
 - CMDB-001 ✅ Inicio / Arquitectura / Alcance
 - CMDB-002 ✅ Repositorio y Entorno Local
@@ -19,19 +19,18 @@ Avance formal integrado en `main`: **12 de 13 tickets (~92,3%)**. CMDB-012 está
 - CMDB-009 ✅ Motor QR y Etiquetado — integrado mediante PR #23 (`5b0b0a9`); issue #22 cerrado
 - CMDB-010 ✅ Grafo de Relaciones — integrado mediante PR #27 (`89ca343`)
 - CMDB-011 ✅ CMDB Health — integrado mediante PR #29; issue #28 completado
-- CMDB-012 ✅ Dataset de Demo — integrado mediante PR #32 (`9afb26d`); issue #31 completado; CI post-merge #128 verde
-- CMDB-013 ⬜ Demo v0.1
+- CMDB-012 ✅ Dataset de Demo — integrado mediante PR #32 (`9afb26d`); issue #31 completado
+- CMDB-013 🟡 Demo v0.1 — candidato en `feature/cmdb-013-demo-v0-1`; issue #35
 
-CMDB-008 está oficialmente integrado y cerrado. Conecta **Panel principal → Activos → Asset 360**, incorpora deep link estable por identidad NEXUS, estados de carga/error/not-found, detalle de identidad/hardware/asignación/lifecycle/garantía/frescura y mantiene datos exclusivamente sintéticos. Ver [Asset 360](asset-360.md) y [ADR-0006](architecture/adr-0006-asset-360-routing.md).
+CMDB-008 conecta **Panel principal → Activos → Asset 360**, con identidad NEXUS estable y estados accesibles. CMDB-009 separa el locator QR de la identidad visible y genera etiquetas SVG sin datos sensibles. CMDB-010 incorpora Technology Map con relaciones dirigidas/simétricas y representación semántica equivalente. CMDB-011 aporta [calidad explicable de registros](cmdb-health.md). CMDB-012 consolida el [dataset sintético](demo-dataset.md) compartido por todas las vistas.
 
-CMDB-009 está oficialmente integrado y cerrado. Separa la identidad física del CI mediante locator opaco, genera QR sin datos sensibles y añade un Label Engine con perfiles en milímetros, 203/300 DPI y exportación SVG. Ver [Motor QR y Etiquetado](qr-label-engine.md) y [ADR-0007](architecture/adr-0007-qr-locator-label-engine.md). Ese hito dejó 9/13 integrados; CMDB-010 ya se integró posteriormente.
-
-CMDB-010 está integrado mediante PR #27 e issue #26 cerrado como completed. Añade modelo dirigido, provider demo, layout determinista, mapa navegable y lista semántica equivalente. Ver [Grafo](relationship-graph.md). CMDB-011 añade [calidad explicable de registros](cmdb-health.md), integrado mediante PR #29. CMDB-012 consolida el [dataset sintético](demo-dataset.md), integrado mediante PR #32; issue #31 completado y CI post-merge #128 verde. CMDB-013 no se ha iniciado y es el último ticket del roadmap actual. Mientras no se integre, `main` permanece en 12/13 (~92,3%).
+CMDB-013 no agrega una integración productiva nueva: valida y pule el recorrido completo, elimina lenguaje de roadmap de la experiencia de demo, agrega un smoke Browser de punta a punta y deja un guion reproducible en [Demo v0.1](demo-v0.1.md). Mientras el PR permanezca abierto, `main` sigue en 12/13 (~92,3%). Su merge manual completa 13/13 (100%) del roadmap actual.
 
 La Demo v0.1 actúa como gate para decidir si IGX NEXUS se oficializa y se promueve desde el notebook de desarrollo hacia un servidor corporativo de Innergex Chile.
 
 Ver también:
 
+- `docs/demo-v0.1.md` — preparación, walkthrough, activos hero y checklist pre-demo.
 - `docs/demo-readiness.md` — criterios de la demo, estado real, gate de oficialización y estrategia de migración a servidor.
 - `docs/design-system/README.md` — baseline visual/técnico de CMDB-005.
 - `docs/future-vision.md` — backlog de evolución: discovery, garantías, actas digitales, KPI, seguridad, automatización y ciencia de datos.
