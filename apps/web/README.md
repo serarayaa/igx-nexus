@@ -1,10 +1,8 @@
-# IGX NEXUS Web — Dashboard, Explorer, Asset 360, QR y Relaciones
+# IGX NEXUS Web — Demo v0.1
 
-La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. El escenario actual usa exclusivamente 240 activos sintéticos y 18 relaciones con corte fijo, desde `src/demo-dataset.ts`. [Catálogo, casos hero y mantenimiento](../../docs/demo-dataset.md). No requiere GLPI, credenciales ni Docker para la demostración Web.
+La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. El escenario actual usa exclusivamente 240 activos sintéticos y 18 relaciones con corte fijo, desde `src/demo-dataset.ts`. No requiere GLPI, credenciales ni Docker para la demostración Web.
 
-CMDB-007 incorpora Asset Explorer, CMDB-008 agrega Asset 360, CMDB-009 añade el motor QR y CMDB-010 incorpora un Technology Map visual y accesible sin duplicar el inventario.
-
-Ver [Asset Explorer](../../docs/asset-explorer.md), [Asset 360](../../docs/asset-360.md), [Motor QR y Etiquetado](../../docs/qr-label-engine.md), [Grafo de Relaciones](../../docs/relationship-graph.md) y [ADR-0008](../../docs/architecture/adr-0008-relationship-graph.md).
+Dashboard, Asset Explorer, Asset 360, QR/Label, Technology Map y CMDB Health trabajan sobre el mismo dataset. Ver [guía de Demo v0.1](../../docs/demo-v0.1.md) y [catálogo de datos/activos hero](../../docs/demo-dataset.md).
 
 ## Ejecución local
 
@@ -23,19 +21,19 @@ Abrir `http://127.0.0.1:3000`. El servidor se limita a loopback y falla si el pu
 /#overview                       Panel principal
 /#health                         CMDB Health
 /#assets                         Asset Explorer
-/#assets/DEMO-0002               Asset 360
-/#assets/DEMO-0002/label         Diseñador de etiqueta
-/#assets/DEMO-0002/relations     Grafo de Relaciones
+/#assets/DEMO-0013               Asset 360 hero OT
+/#assets/DEMO-0013/label         Diseñador de etiqueta
+/#assets/DEMO-0013/relations     Technology Map
 /#q/<demo-locator>               Simulador interno de resolución
 ```
 
 El QR exportado **no** contiene la ruta hash. En la demo contiene `https://nexus-demo.invalid/q/<locator>` para evitar simular un dominio corporativo inexistente. En producción `/q/:locator` será una ruta de servidor con autenticación/RBAC antes de Asset 360.
 
-`navigation-model.ts` concentra el parsing y generación de rutas internas. Se mantiene el enfoque liviano de ADR-0006; CMDB-009 no introduce React Router.
+`navigation-model.ts` concentra el parsing y generación de rutas internas. Se mantiene el enfoque liviano de ADR-0006; no se introduce React Router para la demo.
 
 ## Providers y datos
 
-Dashboard, Explorer, Asset 360, diseñador, resolver y Grafo utilizan el mismo dominio `Asset`/`AssetSummary`. Las relaciones viven en un dominio y provider demo separados para que futuras fuentes no acoplen la UI.
+Dashboard, Explorer, Asset 360, diseñador y resolver comparten `Asset`/`AssetSummary`. Technology Map consume el mismo inventario y un provider de relaciones separado. CMDB Health evalúa ambos snapshots con el mismo corte.
 
 Los providers asíncronos reciben `AbortSignal`. La futura NEXUS API reemplazará el provider; nunca se debe conectar el navegador directamente a GLPI, MariaDB, Graph con secretos o dispositivos OT.
 
@@ -59,7 +57,9 @@ npm run typecheck
 npm run build
 npx playwright install --with-deps chromium
 npm test
+npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
+node scripts/qa-cmdb-health.mjs
 ```
 
 Para ejecutar sólo los tests de modelo, sin navegador:
@@ -68,7 +68,7 @@ Para ejecutar sólo los tests de modelo, sin navegador:
 npm exec --workspace @igx-nexus/web -- vitest run --project=model
 ```
 
-Las suites Browser cubren Dashboard, Explorer, Asset 360 y diseñador QR/etiquetas, incluyendo navegación, estados, foco, axe y reflow responsive.
+`DemoV01.browser.test.tsx` es el smoke integrado de CMDB-013. Las suites Browser específicas continúan cubriendo estados, filtros, navegación, foco, axe, keyboard y reflow responsive. No se duplica ese flujo en un script Node separado.
 
 ## Límites actuales
 
@@ -81,7 +81,3 @@ Las suites Browser cubren Dashboard, Explorer, Asset 360 y diseñador QR/etiquet
 - sin edición, persistencia o discovery real de relaciones;
 - CMDB Health evalúa registros, no hardware ni disponibilidad;
 - sin Service Desk, ya que esa responsabilidad corresponde a Jira.
-
-## CMDB-011 — CMDB Health
-
-Integrado mediante PR #29; CI post-merge #118 verde. [Modelo, fórmula, reglas y QA](../../docs/cmdb-health.md). El motor puro consume inventario y relaciones completos con el mismo corte; Asset 360 comparte el motor y conserva la ficha ante errores de Health. `node scripts/qa-cmdb-health.mjs` valida el build y produce evidencia temporal de reflow/High Contrast/reduced-motion.
