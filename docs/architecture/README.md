@@ -25,3 +25,5 @@ Principios fundamentales:
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
 
 - [ADR-0009 — Calidad explicable del registro CMDB](adr-0009-cmdb-health.md) — aceptado en CMDB-011 (PR #29).
+
+- [ADR-0010 — Catálogo sintético único](adr-0010-demo-dataset.md) — propuesto en CMDB-012.

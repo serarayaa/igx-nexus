@@ -25,10 +25,10 @@ Completado e integrado:
 
 Pendiente para la demo:
 
-- CMDB-012 ⬜ Dataset de Demo
+- CMDB-012 🟡 Dataset de Demo — implementado en rama, validación final; issue #31
 - CMDB-013 ⬜ Demo v0.1
 
-Integrado en `main`: **11/13 (~84,6%)**. CMDB-011 completado; siguiente ticket CMDB-012 — Dataset de Demo. CMDB-013 sigue pendiente.
+Integrado en `main`: **11/13 (~84,6%)**. CMDB-011 completado; siguiente ticket CMDB-012 — Dataset de Demo. CMDB-013 sigue pendiente. El [Dataset de Demo](demo-dataset.md) documenta casos hero y métricas; aún no integrado. Tras su merge manual: 12/13 (~92,3%).
 
 CMDB-008 conecta el Explorer con una ficha individual mediante `#assets/<nexusAssetId>`. Incluye identidad, asignación, ubicación, hardware, lifecycle, garantía, frescura/calidad básica, fuente demo, estados de carga/error/not-found y navegación accesible.
 

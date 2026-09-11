@@ -79,6 +79,20 @@ try {
   assert(await page.evaluate(() => matchMedia("(forced-colors: active)").matches && matchMedia("(prefers-reduced-motion: reduce)").matches));
   await page.screenshot({ path: "qa-artifacts/health-forced-colors.png" });
   checks.push("forced-colors + reduced-motion + keyboard focus");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("http://127.0.0.1:4173/#assets/DEMO-0013/relations");
+  const otNode = page.getByRole("button", { name: "Switch Demo Celda Norte", exact: true });
+  await otNode.focus();
+  await otNode.press("Enter");
+  assert.equal(await otNode.getAttribute("aria-pressed"), "true");
+  await page.screenshot({ path: "qa-artifacts/dataset-ot-forced-colors.png" });
+  checks.push("OT graph forced-colors + reduced-motion + keyboard selection");
+  await page.setViewportSize({ width: 320, height: 1000 });
+  assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "OT forced-colors reflow");
+  await page.screenshot({ path: "qa-artifacts/dataset-ot-forced-colors-320.png" });
+  // Restore Health before checking its existing 200% text contract.
+  await page.goto("http://127.0.0.1:4173/#health");
+  await page.getByRole("heading", { name: "Score de registros CI" }).waitFor();
   await page.emulateMedia({ forcedColors: "none", reducedMotion: "reduce" });
   await page.setViewportSize({ width: 320, height: 1000 });
   await page.addStyleTag({ content: "html { font-size: 200%; }" });

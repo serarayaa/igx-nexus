@@ -1,6 +1,6 @@
 # IGX NEXUS Web — Dashboard, Explorer, Asset 360, QR y Relaciones
 
-La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. El escenario actual usa exclusivamente 240 activos sintéticos con corte fijo. No requiere GLPI, credenciales ni Docker para la demostración Web.
+La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. El escenario actual usa exclusivamente 240 activos sintéticos y 18 relaciones con corte fijo, desde `src/demo-dataset.ts`. [Catálogo, casos hero y mantenimiento](../../docs/demo-dataset.md). No requiere GLPI, credenciales ni Docker para la demostración Web.
 
 CMDB-007 incorpora Asset Explorer, CMDB-008 agrega Asset 360, CMDB-009 añade el motor QR y CMDB-010 incorpora un Technology Map visual y accesible sin duplicar el inventario.
 

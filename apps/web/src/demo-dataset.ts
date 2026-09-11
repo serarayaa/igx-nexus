@@ -87,7 +87,7 @@ function heroAssets(): Asset[] {
   ];
 }
 
-// Stable ID ranges and deliberately asymmetric cohorts. Changing order changes identities: append instead.
+// Stable ID ranges and deliberately asymmetric cohorts. Changing ranges changes identities: append new ranges instead.
 const cohorts: readonly { start: number; count: number; product: Product; domain: Domain }[] = [
   { start: 25, count: 60, product: "notebook", domain: "IT" },
   { start: 85, count: 20, product: "desktop", domain: "IT" },
