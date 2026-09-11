@@ -1,6 +1,6 @@
 # CMDB-012 — Dataset de Demo
 
-Estado: implementado en `feature/cmdb-012-demo-dataset`, validación final en curso; issue #31. No integrado hasta merge manual. Depende del housekeeping CMDB-011, PR #30: integrar primero ese PR. Baseline funcional `d7ed1494afb6b56661bf5bdf387c2943976ce5cb` (PR #29), con 11/13 tickets integrados. CMDB-013 NO fue iniciado.
+Estado: implementado en `feature/cmdb-012-demo-dataset`, listo para revisión; issue #31. No integrado hasta merge manual. Depende del housekeeping CMDB-011, PR #30: integrar primero ese PR. Baseline funcional `d7ed1494afb6b56661bf5bdf387c2943976ce5cb` (PR #29), con 11/13 tickets integrados. CMDB-013 NO fue iniciado.
 
 ## Propósito y límites
 
@@ -152,7 +152,7 @@ git diff --exit-code -- packages/ui/generated
 
 `demo-dataset.test.ts` comprueba unicidad de ID/hostname/serial/tag/IP conocidos, fechas, endpoints/tipos/direcciones, componentes pequeños, seguridad, todos los locators, snapshots inmutables, determinismo, héroes, Dashboard/Health y un SHA-256 del catálogo. Una ausencia intencional se excluye de unicidad; no se convierte en un identificador vacío repetido.
 
-`DemoDataset.browser.test.tsx` recorre los 11 héroes, Explorer → Asset 360 → etiqueta → resolver → Asset 360, Health degradado → causas y grafo OT con axe/reflow. Las suites previas mantienen loading/error/abort, teclado, focus, historial, filtros, dark y densidad. El QA de build genera capturas por vista a 1440/768/390/320, light/dark, además de forced-colors, reduced-motion y texto al 200% de Health.
+`DemoDataset.browser.test.tsx` recorre los 11 héroes, Explorer → Asset 360 → etiqueta → resolver → Asset 360, Health degradado → causas y grafo OT con axe/reflow. Las suites previas mantienen loading/error/abort, teclado, focus, historial, filtros, dark y densidad. El QA de build genera capturas por vista a 1440/768/390/320, light/dark, además de forced-colors/reduced-motion de Health y grafo OT, selección de nodo con teclado y texto al 200% de Health.
 
 Para agregar casos:
 
@@ -167,7 +167,7 @@ No se generan archivos de datos ni se guardan snapshots derivados: regenerar con
 
 ## QA y performance
 
-CI de implementación #122 verde: 210 tests Web (144 de modelo + 66 browser) y 44 Storybook, 254 en total. Typecheck, builds, axe, paridad de tokens, paquete UI y QA del build correctos. Se amplía además el QA de contraste alto del grafo OT; la CI final del PR verificará ese añadido.
+CI de implementación #123 verde ([run](https://github.com/serarayaa/igx-nexus/actions/runs/34602156418)): 210 tests Web (144 de modelo + 66 browser) y 44 Storybook, 254 en total. Typecheck, builds, axe, paridad de tokens, paquete UI y QA del build correctos. El QA ampliado de contraste alto/teclado del grafo OT también pasó. PR #32 abierto hacia main; integrar primero PR #30.
 
 Chromium no pudo descargarse localmente por restricciones de red; `npm test` local se detuvo por ejecutable ausente. Las suites completas sí se ejecutaron en GitHub Actions. Las capturas están en el artefacto temporal `cmdb-health-qa`; la descarga al entorno de trabajo respondió HTTP 403, por lo que no se declara inspección visual manual de esas imágenes. Los controles automatizados de overflow/axe pasaron. No se declara prueba manual de lector de pantalla, Windows High Contrast real ni impresión física.
 

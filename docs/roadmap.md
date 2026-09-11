@@ -19,7 +19,7 @@ Avance formal integrado en `main`: **11 de 13 tickets (~84,6%)**. CMDB-011 está
 - CMDB-009 ✅ Motor QR y Etiquetado — integrado mediante PR #23 (`5b0b0a9`); issue #22 cerrado
 - CMDB-010 ✅ Grafo de Relaciones — integrado mediante PR #27 (`89ca343`)
 - CMDB-011 ✅ CMDB Health — integrado mediante PR #29; issue #28 completado
-- CMDB-012 🟡 Dataset de Demo — implementado en rama, validación final; issue #31
+- CMDB-012 🟡 Dataset de Demo — implementado en rama, listo para revisión; issue #31
 - CMDB-013 ⬜ Demo v0.1
 
 CMDB-008 está oficialmente integrado y cerrado. Conecta **Panel principal → Activos → Asset 360**, incorpora deep link estable por identidad NEXUS, estados de carga/error/not-found, detalle de identidad/hardware/asignación/lifecycle/garantía/frescura y mantiene datos exclusivamente sintéticos. Ver [Asset 360](asset-360.md) y [ADR-0006](architecture/adr-0006-asset-360-routing.md).
