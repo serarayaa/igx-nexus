@@ -2,9 +2,7 @@
 
 ## Estado
 
-CMDB-013 prepara el cierre de la **Demo v0.1 — Innergex Chile** sobre el mismo producto y dataset sintético consolidado en CMDB-012. Mientras el Pull Request de CMDB-013 permanezca abierto, `main` continúa formalmente en **12/13 tickets (~92,3%)**. La integración manual del ticket final habilita el cierre del roadmap en 13/13.
-
-Rama de trabajo: `feature/cmdb-013-demo-v0-1`. Issue: #35.
+La **Demo v0.1 — Innergex Chile** está completada e integrada en `main`. CMDB-013 quedó mergeado mediante PR #37 (`58fabd8`), el issue #35 fue cerrado como completed y la CI post-merge #138 terminó verde. El roadmap v0.1 queda formalmente en **13/13 tickets — 100%**.
 
 La demo no activa un modo de datos alternativo: Dashboard, Explorer, Asset 360, QR/Label, Technology Map y CMDB Health consumen el dataset compartido de 240 CI y 18 relaciones.
 
@@ -154,7 +152,7 @@ Después localizar **Estación Demo Por revisar — DEMO-0020** para explicar un
 
 ## Checklist antes de presentar
 
-- [ ] `main` o la rama de demo están sincronizados con el commit que se quiere presentar.
+- [ ] `main` está sincronizado con el commit que se quiere presentar.
 - [ ] `npm ci` completó sin cambios inesperados al lockfile.
 - [ ] `npm run dev` abre la Web en `127.0.0.1:3000`.
 - [ ] Dashboard carga 240 CI y filtros IT/OT.
@@ -171,6 +169,8 @@ Después localizar **Estación Demo Por revisar — DEMO-0020** para explicar un
 - [ ] No se presenta la URL `.invalid`, el resolver hash ni la impresión SVG como infraestructura productiva.
 
 ## QA de CMDB-013
+
+La implementación final quedó validada por CI de rama #136, CI del PR #137 y CI post-merge #138 en `main`, todas verdes.
 
 Validación completa desde la raíz:
 
