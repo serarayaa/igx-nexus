@@ -65,6 +65,10 @@ function readRouteSecurityPolicy(config: unknown): RouteSecurityPolicy | undefin
   return isNexusPermission(permission) ? permissionRouteSecurity(permission) : undefined;
 }
 
+function readErrorType(error: unknown): string {
+  return error instanceof Error ? error.name : "UnknownError";
+}
+
 export type SecurityAuditEventName =
   | "authentication.denied"
   | "authentication.error"
@@ -153,12 +157,16 @@ function hasPermission(principal: SecurityPrincipal, permission: NexusPermission
   return principal.permissions.has(permission);
 }
 
+function isApiRoute(url: string): boolean {
+  return url === "/api" || url.startsWith("/api/");
+}
+
 export function registerSecurity(
   app: FastifyInstance,
   authenticationProvider: AuthenticationProvider = denyAllAuthenticationProvider,
 ): void {
   app.addHook("onRoute", (routeOptions) => {
-    if (!routeOptions.url.startsWith("/api/")) return;
+    if (!isApiRoute(routeOptions.url)) return;
 
     const policy = readRouteSecurityPolicy(routeOptions.config);
     if (!policy) {
@@ -178,7 +186,10 @@ export function registerSecurity(
       principal = await authenticationProvider.authenticate(request);
     } catch (error) {
       logSecurityEvent(request, "authentication.error", "error");
-      request.log.error({ err: error }, "authentication provider failed");
+      request.log.error(
+        { authenticationErrorType: readErrorType(error) },
+        "authentication provider failed",
+      );
       throw new ApiHttpError(503, "AUTHENTICATION_UNAVAILABLE", "Authentication service unavailable");
     }
 

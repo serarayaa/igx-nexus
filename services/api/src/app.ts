@@ -42,6 +42,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   const authenticationProvider = options.authenticationProvider ?? denyAllAuthenticationProvider;
   const app = Fastify({
     logger: loggerOptions(config),
+    disableRequestLogging: true,
     bodyLimit: config.bodyLimitBytes,
     requestTimeout: config.requestTimeoutMs,
     trustProxy: config.trustedProxies.length > 0 ? [...config.trustedProxies] : false,
@@ -49,6 +50,19 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
 
   app.addHook("onRequest", async (request, reply) => {
     reply.header("x-request-id", request.id);
+  });
+
+  app.addHook("onResponse", async (request, reply) => {
+    request.log.info(
+      {
+        httpRequest: {
+          method: request.method,
+          route: request.routeOptions.url ?? "<unmatched>",
+          statusCode: reply.statusCode,
+        },
+      },
+      "request completed",
+    );
   });
 
   app.addHook("onSend", async (_request, reply, payload) => {

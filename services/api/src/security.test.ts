@@ -40,13 +40,16 @@ afterEach(async () => {
 });
 
 describe("NEXUS API security policy", () => {
-  it("fails route registration when an /api route has no explicit security policy", async () => {
-    app = await buildApp({ config: testConfig });
+  it.each(["/api", "/api/v1/__test/unsecured"])(
+    "fails route registration when %s has no explicit security policy",
+    async (url) => {
+      app = await buildApp({ config: testConfig });
 
-    expect(() => {
-      app?.get("/api/v1/__test/unsecured", async () => ({ ok: true }));
-    }).toThrow("Security policy required");
-  });
+      expect(() => {
+        app?.get(url, async () => ({ ok: true }));
+      }).toThrow("Security policy required");
+    },
+  );
 
   it("denies authenticated routes with the default deny-all provider", async () => {
     app = await buildApp({ config: testConfig });

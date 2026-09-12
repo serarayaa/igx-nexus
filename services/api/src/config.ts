@@ -115,7 +115,7 @@ function isValidIpOrCidr(value: string): boolean {
 
   const numericPrefix = Number(prefix);
   const maximum = family === 4 ? 32 : 128;
-  return numericPrefix >= 0 && numericPrefix <= maximum;
+  return numericPrefix > 0 && numericPrefix <= maximum;
 }
 
 function parseTrustedProxies(rawValue: string | undefined): readonly string[] {
@@ -123,7 +123,7 @@ function parseTrustedProxies(rawValue: string | undefined): readonly string[] {
   for (const proxy of proxies) {
     if (proxy === "*" || proxy.toLowerCase() === "true" || !isValidIpOrCidr(proxy)) {
       throw new ApiConfigError(
-        "NEXUS_API_TRUST_PROXY must contain only explicit IP/CIDR entries; trust-all is forbidden",
+        "NEXUS_API_TRUST_PROXY must contain only explicit non-global IP/CIDR entries; trust-all is forbidden",
       );
     }
   }

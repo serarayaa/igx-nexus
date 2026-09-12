@@ -72,6 +72,8 @@ describe("NEXUS API config", () => {
   it("never accepts trust-all proxy configuration", () => {
     expect(() => loadConfig({ NEXUS_API_TRUST_PROXY: "true" })).toThrow(ApiConfigError);
     expect(() => loadConfig({ NEXUS_API_TRUST_PROXY: "*" })).toThrow(ApiConfigError);
+    expect(() => loadConfig({ NEXUS_API_TRUST_PROXY: "0.0.0.0/0" })).toThrow(ApiConfigError);
+    expect(() => loadConfig({ NEXUS_API_TRUST_PROXY: "::/0" })).toThrow(ApiConfigError);
     expect(() => loadConfig({ NEXUS_API_TRUST_PROXY: "10.0.0.0/99" })).toThrow(ApiConfigError);
     expect(() => loadConfig({ NEXUS_API_TRUST_PROXY: "proxy.internal" })).toThrow(ApiConfigError);
   });
