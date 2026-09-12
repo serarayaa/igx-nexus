@@ -26,6 +26,6 @@ Principios fundamentales:
 - [ADR-0009 — Calidad explicable del registro CMDB](adr-0009-cmdb-health.md) — aceptado en CMDB-011 (PR #29).
 - [ADR-0010 — Catálogo sintético único](adr-0010-demo-dataset.md) — aceptado en CMDB-012 (PR #32).
 - [ADR-0011 — Modelo canónico de Technology Intelligence](adr-0011-canonical-technology-model.md) — aceptado en V02-001 (PR #41).
-- [ADR-0012 — Runtime de NEXUS API](adr-0012-nexus-api-runtime.md) — V02-002 / PR #44; aceptación efectiva al merge manual.
+- [ADR-0012 — Runtime de NEXUS API](adr-0012-nexus-api-runtime.md) — aceptado en V02-002 (PR #44).
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.

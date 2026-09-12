@@ -1,6 +1,6 @@
 # ADR-0012 — Runtime de NEXUS API
 
-Estado de cierre: V02-002 se entrega mediante issue #42 y PR #44. Este ADR queda aceptado únicamente cuando dicho PR sea integrado manualmente a `main`.
+Estado: Aceptado en V02-002 mediante issue #42 y PR #44, integrado manualmente a `main` en el merge `7eede47465da03019c78465837dbde2c3bad3c96`.
 
 ## Contexto
 

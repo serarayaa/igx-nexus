@@ -65,7 +65,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model** quedó integrado mediante PR #41. El trabajo activo es **V02-002 — NEXUS API Runtime**, issue #42, en `feature/v02-002-nexus-api-runtime`; no cuenta como integrado hasta su merge manual.
+**V02-001 — Canonical Technology Model** quedó integrado mediante PR #41 y **V02-002 — NEXUS API Runtime** quedó integrado mediante PR #44. El siguiente ticket planificado es **V02-003 — API Security Baseline**.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
