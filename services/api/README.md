@@ -45,13 +45,13 @@ Todavía no existen endpoints productivos de activos: se agregarán cuando Provi
 
 ## Seguridad de rutas
 
-Las rutas de dominio `/api/*` deben declarar explícitamente una política de seguridad:
+Las rutas de dominio `/api` y `/api/*` deben declarar explícitamente una política de seguridad:
 
 - `public` — acceso sin identidad;
 - `authenticated` — requiere una identidad válida;
 - `permission` — requiere identidad y un permiso efectivo concreto.
 
-Registrar una ruta `/api/*` sin política falla de forma temprana. Esto evita que una ruta futura quede pública simplemente porque alguien olvidó agregar un hook.
+Registrar una ruta de esa frontera sin política falla de forma temprana. Esto evita que una ruta futura quede pública simplemente porque alguien olvidó agregar un hook.
 
 El contrato `AuthenticationProvider` está desacoplado del proveedor de identidad. El provider por defecto **no autentica a nadie**. Los tests pueden inyectar un provider sintético mediante `buildApp({ authenticationProvider })`, pero no existe variable de entorno, header o token de desarrollo que habilite un bypass.
 
@@ -78,7 +78,7 @@ Este vocabulario es deliberadamente pequeño y no reemplaza la definición poste
 | `NEXUS_API_LOG_LEVEL` | `info` (`silent` en test) | nivel Pino soportado |
 | `NEXUS_API_CORS_ORIGINS` | vacío | origins permitidas separadas por coma |
 | `NEXUS_API_BODY_LIMIT_BYTES` | `1048576` | límite de body; 1 MiB por defecto |
-| `NEXUS_API_REQUEST_TIMEOUT_MS` | `30000` | timeout HTTP del runtime |
+| `NEXUS_API_REQUEST_TIMEOUT_MS` | `30000` | timeout de recepción HTTP del runtime |
 | `NEXUS_API_RATE_LIMIT_MAX` | `120` | requests permitidas por ventana/clave |
 | `NEXUS_API_RATE_LIMIT_WINDOW_MS` | `60000` | ventana de rate limiting |
 | `NEXUS_API_TRUST_PROXY` | vacío | IP/CIDR de proxies confiables, separados por coma |
@@ -93,7 +93,7 @@ CORS es **deny-by-default**: si `NEXUS_API_CORS_ORIGINS` está vacío, la API no
 
 ### Trust proxy
 
-`trustProxy` permanece `false` por defecto. `NEXUS_API_TRUST_PROXY` sólo acepta IP/CIDR explícitos y rechaza trust-all. Esto es crítico porque `request.ip`, audit events y rate limiting dependen de la frontera de proxy.
+`trustProxy` permanece `false` por defecto. `NEXUS_API_TRUST_PROXY` sólo acepta IP/CIDR explícitos, rechaza redes globales `/0` y no admite trust-all. Esto es crítico porque `request.ip`, audit events y rate limiting dependen de la frontera de proxy.
 
 No configurar una red amplia sólo para “hacer funcionar” `X-Forwarded-For`: deben declararse únicamente los proxies realmente controlados.
 
@@ -113,9 +113,9 @@ El rate limit es global para las rutas normales y usa `request.ip` como clave. `
 
 El store actual es **en memoria por proceso**. Es suficiente para desarrollo/Live Lab v0.2, pero no es una defensa distribuida. Un despliegue con múltiples instancias deberá adoptar un store compartido o control equivalente en la infraestructura.
 
-El runtime además fija `bodyLimit` y `requestTimeout` explícitos para evitar defaults ilimitados.
+El runtime además fija `bodyLimit` y `requestTimeout` explícitos. El timeout protege la recepción de la request HTTP; adapters futuros deberán definir además sus propios timeouts/cancelación para llamadas aguas arriba.
 
-## Errores y auditoría
+## Errores, logging y auditoría
 
 Las respuestas de error mantienen el contrato:
 
@@ -133,6 +133,8 @@ Códigos seguros relevantes:
 - `PAYLOAD_TOO_LARGE` — 413;
 - `RATE_LIMITED` — 429;
 - errores 5xx — `INTERNAL_ERROR` sin mensaje interno.
+
+Fastify no utiliza su logging automático de requests en este runtime. NEXUS emite un registro HTTP propio con **método, route pattern y status**, evitando persistir la URL/query cruda. Los errores arbitrarios tampoco se serializan completos: se registra metadata segura como tipo/status/código cuando aplica.
 
 Los security audit events registran sólo contexto mínimo: request ID, método, route pattern, IP remota y, cuando existe, subject/permiso requerido. No incluyen bearer tokens, cookies, API keys, bodies ni query strings crudas.
 

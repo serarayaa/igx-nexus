@@ -28,7 +28,7 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | --- | --- | --- | --- |
 | V02-001 | Canonical Technology Model | P0 | ✅ Integrado — PR #41 / issue #40 |
 | V02-002 | NEXUS API Runtime | P0 | ✅ Integrado — PR #44 / issue #42 |
-| V02-003 | API Security Baseline | P0 | 🟡 En desarrollo — issue #46 / `feature/v02-003-api-security-baseline` |
+| V02-003 | API Security Baseline | P0 | 🟡 PR #47 — cierre efectivo al merge manual / issue #46 |
 | V02-004 | Provider Mode Contract | P0 | ⚪ Pendiente |
 | V02-005 | GLPI API v2 Adapter | P0 | ⚪ Pendiente |
 | V02-006 | GLPI Service Identity & RBAC | P0 | ⚪ Pendiente |
@@ -82,23 +82,23 @@ Objetivo: definir autenticación/autorización de frontera, manejo seguro de con
 
 Dependencias: V02-002 ✅.
 
-Trabajo activo: issue #46 / `feature/v02-003-api-security-baseline`.
+Entrega activa: issue #46 / PR #47 / `feature/v02-003-api-security-baseline`.
 
-Baseline implementado en rama:
+Baseline implementado en PR:
 
 - `AuthenticationProvider` desacoplado y provider por defecto deny-all;
 - `SecurityPrincipal` y autorización por permisos efectivos;
-- policy explícita `public | authenticated | permission` para rutas `/api/*`;
+- policy explícita `public | authenticated | permission` para rutas `/api` y `/api/*`;
 - security headers, `Cache-Control: no-store` y errores seguros;
 - CORS deny-by-default con allowlist y HTTPS obligatorio para origins productivas;
-- body limit, request timeout y rate limit configurables;
+- body limit, request receive timeout y rate limit configurables;
 - `/health` y `/ready` exentos del limiter;
-- `trustProxy=false` por defecto y sólo IP/CIDR explícitos;
-- audit events minimizados, sin tokens, bodies ni query cruda;
+- `trustProxy=false` por defecto y sólo IP/CIDR explícitos no globales;
+- logging HTTP por route pattern y audit events minimizados, sin URL/query cruda, tokens o bodies;
 - `npm audit --audit-level=high` incorporado a CI;
 - ADR-0013 y threat model v0.2.
 
-El ticket **no** implementa Entra SSO/OIDC, secretos corporativos, OAuth GLPI, Provider Mode ni TLS/reverse proxy. V02-003 sólo se considera integrado después del merge manual de su PR a `main`.
+El ticket **no** implementa Entra SSO/OIDC, secretos corporativos, OAuth GLPI, Provider Mode ni TLS/reverse proxy. V02-003 sólo se considera integrado después del merge manual de PR #47 a `main`.
 
 ### V02-004 — Provider Mode Contract
 

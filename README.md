@@ -65,7 +65,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model** quedó integrado mediante PR #41 y **V02-002 — NEXUS API Runtime** quedó integrado mediante PR #44. El trabajo activo es **V02-003 — API Security Baseline**, issue #46, en `feature/v02-003-api-security-baseline`; no cuenta como integrado hasta su merge manual.
+**V02-001 — Canonical Technology Model** quedó integrado mediante PR #41 y **V02-002 — NEXUS API Runtime** quedó integrado mediante PR #44. El trabajo activo es **V02-003 — API Security Baseline**, issue #46 / PR #47, en `feature/v02-003-api-security-baseline`; no cuenta como integrado hasta su merge manual.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -135,7 +135,7 @@ Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture
 
 V02-002 convirtió `services/api` en el primer runtime backend real de NEXUS. La API usa Node.js 24, TypeScript ESM, Fastify 5, logging estructurado y OpenAPI generado desde los schemas del runtime.
 
-V02-003 agrega un baseline de seguridad **deny-by-default** antes de conectar identidades o fuentes reales: contrato desacoplado de autenticación, autorización por permisos efectivos, policy obligatoria para rutas `/api/*`, CORS allowlist, security headers, límites de body/timeout, rate limiting, trust proxy explícito y security audit events minimizados.
+V02-003 agrega un baseline de seguridad **deny-by-default** antes de conectar identidades o fuentes reales: contrato desacoplado de autenticación, autorización por permisos efectivos, policy obligatoria para rutas `/api` y `/api/*`, CORS allowlist, security headers, límites de body/timeout, rate limiting, trust proxy explícito y security audit events minimizados.
 
 Endpoints base actuales:
 

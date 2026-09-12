@@ -1,6 +1,6 @@
 # ADR-0013 — Baseline de seguridad de NEXUS API
 
-Estado: **Propuesto en V02-003 / issue #46**. Este ADR queda aceptado únicamente cuando el PR de V02-003 sea integrado manualmente a `main`.
+Estado: **Propuesto en V02-003 / issue #46 / PR #47**. Este ADR queda aceptado únicamente cuando dicho PR sea integrado manualmente a `main`.
 
 ## Contexto
 
@@ -36,7 +36,7 @@ authenticated
 permission(<NexusPermission>)
 ```
 
-Una ruta `/api/*` debe declarar su política al registrarse. Si no lo hace, el runtime falla temprano.
+Una ruta `/api` o `/api/*` debe declarar su política al registrarse. Si no lo hace, el runtime falla temprano.
 
 La autorización usa permisos efectivos del principal, no nombres de roles hardcodeados. Los roles permanecen como metadata que un proveedor futuro podrá mapear a permisos.
 
@@ -57,7 +57,7 @@ La lista crecerá sólo cuando existan operaciones reales que necesiten distingu
 
 `/health` y `/ready` quedan además exentos de rate limiting para no romper health probes.
 
-La condición “público” no se hereda a futuros endpoints: las rutas `/api/*` deben declarar política.
+La condición “público” no se hereda a futuros endpoints: las rutas de frontera API deben declarar policy.
 
 ### 4. CORS es allowlist, no mecanismo de autenticación
 
@@ -92,6 +92,8 @@ bodyLimit       = 1 MiB por defecto
 requestTimeout  = 30 s por defecto
 ```
 
+`requestTimeout` limita la recepción de la request HTTP; no sustituye timeouts/cancelación de llamadas a adapters futuros.
+
 Se agrega `@fastify/rate-limit` con default de 120 requests por 60 s y clave `request.ip`.
 
 El store de rate limiting de V02-003 es en memoria y por proceso. Es aceptable para desarrollo/Live Lab, pero **no es una mitigación distribuida** y deberá revisarse antes de un despliegue multi-instancia.
@@ -100,13 +102,23 @@ El store de rate limiting de V02-003 es en memoria y por proceso. Es aceptable p
 
 `trustProxy=false` salvo que `NEXUS_API_TRUST_PROXY` declare IP/CIDR explícitos.
 
-No se admite `true`, wildcard ni hostname arbitrario. La razón es que habilitar confianza en proxies cambia cómo Fastify interpreta `X-Forwarded-*`, lo que afecta IP del cliente, auditoría y rate limiting.
+No se admite `true`, wildcard, hostname arbitrario ni una red global `/0`. La razón es que habilitar confianza en proxies cambia cómo Fastify interpreta `X-Forwarded-*`, lo que afecta IP del cliente, auditoría y rate limiting.
 
 Las pruebas verifican que un `X-Forwarded-For` falso se ignora por defecto y sólo se utiliza detrás de un proxy explícitamente confiable.
 
-### 8. Auditoría de seguridad usa contexto mínimo
+### 8. Logging y auditoría minimizan datos
 
-Se generan eventos estructurados para:
+El request logging automático de Fastify se desactiva. NEXUS emite un log HTTP propio que registra sólo:
+
+```text
+method
+route pattern
+status code
+```
+
+De este modo no se persiste la URL/query cruda por defecto.
+
+Se generan security audit events estructurados para:
 
 - autenticación denegada;
 - error del proveedor de autenticación;
@@ -126,13 +138,13 @@ required permission (si aplica)
 
 No se guarda el URL crudo cuando el route pattern no está disponible; se usa un marcador seguro. Tampoco se incluyen Authorization, cookies, API keys, body ni query string cruda.
 
+Las excepciones arbitrarias no se serializan completas en logs de request/auth: se registra metadata acotada como tipo, status y código seguro cuando aplica.
+
 ### 9. Errores fallan cerrados y no filtran implementación
 
 Se mantienen respuestas pequeñas y correlacionables mediante request ID.
 
 401/403/413/429 usan códigos estables y mensajes seguros. Fallas internas o del proveedor de identidad se responden como error interno sin stack ni detalle de upstream.
-
-El logging del servidor conserva el error técnico, sujeto a redacción preventiva de headers sensibles.
 
 ### 10. Dependencias se auditan en CI
 
@@ -162,12 +174,12 @@ Debe actualizarse cuando aparezcan nuevos trust boundaries, especialmente:
 
 ## Consecuencias positivas
 
-- futuras rutas `/api/*` no pueden quedar sin política por omisión;
+- futuras rutas de frontera API no pueden quedar sin policy por omisión;
 - un runtime sin IdP configurado falla cerrado;
 - la lógica de autorización no queda acoplada a Entra ni a nombres de roles;
 - CORS, proxy trust y resource limits dejan de depender de defaults implícitos;
 - rate limiting, body limit y timeout reducen abuso básico de recursos;
-- auditoría de seguridad nace con una política de minimización de datos;
+- logs y auditoría de seguridad nacen con minimización de datos;
 - V02-004/V02-005/V02-006 pueden construir sobre una frontera estable.
 
 ## Costos y riesgos aceptados
@@ -177,6 +189,7 @@ Debe actualizarse cuando aparezcan nuevos trust boundaries, especialmente:
 - no existe aún autorización por objeto, porque todavía no hay endpoints productivos de assets;
 - CORS no protege clientes no-browser;
 - TLS/HSTS depende del futuro despliegue corporativo;
+- `requestTimeout` no sustituye timeouts de upstream;
 - `npm audit` es una señal de dependencia, no una garantía de ausencia de vulnerabilidades.
 
 ## Fuera de alcance
