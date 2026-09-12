@@ -118,7 +118,7 @@ function auditContext(
   return {
     requestId: request.id,
     method: request.method,
-    route: request.routeOptions.url,
+    route: request.routeOptions.url ?? "<unmatched>",
     remoteIp: request.ip,
     ...(principal ? { principalSubject: principal.subject } : {}),
     ...(requiredPermission ? { requiredPermission } : {}),
