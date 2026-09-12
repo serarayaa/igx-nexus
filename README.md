@@ -65,7 +65,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model** quedó integrado mediante PR #41 y **V02-002 — NEXUS API Runtime** quedó integrado mediante PR #44. El siguiente ticket planificado es **V02-003 — API Security Baseline**.
+**V02-001 — Canonical Technology Model** quedó integrado mediante PR #41 y **V02-002 — NEXUS API Runtime** quedó integrado mediante PR #44. El trabajo activo es **V02-003 — API Security Baseline**, issue #46, en `feature/v02-003-api-security-baseline`; no cuenta como integrado hasta su merge manual.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -133,9 +133,11 @@ Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture
 
 ## NEXUS API v0.2
 
-V02-002 convierte `services/api` en el primer runtime backend real de NEXUS. La API usa Node.js 24, TypeScript ESM, Fastify 5, logging estructurado y OpenAPI generado desde los schemas del runtime.
+V02-002 convirtió `services/api` en el primer runtime backend real de NEXUS. La API usa Node.js 24, TypeScript ESM, Fastify 5, logging estructurado y OpenAPI generado desde los schemas del runtime.
 
-Endpoints base del ticket:
+V02-003 agrega un baseline de seguridad **deny-by-default** antes de conectar identidades o fuentes reales: contrato desacoplado de autenticación, autorización por permisos efectivos, policy obligatoria para rutas `/api/*`, CORS allowlist, security headers, límites de body/timeout, rate limiting, trust proxy explícito y security audit events minimizados.
+
+Endpoints base actuales:
 
 ```text
 GET /health
@@ -144,6 +146,10 @@ GET /api/v1
 GET /openapi.json
 ```
 
-La configuración usa variables `NEXUS_API_*`; por defecto escucha sólo en `127.0.0.1:3100`. Todavía no conecta GLPI/Intune/Entra ni expone endpoints productivos de activos.
+Los cuatro endpoints runtime permanecen explícitamente públicos mientras no exponen datos de dominio. `/health` y `/ready` quedan exentos de rate limiting.
 
-Ver [README de NEXUS API](services/api/README.md) y [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md).
+La configuración usa variables `NEXUS_API_*`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. Todavía no conecta GLPI/Intune/Entra ni expone endpoints productivos de activos.
+
+V02-003 **no simula Entra SSO ni tokens de desarrollo**: el `AuthenticationProvider` por defecto no autentica a nadie. La identidad real se conectará en un ticket posterior sobre esta frontera.
+
+Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
