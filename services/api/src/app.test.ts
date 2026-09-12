@@ -154,6 +154,37 @@ describe("NEXUS API runtime", () => {
     expect(preflight.headers["access-control-allow-origin"]).toBe("http://127.0.0.1:3000");
   });
 
+  it("ignores forwarded client IPs by default and trusts them only behind an explicit proxy", async () => {
+    app = await buildApp({ config: testConfig });
+    app.get("/__test/ip", async (request) => ({ ip: request.ip }));
+
+    const untrusted = await app.inject({
+      method: "GET",
+      url: "/__test/ip",
+      headers: { "x-forwarded-for": "203.0.113.42" },
+    });
+    expect(untrusted.statusCode).toBe(200);
+    expect(untrusted.json<{ ip: string }>().ip).not.toBe("203.0.113.42");
+
+    await app.close();
+    app = undefined;
+
+    const trustedProxyConfig = loadConfig({
+      NEXUS_API_ENV: "test",
+      NEXUS_API_TRUST_PROXY: "127.0.0.1",
+    });
+    app = await buildApp({ config: trustedProxyConfig });
+    app.get("/__test/ip", async (request) => ({ ip: request.ip }));
+
+    const trusted = await app.inject({
+      method: "GET",
+      url: "/__test/ip",
+      headers: { "x-forwarded-for": "203.0.113.42" },
+    });
+    expect(trusted.statusCode).toBe(200);
+    expect(trusted.json<{ ip: string }>().ip).toBe("203.0.113.42");
+  });
+
   it("normalizes oversized payload errors", async () => {
     const config = loadConfig({
       NEXUS_API_ENV: "test",
