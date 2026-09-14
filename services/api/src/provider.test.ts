@@ -1,5 +1,5 @@
+import { technologySchemaVersion, validateTechnologySnapshot } from "@igx-nexus/types";
 import { describe, expect, it } from "vitest";
-import { technologySchemaVersion, validateTechnologySnapshot, type TechnologyProvider as Never } from "@igx-nexus/types";
 import {
   ProviderConfigurationError,
   ProviderUnavailableError,
@@ -9,8 +9,6 @@ import {
   unavailableLiveTechnologyProvider,
   type TechnologyProvider,
 } from "./provider.js";
-
-void (0 as unknown as Never);
 
 describe("Technology Provider contract", () => {
   it("exposes a valid canonical synthetic snapshot in demo mode", async () => {
