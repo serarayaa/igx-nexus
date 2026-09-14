@@ -28,21 +28,12 @@ const runtimeStatusSchema = {
 const metadataSchema = {
   type: "object",
   additionalProperties: false,
-  required: [
-    "service",
-    "serviceVersion",
-    "apiVersion",
-    "technologySchemaVersion",
-    "providerMode",
-    "providerAvailability",
-  ],
+  required: ["service", "serviceVersion", "apiVersion", "technologySchemaVersion"],
   properties: {
     service: { type: "string" },
     serviceVersion: { type: "string" },
     apiVersion: { type: "string" },
     technologySchemaVersion: { type: "string" },
-    providerMode: { type: "string", enum: ["demo", "live"] },
-    providerAvailability: { type: "string", enum: ["ready", "unavailable"] },
   },
 } as const;
 
@@ -138,7 +129,6 @@ export function registerBaseRoutes(app: FastifyInstance, provider: TechnologyPro
       serviceVersion: API_SERVICE_VERSION,
       apiVersion: API_VERSION,
       technologySchemaVersion,
-      ...runtimeProviderFields,
     }),
   );
 
