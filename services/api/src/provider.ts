@@ -111,8 +111,8 @@ const demoDescriptor: TechnologyProviderDescriptor = Object.freeze({
   mode: "demo",
   displayName: "Canonical Demo Provider",
   availability: "ready",
-  capabilities: Object.freeze(["technology.snapshot.read"]),
-  sourceSystems: Object.freeze(["demo"]),
+  capabilities: Object.freeze(["technology.snapshot.read"] as const),
+  sourceSystems: Object.freeze(["demo"] as const),
 });
 
 const unavailableLiveDescriptor: TechnologyProviderDescriptor = Object.freeze({
@@ -120,8 +120,8 @@ const unavailableLiveDescriptor: TechnologyProviderDescriptor = Object.freeze({
   mode: "live",
   displayName: "Live Provider",
   availability: "unavailable",
-  capabilities: Object.freeze([]),
-  sourceSystems: Object.freeze([]),
+  capabilities: Object.freeze([] as const),
+  sourceSystems: Object.freeze([] as const),
 });
 
 export const demoTechnologyProvider: TechnologyProvider = Object.freeze({
