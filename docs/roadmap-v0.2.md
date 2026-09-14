@@ -28,7 +28,7 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | --- | --- | --- | --- |
 | V02-001 | Canonical Technology Model | P0 | ✅ Integrado — PR #41 / issue #40 |
 | V02-002 | NEXUS API Runtime | P0 | ✅ Integrado — PR #44 / issue #42 |
-| V02-003 | API Security Baseline | P0 | 🟡 PR #47 — cierre efectivo al merge manual / issue #46 |
+| V02-003 | API Security Baseline | P0 | ✅ Integrado — PR #47 / issue #46 |
 | V02-004 | Provider Mode Contract | P0 | ⚪ Pendiente |
 | V02-005 | GLPI API v2 Adapter | P0 | ⚪ Pendiente |
 | V02-006 | GLPI Service Identity & RBAC | P0 | ⚪ Pendiente |
@@ -82,9 +82,9 @@ Objetivo: definir autenticación/autorización de frontera, manejo seguro de con
 
 Dependencias: V02-002 ✅.
 
-Entrega activa: issue #46 / PR #47 / `feature/v02-003-api-security-baseline`.
+Resultado integrado: issue #46 cerrado mediante PR #47; baseline incorporado a `main` en el merge `900540033a0b0ff62bd4be1edcb52bcf6fb7ef97`; CI post-merge #175 verde.
 
-Baseline implementado en PR:
+Baseline integrado:
 
 - `AuthenticationProvider` desacoplado y provider por defecto deny-all;
 - `SecurityPrincipal` y autorización por permisos efectivos;
@@ -98,13 +98,13 @@ Baseline implementado en PR:
 - `npm audit --audit-level=high` incorporado a CI;
 - ADR-0013 y threat model v0.2.
 
-El ticket **no** implementa Entra SSO/OIDC, secretos corporativos, OAuth GLPI, Provider Mode ni TLS/reverse proxy. V02-003 sólo se considera integrado después del merge manual de PR #47 a `main`.
+V02-003 **no** implementa Entra SSO/OIDC, secretos corporativos, OAuth GLPI, Provider Mode ni TLS/reverse proxy; esos alcances permanecen en tickets posteriores.
 
 ### V02-004 — Provider Mode Contract
 
 Objetivo: permitir Demo sintética y Live Lab mediante los mismos contratos, sin dispersar condicionales `if demo` por la aplicación.
 
-Dependencias: V02-001 / V02-002.
+Dependencias: V02-001 / V02-002 / V02-003 ✅.
 
 ## Epic 2 — Live CMDB / GLPI
 
