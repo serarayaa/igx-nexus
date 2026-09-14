@@ -1,14 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { buildApp } from "./app.js";
-import type { ApiConfig } from "./config.js";
+import { loadConfig } from "./config.js";
 import { installShutdownHandlers, type SignalRuntime } from "./server.js";
 
-const testConfig: ApiConfig = {
-  environment: "test",
-  host: "127.0.0.1",
-  port: 3100,
-  logLevel: "silent",
-};
+const testConfig = loadConfig({ NEXUS_API_ENV: "test" });
 
 describe("shutdown lifecycle", () => {
   it("registers SIGTERM and SIGINT and closes idempotently", async () => {

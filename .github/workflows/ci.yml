@@ -37,6 +37,9 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Auditar dependencias de seguridad
+        run: npm audit --audit-level=high
+
       - name: Validar contratos canónicos v0.2
         run: |
           npm run typecheck --workspace @igx-nexus/types

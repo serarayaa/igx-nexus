@@ -1,6 +1,7 @@
 import { technologySchemaVersion } from "@igx-nexus/types";
 import type { FastifyInstance } from "fastify";
 import { API_SERVICE_NAME, API_SERVICE_VERSION, API_VERSION } from "./contracts.js";
+import { publicRouteSecurity } from "./security.js";
 
 const runtimeStatusSchema = {
   type: "object",
@@ -30,6 +31,10 @@ export function registerBaseRoutes(app: FastifyInstance): void {
   app.get(
     "/health",
     {
+      config: {
+        security: publicRouteSecurity,
+        rateLimit: false,
+      },
       schema: {
         tags: ["Runtime"],
         summary: "Liveness del proceso NEXUS API",
@@ -47,6 +52,10 @@ export function registerBaseRoutes(app: FastifyInstance): void {
   app.get(
     "/ready",
     {
+      config: {
+        security: publicRouteSecurity,
+        rateLimit: false,
+      },
       schema: {
         tags: ["Runtime"],
         summary: "Readiness del runtime NEXUS API",
@@ -64,6 +73,7 @@ export function registerBaseRoutes(app: FastifyInstance): void {
   app.get(
     "/api/v1",
     {
+      config: { security: publicRouteSecurity },
       schema: {
         tags: ["Runtime"],
         summary: "Metadata de la frontera HTTP v1",
@@ -81,6 +91,7 @@ export function registerBaseRoutes(app: FastifyInstance): void {
   app.get(
     "/openapi.json",
     {
+      config: { security: publicRouteSecurity },
       schema: {
         tags: ["Runtime"],
         summary: "Contrato OpenAPI generado por NEXUS API",

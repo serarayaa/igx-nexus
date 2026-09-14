@@ -21,6 +21,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fastify/cors": "^11.3.0",
+    "@fastify/helmet": "^13.1.0",
+    "@fastify/rate-limit": "^11.2.0",
     "@fastify/swagger": "^9.8.1",
     "@igx-nexus/types": "0.2.0-dev",
     "fastify": "^5.10.0"
