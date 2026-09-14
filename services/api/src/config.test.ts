@@ -14,6 +14,7 @@ describe("NEXUS API config", () => {
       rateLimitMax: 120,
       rateLimitWindowMs: 60_000,
       trustedProxies: [],
+      providerMode: "demo",
     });
   });
 
@@ -33,6 +34,7 @@ describe("NEXUS API config", () => {
       NEXUS_API_RATE_LIMIT_MAX: "200",
       NEXUS_API_RATE_LIMIT_WINDOW_MS: "60000",
       NEXUS_API_TRUST_PROXY: "127.0.0.1,10.20.0.0/16",
+      NEXUS_PROVIDER_MODE: "live",
     })).toEqual({
       environment: "production",
       host: "0.0.0.0",
@@ -44,7 +46,23 @@ describe("NEXUS API config", () => {
       rateLimitMax: 200,
       rateLimitWindowMs: 60_000,
       trustedProxies: ["127.0.0.1", "10.20.0.0/16"],
+      providerMode: "live",
     });
+  });
+
+  it("defaults to demo outside production and accepts explicit live mode", () => {
+    expect(loadConfig({ NEXUS_API_ENV: "test" }).providerMode).toBe("demo");
+    expect(loadConfig({ NEXUS_API_ENV: "test", NEXUS_PROVIDER_MODE: "live" }).providerMode).toBe("live");
+  });
+
+  it("requires provider mode explicitly in production", () => {
+    expect(() => loadConfig({ NEXUS_API_ENV: "production" })).toThrow(
+      "NEXUS_PROVIDER_MODE must be explicitly configured in production",
+    );
+  });
+
+  it("rejects unsupported provider modes", () => {
+    expect(() => loadConfig({ NEXUS_PROVIDER_MODE: "hybrid" })).toThrow(ApiConfigError);
   });
 
   it.each(["0", "65536", "abc", "31.5"])("rejects invalid port %s", (port) => {
