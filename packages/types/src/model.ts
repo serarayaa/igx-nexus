@@ -260,10 +260,11 @@ export interface TechnologyAsset {
   /** Identidad estable emitida por NEXUS, independiente de cualquier sistema fuente. */
   readonly id: string;
   readonly displayName: string;
-  /** Proyección canónica resuelta. La incertidumbre previa vive en TechnologyTaxonomyAssessment. */
+  /** Proyección canónica resuelta; taxonomy conserva método, incertidumbre y revisión. */
   readonly domain: TechnologyDomain;
   readonly assetClass: TechnologyAssetClass;
   readonly role: TechnologyRole;
+  readonly taxonomy: TechnologyTaxonomyAssessment;
   readonly lifecycle: LifecycleState;
   readonly criticality: Criticality;
   readonly operationalContexts: readonly OperationalContextReference[];
