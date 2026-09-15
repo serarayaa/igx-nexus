@@ -39,8 +39,7 @@ export const technologyAssetClasses = [
   ...itTechnologyAssetClasses,
   ...otTechnologyAssetClasses,
 ] as const;
-export type KnownTechnologyAssetClass = (typeof technologyAssetClasses)[number];
-export type TechnologyAssetClass = KnownTechnologyAssetClass | `custom:${string}`;
+export type TechnologyAssetClass = (typeof technologyAssetClasses)[number];
 
 /**
  * Role responde a la función que cumple un activo. No representa modelo comercial,
