@@ -3,7 +3,6 @@ import { afterEach, describe, expect, it } from "vitest";
 import { buildApp } from "./app.js";
 import { loadConfig } from "./config.js";
 import {
-  demoTechnologyProvider,
   ProviderUnavailableError,
   type TechnologyProvider,
 } from "./provider.js";
@@ -51,7 +50,7 @@ describe("Technology snapshot route", () => {
     });
   });
 
-  it("maps an explicitly unavailable provider to a safe 503", async () => {
+  it("maps an unavailable provider to a safe, masked 503", async () => {
     const unavailableProvider: TechnologyProvider = {
       descriptor: {
         id: "test.unavailable",
@@ -73,7 +72,12 @@ describe("Technology snapshot route", () => {
 
     const response = await app.inject({ method: "GET", url: "/api/v1/technology/snapshot" });
     expect(response.statusCode).toBe(503);
-    expect(response.json()).toMatchObject({ code: "TECHNOLOGY_PROVIDER_UNAVAILABLE" });
+    expect(response.json()).toMatchObject({
+      code: "INTERNAL_ERROR",
+      statusCode: 503,
+      message: "Internal server error",
+    });
+    expect(response.body).not.toContain("TECHNOLOGY_PROVIDER_UNAVAILABLE");
   });
 
   it("documents the protected snapshot route in OpenAPI", async () => {
