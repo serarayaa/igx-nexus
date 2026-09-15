@@ -66,7 +66,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline**, **V02-004 — Provider Mode Contract** y **V02-005 — GLPI API v2 Adapter** están integrados. V02-005 quedó incorporado mediante PR #53 / issue #52 en el merge `10acf2533877b19a261d8f5291e90269df2014e8`, con CI post-merge #247 verde. El siguiente ticket es **V02-006 — GLPI Service Identity & RBAC**.
+**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline**, **V02-004 — Provider Mode Contract** y **V02-005 — GLPI API v2 Adapter** están integrados. V02-005 quedó incorporado mediante PR #53 / issue #52 en el merge `10acf2533877b19a261d8f5291e90269df2014e8`, con housekeeping PR #54 y CI post-housekeeping #249 verdes. El trabajo activo es **V02-006 — GLPI Service Identity & RBAC**, issue #55 / PR #56.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -141,7 +141,9 @@ V02-003 agregó un baseline de seguridad **deny-by-default**: autenticación des
 
 V02-004 agregó `TechnologyProvider` como frontera común Demo/Live. `NEXUS_PROVIDER_MODE` selecciona el modo durante composición; `production` exige declararlo explícitamente. Demo produce un `TechnologySnapshot` canónico sintético y Live nunca cae silenciosamente a Demo.
 
-V02-005 agregó el primer adapter GLPI Live read-only. La versión de High-Level API se fija en `v2.3`; el transporte sólo permite GET, valida HTTPS/base URL, aplica timeout y recibe un Bearer token mediante una abstracción inyectable. `Assets/Computer` se pagina con `start`/`limit` y se normaliza conservadoramente al modelo NEXUS con source/provenance/evidence. La identidad OAuth/service account real queda en V02-006.
+V02-005 agregó el primer adapter GLPI Live read-only. La versión de High-Level API se fija en `v2.3`; el transporte sólo permite GET, valida HTTPS/base URL, aplica timeout y recibe un Bearer token mediante una abstracción inyectable. `Assets/Computer` se pagina con `start`/`limit` y se normaliza conservadoramente al modelo NEXUS con source/provenance/evidence.
+
+V02-006 implementa esa identidad upstream sin mezclarla con los callers de NEXUS: un `GlpiCredentialSource` entrega secretos al token provider OAuth, que usa Password Grant + scope `api` por la restricción actual de GLPI 11, mantiene el access token sólo en memoria y lo renueva antes de expirar. El runtime Live compone esta identidad con el adapter de V02-005. El RBAC esperado es un usuario técnico dedicado con perfil GLPI read-only y alcance por entidad mínimo.
 
 Endpoints base actuales:
 
@@ -155,6 +157,6 @@ GET /openapi.json
 
 `/health` expresa liveness del proceso. `/ready` verifica además disponibilidad efectiva del provider; el provider GLPI usa un probe read-only mínimo y devuelve 503 si upstream/auth/payload no están disponibles, sin tumbar el proceso ni caer a Demo.
 
-La configuración HTTP usa variables `NEXUS_API_*` y `NEXUS_PROVIDER_MODE`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. V02-005 no versiona credenciales GLPI ni crea todavía endpoints productivos de activos.
+La configuración HTTP usa variables `NEXUS_API_*` y `NEXUS_PROVIDER_MODE`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. Los secretos GLPI no forman parte de `ApiConfig` ni se versionan.
 
-Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
+Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](docs/architecture/adr-0016-glpi-service-identity-rbac.md), [runbook de GLPI Service Identity](docs/integrations/glpi-service-identity.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
