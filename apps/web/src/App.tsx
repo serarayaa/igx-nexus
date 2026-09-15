@@ -78,7 +78,7 @@ export function App() {
     : route.view === "health"
       ? <CmdbHealth />
     : route.view === "assets"
-      ? <AssetExplorer provider={inventory.provider} />
+      ? <AssetExplorer provider={inventory.provider} mode={inventory.mode} />
       : route.view === "asset"
         ? <Asset360 assetId={route.assetId} provider={inventory.provider} />
         : route.view === "relations"
