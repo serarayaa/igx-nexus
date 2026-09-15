@@ -66,7 +66,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline** y **V02-004 — Provider Mode Contract** están integrados. El trabajo activo es **V02-005 — GLPI API v2 Adapter**, issue #52 / PR #53, que incorpora la primera lectura Live read-only desde GLPI 11 High-Level API v2.3 detrás de `TechnologyProvider`.
+**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline**, **V02-004 — Provider Mode Contract** y **V02-005 — GLPI API v2 Adapter** están integrados. V02-005 quedó incorporado mediante PR #53 / issue #52 en el merge `10acf2533877b19a261d8f5291e90269df2014e8`, con CI post-merge #247 verde. El siguiente ticket es **V02-006 — GLPI Service Identity & RBAC**.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -141,7 +141,7 @@ V02-003 agregó un baseline de seguridad **deny-by-default**: autenticación des
 
 V02-004 agregó `TechnologyProvider` como frontera común Demo/Live. `NEXUS_PROVIDER_MODE` selecciona el modo durante composición; `production` exige declararlo explícitamente. Demo produce un `TechnologySnapshot` canónico sintético y Live nunca cae silenciosamente a Demo.
 
-V02-005 agrega el primer adapter GLPI Live read-only. La versión de High-Level API se fija en `v2.3`; el transporte sólo permite GET, valida HTTPS/base URL, aplica timeout y recibe un Bearer token mediante una abstracción inyectable. `Assets/Computer` se pagina con `start`/`limit` y se normaliza conservadoramente al modelo NEXUS con source/provenance/evidence. La identidad OAuth/service account real queda en V02-006.
+V02-005 agregó el primer adapter GLPI Live read-only. La versión de High-Level API se fija en `v2.3`; el transporte sólo permite GET, valida HTTPS/base URL, aplica timeout y recibe un Bearer token mediante una abstracción inyectable. `Assets/Computer` se pagina con `start`/`limit` y se normaliza conservadoramente al modelo NEXUS con source/provenance/evidence. La identidad OAuth/service account real queda en V02-006.
 
 Endpoints base actuales:
 
