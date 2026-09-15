@@ -63,6 +63,53 @@ it("presenta datos parciales sin inventar información", async () => {
   expect(within(quality).getByText("Falta serial")).toBeTruthy();
 });
 
+it("muestra un activo Live sin inventar Health, QR ni relaciones", async () => {
+  const liveSnapshot: InventorySnapshot = {
+    asOf: "2026-09-15T16:00:00.000Z",
+    assets: [{
+      id: "NXS-LAB",
+      name: "LAB-ENDPOINT",
+      type: "Computer",
+      domain: "IT",
+      lifecycle: "unknown",
+      critical: false,
+      criticality: "unknown",
+      owner: null,
+      location: null,
+      lastSeen: "2026-09-15T15:58:00.000Z",
+      warrantyEnds: null,
+      hostname: null,
+      serial: "SERIAL-TEST",
+      assetTag: null,
+      manufacturer: "Vendor",
+      model: "Model",
+      ipAddress: null,
+      dataMode: "live",
+      sourceSystems: ["glpi"],
+      sourceObservedAt: "2026-09-15T15:59:00.000Z",
+    }],
+  };
+  const provider: InventoryProvider = async () => liveSnapshot;
+
+  render(<NexusShell view="asset"><Asset360 assetId="NXS-LAB" provider={provider} /></NexusShell>);
+  await screen.findByRole("heading", { name: "LAB-ENDPOINT", level: 1 });
+
+  expect(screen.getByText("ASSET 360 · INNERGEX CHILE · LIVE")).toBeTruthy();
+  const lifecycle = screen.getByRole("region", { name: "Estado y ciclo de vida" });
+  expect(within(lifecycle).getByText("No determinada por la fuente")).toBeTruthy();
+  expect(within(lifecycle).getByText("Criticidad Desconocida")).toBeTruthy();
+
+  const source = screen.getByRole("region", { name: "Fuente y evidencia" });
+  expect(within(source).getByText("glpi")).toBeTruthy();
+  expect(within(source).getByText(/Web consume exclusivamente NEXUS API/)).toBeTruthy();
+
+  expect(screen.queryByRole("region", { name: "CMDB Health" })).toBeNull();
+  expect(screen.queryByRole("region", { name: "Etiqueta y QR" })).toBeNull();
+  const relations = screen.getByRole("region", { name: "Relaciones" });
+  expect(within(relations).getByText("Sin evidencia live todavía")).toBeTruthy();
+  expect(within(relations).queryByRole("link", { name: "Abrir grafo de relaciones" })).toBeNull();
+});
+
 it("navega Explorer → Asset 360 → Explorer y respeta Atrás/Adelante", async () => {
   window.history.replaceState(null, "", "#assets");
   render(<App />);
