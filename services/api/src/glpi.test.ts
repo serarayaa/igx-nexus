@@ -52,16 +52,23 @@ describe("GLPI record parsing and canonical mapping", () => {
     expect(() => parseGlpiComputerRecord(null)).toThrow(GlpiPayloadError);
   });
 
-  it("maps GLPI Computer to conservative canonical NEXUS semantics", () => {
+  it("maps GLPI Computer through the explicit NEXUS taxonomy rules", () => {
     const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord(computer()), OBSERVED_AT);
 
     expect(asset.id).toMatch(/^NXS-[A-F0-9]{32}$/);
     expect(asset.displayName).toBe("ITSTGO42");
     expect(asset.domain).toBe("IT");
-    expect(asset.assetClass).toBe("compute");
-    expect(asset.role).toBe("custom:glpi-computer");
+    expect(asset.assetClass).toBe("endpoint");
+    expect(asset.role).toBe("user_endpoint");
+    expect(asset.taxonomy).toMatchObject({
+      taxonomyVersion: "2",
+      domain: { state: "classified", value: "IT", method: "inferred" },
+      assetClass: { state: "classified", value: "endpoint", method: "normalized" },
+      role: { state: "classified", value: "user_endpoint", reviewRequired: true },
+    });
     expect(asset.lifecycle).toBe("unknown");
     expect(asset.criticality).toBe("unknown");
+    expect(asset.operationalContexts).toEqual([]);
     expect(asset.identifiers).toEqual([
       expect.objectContaining({ kind: "serial_number", value: "SER-42" }),
       expect.objectContaining({ kind: "asset_tag", value: "IGX-0042" }),
@@ -79,8 +86,11 @@ describe("GLPI record parsing and canonical mapping", () => {
       "glpi.location.name": "Santiago",
       "glpi.type.name": "Notebook",
       "glpi.model.name": "Latitude",
+      "nexus.taxonomy.version": "2",
+      "nexus.taxonomy.assetClass.ruleId": "glpi.computer.type.it-endpoint",
     });
     expect(asset.provenance[0]?.evidence?.[0]?.reference).toBe("glpi:v2.3:Assets/Computer/42");
+    expect(asset.provenance.find((entry) => entry.fieldPath === "assetClass")?.derivation).toBe("normalized");
   });
 
   it("keeps canonical identity stable for the same GLPI source record", () => {
@@ -92,12 +102,20 @@ describe("GLPI record parsing and canonical mapping", () => {
     expect(second.id).toBe(first.id);
   });
 
-  it("uses a safe fallback name without pretending taxonomy or lifecycle knowledge", () => {
+  it("uses a safe fallback name and marks weak Computer taxonomy for review", () => {
     const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord({ id: 8 }), OBSERVED_AT);
     expect(asset.displayName).toBe("GLPI Computer 8");
     expect(asset.lifecycle).toBe("unknown");
     expect(asset.criticality).toBe("unknown");
     expect(asset.provenance[0]?.authority).toBe("inferred");
+    expect(asset.taxonomy?.domain).toMatchObject({
+      state: "classified",
+      value: "IT",
+      reviewRequired: true,
+      ruleId: "glpi.computer.compatibility-default",
+    });
+    expect(asset.taxonomy?.assetClass).toMatchObject({ value: "endpoint", reviewRequired: true });
+    expect(asset.taxonomy?.role).toMatchObject({ value: "user_endpoint", reviewRequired: true });
   });
 });
 
@@ -213,6 +231,7 @@ describe("GLPI TechnologyProvider", () => {
     expect(snapshot.schemaVersion).toBe("0.2");
     expect(snapshot.asOf).toBe(OBSERVED_AT);
     expect(snapshot.assets.map((asset) => asset.displayName)).toEqual(["ONE", "TWO", "THREE"]);
+    expect(snapshot.assets.every((asset) => asset.taxonomy?.taxonomyVersion === "2")).toBe(true);
     expect(snapshot.relationships).toEqual([]);
     expect(snapshot.observations).toEqual([]);
   });
