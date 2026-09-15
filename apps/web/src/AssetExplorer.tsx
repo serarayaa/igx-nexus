@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Badge, Button, EmptyState, ErrorState, LoadingState, PageHeader, Pagination, Search, Toolbar } from "@igx-nexus/ui";
 import { demoProvider } from "./demo-provider";
-import type { InventoryProvider, InventorySnapshot } from "./asset-model";
+import type { AssetDataMode, InventoryProvider, InventorySnapshot } from "./asset-model";
 import { emptyFilters, explore, type ExplorerQuery } from "./explorer-model";
 import { ExplorerFilters } from "./ExplorerFilters";
 import { AssetTable } from "./AssetTable";
@@ -11,7 +11,7 @@ type LoadState = { status: "loading" } | { status: "error" } | { status: "ready"
 const initialQuery: ExplorerQuery = { search: "", filters: emptyFilters, sort: { columnId: "name", direction: "ascending" }, page: 1, pageSize: 25 };
 const dateFormat = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeZone: "UTC" });
 
-export function AssetExplorer({ provider = demoProvider }: { provider?: InventoryProvider }) {
+export function AssetExplorer({ provider = demoProvider, mode = "demo" }: { provider?: InventoryProvider; mode?: AssetDataMode }) {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [query, setQuery] = useState(initialQuery);
@@ -42,15 +42,21 @@ export function AssetExplorer({ provider = demoProvider }: { provider?: Inventor
     searchRegion.current?.querySelector("input")?.focus();
   }
   const result = state.status === "ready" ? explore(state.snapshot, query) : null;
+  const live = mode === "live";
 
   return <div className="nexus-explorer" id="assets">
-    <PageHeader title="Explorador de activos" eyebrow="INVENTARIO · INNERGEX CHILE" description="Encuentra equipos, responsables y ubicaciones en un mismo lugar." meta={<Badge>Datos sintéticos · escenario de demostración</Badge>} />
-    {state.status === "loading" && <LoadingState title="Cargando inventario de activos" description="Preparando el inventario de demostración." />}
-    {state.status === "error" && <ErrorState title="No se pudo cargar el inventario" description="Vuelve a intentar. Tu búsqueda se conservará." action={<Button onPress={() => setAttempt(n => n + 1)}>Reintentar</Button>} />}
-    {state.status === "ready" && state.snapshot.assets.length === 0 && <EmptyState title="El inventario está vacío" description="No hay activos disponibles en este escenario." action={<Button onPress={() => setAttempt(n => n + 1)}>Volver a cargar</Button>} />}
+    <PageHeader
+      title="Explorador de activos"
+      eyebrow="INVENTARIO · INNERGEX CHILE"
+      description={live ? "Activos obtenidos mediante NEXUS API desde el provider Live configurado." : "Encuentra equipos, responsables y ubicaciones en un mismo lugar."}
+      meta={<Badge>{live ? "LIVE LAB · NEXUS API" : "Datos sintéticos · escenario de demostración"}</Badge>}
+    />
+    {state.status === "loading" && <LoadingState title="Cargando inventario de activos" description={live ? "Consultando NEXUS API en modo Live." : "Preparando el inventario de demostración."} />}
+    {state.status === "error" && <ErrorState title="No se pudo cargar el inventario" description="Vuelve a intentar. Tu búsqueda se conservará y no se mostrarán detalles internos del error." action={<Button onPress={() => setAttempt(n => n + 1)}>Reintentar</Button>} />}
+    {state.status === "ready" && state.snapshot.assets.length === 0 && <EmptyState title="El inventario está vacío" description={live ? "NEXUS API no devolvió activos para el provider Live." : "No hay activos disponibles en este escenario."} action={<Button onPress={() => setAttempt(n => n + 1)}>Volver a cargar</Button>} />}
     {state.status === "ready" && state.snapshot.assets.length > 0 && result && <>
       <div ref={searchRegion}>
-        <Search label="Buscar activos" showLabel value={query.search} onChange={search => changeQuery({ search })} placeholder="Nombre, serial, responsable, sitio…" description="Busca también por hostname, etiqueta, modelo, fabricante o IP demo. Combina palabras para afinar los resultados." />
+        <Search label="Buscar activos" showLabel value={query.search} onChange={search => changeQuery({ search })} placeholder="Nombre, serial, responsable, sitio…" description="Busca también por hostname, etiqueta, modelo, fabricante o IP. Combina palabras para afinar los resultados." />
       </div>
       <ExplorerFilters snapshot={state.snapshot} filters={query.filters}
         onChange={(key, value) => changeQuery({ filters: { ...query.filters, [key]: value } })}
@@ -69,7 +75,7 @@ export function AssetExplorer({ provider = demoProvider }: { provider?: Inventor
           }} />
         </div>
       </>}
-      <p className="nexus-muted">Corte demo: <time dateTime={state.snapshot.asOf}>{dateFormat.format(new Date(state.snapshot.asOf))}</time> · UTC. Frescura relativa al corte; incluye activos dados de baja. Sin conexión a fuentes corporativas.</p>
+      <p className="nexus-muted"><time dateTime={state.snapshot.asOf}>{dateFormat.format(new Date(state.snapshot.asOf))}</time> · UTC. {live ? "Snapshot canónico servido por NEXUS API; GLPI permanece detrás del adapter Live." : "Corte demo; frescura relativa al corte. Sin conexión a fuentes corporativas."}</p>
     </>}
   </div>;
 }
