@@ -12,8 +12,8 @@ Cada dimensión responde una pregunta distinta:
 | `assetClass` | ¿Qué clase tecnológica representa? | `endpoint`, `controller` |
 | `role` | ¿Qué función cumple? | `user_endpoint`, `control` |
 | `operationalContexts` | ¿Dentro de qué sistema/contexto participa? | `system`, `security_zone` |
-| `taxonomy.*.state` | ¿La clasificación está resuelta? | `classified`, `conflict` |
-| `taxonomy.*.method` | ¿Cómo se obtuvo el valor? | `observed`, `normalized`, `inferred`, `manual` |
+| `taxonomy.*.state` | ¿La clasificación está resuelta? | `classified`, `unknown`, `unclassified`, `conflict` |
+| `taxonomy.*.method` | ¿Cómo se obtuvo un valor clasificado? | `observed`, `normalized`, `inferred`, `manual` |
 | provenance | ¿Qué evidencia/fuente respalda el claim? | GLPI, Intune, manual, etc. |
 
 No usar una dimensión como sustituto de otra.
@@ -28,6 +28,8 @@ OT
 ```
 
 `unknown`, `unclassified`, `conflict`, `hybrid` y `shared` no son domains. Cuando NEXUS no conoce el dominio, la decisión se mantiene sin resolver en el assessment taxonómico.
+
+Esta distinción es especialmente importante en OT: un equipo físicamente parecido a un PC, servidor o dispositivo de red IT puede participar en un sistema OT. La forma del hardware no determina por sí sola el dominio.
 
 ## Asset Class
 
@@ -124,9 +126,9 @@ Ejemplo:
 GLPI itemType = Computer
 GLPI type = HMI
 
-NEXUS domain = OT                 (inferred)
+NEXUS domain = OT                     (normalized por regla explícita)
 NEXUS assetClass = operator_interface (normalized)
-NEXUS role = supervision          (inferred, reviewRequired)
+NEXUS role = supervision              (inferred, reviewRequired)
 ```
 
 El hecho observado sigue siendo `GLPI type = HMI`; la proyección NEXUS queda explicada por provenance y `ruleId`.
@@ -135,7 +137,7 @@ El hecho observado sigue siendo `GLPI type = HMI`; la proyección NEXUS queda ex
 
 ### `classified`
 
-Existe una proyección canónica concreta.
+Existe una clasificación canónica concreta.
 
 ```ts
 {
@@ -149,11 +151,11 @@ Existe una proyección canónica concreta.
 
 ### `unknown`
 
-La dimensión existe conceptualmente, pero la evidencia disponible no permite conocerla.
+La dimensión existe conceptualmente, pero la fuente no entregó evidencia suficiente para conocerla. Ejemplo: un `Computer` GLPI sin `ComputerType`.
 
 ### `unclassified`
 
-NEXUS recibió información, pero todavía no existe una regla/catálogo válido para traducirla.
+NEXUS recibió información, pero todavía no existe una regla/catálogo gobernado para traducirla. Ejemplo: un `ComputerType` configurable de GLPI que no figura en el mapping explícito.
 
 ### `conflict`
 
@@ -200,35 +202,69 @@ Contexts:
   - security_zone: <referencia de zona>
 ```
 
-Los nombres reales de plantas/sistemas no se hardcodean en el contrato.
+Los nombres reales de plantas/sistemas no se hardcodean en el contrato. Purdue/ISA-95 y zones IEC 62443 pueden aportar contexto cuando exista evidencia, pero no son clases de activo.
 
 ## Mapping GLPI
 
 Código central: `services/api/src/taxonomy.ts`.
 
+GLPI permite que los tipos de activos sean administrados por cada instancia; no existe un catálogo universal de `ComputerType` que NEXUS pueda tratar como estándar. Por ello los aliases reconocidos son reglas de normalización NEXUS, no semántica nativa universal de GLPI.
+
 Reglas actuales para `Computer`:
 
-| Source Type | Domain | Class | Role | Revisión |
+| Source Type | Assessment Domain | Class | Role | Revisión |
 | --- | --- | --- | --- | --- |
-| Notebook / Laptop / Desktop / Workstation | IT | endpoint | user_endpoint | role: sí |
-| Server / Physical Server | IT | server | infrastructure_service | role: sí |
+| Notebook / Laptop / Desktop / Workstation | IT inferido | endpoint | user_endpoint | domain/role: sí |
+| Server / Physical Server | IT inferido | server | infrastructure_service | domain/role: sí |
 | Engineering Workstation / Industrial Workstation | OT | industrial_compute | engineering_workstation | no |
 | HMI / Human Machine Interface / Operator Station | OT | operator_interface | supervision | role: sí |
 | Historian / Historian Server | OT | industrial_compute | historian | no |
-| ausente/no reconocido | IT* | endpoint* | user_endpoint* | **sí en todo** |
-
-`*` La última fila es una regla de compatibilidad del vertical Live actual, marcada como inferencia débil y no como hecho observado.
+| Type ausente | **unknown** | **unknown** | **unknown** | sí |
+| Type presente sin mapping | **unclassified** | **unclassified** | **unclassified** | sí |
 
 Un item type diferente de `Computer` queda `unclassified` hasta que exista una regla explícita. Esto es intencional.
+
+### Bridge temporal de scalars legacy
+
+V02-008 y algunos consumidores heredados todavía requieren que `TechnologyAsset.domain`, `assetClass` y `role` tengan un valor concreto. Hasta que V02-011 migre esos consumidores, `projectGlpiTaxonomyForLegacyScalars()` mantiene un bridge explícito:
+
+```text
+assessment resuelto
+→ scalars = valores del assessment
+→ compatibilityFallback = false
+
+assessment unknown/unclassified/conflict
+→ scalars temporales = IT / endpoint / user_endpoint
+→ compatibilityFallback = true
+→ projectionRuleId = glpi.computer.compatibility-projection
+```
+
+**El fallback no modifica el assessment.** Por lo tanto un `Computer` sin Type sigue siendo taxonómicamente `unknown`, aunque una pantalla legacy necesite temporalmente el scalar IT para no romper el vertical Live.
+
+El adapter publica además atributos `nexus.taxonomy.*.state`, `reviewRequired`, `ruleId` y `nexus.taxonomy.compatibilityProjection` para que el bridge sea observable y auditable.
+
+## Reconciliation
+
+V02-010 extiende la proyección de V02-009 para no perder información taxonómica:
+
+- `taxonomy` se conserva durante `projectCanonicalAsset()`;
+- `operationalContexts` se fusionan por referencia estable;
+- una discrepancia taxonómica que la política de claims no puede resolver produce `state=conflict` + `reviewRequired=true`;
+- un claim legacy seleccionado sin assessment v2 produce `unclassified`, no una inferencia inventada;
+- el envelope de reconciliación continúa conservando claims y conflictos alternativos.
+
+Esto mantiene `Evidence before inference` también después de la reconciliación multisource.
 
 ## Gate v2
 
 Hay dos niveles de validación durante la migración:
 
 1. `validateTechnologySnapshot()` mantiene el contrato base `0.2` y soporta consumidores legacy.
-2. `validateTechnologySnapshotTaxonomy()` exige assessment v2, coherencia entre proyección y assessment, y contextos válidos.
+2. `validateTechnologySnapshotTaxonomy()` exige assessment v2 estructuralmente válido y contextos válidos.
 
-Todo provider nuevo/migrado a v2 debe superar ambos.
+Cuando una dimensión está `classified`, su valor **debe coincidir** con el scalar proyectado. Cuando está `unknown`, `unclassified` o `conflict`, el gate permite temporalmente un scalar legacy porque ese valor no representa una clasificación resuelta.
+
+Todo provider nuevo/migrado a v2 debe superar ambos gates. Demo y GLPI Live ya lo hacen.
 
 ## Compatibilidad legacy
 
@@ -251,7 +287,8 @@ parse source
 → build source evidence
 → apply centralized mapping rule
 → produce TechnologyTaxonomyAssessment
-→ refuse unresolved canonical projection when no compatibility policy exists
+→ keep uncertainty explicit when evidence/rules are insufficient
+→ use a compatibility projection only when a documented migration requires it
 → attach provenance/derivation
 → validate base snapshot
 → validate taxonomy v2 gate
@@ -272,7 +309,7 @@ Classification State
 Review Required
 ```
 
-Analytics debe poder distinguir, por ejemplo, “100 endpoints IT” de “87 clasificados con evidencia suficiente + 13 inferidos pendientes de revisión”. La incertidumbre es información útil y no debe esconderse para obtener un gráfico más limpio.
+Analytics debe poder distinguir, por ejemplo, “100 scalars endpoint mostrados por compatibilidad” de “87 endpoints clasificados con evidencia suficiente + 13 assessments pendientes de revisión”. La incertidumbre es información útil y no debe esconderse para obtener un gráfico más limpio.
 
 ## Qué queda para después
 
