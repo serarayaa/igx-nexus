@@ -39,9 +39,11 @@ El MSI debe verificarse mediante su SHA-256 oficial antes de instalarse.
 
 ### 3. Perfil cerrado del Agent
 
-El perfil esperado fija:
+La instalación y configuración esperadas fijan:
 
 ```text
+ADDLOCAL=feat_AGENT
+RUNNOW=0
 TASKS=Inventory
 ITEMTYPE=Computer
 NO_HTTPD=1
@@ -53,7 +55,9 @@ NO_SSL_CHECK=0
 TAG=nexus-live-lab
 ```
 
-`TASKS=Inventory` es una allowlist, no sólo una intención documental.
+`ADDLOCAL=feat_AGENT` restringe los componentes instalados al feature base que incluye Inventory. `TASKS=Inventory` es una allowlist de ejecución, no sólo una intención documental.
+
+`RUNNOW=0` evita un primer contacto antes de configurar la identidad OAuth de inventario. El servicio se inicia sólo después de cargar esa configuración.
 
 Se deshabilita el HTTP server embebido porque V02-007 no necesita recibir peticiones entrantes en el endpoint.
 
@@ -100,7 +104,9 @@ El repositorio incorpora un preflight Windows que puede comprobar configuración
 - modificar registro;
 - forzar inventario;
 - transmitir datos;
-- imprimir secretos.
+- leer ni imprimir el contenido del OAuth client secret.
+
+Para el OAuth client el preflight sólo comprueba que los nombres de configuración esperados existen; no obtiene sus valores.
 
 El preflight no sustituye la validación real Agent → GLPI.
 
@@ -117,7 +123,7 @@ La lectura posterior GLPI → NEXUS API puede registrarse como evidencia adicion
 - se valida la fuente real antes de construir UX Live;
 - Agent y NEXUS API tienen credenciales separadas y revocables;
 - el alcance de red queda explícitamente cerrado;
-- se reduce superficie al deshabilitar HTTPD/P2P/tareas no requeridas;
+- se reduce superficie al instalar sólo el feature base y deshabilitar HTTPD/P2P/tareas no requeridas;
 - los datos sensibles del endpoint no terminan en GitHub;
 - la evidencia distingue simulación/CI de observación real.
 
