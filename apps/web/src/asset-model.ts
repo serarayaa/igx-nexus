@@ -1,6 +1,18 @@
 export type Domain = "IT" | "OT";
 export type AssetType = "Computer" | "NetworkEquipment" | "Phone" | "Monitor" | "Printer";
-export type Lifecycle = "assigned" | "stock" | "repair" | "retired";
+export type Lifecycle =
+  | "assigned"
+  | "stock"
+  | "repair"
+  | "retired"
+  | "planned"
+  | "in_stock"
+  | "active"
+  | "maintenance"
+  | "disposed"
+  | "unknown";
+export type AssetCriticality = "low" | "medium" | "high" | "critical" | "unknown";
+export type AssetDataMode = "demo" | "live";
 
 /** Proyección mínima de inventario consumida por las métricas. */
 export interface AssetSummary {
@@ -24,6 +36,11 @@ export interface Asset extends AssetSummary {
   readonly manufacturer: string | null;
   readonly model: string | null;
   readonly ipAddress: string | null;
+  /** Campos v0.2 opcionales para no romper el fixture cerrado de v0.1. */
+  readonly dataMode?: AssetDataMode;
+  readonly criticality?: AssetCriticality;
+  readonly sourceSystems?: readonly string[];
+  readonly sourceObservedAt?: string | null;
 }
 export interface InventorySnapshot<T extends AssetSummary = Asset> {
   readonly asOf: string;
@@ -36,7 +53,16 @@ export const typeLabels: Record<AssetType, string> = {
   Monitor: "Monitores", Printer: "Impresoras",
 };
 export const lifecycleLabels: Record<Lifecycle, string> = {
-  assigned: "Asignados", stock: "En stock", repair: "En reparación", retired: "Dados de baja",
+  assigned: "Asignados",
+  stock: "En stock",
+  repair: "En reparación",
+  retired: "Dados de baja",
+  planned: "Planificado",
+  in_stock: "En stock",
+  active: "Activo",
+  maintenance: "En mantenimiento",
+  disposed: "Dispuesto",
+  unknown: "Desconocido",
 };
 export function ageInDays(date: string | null, asOf: string): number | null {
   if (!date) return null;
