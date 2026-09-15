@@ -66,7 +66,9 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 a V02-009 están integrados.** V02-009 — Provenance & Reconciliation quedó incorporado mediante PR #64 / issue #63 en el merge `209c400f88f556975e525f99b9977cd00e8957be`; la CI post-merge #361 quedó verde y ADR-0019 queda aceptado en este housekeeping. El siguiente trabajo planificado es **V02-010 — IT/OT Taxonomy v2**.
+**V02-001 a V02-009 están integrados.** V02-009 — Provenance & Reconciliation quedó incorporado mediante PR #64 / issue #63 en el merge `209c400f88f556975e525f99b9977cd00e8957be`; la CI post-merge #361 quedó verde y ADR-0019 está aceptado.
+
+**V02-010 — IT/OT Taxonomy v2 está en revisión mediante issue #66 / PR #67.** El ticket separa Domain / Asset Class / Role / Operational Context, hace explícitos `unknown`, `unclassified` y `conflict`, centraliza el mapping GLPI y extiende reconciliation para preservar taxonomía/contexto sin convertir inferencias débiles en hechos.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -133,7 +135,9 @@ V02-001 incorporó `@igx-nexus/types` bajo `packages/types`. El package modela i
 
 V02-009 extiende esos contratos de forma aditiva con decisiones de reconciliación, evidencia evaluada, claims por atributo, conflictos y canonical projection. Los contratos distinguen explícitamente matching de identity assignment y permiten conservar evidencia multisource sin recalcular `TechnologyAsset.id`.
 
-Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture/adr-0011-canonical-technology-model.md), [Provenance & Reconciliation](docs/reconciliation.md) y [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md).
+V02-010 añade `TechnologyTaxonomyAssessment`, derivación taxonómica y `OperationalContextReference`. `domain` permanece cerrado a `IT | OT`; `unknown`, `unclassified` y `conflict` son estados del assessment. Durante el puente hacia V02-011, consumers legacy pueden recibir scalars temporales sin que esos scalars resuelvan artificialmente el assessment.
+
+Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture/adr-0011-canonical-technology-model.md), [Provenance & Reconciliation](docs/reconciliation.md), [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md), [IT/OT Taxonomy v2](docs/taxonomy-v2.md) y [ADR-0020 — IT/OT Taxonomy v2](docs/architecture/adr-0020-it-ot-taxonomy-v2.md).
 
 ## NEXUS API v0.2
 
@@ -151,7 +155,9 @@ V02-007 validó el primer Live Lab con **GLPI Agent 1.19** sobre un endpoint aut
 
 V02-008 conectó ese inventario de extremo a extremo con NEXUS Web. La Web Live consume NEXUS API, no GLPI; el snapshot Live permanece protegido y no mezcla features Demo como si fueran evidencia real.
 
-V02-009 incorpora un motor de reconciliación puro y determinista detrás de los contratos/provider boundaries existentes. Clasifica identificadores fuertes, auxiliares, volátiles e insuficientes, detecta ambigüedad/conflictos, conserva claims y provenance por atributo, centraliza políticas de autoridad/recencia y preserva el id canónico del activo ancla. No añade Intune real ni una API pública de reconciliación en este ticket.
+V02-009 incorpora un motor de reconciliación puro y determinista detrás de los contratos/provider boundaries existentes. Clasifica identificadores fuertes, auxiliares, volátiles e insuficientes, detecta ambigüedad/conflictos, conserva claims y provenance por atributo, centraliza políticas de autoridad/recencia y preserva el id canónico del activo ancla.
+
+V02-010 hace que Demo/GLPI Live emitan assessment v2, introduce un gate taxonómico adicional y vuelve `projectCanonicalAsset()` consciente de taxonomy/operational contexts. GLPI Type sólo se traduce por reglas explícitas; Type ausente queda `unknown` y Type no mapeado queda `unclassified`.
 
 Endpoints base actuales:
 
@@ -168,4 +174,4 @@ GET /openapi.json
 
 La configuración HTTP usa variables `NEXUS_API_*` y `NEXUS_PROVIDER_MODE`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. Los secretos GLPI no forman parte de `ApiConfig` ni se versionan.
 
-Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](docs/architecture/adr-0016-glpi-service-identity-rbac.md), [ADR-0017 — GLPI Agent Live Lab](docs/architecture/adr-0017-glpi-agent-live-lab.md), [ADR-0018 — Live Asset 360 Vertical Slice](docs/architecture/adr-0018-live-asset-360-vertical-slice.md), [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md), [runbook de GLPI Service Identity](docs/integrations/glpi-service-identity.md), [runbook de GLPI Agent Live Lab](docs/integrations/glpi-agent-live-lab.md), [Provenance & Reconciliation](docs/reconciliation.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
+Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](docs/architecture/adr-0016-glpi-service-identity-rbac.md), [ADR-0017 — GLPI Agent Live Lab](docs/architecture/adr-0017-glpi-agent-live-lab.md), [ADR-0018 — Live Asset 360 Vertical Slice](docs/architecture/adr-0018-live-asset-360-vertical-slice.md), [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md), [ADR-0020 — IT/OT Taxonomy v2](docs/architecture/adr-0020-it-ot-taxonomy-v2.md), [runbook de GLPI Service Identity](docs/integrations/glpi-service-identity.md), [runbook de GLPI Agent Live Lab](docs/integrations/glpi-agent-live-lab.md), [Provenance & Reconciliation](docs/reconciliation.md), [IT/OT Taxonomy v2](docs/taxonomy-v2.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
