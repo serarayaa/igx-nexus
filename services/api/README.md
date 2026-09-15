@@ -2,7 +2,7 @@
 
 `@igx-nexus/api` es la frontera HTTP de backend de **IGX NEXUS v0.2 — Technology Intelligence**.
 
-V02-002 creó el runtime real. **V02-003 — API Security Baseline** agrega la frontera de seguridad necesaria antes de conectar providers Live, identidades reales o credenciales de fuentes corporativas.
+V02-002 creó el runtime real, V02-003 incorporó el baseline de seguridad y **V02-004 — Provider Mode Contract** desacopla el origen de datos del producto antes de conectar GLPI u otras fuentes reales.
 
 ## Arquitectura
 
@@ -10,13 +10,15 @@ V02-002 creó el runtime real. **V02-003 — API Security Baseline** agrega la f
 NEXUS Web
    |
    v
-NEXUS API (este workspace)
+NEXUS API
    |
    v
-adapters / integrations   ← tickets posteriores
+TechnologyProvider
+   |-- Demo Provider
+   `-- Live Provider -> adapters futuros
 ```
 
-La Web no debe acceder a tablas internas de GLPI/MariaDB ni saltarse esta frontera. Autenticación y autorización son responsabilidad del servidor; la UI puede adaptar la experiencia, pero nunca concede permisos.
+La Web no debe acceder a tablas internas de GLPI/MariaDB ni conocer detalles de adapters. Autenticación/autorización y selección del provider son responsabilidad del servidor.
 
 ## Runtime
 
@@ -24,38 +26,85 @@ La Web no debe acceder a tablas internas de GLPI/MariaDB ni saltarse esta fronte
 - TypeScript ESM / `NodeNext`
 - Fastify 5
 - logging estructurado Pino
-- OpenAPI 3.0.3 generado mediante `@fastify/swagger`
+- OpenAPI 3.0.3 mediante `@fastify/swagger`
 - security headers mediante `@fastify/helmet`
 - CORS explícito mediante `@fastify/cors`
 - rate limiting mediante `@fastify/rate-limit`
-- contratos canónicos importados desde `@igx-nexus/types`
+- contratos canónicos desde `@igx-nexus/types`
+- `TechnologyProvider` como frontera común Demo/Live
 
-`buildApp()` compone el servidor sin abrir un socket y permite tests mediante `Fastify.inject()`. `startServer()` es el único bootstrap que escucha host/puerto y registra shutdown ordenado para `SIGTERM` / `SIGINT`.
+`buildApp()` compone el servidor sin abrir un socket y permite inyectar `AuthenticationProvider` y `TechnologyProvider` en tests. `startServer()` es el único bootstrap que escucha host/puerto y registra shutdown ordenado.
 
 ## Endpoints base
 
 | Método | Ruta | Propósito | Política actual |
 | --- | --- | --- | --- |
-| GET | `/health` | liveness del proceso | pública, exenta de rate limit |
-| GET | `/ready` | readiness del runtime actual | pública, exenta de rate limit |
+| GET | `/health` | liveness del proceso y estado declarado del provider | pública, exenta de rate limit |
+| GET | `/ready` | readiness del runtime + provider | pública, exenta de rate limit |
 | GET | `/api/v1` | metadata/versionado HTTP | pública, rate-limited |
+| GET | `/api/v1/provider` | descriptor público del provider activo | pública, rate-limited |
 | GET | `/openapi.json` | contrato OpenAPI generado | pública, rate-limited |
 
-Todavía no existen endpoints productivos de activos: se agregarán cuando Provider Mode y adapters reales definan su comportamiento.
+Todavía no existen endpoints productivos de activos. V02-004 define la frontera de datos; V02-005 incorporará el primer adapter real.
+
+## Provider Mode
+
+Los modos soportados son:
+
+```text
+demo
+live
+```
+
+La selección se realiza una sola vez durante composición mediante `NEXUS_PROVIDER_MODE`.
+
+### Demo
+
+`demo` usa un provider canónico mínimo sobre identidades sintéticas existentes. Actualmente normaliza un subconjunto deliberado de la demo v0.1 (`DEMO-0007` y `DEMO-0013`) al `TechnologySnapshot` v0.2 y conserva `SourceReference.source = demo`.
+
+La NEXUS API **no importa código desde `apps/web`**. El catálogo completo de 240 CIs continúa en la Web v0.1 hasta V02-011 — Demo Dataset v0.2 Migration.
+
+### Live
+
+`live` no cae nunca automáticamente a Demo. Mientras V02-005 no entregue un adapter real, el provider Live se declara `unavailable`:
+
+- `/health` sigue respondiendo 200 porque el proceso está vivo;
+- `/ready` responde 503 porque el servicio no está apto para operar en modo Live;
+- `getSnapshot()` del placeholder Live falla con `ProviderUnavailableError`;
+- no se presentan datos sintéticos como si fueran datos reales.
+
+Un provider Live inyectado en composición debe declarar `mode=live`, disponibilidad coherente y la capability requerida para leer el snapshot.
+
+### Descriptor y capabilities
+
+`TechnologyProviderDescriptor` publica sólo metadata declarativa:
+
+```text
+id
+mode
+displayName
+availability
+capabilities
+sourceSystems
+```
+
+La capability inicial es:
+
+```text
+technology.snapshot.read
+```
+
+El descriptor no contiene tokens, credenciales, URLs privadas de upstream ni configuración secreta.
 
 ## Seguridad de rutas
 
-Las rutas de dominio `/api` y `/api/*` deben declarar explícitamente una política de seguridad:
+Las rutas de dominio `/api` y `/api/*` deben declarar explícitamente una política:
 
-- `public` — acceso sin identidad;
-- `authenticated` — requiere una identidad válida;
-- `permission` — requiere identidad y un permiso efectivo concreto.
+- `public`;
+- `authenticated`;
+- `permission`.
 
-Registrar una ruta de esa frontera sin política falla de forma temprana. Esto evita que una ruta futura quede pública simplemente porque alguien olvidó agregar un hook.
-
-El contrato `AuthenticationProvider` está desacoplado del proveedor de identidad. El provider por defecto **no autentica a nadie**. Los tests pueden inyectar un provider sintético mediante `buildApp({ authenticationProvider })`, pero no existe variable de entorno, header o token de desarrollo que habilite un bypass.
-
-La autorización se evalúa por permisos efectivos de `SecurityPrincipal`, no por nombres de rol hardcodeados. Los roles se conservan como metadata para futuros mappers de identidad.
+Registrar una ruta de esa frontera sin policy falla tempranamente. El `AuthenticationProvider` por defecto no autentica a nadie y la autorización usa permisos efectivos de `SecurityPrincipal`.
 
 Permisos baseline:
 
@@ -66,58 +115,47 @@ audit:read
 security:admin
 ```
 
-Este vocabulario es deliberadamente pequeño y no reemplaza la definición posterior de permisos por objeto o por fuente.
-
 ## Configuración
 
 | Variable | Default | Descripción |
 | --- | --- | --- |
 | `NEXUS_API_ENV` | `development` | `development`, `test` o `production` |
-| `NEXUS_API_HOST` | `127.0.0.1` | host de escucha; loopback por defecto |
+| `NEXUS_API_HOST` | `127.0.0.1` | host de escucha |
 | `NEXUS_API_PORT` | `3100` | puerto 1..65535 |
-| `NEXUS_API_LOG_LEVEL` | `info` (`silent` en test) | nivel Pino soportado |
+| `NEXUS_API_LOG_LEVEL` | `info` (`silent` en test) | nivel Pino |
 | `NEXUS_API_CORS_ORIGINS` | vacío | origins permitidas separadas por coma |
-| `NEXUS_API_BODY_LIMIT_BYTES` | `1048576` | límite de body; 1 MiB por defecto |
-| `NEXUS_API_REQUEST_TIMEOUT_MS` | `30000` | timeout de recepción HTTP del runtime |
-| `NEXUS_API_RATE_LIMIT_MAX` | `120` | requests permitidas por ventana/clave |
+| `NEXUS_API_BODY_LIMIT_BYTES` | `1048576` | límite de body |
+| `NEXUS_API_REQUEST_TIMEOUT_MS` | `30000` | timeout de recepción HTTP |
+| `NEXUS_API_RATE_LIMIT_MAX` | `120` | requests por ventana/clave |
 | `NEXUS_API_RATE_LIMIT_WINDOW_MS` | `60000` | ventana de rate limiting |
-| `NEXUS_API_TRUST_PROXY` | vacío | IP/CIDR de proxies confiables, separados por coma |
+| `NEXUS_API_TRUST_PROXY` | vacío | IP/CIDR de proxies confiables |
+| `NEXUS_PROVIDER_MODE` | `demo` en dev/test | `demo` o `live`; obligatorio en `production` |
 
-Los valores inválidos fallan durante bootstrap.
+Valores inválidos fallan durante bootstrap. `production` exige `NEXUS_PROVIDER_MODE` explícito para evitar ejecutar Demo accidentalmente.
 
 ### CORS
 
-CORS es **deny-by-default**: si `NEXUS_API_CORS_ORIGINS` está vacío, la API no emite una autorización cross-origin. No se acepta `*` ni se reflejan origins dinámicamente. En `production`, las origins configuradas deben usar `https:`.
-
-`credentials` permanece deshabilitado porque V02-003 no implementa autenticación por cookie. Si el mecanismo de identidad cambia, CSRF y la política CORS deberán revisarse explícitamente.
+CORS es deny-by-default. No se acepta `*`, no se reflejan origins dinámicamente y en `production` las origins configuradas deben usar HTTPS.
 
 ### Trust proxy
 
-`trustProxy` permanece `false` por defecto. `NEXUS_API_TRUST_PROXY` sólo acepta IP/CIDR explícitos, rechaza redes globales `/0` y no admite trust-all. Esto es crítico porque `request.ip`, audit events y rate limiting dependen de la frontera de proxy.
-
-No configurar una red amplia sólo para “hacer funcionar” `X-Forwarded-For`: deben declararse únicamente los proxies realmente controlados.
+`trustProxy=false` por defecto. Sólo se aceptan IP/CIDR explícitos y nunca redes globales `/0`.
 
 ## Security headers
 
-Helmet aplica headers apropiados para una API JSON. V02-003 desactiva deliberadamente:
+Helmet aplica headers apropiados para una API JSON. HSTS permanece desactivado hasta que TLS/reverse proxy sea una propiedad real del despliegue; CSP no aplica a esta API JSON y CORP global se mantiene desactivado para no contradecir una CORS allowlist válida.
 
-- HSTS: TLS/reverse proxy pertenece al despliegue corporativo de v0.3;
-- CSP: NEXUS API no sirve una aplicación HTML;
-- Cross-Origin-Resource-Policy: una política global podría contradecir la allowlist CORS del futuro frontend.
-
-La API agrega `Cache-Control: no-store` a las respuestas actuales y conserva protecciones como `X-Content-Type-Options` y referrer policy.
+Todas las respuestas actuales usan `Cache-Control: no-store`.
 
 ## Rate limiting y consumo de recursos
 
-El rate limit es global para las rutas normales y usa `request.ip` como clave. `/health` y `/ready` quedan exentos para no romper probes de infraestructura.
+El limiter usa `request.ip`; `/health` y `/ready` quedan exentos. El store actual es en memoria por proceso y no se presenta como protección distribuida.
 
-El store actual es **en memoria por proceso**. Es suficiente para desarrollo/Live Lab v0.2, pero no es una defensa distribuida. Un despliegue con múltiples instancias deberá adoptar un store compartido o control equivalente en la infraestructura.
-
-El runtime además fija `bodyLimit` y `requestTimeout` explícitos. El timeout protege la recepción de la request HTTP; adapters futuros deberán definir además sus propios timeouts/cancelación para llamadas aguas arriba.
+El runtime fija `bodyLimit` y `requestTimeout`; adapters futuros deben agregar sus propios timeouts/cancelación de upstream.
 
 ## Errores, logging y auditoría
 
-Las respuestas de error mantienen el contrato:
+Las respuestas de error mantienen:
 
 ```text
 code
@@ -126,19 +164,7 @@ message
 requestId
 ```
 
-Códigos seguros relevantes:
-
-- `AUTHENTICATION_REQUIRED` — 401;
-- `FORBIDDEN` — 403;
-- `PAYLOAD_TOO_LARGE` — 413;
-- `RATE_LIMITED` — 429;
-- errores 5xx — `INTERNAL_ERROR` sin mensaje interno.
-
-Fastify no utiliza su logging automático de requests en este runtime. NEXUS emite un registro HTTP propio con **método, route pattern y status**, evitando persistir la URL/query cruda. Los errores arbitrarios tampoco se serializan completos: se registra metadata segura como tipo/status/código cuando aplica.
-
-Los security audit events registran sólo contexto mínimo: request ID, método, route pattern, IP remota y, cuando existe, subject/permiso requerido. No incluyen bearer tokens, cookies, API keys, bodies ni query strings crudas.
-
-El logger redacta preventivamente Authorization, cookies, API keys, tokens/secret headers comunes y `set-cookie`.
+Fastify no usa request logging automático. NEXUS registra método, route pattern y status, evitando persistir URL/query cruda. Headers sensibles se redactan y los security audit events no incluyen bearer tokens, cookies, API keys, bodies ni query strings crudas.
 
 ## Desarrollo y QA
 
@@ -150,25 +176,23 @@ npm run test --workspace @igx-nexus/api
 npm run build --workspace @igx-nexus/api
 npm pack --dry-run --workspace @igx-nexus/api
 npm audit --audit-level=high
-npm run start --workspace @igx-nexus/api
 ```
 
 Por defecto la API escucha sólo en `127.0.0.1:3100`.
 
-## Límites de V02-003
+## Límites actuales
 
-V02-003 **no implementa ni simula**:
+V02-004 **no implementa ni simula**:
 
 - login o Entra SSO/OIDC real;
-- emisión/validación productiva de tokens;
-- cuentas locales o passwords;
-- API keys de usuario;
 - OAuth/credenciales GLPI;
-- Provider Mode Demo/Live;
-- autorización por objeto sobre assets que aún no existen en la API;
-- auth basada en cookies / CSRF;
+- adapter GLPI API v2;
+- Intune/Entra/Windows/Dell providers;
+- migración completa del dataset Web v0.1;
+- reconciliación multisource;
+- autorización por objeto;
 - TLS, reverse proxy, DNS o WAF;
 - secrets manager corporativo;
 - despliegue productivo.
 
-Ver [ADR-0013 — Baseline de seguridad de NEXUS API](../../docs/architecture/adr-0013-api-security-baseline.md) y [Threat Model v0.2](../../docs/security/threat-model-v0.2.md).
+Ver [ADR-0013 — Baseline de seguridad](../../docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](../../docs/architecture/adr-0014-provider-mode-contract.md) y [Threat Model v0.2](../../docs/security/threat-model-v0.2.md).

@@ -1,4 +1,5 @@
 import { isIP } from "node:net";
+import { providerModes, type ProviderMode } from "./provider.js";
 
 export const apiEnvironments = ["development", "test", "production"] as const;
 export type ApiEnvironment = (typeof apiEnvironments)[number];
@@ -17,6 +18,7 @@ export interface ApiConfig {
   readonly rateLimitMax: number;
   readonly rateLimitWindowMs: number;
   readonly trustedProxies: readonly string[];
+  readonly providerMode: ProviderMode;
 }
 
 export class ApiConfigError extends Error {
@@ -130,6 +132,17 @@ function parseTrustedProxies(rawValue: string | undefined): readonly string[] {
   return Object.freeze([...new Set(proxies)]);
 }
 
+function parseProviderMode(
+  rawValue: string | undefined,
+  environment: ApiEnvironment,
+): ProviderMode {
+  const explicit = rawValue?.trim();
+  if (environment === "production" && !explicit) {
+    throw new ApiConfigError("NEXUS_PROVIDER_MODE must be explicitly configured in production");
+  }
+  return parseEnum(explicit || "demo", providerModes, "NEXUS_PROVIDER_MODE");
+}
+
 export function loadConfig(environment: NodeJS.ProcessEnv = process.env): ApiConfig {
   const apiEnvironment = parseEnum(
     environment.NEXUS_API_ENV?.trim() || "development",
@@ -177,6 +190,7 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): ApiCon
     3_600_000,
   );
   const trustedProxies = parseTrustedProxies(environment.NEXUS_API_TRUST_PROXY);
+  const providerMode = parseProviderMode(environment.NEXUS_PROVIDER_MODE, apiEnvironment);
 
   return Object.freeze({
     environment: apiEnvironment,
@@ -189,5 +203,6 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): ApiCon
     rateLimitMax,
     rateLimitWindowMs,
     trustedProxies,
+    providerMode,
   });
 }

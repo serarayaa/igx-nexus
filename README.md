@@ -42,14 +42,15 @@ IGX NEXUS Web
       v
   NEXUS API
       |
-  +---+--------------------+
-  |          |             |
- GLPI      Intune       Entra ID
-  |
-MariaDB
+      v
+TechnologyProvider
+  |            |
+ Demo         Live
+               |
+        adapters futuros
 ```
 
-Desde v0.2, la identidad NEXUS y los contratos canónicos permanecen además desacoplados de los IDs y taxonomías internas de cada fuente. GLPI sigue siendo el System of Record CMDB/ITAM; NEXUS actúa como capa de integración, contexto e inteligencia.
+Desde v0.2, la identidad NEXUS y los contratos canónicos permanecen desacoplados de los IDs y taxonomías internas de cada fuente. GLPI sigue siendo el System of Record CMDB/ITAM; NEXUS actúa como capa de integración, contexto e inteligencia.
 
 ## Estado del proyecto
 
@@ -65,7 +66,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime** y **V02-003 — API Security Baseline** están integrados. V02-003 quedó incorporado mediante PR #47 / issue #46 en el merge `900540033a0b0ff62bd4be1edcb52bcf6fb7ef97`; la CI post-merge #175 quedó verde. El siguiente ticket planificado es **V02-004 — Provider Mode Contract**.
+**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime** y **V02-003 — API Security Baseline** están integrados. El trabajo activo es **V02-004 — Provider Mode Contract**, issue #49 / PR #50, cuyo objetivo es que Demo y Live compartan una misma frontera de datos sin introducir ramas `if demo` / `if live` dispersas.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -73,6 +74,7 @@ La v0.2 prioriza:
 
 - modelo canónico multisource;
 - NEXUS API real;
+- Provider Mode Demo/Live;
 - integración GLPI / Live Lab;
 - procedencia y reconciliación;
 - taxonomía IT/OT correcta;
@@ -135,7 +137,9 @@ Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture
 
 V02-002 convirtió `services/api` en el primer runtime backend real de NEXUS. La API usa Node.js 24, TypeScript ESM, Fastify 5, logging estructurado y OpenAPI generado desde los schemas del runtime.
 
-V02-003 agrega un baseline de seguridad **deny-by-default** antes de conectar identidades o fuentes reales: contrato desacoplado de autenticación, autorización por permisos efectivos, policy obligatoria para rutas `/api` y `/api/*`, CORS allowlist, security headers, límites de body/timeout, rate limiting, trust proxy explícito y security audit events minimizados.
+V02-003 agregó un baseline de seguridad **deny-by-default**: autenticación desacoplada, autorización por permisos efectivos, policy obligatoria para rutas `/api` y `/api/*`, CORS allowlist, security headers, límites de body/timeout, rate limiting, trust proxy explícito y security audit events minimizados.
+
+V02-004 agrega `TechnologyProvider` como frontera común Demo/Live. `NEXUS_PROVIDER_MODE` selecciona el modo durante composición; `production` exige declararlo explícitamente. Demo produce un `TechnologySnapshot` canónico sintético y Live falla cerrado mientras no exista el adapter GLPI real de V02-005.
 
 Endpoints base actuales:
 
@@ -143,13 +147,14 @@ Endpoints base actuales:
 GET /health
 GET /ready
 GET /api/v1
+GET /api/v1/provider
 GET /openapi.json
 ```
 
-Los cuatro endpoints runtime permanecen explícitamente públicos mientras no exponen datos de dominio. `/health` y `/ready` quedan exentos de rate limiting.
+`/health` expresa liveness del proceso. `/ready` además verifica disponibilidad del provider configurado: Live sin implementación devuelve 503 y nunca cae silenciosamente a Demo.
 
-La configuración usa variables `NEXUS_API_*`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. Todavía no conecta GLPI/Intune/Entra ni expone endpoints productivos de activos.
+La configuración usa variables `NEXUS_API_*` y `NEXUS_PROVIDER_MODE`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. Todavía no conecta GLPI/Intune/Entra ni expone endpoints productivos de activos.
 
-V02-003 **no simula Entra SSO ni tokens de desarrollo**: el `AuthenticationProvider` por defecto no autentica a nadie. La identidad real se conectará en un ticket posterior sobre esta frontera.
+V02-003 no simula Entra SSO ni tokens de desarrollo y V02-004 no simula un GLPI Live: los placeholders fallan cerrados hasta que exista una integración real.
 
-Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
+Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).

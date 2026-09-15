@@ -6,6 +6,7 @@ import Fastify, { type FastifyInstance } from "fastify";
 import { loadConfig, type ApiConfig } from "./config.js";
 import { API_SERVICE_VERSION } from "./contracts.js";
 import { registerErrorHandlers } from "./errors.js";
+import { resolveTechnologyProvider, type TechnologyProvider } from "./provider.js";
 import { registerBaseRoutes } from "./routes.js";
 import {
   auditRateLimitExceeded,
@@ -17,6 +18,7 @@ import {
 export interface BuildAppOptions {
   readonly config?: ApiConfig;
   readonly authenticationProvider?: AuthenticationProvider;
+  readonly technologyProvider?: TechnologyProvider;
 }
 
 function loggerOptions(config: ApiConfig) {
@@ -40,6 +42,7 @@ function loggerOptions(config: ApiConfig) {
 export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyInstance> {
   const config = options.config ?? loadConfig();
   const authenticationProvider = options.authenticationProvider ?? denyAllAuthenticationProvider;
+  const technologyProvider = resolveTechnologyProvider(config.providerMode, options.technologyProvider);
   const app = Fastify({
     logger: loggerOptions(config),
     disableRequestLogging: true,
@@ -110,7 +113,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
 
   registerErrorHandlers(app);
   registerSecurity(app, authenticationProvider);
-  registerBaseRoutes(app);
+  registerBaseRoutes(app, technologyProvider);
 
   return app;
 }
