@@ -29,8 +29,8 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-001 | Canonical Technology Model | P0 | ✅ Integrado — PR #41 / issue #40 |
 | V02-002 | NEXUS API Runtime | P0 | ✅ Integrado — PR #44 / issue #42 |
 | V02-003 | API Security Baseline | P0 | ✅ Integrado — PR #47 / issue #46 |
-| V02-004 | Provider Mode Contract | P0 | 🟡 PR #50 draft — issue #49 |
-| V02-005 | GLPI API v2 Adapter | P0 | ⚪ Pendiente |
+| V02-004 | Provider Mode Contract | P0 | ✅ Integrado — PR #50 / issue #49 |
+| V02-005 | GLPI API v2 Adapter | P0 | ⚪ Pendiente — siguiente ticket planificado |
 | V02-006 | GLPI Service Identity & RBAC | P0 | ⚪ Pendiente |
 | V02-007 | GLPI Agent Live Lab | P0 | ⚪ Pendiente |
 | V02-008 | Live Asset 360 Vertical Slice | P0 | ⚪ Pendiente |
@@ -106,9 +106,9 @@ Objetivo: permitir Demo sintética y Live Lab mediante los mismos contratos, sin
 
 Dependencias: V02-001 / V02-002 / V02-003 ✅.
 
-Entrega activa: issue #49 / PR #50 / `feature/v02-004-provider-mode-contract`.
+Resultado integrado: issue #49 cerrado mediante PR #50; Provider Mode incorporado a `main` en el merge `70ae174d53ea09df5123ab136b849745200f4b11`; CI post-merge #204 verde.
 
-Baseline implementado en PR:
+Baseline integrado:
 
 - `ProviderMode = demo | live` y selección centralizada mediante `NEXUS_PROVIDER_MODE`;
 - `TechnologyProvider` desacoplado de GLPI/Intune/Web;
