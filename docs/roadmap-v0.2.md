@@ -32,9 +32,9 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-004 | Provider Mode Contract | P0 | ✅ Integrado — PR #50 / issue #49 |
 | V02-005 | GLPI API v2 Adapter | P0 | ✅ Integrado — PR #53 / issue #52 |
 | V02-006 | GLPI Service Identity & RBAC | P0 | ✅ Integrado — PR #56 / issue #55 |
-| V02-007 | GLPI Agent Live Lab | P0 | 🟡 En curso — issue #58 |
-| V02-008 | Live Asset 360 Vertical Slice | P0 | ⚪ Pendiente |
-| V02-009 | Provenance & Reconciliation | P0 | ⚪ Pendiente |
+| V02-007 | GLPI Agent Live Lab | P0 | ✅ Integrado — PR #59 / issue #58 |
+| V02-008 | Live Asset 360 Vertical Slice | P0 | ✅ Integrado — PR #61 / issue #60 |
+| V02-009 | Provenance & Reconciliation | P0 | 🟡 En curso — issue #63 |
 | V02-010 | IT/OT Taxonomy v2 | P0 | ⚪ Pendiente |
 | V02-011 | Demo Dataset v0.2 Migration | P0 | ⚪ Pendiente |
 | V02-012 | Relationship Evidence v2 | P1 | ⚪ Pendiente |
@@ -184,9 +184,9 @@ Objetivo: comprobar de forma controlada que uno a tres endpoints autorizados pue
 
 Dependencias: V02-005 / V02-006 ✅.
 
-Trabajo activo: issue #58 / `feature/v02-007-glpi-agent-live-lab`.
+Resultado integrado: issue #58 cerrado mediante PR #59; merge `403f194bceef4d5050f2650a8bec7664d3c5cd4b`. El gate manual quedó satisfecho con un endpoint autorizado y evidencia sanitizada; la CI final del PR (#297) quedó verde.
 
-Baseline del laboratorio:
+Baseline validado:
 
 - GLPI Agent **1.19** x64 fijado y MSI verificado mediante SHA-256 oficial;
 - sólo tarea `Inventory` y `ITEMTYPE=Computer`;
@@ -195,12 +195,9 @@ Baseline del laboratorio:
 - sin active scanning corporativo ni OT;
 - OAuth del Agent separado de NEXUS API: Client Credentials + `scope=inventory`;
 - secretos y datos identificables del endpoint fuera de Git;
-- preflight Windows read-only para verificar configuración sin instalar, modificar registro ni forzar inventario;
-- CI valida sintaxis del preflight pero no simula la ejecución de un endpoint real;
-- runbook y plantilla de evidencia sanitizada;
-- ADR-0017 y threat model v0.2.
-
-Gate de cierre: **CI, fixtures o documentación no demuestran inventario real**. V02-007 sólo puede declararse completamente validado cuando al menos un endpoint real autorizado haya enviado inventario a GLPI y exista evidencia manual sanitizada del resultado. La validación read-only posterior GLPI → NEXUS API prepara V02-008.
+- preflight Windows read-only;
+- inventario real recibido por GLPI como `Computer` y leído posteriormente desde el vertical Live;
+- runbook, evidencia sanitizada y ADR-0017.
 
 ### V02-008 — Live Asset 360 Vertical Slice
 
@@ -210,11 +207,44 @@ Primer recorrido real:
 endpoint autorizado → GLPI Agent → GLPI → NEXUS API → NEXUS Web
 ```
 
-Este ticket es el gate técnico principal de la primera etapa v0.2.
+Dependencias: V02-007 ✅.
+
+Resultado integrado: issue #60 cerrado mediante PR #61; merge `6471240dd1e32d1eab59fea94f03e6df552c1aea`. El housekeeping PR #62 dejó `main` en `340ccebc28aa2330d1df06dab55a2c6f0156f25d` con CI post-housekeeping #336 verde y ADR-0018 Accepted.
+
+Baseline integrado:
+
+- endpoint canónico `/api/v1/technology/snapshot` detrás de autorización `technology:read`;
+- Web Live consume NEXUS API y nunca GLPI directamente;
+- Provider Mode Live permanece fail-closed, sin fallback silencioso a Demo;
+- Asset Explorer y Asset 360 pueden visualizar el Computer real a través del modelo canónico;
+- features demo-only no se presentan como evidencia Live;
+- secretos del bridge Live Lab no llegan al navegador;
+- GLPI continúa como System of Record y NEXUS como Intelligence Layer.
+
+V02-008 cerró el gate técnico principal de la primera etapa v0.2 y habilitó el trabajo multisource de V02-009.
 
 ### V02-009 — Provenance & Reconciliation
 
-Identidad multisource, evidencia por atributo, conflictos y reglas explícitas de matching. Hostname por sí solo nunca fusiona CIs automáticamente.
+Objetivo: formalizar identidad multisource, evidencia por atributo, conflictos y reglas explícitas de matching bajo **Evidence before inference**. Hostname por sí solo nunca fusiona CIs automáticamente.
+
+Dependencias: V02-008 ✅.
+
+Trabajo activo: issue #63 / `feature/v02-009-provenance-reconciliation`.
+
+Alcance implementado en revisión:
+
+- capa explícita `candidate discovery → evidence evaluation → matching decision → conflict detection → canonical projection`;
+- reglas deterministas para identificadores fuertes, auxiliares, volátiles e insuficientes;
+- `hostname` e `ip_address` nunca producen auto-match por sí solos;
+- resultados `matched`, `not_matched`, `ambiguous`, `conflict` y `manual_review_required`;
+- evidencia estructurada y versionada sin duplicar valores crudos de identificadores sensibles en razones/errores;
+- claims y provenance por atributo con conflictos resueltos/no resueltos visibles;
+- políticas centralizadas por familia de atributo para fuente, autoridad y recencia;
+- canonical projection que preserva siempre el `TechnologyAsset.id` del activo ancla;
+- fixtures sintéticos para comportamiento multisource, sin integración Intune real;
+- matriz de tests contractuales/unitarios, ADR-0019 propuesto y threat-model addendum.
+
+Gate de cierre: PR revisado, CI completa verde, regresión V02-008/Demo sin degradación, revisión de datos/secretos y merge manual de Sergio. ADR-0019 no se marca Accepted antes de ese merge.
 
 ## Epic 3 — IT / OT Model
 

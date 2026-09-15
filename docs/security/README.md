@@ -4,6 +4,9 @@ Requisitos de seguridad y notas de modelado de amenazas para IGX NEXUS.
 
 ## Documentos
 
+- [`threat-model-v0.2.md`](threat-model-v0.2.md): threat model principal de Technology Intelligence v0.2.
+- [`threat-model-v02-008-live-web-addendum.md`](threat-model-v02-008-live-web-addendum.md): frontera Browser → NEXUS API → provider Live.
+- [`threat-model-v02-009-reconciliation-addendum.md`](threat-model-v02-009-reconciliation-addendum.md): integridad de identidad, provenance y evidencia multisource.
 - [`glpi-rbac-baseline.md`](glpi-rbac-baseline.md): línea base de perfiles, asignaciones y principio de menor privilegio para el núcleo GLPI.
 
 ## Línea base inicial
@@ -16,3 +19,5 @@ Requisitos de seguridad y notas de modelado de amenazas para IGX NEXUS.
 - Mantener registros de auditoría para operaciones privilegiadas y cambios sobre activos.
 - Utilizar identificadores QR seguros que no incorporen datos sensibles del activo.
 - Incorporar gestión de parches y dependencias como parte del proceso de liberación.
+- No auto-fusionar activos por señales débiles como hostname/IP; la identidad multisource requiere evidencia explícita y auditable.
+- Evitar duplicar identificadores sensibles dentro de errores, logs o explicaciones cuando el tipo de evidencia sea suficiente para diagnosticar la decisión.

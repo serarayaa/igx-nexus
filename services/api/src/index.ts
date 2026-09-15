@@ -7,5 +7,6 @@ export * from "./glpi-provider.js";
 export * from "./glpi-runtime.js";
 export * from "./http-error.js";
 export * from "./provider.js";
+export * from "./reconciliation.js";
 export * from "./security.js";
 export * from "./server.js";

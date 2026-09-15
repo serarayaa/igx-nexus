@@ -13,6 +13,7 @@ Principios fundamentales:
 - Desde v0.2, la identidad NEXUS y el modelo canónico permanecen independientes de las taxonomías/IDs internos de GLPI, Intune, Entra u otras fuentes.
 - La procedencia y la evidencia forman parte del contrato de dominio: NEXUS debe poder explicar de dónde proviene un dato antes de inferir sobre él.
 - Demo y Live deben compartir contratos de producto; la selección de origen ocurre en composición, no dentro de componentes ni handlers de dominio.
+- La reconciliación sigue **Evidence before inference**: señales débiles como hostname no fusionan CIs automáticamente.
 
 ## Architecture Decision Records
 
@@ -32,6 +33,8 @@ Principios fundamentales:
 - [ADR-0014 — Provider Mode Contract](adr-0014-provider-mode-contract.md) — aceptado en V02-004 (PR #50 / issue #49).
 - [ADR-0015 — GLPI API v2 Adapter](adr-0015-glpi-api-v2-adapter.md) — aceptado en V02-005 (PR #53 / issue #52).
 - [ADR-0016 — GLPI Service Identity & RBAC](adr-0016-glpi-service-identity-rbac.md) — aceptado en V02-006 (PR #56 / issue #55).
-- [ADR-0017 — GLPI Agent Live Lab](adr-0017-glpi-agent-live-lab.md) — propuesto en V02-007 (issue #58); aceptación efectiva al cierre del Live Lab.
+- [ADR-0017 — GLPI Agent Live Lab](adr-0017-glpi-agent-live-lab.md) — aceptado tras V02-007 (PR #59 / issue #58).
+- [ADR-0018 — Live Asset 360 Vertical Slice](adr-0018-live-asset-360-vertical-slice.md) — aceptado tras V02-008 (PR #61 / issue #60).
+- [ADR-0019 — Provenance & Reconciliation](adr-0019-provenance-reconciliation.md) — **propuesto** en V02-009 (issue #63); no aceptar antes del merge manual.
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.

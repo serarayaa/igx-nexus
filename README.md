@@ -43,14 +43,14 @@ IGX NEXUS Web
   NEXUS API
       |
       v
-TechnologyProvider
+TechnologyProvider / Reconciliation Layer
   |            |
  Demo         Live
                |
           GLPI v2.3
 ```
 
-Desde v0.2, la identidad NEXUS y los contratos canónicos permanecen desacoplados de los IDs y taxonomías internas de cada fuente. GLPI sigue siendo el System of Record CMDB/ITAM; NEXUS actúa como capa de integración, contexto e inteligencia.
+Desde v0.2, la identidad NEXUS y los contratos canónicos permanecen desacoplados de los IDs y taxonomías internas de cada fuente. GLPI sigue siendo el System of Record CMDB/ITAM; NEXUS actúa como capa de integración, contexto e inteligencia. La reconciliación sigue **Evidence before inference**: señales débiles como hostname pueden descubrir candidatos, pero nunca fusionan CIs automáticamente por sí solas.
 
 ## Estado del proyecto
 
@@ -66,7 +66,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline**, **V02-004 — Provider Mode Contract**, **V02-005 — GLPI API v2 Adapter** y **V02-006 — GLPI Service Identity & RBAC** están integrados. V02-006 quedó incorporado mediante PR #56 / issue #55 en el merge `1ea04772fd4fa57e956f7797b2cb298730bad5bc`; su housekeeping PR #57 dejó `main` en `2c8885828578ad56d38495619288502baeaf35e2` con CI #277 verde. El trabajo activo es **V02-007 — GLPI Agent Live Lab**, issue #58.
+**V02-001 a V02-008 están integrados.** V02-007 cerró el GLPI Agent Live Lab mediante PR #59 / issue #58 y V02-008 demostró el primer vertical real `endpoint → GLPI Agent → GLPI → NEXUS API → NEXUS Web` mediante PR #61 / issue #60. El housekeeping PR #62 dejó `main` en `340ccebc28aa2330d1df06dab55a2c6f0156f25d` con CI post-housekeeping #336 verde. El trabajo activo es **V02-009 — Provenance & Reconciliation**, issue #63.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -131,7 +131,9 @@ Validación completa: `npm run typecheck`, `npm run build`, `npm test`, `npm run
 
 V02-001 incorporó `@igx-nexus/types` bajo `packages/types`. El package modela identidad NEXUS, IT/OT, referencias de fuentes, procedencia, observaciones temporales y relaciones con evidencia sin migrar todavía los consumidores Web de v0.1.
 
-Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture/adr-0011-canonical-technology-model.md).
+V02-009 extiende esos contratos de forma aditiva con decisiones de reconciliación, evidencia evaluada, claims por atributo, conflictos y canonical projection. Los contratos distinguen explícitamente matching de identity assignment y permiten conservar evidencia multisource sin recalcular `TechnologyAsset.id`.
+
+Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture/adr-0011-canonical-technology-model.md), [Provenance & Reconciliation](docs/reconciliation.md) y [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md).
 
 ## NEXUS API v0.2
 
@@ -145,7 +147,11 @@ V02-005 agregó el primer adapter GLPI Live read-only. La versión de High-Level
 
 V02-006 implementó esa identidad upstream sin mezclarla con los callers de NEXUS: un `GlpiCredentialSource` entrega secretos al token provider OAuth, que usa Password Grant + scope `api` por la restricción actual de GLPI 11, mantiene el access token sólo en memoria y lo renueva antes de expirar. El runtime Live compone esta identidad con el adapter de V02-005. El RBAC esperado es un usuario técnico dedicado con perfil GLPI read-only y alcance por entidad mínimo.
 
-V02-007 prepara el primer Live Lab con **GLPI Agent 1.19** sobre 1–3 endpoints autorizados. El Agent usa una identidad OAuth separada (`client_credentials`, `scope=inventory`), queda restringido a la tarea `Inventory`, deshabilita HTTPD/P2P y prohíbe discovery, remote inventory y scanning OT. El éxito del ticket requiere evidencia manual sanitizada; CI por sí sola no demuestra un inventario real.
+V02-007 validó el primer Live Lab con **GLPI Agent 1.19** sobre un endpoint autorizado. El Agent usa una identidad OAuth separada (`client_credentials`, `scope=inventory`), queda restringido a `Inventory`, deshabilita HTTPD/P2P y excluye discovery, remote inventory, deploy y scanning OT. La evidencia real se versionó sanitizada, sin identificadores ni secretos.
+
+V02-008 conectó ese inventario de extremo a extremo con NEXUS Web. La Web Live consume NEXUS API, no GLPI; el snapshot Live permanece protegido y no mezcla features Demo como si fueran evidencia real.
+
+V02-009 incorpora un motor de reconciliación puro y determinista detrás de los contratos/provider boundaries existentes. Clasifica identificadores fuertes, auxiliares, volátiles e insuficientes, detecta ambigüedad/conflictos, conserva claims y provenance por atributo, centraliza políticas de autoridad/recencia y preserva el id canónico del activo ancla. No añade Intune real ni una API pública de reconciliación en este ticket.
 
 Endpoints base actuales:
 
@@ -154,6 +160,7 @@ GET /health
 GET /ready
 GET /api/v1
 GET /api/v1/provider
+GET /api/v1/technology/snapshot
 GET /openapi.json
 ```
 
@@ -161,4 +168,4 @@ GET /openapi.json
 
 La configuración HTTP usa variables `NEXUS_API_*` y `NEXUS_PROVIDER_MODE`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. Los secretos GLPI no forman parte de `ApiConfig` ni se versionan.
 
-Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](docs/architecture/adr-0016-glpi-service-identity-rbac.md), [ADR-0017 — GLPI Agent Live Lab](docs/architecture/adr-0017-glpi-agent-live-lab.md), [runbook de GLPI Service Identity](docs/integrations/glpi-service-identity.md), [runbook de GLPI Agent Live Lab](docs/integrations/glpi-agent-live-lab.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
+Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](docs/architecture/adr-0016-glpi-service-identity-rbac.md), [ADR-0017 — GLPI Agent Live Lab](docs/architecture/adr-0017-glpi-agent-live-lab.md), [ADR-0018 — Live Asset 360 Vertical Slice](docs/architecture/adr-0018-live-asset-360-vertical-slice.md), [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md), [runbook de GLPI Service Identity](docs/integrations/glpi-service-identity.md), [runbook de GLPI Agent Live Lab](docs/integrations/glpi-agent-live-lab.md), [Provenance & Reconciliation](docs/reconciliation.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
