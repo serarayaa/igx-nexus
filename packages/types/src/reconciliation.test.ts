@@ -115,4 +115,58 @@ describe("reconciliation contracts", () => {
     });
     expect(issues.some((issue) => issue.code === "reconciliation.selected_claim_unlinked")).toBe(true);
   });
+
+  it("rejects a resolution value that disagrees with its selected claim", () => {
+    const selectedClaim: AttributeClaim = {
+      fieldPath: "attributes.model",
+      value: "SyntheticModel-A",
+      source: source("glpi", "synthetic-glpi-4"),
+      observedAt,
+      authority: "authoritative",
+    };
+
+    const issues = validateAttributeResolution({
+      fieldPath: selectedClaim.fieldPath,
+      value: "SyntheticModel-B",
+      claims: [selectedClaim],
+      selectedClaim,
+      selectionRule: "synthetic-test-rule",
+    });
+
+    expect(issues.some((issue) => issue.code === "reconciliation.resolution_value_mismatch")).toBe(true);
+  });
+
+  it("rejects resolved conflicts whose preferred claim is not the selected preserved claim", () => {
+    const glpiClaim: AttributeClaim = {
+      fieldPath: "attributes.manufacturer",
+      value: "SyntheticVendor-A",
+      source: source("glpi", "synthetic-glpi-5"),
+      observedAt,
+      authority: "authoritative",
+    };
+    const intuneClaim: AttributeClaim = {
+      fieldPath: glpiClaim.fieldPath,
+      value: "SyntheticVendor-B",
+      source: source("intune", "synthetic-intune-5"),
+      observedAt,
+      authority: "trusted",
+    };
+
+    const issues = validateAttributeResolution({
+      fieldPath: glpiClaim.fieldPath,
+      value: glpiClaim.value,
+      claims: [glpiClaim, intuneClaim],
+      selectedClaim: glpiClaim,
+      selectionRule: "synthetic-test-rule",
+      conflict: {
+        fieldPath: glpiClaim.fieldPath,
+        claims: [glpiClaim, intuneClaim],
+        status: "resolved",
+        resolutionRule: "synthetic-conflict-rule",
+        preferredClaim: intuneClaim,
+      },
+    });
+
+    expect(issues.some((issue) => issue.code === "reconciliation.conflict_preference_mismatch")).toBe(true);
+  });
 });
