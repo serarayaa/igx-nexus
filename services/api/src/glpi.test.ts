@@ -52,7 +52,7 @@ describe("GLPI record parsing and canonical mapping", () => {
     expect(() => parseGlpiComputerRecord(null)).toThrow(GlpiPayloadError);
   });
 
-  it("maps GLPI Computer through the explicit NEXUS taxonomy rules", () => {
+  it("keeps generic Notebook hardware taxonomically unclassified while preserving the legacy scalar bridge", () => {
     const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord(computer()), OBSERVED_AT);
 
     expect(asset.id).toMatch(/^NXS-[A-F0-9]{32}$/);
@@ -62,9 +62,9 @@ describe("GLPI record parsing and canonical mapping", () => {
     expect(asset.role).toBe("user_endpoint");
     expect(asset.taxonomy).toMatchObject({
       taxonomyVersion: "2",
-      domain: { state: "classified", value: "IT", method: "inferred", reviewRequired: true },
-      assetClass: { state: "classified", value: "endpoint", method: "normalized" },
-      role: { state: "classified", value: "user_endpoint", reviewRequired: true },
+      domain: { state: "unclassified", reviewRequired: true, ruleId: "glpi.computer.type.generic-hardware" },
+      assetClass: { state: "unclassified", reviewRequired: true, ruleId: "glpi.computer.type.generic-hardware" },
+      role: { state: "unclassified", reviewRequired: true, ruleId: "glpi.computer.type.generic-hardware" },
     });
     expect(asset.lifecycle).toBe("unknown");
     expect(asset.criticality).toBe("unknown");
@@ -87,12 +87,28 @@ describe("GLPI record parsing and canonical mapping", () => {
       "glpi.type.name": "Notebook",
       "glpi.model.name": "Latitude",
       "nexus.taxonomy.version": "2",
-      "nexus.taxonomy.domain.state": "classified",
-      "nexus.taxonomy.assetClass.ruleId": "glpi.computer.type.it-endpoint",
-      "nexus.taxonomy.compatibilityProjection": false,
+      "nexus.taxonomy.domain.state": "unclassified",
+      "nexus.taxonomy.assetClass.ruleId": "glpi.computer.type.generic-hardware",
+      "nexus.taxonomy.compatibilityProjection": true,
     });
     expect(asset.provenance[0]?.evidence?.[0]?.reference).toBe("glpi:v2.3:Assets/Computer/42");
-    expect(asset.provenance.find((entry) => entry.fieldPath === "assetClass")?.derivation).toBe("normalized");
+    expect(asset.provenance.find((entry) => entry.fieldPath === "assetClass")?.derivation).toBe("inferred");
+  });
+
+  it("maps an explicit HMI source type to OT taxonomy while retaining review-required evidence", () => {
+    const asset = mapGlpiComputerToTechnologyAsset(
+      parseGlpiComputerRecord(computer({ type: { id: 19, name: "HMI" } })),
+      OBSERVED_AT,
+    );
+    expect(asset.domain).toBe("OT");
+    expect(asset.assetClass).toBe("operator_interface");
+    expect(asset.role).toBe("supervision");
+    expect(asset.taxonomy).toMatchObject({
+      domain: { state: "classified", value: "OT", method: "normalized", reviewRequired: true },
+      assetClass: { state: "classified", value: "operator_interface", reviewRequired: true },
+      role: { state: "classified", value: "supervision", method: "inferred", reviewRequired: true },
+    });
+    expect(asset.attributes["nexus.taxonomy.compatibilityProjection"]).toBe(false);
   });
 
   it("keeps canonical identity stable for the same GLPI source record", () => {
@@ -253,6 +269,8 @@ describe("GLPI TechnologyProvider", () => {
     expect(snapshot.asOf).toBe(OBSERVED_AT);
     expect(snapshot.assets.map((asset) => asset.displayName)).toEqual(["ONE", "TWO", "THREE"]);
     expect(snapshot.assets.every((asset) => asset.taxonomy?.taxonomyVersion === "2")).toBe(true);
+    expect(snapshot.assets.every((asset) => asset.taxonomy?.domain.state === "unclassified")).toBe(true);
+    expect(snapshot.assets.every((asset) => asset.attributes["nexus.taxonomy.compatibilityProjection"] === true)).toBe(true);
     expect(snapshot.relationships).toEqual([]);
     expect(snapshot.observations).toEqual([]);
   });
