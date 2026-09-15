@@ -66,7 +66,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 a V02-008 están integrados.** V02-007 cerró el GLPI Agent Live Lab mediante PR #59 / issue #58 y V02-008 demostró el primer vertical real `endpoint → GLPI Agent → GLPI → NEXUS API → NEXUS Web` mediante PR #61 / issue #60. El housekeeping PR #62 dejó `main` en `340ccebc28aa2330d1df06dab55a2c6f0156f25d` con CI post-housekeeping #336 verde. El trabajo activo es **V02-009 — Provenance & Reconciliation**, issue #63.
+**V02-001 a V02-009 están integrados.** V02-009 — Provenance & Reconciliation quedó incorporado mediante PR #64 / issue #63 en el merge `209c400f88f556975e525f99b9977cd00e8957be`; la CI post-merge #361 quedó verde y ADR-0019 queda aceptado en este housekeeping. El siguiente trabajo planificado es **V02-010 — IT/OT Taxonomy v2**.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
