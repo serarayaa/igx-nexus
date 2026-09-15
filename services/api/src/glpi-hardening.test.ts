@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   GlpiAuthenticationError,
+  GlpiPaginationError,
   createGlpiFetchTransport,
   createGlpiTechnologyProvider,
   mapGlpiComputerToTechnologyAsset,
@@ -59,6 +60,16 @@ describe("GLPI adapter hardening", () => {
       { start: 2, limit: 8 },
       { start: 3, limit: 7 },
     ]);
+  });
+
+  it("rejects an upstream page that contains more rows than the requested limit", async () => {
+    const transport: GlpiApiTransport = {
+      async get() {
+        return [{ id: 1 }, { id: 2 }, { id: 3 }];
+      },
+    };
+    const provider = createGlpiTechnologyProvider({ transport, pageSize: 2, maxRecords: 10 });
+    await expect(provider.getSnapshot()).rejects.toBeInstanceOf(GlpiPaginationError);
   });
 
   it("marks NEXUS semantic mapping as inferred provenance rather than raw GLPI truth", () => {
