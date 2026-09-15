@@ -80,20 +80,29 @@ function assessment(
   return value;
 }
 
-const IT_ENDPOINT_TYPES = new Set(["laptop", "notebook", "desktop", "workstation"]);
-const IT_SERVER_TYPES = new Set(["server", "physical server"]);
+const GENERIC_COMPUTE_TYPES = new Set([
+  "laptop",
+  "notebook",
+  "desktop",
+  "workstation",
+  "server",
+  "physical server",
+]);
 const OT_ENGINEERING_TYPES = new Set(["engineering workstation", "industrial workstation"]);
 const OT_HMI_TYPES = new Set(["hmi", "human machine interface", "operator station"]);
 const OT_HISTORIAN_TYPES = new Set(["historian", "historian server"]);
 
 /**
- * Clasifica evidencia GLPI sin equiparar ItemType con assetClass.
+ * Clasifica evidencia GLPI sin equiparar ItemType, hardware shape ni Type con
+ * semántica canónica por defecto.
  *
  * GLPI no define un vocabulario universal para ComputerType: los valores son
- * administrables por cada instancia. Por eso sólo normalizamos aliases explícitos
- * conocidos y nunca usamos nombre/modelo/fabricante como heurística escondida.
- * Un Type ausente queda `unknown`; un Type presente sin regla queda
- * `unclassified`. Ambos requieren revisión humana.
+ * administrables por cada instancia. Un Type de hardware genérico como Notebook,
+ * Workstation o Server tampoco demuestra IT: ese hardware puede participar en un
+ * sistema OT. Por eso esos valores permanecen `unclassified` hasta que exista una
+ * regla contextual/gobernada de la instancia. Sólo aliases con semántica operacional
+ * explícita tienen una regla inicial, y aun así quedan reviewRequired porque el Type
+ * continúa siendo configurable por el administrador GLPI.
  */
 export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxonomyAssessment {
   const itemType = input.itemType.trim();
@@ -107,43 +116,41 @@ export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxono
     );
   }
 
-  if (sourceType && IT_ENDPOINT_TYPES.has(sourceType)) {
+  if (sourceType && GENERIC_COMPUTE_TYPES.has(sourceType)) {
     return assessment(
-      classified("IT", "inferred", "glpi.computer.type.it-endpoint", true, "domain_inferred_from_configurable_glpi_type"),
-      classified("endpoint", "normalized", "glpi.computer.type.it-endpoint"),
-      classified("user_endpoint", "inferred", "glpi.computer.type.it-endpoint", true, "functional_role_requires_review"),
-    );
-  }
-
-  if (sourceType && IT_SERVER_TYPES.has(sourceType)) {
-    return assessment(
-      classified("IT", "inferred", "glpi.computer.type.it-server", true, "domain_inferred_from_configurable_glpi_type"),
-      classified("server", "normalized", "glpi.computer.type.it-server"),
-      classified("infrastructure_service", "inferred", "glpi.computer.type.it-server", true, "server_function_not_observed"),
+      unclassified("glpi.computer.type.generic-hardware", "generic_hardware_does_not_determine_domain"),
+      unclassified("glpi.computer.type.generic-hardware", "generic_hardware_does_not_determine_canonical_class"),
+      unclassified("glpi.computer.type.generic-hardware", "generic_hardware_does_not_determine_function"),
     );
   }
 
   if (sourceType && OT_ENGINEERING_TYPES.has(sourceType)) {
+    const ruleId = "glpi.computer.type.ot-engineering";
+    const reason = "configurable_glpi_type_requires_review";
     return assessment(
-      classified("OT", "normalized", "glpi.computer.type.ot-engineering"),
-      classified("industrial_compute", "normalized", "glpi.computer.type.ot-engineering"),
-      classified("engineering_workstation", "normalized", "glpi.computer.type.ot-engineering"),
+      classified("OT", "normalized", ruleId, true, reason),
+      classified("industrial_compute", "normalized", ruleId, true, reason),
+      classified("engineering_workstation", "normalized", ruleId, true, reason),
     );
   }
 
   if (sourceType && OT_HMI_TYPES.has(sourceType)) {
+    const ruleId = "glpi.computer.type.ot-hmi";
+    const reason = "configurable_glpi_type_requires_review";
     return assessment(
-      classified("OT", "normalized", "glpi.computer.type.ot-hmi"),
-      classified("operator_interface", "normalized", "glpi.computer.type.ot-hmi"),
-      classified("supervision", "inferred", "glpi.computer.type.ot-hmi", true, "hmi_function_requires_review"),
+      classified("OT", "normalized", ruleId, true, reason),
+      classified("operator_interface", "normalized", ruleId, true, reason),
+      classified("supervision", "inferred", ruleId, true, "functional_role_requires_review"),
     );
   }
 
   if (sourceType && OT_HISTORIAN_TYPES.has(sourceType)) {
+    const ruleId = "glpi.computer.type.ot-historian";
+    const reason = "configurable_glpi_type_requires_review";
     return assessment(
-      classified("OT", "normalized", "glpi.computer.type.ot-historian"),
-      classified("industrial_compute", "normalized", "glpi.computer.type.ot-historian"),
-      classified("historian", "normalized", "glpi.computer.type.ot-historian"),
+      classified("OT", "normalized", ruleId, true, reason),
+      classified("industrial_compute", "normalized", ruleId, true, reason),
+      classified("historian", "normalized", ruleId, true, reason),
     );
   }
 
