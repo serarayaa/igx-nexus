@@ -155,6 +155,32 @@ describe("GLPI OAuth service identity", () => {
     expect(String(thrown)).not.toContain("invalid client");
   });
 
+  it("normalizes secret-source failures without leaking backend details", async () => {
+    const credentialSource: GlpiCredentialSource = async () => {
+      throw new Error("vault-path=innergex/prod/glpi secret=do-not-leak");
+    };
+    const fetchImpl = vi.fn(async () => tokenResponse()) as unknown as typeof fetch;
+    const provider = createGlpiPasswordGrantAccessTokenProvider({
+      baseUrl: "https://glpi.example",
+      clientId: "nexus-client",
+      username: "svc-nexus",
+      credentialSource,
+      fetchImpl,
+    });
+
+    let thrown: unknown;
+    try {
+      await provider();
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(GlpiAuthenticationError);
+    expect(String(thrown)).not.toContain("vault-path");
+    expect(String(thrown)).not.toContain("do-not-leak");
+    expect(fetchImpl).not.toHaveBeenCalled();
+  });
+
   it("loads lab credentials from environment without adding them to public configuration", async () => {
     const source = createEnvironmentGlpiCredentialSource({
       NEXUS_GLPI_OAUTH_CLIENT_SECRET: "secret-from-env",
