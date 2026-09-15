@@ -1,6 +1,6 @@
 # IT/OT Taxonomy v2
 
-V02-010 define el lenguaje taxonómico operativo de IGX NEXUS v0.2. La decisión arquitectónica completa vive en [ADR-0020](architecture/adr-0020-it-ot-taxonomy-v2.md).
+V02-010 define el lenguaje taxonómico operativo de IGX NEXUS v0.2. La decisión arquitectónica completa vive en [ADR-0020](architecture/adr-0020-it-ot-taxonomy-v2.md) y los riesgos específicos en [Threat Model Addendum V02-010](security/threat-model-v02-010-taxonomy-addendum.md).
 
 ## Regla mental
 
