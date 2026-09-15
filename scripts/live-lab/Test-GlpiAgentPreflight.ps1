@@ -61,6 +61,35 @@ function Get-OptionalRegistryValue {
     }
 }
 
+function Get-RegistryValueNames {
+    param([Parameter(Mandatory)] [string]$Path)
+
+    $subKeyPath = $Path -replace '^HKLM:\\', ''
+    $baseKey = $null
+    $subKey = $null
+
+    try {
+        $baseKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey(
+            [Microsoft.Win32.RegistryHive]::LocalMachine,
+            [Microsoft.Win32.RegistryView]::Default
+        )
+        $subKey = $baseKey.OpenSubKey($subKeyPath, $false)
+        if ($null -eq $subKey) {
+            return @()
+        }
+
+        return @($subKey.GetValueNames())
+    }
+    finally {
+        if ($null -ne $subKey) {
+            $subKey.Dispose()
+        }
+        if ($null -ne $baseKey) {
+            $baseKey.Dispose()
+        }
+    }
+}
+
 function Test-Truthy {
     param($Value)
 
@@ -158,16 +187,10 @@ if ($null -ne $registryRoot) {
         }
     }
 
-    $propertyNames = @((Get-ItemProperty -LiteralPath $registryRoot).PSObject.Properties.Name)
+    # Sólo se enumeran nombres de valores; no se leen oauth-client-id ni oauth-client-secret.
+    $propertyNames = @(Get-RegistryValueNames -Path $registryRoot)
     $oauthClientIdConfigured = $propertyNames -contains 'oauth-client-id'
     $oauthClientSecretConfigured = $propertyNames -contains 'oauth-client-secret'
-
-    if ($oauthClientIdConfigured) {
-        $oauthClientIdConfigured = -not [string]::IsNullOrWhiteSpace([string](Get-OptionalRegistryValue -Path $registryRoot -Name 'oauth-client-id'))
-    }
-    if ($oauthClientSecretConfigured) {
-        $oauthClientSecretConfigured = -not [string]::IsNullOrWhiteSpace([string](Get-OptionalRegistryValue -Path $registryRoot -Name 'oauth-client-secret'))
-    }
 
     Add-Check -Name 'OAuth inventory client id configured' -Passed $oauthClientIdConfigured -Value $(if ($oauthClientIdConfigured) { 'present' } else { 'missing' })
     Add-Check -Name 'OAuth inventory client secret configured' -Passed $oauthClientSecretConfigured -Value $(if ($oauthClientSecretConfigured) { 'present' } else { 'missing' })
