@@ -418,6 +418,9 @@ async function readAllComputers(
       await transport.get(COMPUTER_COLLECTION_PATH, { start, limit: requestLimit }),
     );
     if (page.length === 0) break;
+    if (page.length > requestLimit) {
+      throw new GlpiPaginationError("GLPI pagination returned more Computer records than requested");
+    }
 
     for (const record of page) {
       if (seenIds.has(record.id)) {
