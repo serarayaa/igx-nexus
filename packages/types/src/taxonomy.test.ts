@@ -111,7 +111,7 @@ describe("taxonomy projection and operational context", () => {
   });
 
   it("requires taxonomy assessment for providers claiming v2 output", () => {
-    const legacyAsset = asset({ taxonomy: undefined });
+    const { taxonomy: _taxonomy, ...legacyAsset } = asset();
     const snapshot = {
       schemaVersion: technologySchemaVersion,
       asOf: "2026-09-15T19:30:00Z",
