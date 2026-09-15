@@ -29,7 +29,7 @@ OT
 
 `unknown`, `unclassified`, `conflict`, `hybrid` y `shared` no son domains. Cuando NEXUS no conoce el dominio, la decisión se mantiene sin resolver en el assessment taxonómico.
 
-Esta distinción es especialmente importante en OT: un equipo físicamente parecido a un PC, servidor o dispositivo de red IT puede participar en un sistema OT. La forma del hardware no determina por sí sola el dominio.
+Esta distinción es especialmente importante en OT: un equipo físicamente parecido a un PC, notebook, servidor o dispositivo de red IT puede participar en un sistema OT. La forma del hardware no determina por sí sola el dominio.
 
 ## Asset Class
 
@@ -110,6 +110,7 @@ Conceptos como:
 ```text
 Notebook
 Desktop
+Server
 PLC
 RTU
 HMI
@@ -118,34 +119,36 @@ Switch
 Firewall
 ```
 
-pueden aparecer como Type/Subtype de una fuente, atributos normalizados o evidencia. No deben asumirse automáticamente como `role`.
+pueden aparecer como Type/Subtype de una fuente, atributos normalizados o evidencia. No deben asumirse automáticamente como `domain` o `role`.
 
-Ejemplo:
+Un Type puramente físico como `Notebook`, `Desktop`, `Workstation` o `Server` **no clasifica por sí solo** un activo como IT. NEXUS conserva ese dato como evidencia de fuente y deja la taxonomía sin resolver hasta contar con contexto o una regla gobernada de la instancia.
+
+Ejemplo de un alias con semántica operacional explícita:
 
 ```text
 GLPI itemType = Computer
 GLPI type = HMI
 
-NEXUS domain = OT                     (normalized por regla explícita)
-NEXUS assetClass = operator_interface (normalized)
+NEXUS domain = OT                     (normalized, reviewRequired)
+NEXUS assetClass = operator_interface (normalized, reviewRequired)
 NEXUS role = supervision              (inferred, reviewRequired)
 ```
 
-El hecho observado sigue siendo `GLPI type = HMI`; la proyección NEXUS queda explicada por provenance y `ruleId`.
+El hecho observado sigue siendo `GLPI type = HMI`; la proyección NEXUS queda explicada por provenance y `ruleId`, y requiere revisión porque `ComputerType` es configurable en GLPI.
 
 ## Estado de clasificación
 
 ### `classified`
 
-Existe una clasificación canónica concreta.
+Existe una clasificación canónica concreta, aunque una regla puede requerir revisión humana.
 
 ```ts
 {
   state: "classified",
-  value: "endpoint",
+  value: "operator_interface",
   method: "normalized",
-  reviewRequired: false,
-  ruleId: "glpi.computer.type.it-endpoint"
+  reviewRequired: true,
+  ruleId: "glpi.computer.type.ot-hmi"
 }
 ```
 
@@ -155,7 +158,7 @@ La dimensión existe conceptualmente, pero la fuente no entregó evidencia sufic
 
 ### `unclassified`
 
-NEXUS recibió información, pero todavía no existe una regla/catálogo gobernado para traducirla. Ejemplo: un `ComputerType` configurable de GLPI que no figura en el mapping explícito.
+NEXUS recibió información, pero todavía no existe una regla/catálogo suficientemente gobernado para traducirla. Ejemplos: un `ComputerType` configurable no reconocido o un Type físico genérico que no permite decidir IT vs OT.
 
 ### `conflict`
 
@@ -208,21 +211,21 @@ Los nombres reales de plantas/sistemas no se hardcodean en el contrato. Purdue/I
 
 Código central: `services/api/src/taxonomy.ts`.
 
-GLPI permite que los tipos de activos sean administrados por cada instancia; no existe un catálogo universal de `ComputerType` que NEXUS pueda tratar como estándar. Por ello los aliases reconocidos son reglas de normalización NEXUS, no semántica nativa universal de GLPI.
+GLPI permite que los tipos de activos sean administrados por cada instancia; no existe un catálogo universal de `ComputerType` que NEXUS pueda tratar como estándar. Por ello los aliases reconocidos son reglas NEXUS, no semántica nativa universal de GLPI.
 
 Reglas actuales para `Computer`:
 
 | Source Type | Assessment Domain | Class | Role | Revisión |
 | --- | --- | --- | --- | --- |
-| Notebook / Laptop / Desktop / Workstation | IT inferido | endpoint | user_endpoint | domain/role: sí |
-| Server / Physical Server | IT inferido | server | infrastructure_service | domain/role: sí |
-| Engineering Workstation / Industrial Workstation | OT | industrial_compute | engineering_workstation | no |
-| HMI / Human Machine Interface / Operator Station | OT | operator_interface | supervision | role: sí |
-| Historian / Historian Server | OT | industrial_compute | historian | no |
+| Notebook / Laptop / Desktop / Workstation | **unclassified** | **unclassified** | **unclassified** | sí |
+| Server / Physical Server | **unclassified** | **unclassified** | **unclassified** | sí |
+| Engineering Workstation / Industrial Workstation | OT | industrial_compute | engineering_workstation | sí |
+| HMI / Human Machine Interface / Operator Station | OT | operator_interface | supervision | sí |
+| Historian / Historian Server | OT | industrial_compute | historian | sí |
 | Type ausente | **unknown** | **unknown** | **unknown** | sí |
 | Type presente sin mapping | **unclassified** | **unclassified** | **unclassified** | sí |
 
-Un item type diferente de `Computer` queda `unclassified` hasta que exista una regla explícita. Esto es intencional.
+Los tipos físicos genéricos se tratan explícitamente como evidencia insuficiente para decidir dominio, clase canónica y función. Un item type diferente de `Computer` queda `unclassified` hasta que exista una regla explícita. Esto es intencional.
 
 ### Bridge temporal de scalars legacy
 
@@ -239,7 +242,7 @@ assessment unknown/unclassified/conflict
 → projectionRuleId = glpi.computer.compatibility-projection
 ```
 
-**El fallback no modifica el assessment.** Por lo tanto un `Computer` sin Type sigue siendo taxonómicamente `unknown`, aunque una pantalla legacy necesite temporalmente el scalar IT para no romper el vertical Live.
+**El fallback no modifica el assessment.** Por lo tanto un `Computer` sin Type o un `Notebook` sin contexto suficiente puede mostrar temporalmente scalars IT en una pantalla legacy y continuar taxonómicamente `unknown/unclassified`.
 
 El adapter publica además atributos `nexus.taxonomy.*.state`, `reviewRequired`, `ruleId` y `nexus.taxonomy.compatibilityProjection` para que el bridge sea observable y auditable.
 
@@ -260,7 +263,7 @@ Esto mantiene `Evidence before inference` también después de la reconciliació
 Hay dos niveles de validación durante la migración:
 
 1. `validateTechnologySnapshot()` mantiene el contrato base `0.2` y soporta consumidores legacy.
-2. `validateTechnologySnapshotTaxonomy()` exige assessment v2 estructuralmente válido y contextos válidos.
+2. `validateTechnologySnapshotTaxonomy()` exige assessment v2 estructuralmente válido y contextos válidos, incluyendo `SourceReference` cuando un contexto lo declara.
 
 Cuando una dimensión está `classified`, su valor **debe coincidir** con el scalar proyectado. Cuando está `unknown`, `unclassified` o `conflict`, el gate permite temporalmente un scalar legacy porque ese valor no representa una clasificación resuelta.
 
@@ -309,7 +312,7 @@ Classification State
 Review Required
 ```
 
-Analytics debe poder distinguir, por ejemplo, “100 scalars endpoint mostrados por compatibilidad” de “87 endpoints clasificados con evidencia suficiente + 13 assessments pendientes de revisión”. La incertidumbre es información útil y no debe esconderse para obtener un gráfico más limpio.
+Analytics debe distinguir los scalars mostrados por compatibilidad de los assets realmente clasificados con evidencia suficiente. La incertidumbre es información útil y no debe esconderse para obtener un gráfico más limpio.
 
 ## Qué queda para después
 
