@@ -62,7 +62,7 @@ describe("GLPI record parsing and canonical mapping", () => {
     expect(asset.role).toBe("user_endpoint");
     expect(asset.taxonomy).toMatchObject({
       taxonomyVersion: "2",
-      domain: { state: "classified", value: "IT", method: "inferred" },
+      domain: { state: "classified", value: "IT", method: "inferred", reviewRequired: true },
       assetClass: { state: "classified", value: "endpoint", method: "normalized" },
       role: { state: "classified", value: "user_endpoint", reviewRequired: true },
     });
@@ -87,7 +87,9 @@ describe("GLPI record parsing and canonical mapping", () => {
       "glpi.type.name": "Notebook",
       "glpi.model.name": "Latitude",
       "nexus.taxonomy.version": "2",
+      "nexus.taxonomy.domain.state": "classified",
       "nexus.taxonomy.assetClass.ruleId": "glpi.computer.type.it-endpoint",
+      "nexus.taxonomy.compatibilityProjection": false,
     });
     expect(asset.provenance[0]?.evidence?.[0]?.reference).toBe("glpi:v2.3:Assets/Computer/42");
     expect(asset.provenance.find((entry) => entry.fieldPath === "assetClass")?.derivation).toBe("normalized");
@@ -102,20 +104,39 @@ describe("GLPI record parsing and canonical mapping", () => {
     expect(second.id).toBe(first.id);
   });
 
-  it("uses a safe fallback name and marks weak Computer taxonomy for review", () => {
+  it("keeps missing ComputerType taxonomically unknown while preserving the legacy scalar bridge", () => {
     const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord({ id: 8 }), OBSERVED_AT);
     expect(asset.displayName).toBe("GLPI Computer 8");
+    expect(asset.domain).toBe("IT");
+    expect(asset.assetClass).toBe("endpoint");
+    expect(asset.role).toBe("user_endpoint");
     expect(asset.lifecycle).toBe("unknown");
     expect(asset.criticality).toBe("unknown");
     expect(asset.provenance[0]?.authority).toBe("inferred");
     expect(asset.taxonomy?.domain).toMatchObject({
-      state: "classified",
-      value: "IT",
+      state: "unknown",
       reviewRequired: true,
-      ruleId: "glpi.computer.compatibility-default",
+      ruleId: "glpi.computer.type.missing",
     });
-    expect(asset.taxonomy?.assetClass).toMatchObject({ value: "endpoint", reviewRequired: true });
-    expect(asset.taxonomy?.role).toMatchObject({ value: "user_endpoint", reviewRequired: true });
+    expect(asset.taxonomy?.assetClass.state).toBe("unknown");
+    expect(asset.taxonomy?.role.state).toBe("unknown");
+    expect(asset.attributes).toMatchObject({
+      "nexus.taxonomy.domain.state": "unknown",
+      "nexus.taxonomy.compatibilityProjection": true,
+      "nexus.taxonomy.projectionRuleId": "glpi.computer.compatibility-projection",
+    });
+    expect(asset.provenance.find((entry) => entry.fieldPath === "domain")?.authority).toBe("inferred");
+  });
+
+  it("keeps a present but unmapped GLPI ComputerType unclassified instead of inventing IT semantics", () => {
+    const asset = mapGlpiComputerToTechnologyAsset(
+      parseGlpiComputerRecord(computer({ type: { id: 91, name: "Plant Special PC" } })),
+      OBSERVED_AT,
+    );
+    expect(asset.taxonomy?.domain).toMatchObject({ state: "unclassified", reviewRequired: true });
+    expect(asset.taxonomy?.assetClass.state).toBe("unclassified");
+    expect(asset.taxonomy?.role.state).toBe("unclassified");
+    expect(asset.attributes["nexus.taxonomy.compatibilityProjection"]).toBe(true);
   });
 });
 
@@ -234,6 +255,18 @@ describe("GLPI TechnologyProvider", () => {
     expect(snapshot.assets.every((asset) => asset.taxonomy?.taxonomyVersion === "2")).toBe(true);
     expect(snapshot.relationships).toEqual([]);
     expect(snapshot.observations).toEqual([]);
+  });
+
+  it("accepts unresolved taxonomy as explicit review state instead of failing the provider", async () => {
+    const transport: GlpiApiTransport = {
+      async get(_path, query = {}) {
+        return Number(query.start ?? 0) === 0 ? [{ id: 77, name: "UNKNOWN-TYPE" }] : [];
+      },
+    };
+    const provider = createGlpiTechnologyProvider({ transport, pageSize: 1, maxRecords: 10, now: () => new Date(OBSERVED_AT) });
+    const snapshot = await provider.getSnapshot();
+    expect(snapshot.assets[0]?.taxonomy?.domain.state).toBe("unknown");
+    expect(snapshot.assets[0]?.attributes["nexus.taxonomy.compatibilityProjection"]).toBe(true);
   });
 
   it("fails instead of accepting duplicate ids across pages", async () => {
