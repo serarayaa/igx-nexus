@@ -30,7 +30,7 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-002 | NEXUS API Runtime | P0 | ✅ Integrado — PR #44 / issue #42 |
 | V02-003 | API Security Baseline | P0 | ✅ Integrado — PR #47 / issue #46 |
 | V02-004 | Provider Mode Contract | P0 | ✅ Integrado — PR #50 / issue #49 |
-| V02-005 | GLPI API v2 Adapter | P0 | ⚪ Pendiente — siguiente ticket planificado |
+| V02-005 | GLPI API v2 Adapter | P0 | 🟡 PR #53 draft — issue #52 |
 | V02-006 | GLPI Service Identity & RBAC | P0 | ⚪ Pendiente |
 | V02-007 | GLPI Agent Live Lab | P0 | ⚪ Pendiente |
 | V02-008 | Live Asset 360 Vertical Slice | P0 | ⚪ Pendiente |
@@ -127,7 +127,31 @@ V02-004 **no** implementa GLPI API v2, OAuth/service identity, reconciliación m
 
 ### V02-005 — GLPI API v2 Adapter
 
-Lectura real soportada mediante APIs GLPI; mapping hacia dominio NEXUS; sin acceso Web→GLPI ni acceso directo a MariaDB.
+Objetivo: incorporar el primer adapter Live read-only de GLPI 11 High-Level REST API detrás de `TechnologyProvider`, normalizando registros reales al dominio NEXUS sin acceso directo a MariaDB ni acoplar la Web a GLPI.
+
+Dependencias: V02-001 / V02-002 / V02-003 / V02-004 ✅.
+
+Entrega activa: issue #52 / PR #53 / `feature/v02-005-glpi-api-v2-adapter`.
+
+Baseline implementado en PR:
+
+- versión GLPI API `v2.3` explícita; no `/v2` flotante;
+- transporte HTTP read-only (`GET`) con Bearer token inyectado;
+- HTTPS por defecto, HTTP sólo opt-in de laboratorio;
+- timeout/cancelación, redirects rechazados y errores sin copiar body de upstream;
+- lectura paginada de `Assets/Computer` con `start` / `limit`;
+- límite total y detección de IDs duplicados/truncamiento silencioso;
+- parser defensivo de payloads;
+- mapping conservador a `TechnologyAsset`: IT / compute / `custom:glpi-computer`, lifecycle y criticality desconocidos;
+- serial, asset tag y UUID preservados cuando existen;
+- identidad NEXUS determinista namespaced sin convertir el ID GLPI en identidad pública;
+- `SourceReference`, provenance y evidence GLPI;
+- `TechnologySnapshot` validado antes de salir del provider;
+- `checkAvailability()` opcional en `TechnologyProvider` para upstreams reales;
+- probe GLPI mínimo `Assets/Computer?start=0&limit=1` para readiness dinámica;
+- ADR-0015 y threat model v0.2 actualizados.
+
+V02-005 **no** implementa OAuth/service identity productiva, RBAC GLPI, GLPI Agent, endpoints Web Live, otros tipos de assets, reconciliación multisource ni taxonomía IT/OT detallada. Esos alcances permanecen en V02-006/V02-007/V02-008/V02-009/V02-010.
 
 ### V02-006 — GLPI Service Identity & RBAC
 
