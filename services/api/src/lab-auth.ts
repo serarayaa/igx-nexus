@@ -1,6 +1,11 @@
 import { timingSafeEqual } from "node:crypto";
+import type { FastifyRequest } from "fastify";
 import type { ApiConfig } from "./config.js";
-import type { AuthenticationProvider, SecurityPrincipal } from "./security.js";
+import type {
+  AuthenticationProvider,
+  NexusPermission,
+  SecurityPrincipal,
+} from "./security.js";
 
 export class LabAuthenticationConfigurationError extends Error {
   constructor(message: string) {
@@ -25,7 +30,7 @@ const labPrincipal: SecurityPrincipal = Object.freeze({
   kind: "service",
   authSource: "local-lab-bearer",
   roles: Object.freeze(["live-lab-reader"]),
-  permissions: new Set(["technology:read"]),
+  permissions: new Set<NexusPermission>(["technology:read"]),
 });
 
 export function createLabAuthenticationProvider(
@@ -48,7 +53,7 @@ export function createLabAuthenticationProvider(
   }
 
   return Object.freeze({
-    async authenticate(request) {
+    async authenticate(request: FastifyRequest) {
       const authorization = request.headers.authorization;
       if (!authorization?.startsWith("Bearer ")) return null;
       const candidate = authorization.slice("Bearer ".length);
