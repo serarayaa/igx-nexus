@@ -192,7 +192,7 @@ export function createGlpiPasswordGrantAccessTokenProvider(
     const token = parseAccessTokenResponse(payload);
     const lifetimeMs = token.expiresInSeconds * 1_000;
     const requestedSkewMs = refreshSkewSeconds * 1_000;
-    const effectiveSkewMs = Math.min(requestedSkewMs, Math.max(0, lifetimeMs - 1_000));
+    const effectiveSkewMs = Math.min(requestedSkewMs, Math.floor(lifetimeMs / 2));
     cachedToken = Object.freeze({
       value: token.accessToken,
       refreshAt: now() + lifetimeMs - effectiveSkewMs,
