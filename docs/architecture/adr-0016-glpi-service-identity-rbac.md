@@ -1,6 +1,6 @@
 # ADR-0016 — GLPI Service Identity & RBAC
 
-Estado: **Propuesto en V02-006 / issue #55 / PR #56**. Este ADR queda aceptado únicamente cuando dicho PR sea integrado manualmente a `main`.
+Estado: **Aceptado en V02-006 (PR #56 / issue #55)**. Integrado manualmente a `main` mediante el merge `1ea04772fd4fa57e956f7797b2cb298730bad5bc`; CI post-merge #275 verde.
 
 ## Contexto
 

@@ -66,7 +66,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline**, **V02-004 — Provider Mode Contract** y **V02-005 — GLPI API v2 Adapter** están integrados. V02-005 quedó incorporado mediante PR #53 / issue #52 en el merge `10acf2533877b19a261d8f5291e90269df2014e8`, con housekeeping PR #54 y CI post-housekeeping #249 verdes. El trabajo activo es **V02-006 — GLPI Service Identity & RBAC**, issue #55 / PR #56.
+**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline**, **V02-004 — Provider Mode Contract**, **V02-005 — GLPI API v2 Adapter** y **V02-006 — GLPI Service Identity & RBAC** están integrados. V02-006 quedó incorporado mediante PR #56 / issue #55 en el merge `1ea04772fd4fa57e956f7797b2cb298730bad5bc`, con CI post-merge #275 verde. El siguiente trabajo es **V02-007 — GLPI Agent Live Lab**.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -143,7 +143,7 @@ V02-004 agregó `TechnologyProvider` como frontera común Demo/Live. `NEXUS_PROV
 
 V02-005 agregó el primer adapter GLPI Live read-only. La versión de High-Level API se fija en `v2.3`; el transporte sólo permite GET, valida HTTPS/base URL, aplica timeout y recibe un Bearer token mediante una abstracción inyectable. `Assets/Computer` se pagina con `start`/`limit` y se normaliza conservadoramente al modelo NEXUS con source/provenance/evidence.
 
-V02-006 implementa esa identidad upstream sin mezclarla con los callers de NEXUS: un `GlpiCredentialSource` entrega secretos al token provider OAuth, que usa Password Grant + scope `api` por la restricción actual de GLPI 11, mantiene el access token sólo en memoria y lo renueva antes de expirar. El runtime Live compone esta identidad con el adapter de V02-005. El RBAC esperado es un usuario técnico dedicado con perfil GLPI read-only y alcance por entidad mínimo.
+V02-006 implementó esa identidad upstream sin mezclarla con los callers de NEXUS: un `GlpiCredentialSource` entrega secretos al token provider OAuth, que usa Password Grant + scope `api` por la restricción actual de GLPI 11, mantiene el access token sólo en memoria y lo renueva antes de expirar. El runtime Live compone esta identidad con el adapter de V02-005. El RBAC esperado es un usuario técnico dedicado con perfil GLPI read-only y alcance por entidad mínimo.
 
 Endpoints base actuales:
 

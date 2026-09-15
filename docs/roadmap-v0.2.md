@@ -31,8 +31,8 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-003 | API Security Baseline | P0 | ✅ Integrado — PR #47 / issue #46 |
 | V02-004 | Provider Mode Contract | P0 | ✅ Integrado — PR #50 / issue #49 |
 | V02-005 | GLPI API v2 Adapter | P0 | ✅ Integrado — PR #53 / issue #52 |
-| V02-006 | GLPI Service Identity & RBAC | P0 | 🟡 PR #56 draft — issue #55 |
-| V02-007 | GLPI Agent Live Lab | P0 | ⚪ Pendiente |
+| V02-006 | GLPI Service Identity & RBAC | P0 | ✅ Integrado — PR #56 / issue #55 |
+| V02-007 | GLPI Agent Live Lab | P0 | ⚪ Siguiente |
 | V02-008 | Live Asset 360 Vertical Slice | P0 | ⚪ Pendiente |
 | V02-009 | Provenance & Reconciliation | P0 | ⚪ Pendiente |
 | V02-010 | IT/OT Taxonomy v2 | P0 | ⚪ Pendiente |
@@ -158,9 +158,9 @@ Objetivo: incorporar la identidad técnica OAuth y el baseline de mínimo privil
 
 Dependencias: V02-005 ✅.
 
-Entrega activa: issue #55 / PR #56 / `feature/v02-006-glpi-service-identity-rbac`.
+Resultado integrado: issue #55 cerrado mediante PR #56; identidad GLPI y baseline RBAC incorporados a `main` en el merge `1ea04772fd4fa57e956f7797b2cb298730bad5bc`; CI post-merge #275 verde.
 
-Baseline implementado en PR:
+Baseline integrado:
 
 - `GlpiCredentialSource` como frontera reemplazable de secretos;
 - backend environment sólo para laboratorio/desarrollo, sin valores versionados;
