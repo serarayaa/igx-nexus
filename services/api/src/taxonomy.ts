@@ -15,6 +15,14 @@ export interface GlpiTaxonomyInput {
   readonly sourceType?: string;
 }
 
+export interface GlpiLegacyTaxonomyProjection {
+  readonly domain: TechnologyDomain;
+  readonly assetClass: TechnologyAssetClass;
+  readonly role: TechnologyRole;
+  readonly compatibilityFallback: boolean;
+  readonly ruleId: string;
+}
+
 export class TaxonomyMappingError extends Error {
   readonly issueCodes: readonly string[];
 
@@ -40,6 +48,10 @@ function classified<T extends string>(
     ruleId,
     ...(reasonCode === undefined ? {} : { reasonCode }),
   });
+}
+
+function unknown<T extends string>(ruleId: string, reasonCode: string): TaxonomyDecision<T> {
+  return Object.freeze({ state: "unknown", reviewRequired: true, ruleId, reasonCode });
 }
 
 function unclassified<T extends string>(ruleId: string, reasonCode: string): TaxonomyDecision<T> {
@@ -77,10 +89,11 @@ const OT_HISTORIAN_TYPES = new Set(["historian", "historian server"]);
 /**
  * Clasifica evidencia GLPI sin equiparar ItemType con assetClass.
  *
- * `Computer` por sí solo no demuestra laptop/server ni descarta un workstation OT.
- * Para conservar el vertical Live existente se mantiene una proyección de compatibilidad
- * IT/endpoint/user_endpoint, pero queda explícitamente marcada como inferida y sujeta a
- * revisión humana. Los Type reconocidos reducen esa ambigüedad mediante reglas separadas.
+ * GLPI no define un vocabulario universal para ComputerType: los valores son
+ * administrables por cada instancia. Por eso sólo normalizamos aliases explícitos
+ * conocidos y nunca usamos nombre/modelo/fabricante como heurística escondida.
+ * Un Type ausente queda `unknown`; un Type presente sin regla queda
+ * `unclassified`. Ambos requieren revisión humana.
  */
 export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxonomyAssessment {
   const itemType = input.itemType.trim();
@@ -96,7 +109,7 @@ export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxono
 
   if (sourceType && IT_ENDPOINT_TYPES.has(sourceType)) {
     return assessment(
-      classified("IT", "inferred", "glpi.computer.type.it-endpoint"),
+      classified("IT", "inferred", "glpi.computer.type.it-endpoint", true, "domain_inferred_from_configurable_glpi_type"),
       classified("endpoint", "normalized", "glpi.computer.type.it-endpoint"),
       classified("user_endpoint", "inferred", "glpi.computer.type.it-endpoint", true, "functional_role_requires_review"),
     );
@@ -104,7 +117,7 @@ export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxono
 
   if (sourceType && IT_SERVER_TYPES.has(sourceType)) {
     return assessment(
-      classified("IT", "inferred", "glpi.computer.type.it-server"),
+      classified("IT", "inferred", "glpi.computer.type.it-server", true, "domain_inferred_from_configurable_glpi_type"),
       classified("server", "normalized", "glpi.computer.type.it-server"),
       classified("infrastructure_service", "inferred", "glpi.computer.type.it-server", true, "server_function_not_observed"),
     );
@@ -112,7 +125,7 @@ export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxono
 
   if (sourceType && OT_ENGINEERING_TYPES.has(sourceType)) {
     return assessment(
-      classified("OT", "inferred", "glpi.computer.type.ot-engineering"),
+      classified("OT", "normalized", "glpi.computer.type.ot-engineering"),
       classified("industrial_compute", "normalized", "glpi.computer.type.ot-engineering"),
       classified("engineering_workstation", "normalized", "glpi.computer.type.ot-engineering"),
     );
@@ -120,7 +133,7 @@ export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxono
 
   if (sourceType && OT_HMI_TYPES.has(sourceType)) {
     return assessment(
-      classified("OT", "inferred", "glpi.computer.type.ot-hmi"),
+      classified("OT", "normalized", "glpi.computer.type.ot-hmi"),
       classified("operator_interface", "normalized", "glpi.computer.type.ot-hmi"),
       classified("supervision", "inferred", "glpi.computer.type.ot-hmi", true, "hmi_function_requires_review"),
     );
@@ -128,17 +141,57 @@ export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxono
 
   if (sourceType && OT_HISTORIAN_TYPES.has(sourceType)) {
     return assessment(
-      classified("OT", "inferred", "glpi.computer.type.ot-historian"),
+      classified("OT", "normalized", "glpi.computer.type.ot-historian"),
       classified("industrial_compute", "normalized", "glpi.computer.type.ot-historian"),
       classified("historian", "normalized", "glpi.computer.type.ot-historian"),
     );
   }
 
+  if (sourceType === undefined) {
+    return assessment(
+      unknown("glpi.computer.type.missing", "computer_domain_not_observed"),
+      unknown("glpi.computer.type.missing", "computer_class_not_observed"),
+      unknown("glpi.computer.type.missing", "computer_role_not_observed"),
+    );
+  }
+
   return assessment(
-    classified("IT", "inferred", "glpi.computer.compatibility-default", true, "computer_domain_requires_review"),
-    classified("endpoint", "inferred", "glpi.computer.compatibility-default", true, "computer_class_requires_review"),
-    classified("user_endpoint", "inferred", "glpi.computer.compatibility-default", true, "computer_role_requires_review"),
+    unclassified("glpi.computer.type.unmapped", "glpi_computer_type_not_mapped"),
+    unclassified("glpi.computer.type.unmapped", "glpi_computer_type_not_mapped"),
+    unclassified("glpi.computer.type.unmapped", "glpi_computer_type_not_mapped"),
   );
+}
+
+/**
+ * Puente temporal para los consumidores V02-008/V02-011 que aún requieren los
+ * scalars `domain/assetClass/role`. La verdad taxonómica vive en `assessment`:
+ * si alguna dimensión no está resuelta, el scalar conserva el comportamiento Live
+ * histórico pero queda marcado explícitamente como fallback de compatibilidad.
+ */
+export function projectGlpiTaxonomyForLegacyScalars(
+  value: TechnologyTaxonomyAssessment,
+): GlpiLegacyTaxonomyProjection {
+  if (
+    value.domain.state === "classified"
+    && value.assetClass.state === "classified"
+    && value.role.state === "classified"
+  ) {
+    return Object.freeze({
+      domain: value.domain.value,
+      assetClass: value.assetClass.value,
+      role: value.role.value,
+      compatibilityFallback: false,
+      ruleId: "glpi.taxonomy.resolved-projection",
+    });
+  }
+
+  return Object.freeze({
+    domain: "IT",
+    assetClass: "endpoint",
+    role: "user_endpoint",
+    compatibilityFallback: true,
+    ruleId: "glpi.computer.compatibility-projection",
+  });
 }
 
 export function resolvedTaxonomyDecision<T extends string>(
