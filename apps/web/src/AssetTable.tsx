@@ -17,8 +17,13 @@ const stateTones = {
   unknown: "neutral",
 } as const;
 
-export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical }: {
-  rows: readonly Asset[]; asOf: string; sort: DataTableSort; onSortChange: (sort: DataTableSort) => void; showTechnical: boolean;
+export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical, caption = "Inventario de activos demo" }: {
+  rows: readonly Asset[];
+  asOf: string;
+  sort: DataTableSort;
+  onSortChange: (sort: DataTableSort) => void;
+  showTechnical: boolean;
+  caption?: string;
 }) {
   const columns: readonly DataTableColumn<Asset>[] = [
     { id: "name", header: "Activo", isRowHeader: true, isSortable: true, cell: a => <div className="nexus-asset-identity">
@@ -41,5 +46,5 @@ export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical }: {
       return <div className="nexus-asset-cell">{freshness !== "unknown" && a.lastSeen && <time dateTime={a.lastSeen}>{dateFormat.format(new Date(a.lastSeen))}</time>}<span className="nexus-muted">{freshnessLabels[freshness]}</span></div>;
     } },
   ];
-  return <DataTable className="nexus-asset-table" caption="Inventario de activos" columns={columns} rows={rows} getRowKey={a => a.id} sort={sort} onSortChange={onSortChange} />;
+  return <DataTable className="nexus-asset-table" caption={caption} columns={columns} rows={rows} getRowKey={a => a.id} sort={sort} onSortChange={onSortChange} />;
 }
