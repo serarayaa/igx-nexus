@@ -15,6 +15,7 @@ import {
   type TechnologyAssetClass,
   type TechnologyDomain,
   type TechnologyRole,
+  type TechnologySnapshot,
   type TechnologyTaxonomyAssessment,
 } from "./model.js";
 
@@ -117,7 +118,10 @@ export function validateAssetTaxonomyProjection(
   path = "asset",
 ): readonly TaxonomyValidationIssue[] {
   if (!asset.taxonomy) return [];
-  const issues = [...validateTechnologyTaxonomyAssessment(asset.taxonomy)];
+  const issues = validateTechnologyTaxonomyAssessment(asset.taxonomy).map((issue) => ({
+    ...issue,
+    path: `${path}.taxonomy.${issue.path}`,
+  }));
   const comparisons: readonly ["domain" | "assetClass" | "role", string][] = [
     ["domain", asset.domain],
     ["assetClass", asset.assetClass],
@@ -150,5 +154,27 @@ export function validateOperationalContextReference(
   if (context.displayName !== undefined && !context.displayName.trim()) {
     issues.push({ code: "context.name_empty", path: `${path}.displayName`, message: "displayName cannot be empty when provided" });
   }
+  return issues;
+}
+
+/**
+ * Gate v2 aditivo: snapshots legacy siguen siendo válidos para `validateTechnologySnapshot`,
+ * mientras providers que declaran taxonomía v2 usan además este gate estricto.
+ */
+export function validateTechnologySnapshotTaxonomy(
+  snapshot: TechnologySnapshot,
+): readonly TaxonomyValidationIssue[] {
+  const issues: TaxonomyValidationIssue[] = [];
+  snapshot.assets.forEach((asset, assetIndex) => {
+    const path = `snapshot.assets[${assetIndex}]`;
+    if (!asset.taxonomy) {
+      issues.push({ code: "taxonomy.assessment_required", path: `${path}.taxonomy`, message: "v2 provider asset requires taxonomy assessment" });
+    } else {
+      issues.push(...validateAssetTaxonomyProjection(asset, path));
+    }
+    (asset.operationalContexts ?? []).forEach((context, contextIndex) => {
+      issues.push(...validateOperationalContextReference(context, `${path}.operationalContexts[${contextIndex}]`));
+    });
+  });
   return issues;
 }
