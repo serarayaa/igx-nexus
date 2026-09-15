@@ -177,7 +177,7 @@ describe("GLPI read-only fetch transport", () => {
 });
 
 describe("GLPI TechnologyProvider", () => {
-  it("paginates with start/limit and emits a valid live snapshot", async () => {
+  it("paginates with start/limit until an empty page and emits a valid live snapshot", async () => {
     const queries: GlpiQuery[] = [];
     const transport: GlpiApiTransport = {
       async get(path, query = {}) {
@@ -208,6 +208,7 @@ describe("GLPI TechnologyProvider", () => {
     expect(queries).toEqual([
       { start: 0, limit: 2 },
       { start: 2, limit: 2 },
+      { start: 3, limit: 2 },
     ]);
     expect(snapshot.schemaVersion).toBe("0.2");
     expect(snapshot.asOf).toBe(OBSERVED_AT);
