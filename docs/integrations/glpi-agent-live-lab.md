@@ -94,6 +94,7 @@ Configuración objetivo:
 
 | Opción | Valor de laboratorio | Motivo |
 | --- | --- | --- |
+| `ADDLOCAL` | `feat_AGENT` | instalar sólo el feature base + Inventory |
 | `SERVER` | URL explícita del GLPI Lab | único destino autorizado |
 | `TASKS` | `Inventory` | no planificar otras tareas |
 | `ITEMTYPE` | `Computer` | mantener el slice V02-005/V02-007 |
@@ -107,6 +108,8 @@ Configuración objetivo:
 | OAuth grant | Client Credentials | identidad específica de inventario |
 | OAuth scope | `inventory` | mínimo privilegio del Agent |
 
+`ADDLOCAL=feat_AGENT` restringe explícitamente los componentes instalados al feature base que incluye Inventory. `TASKS=Inventory` restringe además qué tarea se planifica durante la ejecución. Son controles complementarios.
+
 La documentación oficial del Agent indica que su HTTP server embebido usa el puerto 62354 y escucha en todas las interfaces por defecto cuando está habilitado; por eso V02-007 exige `NO_HTTPD=1`.
 
 ## Instalación Windows
@@ -115,10 +118,11 @@ La documentación oficial del instalador advierte que sus parámetros MSI deben 
 
 ### Paso 1 — instalar las opciones no secretas
 
-Abrir **Command Prompt como administrador** y usar el MSI verificado. Ejemplo de referencia:
+Abrir **Command Prompt como administrador** y usar el MSI verificado. `RUNNOW=0` es deliberado: evita que el Agent contacte GLPI antes de que el OAuth client de inventario esté configurado.
 
 ```bat
 msiexec /i GLPI-Agent-1.19-x64.msi /quiet ^
+  ADDLOCAL=feat_AGENT ^
   RUNNOW=0 ^
   EXECMODE=1 ^
   SERVER="https://<glpi-lab>/" ^
@@ -150,7 +154,17 @@ Usar el mecanismo soportado por el instalador/configuración del Agent. El secre
 
 Si se utiliza el instalador gráfico para introducir el secret, mantener las opciones de seguridad definidas en este runbook.
 
-### Paso 3 — comprobar preflight
+### Paso 3 — iniciar el servicio después del OAuth
+
+Sólo cuando el OAuth client de inventario y el destino GLPI estén configurados, iniciar el servicio:
+
+```powershell
+Start-Service glpi-agent
+```
+
+Si el servicio ya estuviera iniciado inesperadamente antes de configurar OAuth, detenerlo y revisar logs/configuración local antes de continuar. No copiar esos logs sin sanitizar a GitHub.
+
+### Paso 4 — comprobar preflight
 
 Ejecutar:
 
@@ -163,7 +177,7 @@ El script es read-only. No instala, no fuerza inventario, no lee ni imprime el O
 Debe comprobar al menos:
 
 - Agent 1.19 instalado;
-- servicio `glpi-agent` presente;
+- servicio `glpi-agent` presente y corriendo;
 - `TASKS=Inventory`;
 - `NO_HTTPD=1`;
 - `NO_SSL_CHECK` deshabilitado;
