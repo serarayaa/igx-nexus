@@ -16,20 +16,49 @@ type LoadState =
   | { status: "ready"; snapshot: InventorySnapshot };
 
 const dateFormat = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeZone: "UTC" });
-const lifecycleLabels = { assigned: "Asignado", stock: "En stock", repair: "En reparación", retired: "Dado de baja" } as const;
-const lifecycleTones = { assigned: "success", stock: "info", repair: "warning", retired: "neutral" } as const;
+const lifecycleLabels = {
+  assigned: "Asignado",
+  stock: "En stock",
+  repair: "En reparación",
+  retired: "Dado de baja",
+  planned: "Planificado",
+  in_stock: "En stock",
+  active: "Activo",
+  maintenance: "En mantenimiento",
+  disposed: "Dispuesto",
+  unknown: "Desconocido",
+} as const;
+const lifecycleTones = {
+  assigned: "success",
+  stock: "info",
+  repair: "warning",
+  retired: "neutral",
+  planned: "info",
+  in_stock: "info",
+  active: "success",
+  maintenance: "warning",
+  disposed: "neutral",
+  unknown: "neutral",
+} as const;
+const criticalityLabels = {
+  low: "Baja",
+  medium: "Media",
+  high: "Alta",
+  critical: "Crítica",
+  unknown: "Desconocida",
+} as const;
 
 function displayDate(value: string | null): string {
   return value && validHealthDate(value) ? dateFormat.format(new Date(value)) : "Sin fecha verificable";
 }
 
 function warrantyPresentation(asset: Asset, asOf: string) {
-  if (asset.warrantyEnds && !validHealthDate(asset.warrantyEnds)) return { label: "No verificable", detail: "La fecha registrada no es válida; revisar CMDB Health.", tone: "neutral" as const };
+  if (asset.warrantyEnds && !validHealthDate(asset.warrantyEnds)) return { label: "No verificable", detail: "La fecha registrada no es válida; revisar calidad de datos.", tone: "neutral" as const };
   const days = warrantyDays(asset, asOf);
   if (days === null) return { label: "Desconocida", detail: "No hay fecha de garantía disponible.", tone: "neutral" as const };
   if (days < 0) return { label: "Vencida", detail: `Venció hace ${Math.abs(Math.ceil(days))} días.`, tone: "danger" as const };
-  if (days <= 90) return { label: "Próxima a vencer", detail: `Quedan ${Math.floor(days)} días según el corte demo.`, tone: "warning" as const };
-  return { label: "Vigente", detail: `Quedan ${Math.floor(days)} días según el corte demo.`, tone: "success" as const };
+  if (days <= 90) return { label: "Próxima a vencer", detail: `Quedan ${Math.floor(days)} días según el snapshot.`, tone: "warning" as const };
+  return { label: "Vigente", detail: `Quedan ${Math.floor(days)} días según el snapshot.`, tone: "success" as const };
 }
 
 function Field({ label, value, mono = false }: { label: string; value: string | null; mono?: boolean }) {
@@ -71,7 +100,7 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
   }, [state, assetId]);
 
   if (state.status === "loading") {
-    return <LoadingState title="Cargando detalle del activo" description="Preparando la ficha Asset 360 de demostración." />;
+    return <LoadingState title="Cargando detalle del activo" description="Preparando la ficha Asset 360." />;
   }
 
   if (state.status === "error") {
@@ -79,7 +108,7 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
   }
 
   if (state.snapshot.assets.length === 0) {
-    return <EmptyState title="El inventario está vacío" description="No hay activos disponibles en este escenario de demostración." action={<a href="#assets">Volver al inventario</a>} />;
+    return <EmptyState title="El inventario está vacío" description="No hay activos disponibles en el provider configurado." action={<a href="#assets">Volver al inventario</a>} />;
   }
 
   const asset = state.snapshot.assets.find((candidate) => candidate.id === assetId);
@@ -87,9 +116,11 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
     return <EmptyState title="Activo no encontrado" description={`No existe un activo con el identificador ${assetId} en este inventario.`} action={<a href="#assets">Volver al inventario</a>} />;
   }
 
+  const isLive = asset.dataMode === "live";
   const warranty = warrantyPresentation(asset, state.snapshot.asOf);
-  const locator = demoLocatorForAsset(asset.id);
-
+  const locator = isLive ? null : demoLocatorForAsset(asset.id);
+  const criticality = asset.criticality ?? (asset.critical ? "critical" : "medium");
+  const lifecycle = lifecycleLabels[asset.lifecycle];
 
   return <div className="nexus-asset-360" ref={contentRef}>
     <nav className="nexus-breadcrumb" aria-label="Breadcrumb">
@@ -102,9 +133,15 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
 
     <PageHeader
       title={asset.name}
-      eyebrow="ASSET 360 · INNERGEX CHILE"
+      eyebrow={`ASSET 360 · INNERGEX CHILE · ${isLive ? "LIVE" : "DEMO"}`}
       description={`Identidad NEXUS ${asset.id}`}
-      meta={<div className="nexus-asset-header-status"><Badge>{asset.domain}</Badge><StatusBadge status={lifecycleTones[asset.lifecycle]}>{lifecycleLabels[asset.lifecycle]}</StatusBadge>{asset.critical && <StatusBadge status="critical">Crítico</StatusBadge>}</div>}
+      meta={<div className="nexus-asset-header-status">
+        <Badge>{asset.domain}</Badge>
+        <StatusBadge status={lifecycleTones[asset.lifecycle]}>{lifecycle}</StatusBadge>
+        {isLive
+          ? <StatusBadge status={criticality === "critical" || criticality === "high" ? "critical" : "neutral"}>Criticidad {criticalityLabels[criticality]}</StatusBadge>
+          : asset.critical && <StatusBadge status="critical">Crítico</StatusBadge>}
+      </div>}
     />
 
     <dl className="nexus-asset-summary" aria-label="Resumen del activo">
@@ -133,7 +170,7 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
           <Field label="Responsable" value={asset.owner} />
           <Field label="Ubicación / sitio" value={asset.location} />
         </dl>
-        <p className="nexus-muted">El modelo demo todavía no separa área, unidad organizacional y sitio físico en campos independientes.</p>
+        <p className="nexus-muted">{isLive ? "Los campos ausentes se mantienen como no informados; NEXUS no infiere responsable ni ubicación." : "El modelo demo todavía no separa área, unidad organizacional y sitio físico en campos independientes."}</p>
       </section>
 
       <section className="nexus-asset-section" aria-labelledby="asset-hardware-heading">
@@ -142,17 +179,17 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
           <Field label="Fabricante" value={asset.manufacturer} />
           <Field label="Modelo" value={asset.model} />
           <Field label="Categoría" value={typeLabels[asset.type]} />
-          <Field label="IP demo" value={asset.ipAddress} mono />
+          <Field label="IP" value={asset.ipAddress} mono />
         </dl>
-        <p className="nexus-muted">Las direcciones pertenecen a TEST-NET-1 y no representan direccionamiento corporativo.</p>
+        <p className="nexus-muted">{isLive ? "Sólo se muestran atributos normalizados presentes en el snapshot canónico." : "Las direcciones demo pertenecen a TEST-NET-1 y no representan direccionamiento corporativo."}</p>
       </section>
 
       <section className="nexus-asset-section" aria-labelledby="asset-lifecycle-heading">
         <h2 id="asset-lifecycle-heading">Estado y ciclo de vida</h2>
-        <div className="nexus-asset-status-row"><StatusBadge status={lifecycleTones[asset.lifecycle]}>{lifecycleLabels[asset.lifecycle]}</StatusBadge>{asset.critical ? <StatusBadge status="critical">Criticidad alta</StatusBadge> : <StatusBadge status="neutral">Criticidad normal</StatusBadge>}</div>
+        <div className="nexus-asset-status-row"><StatusBadge status={lifecycleTones[asset.lifecycle]}>{lifecycle}</StatusBadge><StatusBadge status={criticality === "critical" || criticality === "high" ? "critical" : "neutral"}>Criticidad {criticalityLabels[criticality]}</StatusBadge></div>
         <dl className="nexus-asset-fields">
-          <Field label="Estado lifecycle" value={lifecycleLabels[asset.lifecycle]} />
-          <Field label="Vigencia" value={asset.lifecycle === "retired" ? "Dado de baja" : "Activo en inventario"} />
+          <Field label="Estado lifecycle" value={lifecycle} />
+          <Field label="Vigencia" value={asset.lifecycle === "unknown" ? "No determinada por la fuente" : asset.lifecycle === "retired" || asset.lifecycle === "disposed" ? "Fuera de servicio" : "Registrado en inventario"} />
         </dl>
       </section>
 
@@ -165,9 +202,9 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
         </dl>
       </section>
 
-      <AssetHealthSection inventory={state.snapshot} assetId={asset.id} {...(relationshipProvider ? { relationshipProvider } : {})} />
+      {!isLive && <AssetHealthSection inventory={state.snapshot} assetId={asset.id} {...(relationshipProvider ? { relationshipProvider } : {})} />}
 
-      <section className="nexus-asset-section nexus-asset-qr" aria-labelledby="asset-qr-heading">
+      {!isLive && locator && <section className="nexus-asset-section nexus-asset-qr" aria-labelledby="asset-qr-heading">
         <h2 id="asset-qr-heading">Etiqueta y QR</h2>
         <div className="nexus-asset-status-row"><StatusBadge status="info">CMDB-009</StatusBadge><Badge>Modo demo · no productivo</Badge></div>
         <dl className="nexus-asset-fields">
@@ -177,24 +214,30 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
         <p>El locator representa la identidad física del CI y permanece separado del ID visible del activo.</p>
         <p className="nexus-muted">No contiene serial, IP, hostname, usuario ni ubicación. Conocer el locator no concede autorización.</p>
         <div className="nexus-asset-actions"><a className="nexus-asset-link" href={labelHash(asset.id)}>Diseñar etiqueta</a><a className="nexus-asset-link" href={demoQrHash(locator)}>Probar resolución demo</a></div>
-      </section>
+      </section>}
 
       <section className="nexus-asset-section" aria-labelledby="asset-source-heading">
-        <h2 id="asset-source-heading">Fuente de datos</h2>
+        <h2 id="asset-source-heading">Fuente y evidencia</h2>
         <dl className="nexus-asset-fields">
-          <Field label="Fuente" value="Dataset sintético / provider demo" />
+          <Field label="Fuente" value={isLive ? (asset.sourceSystems?.join(", ") || "Provider Live") : "Dataset sintético / provider demo"} />
           <Field label="Corte del snapshot" value={displayDate(state.snapshot.asOf)} />
+          {isLive && <Field label="Observado en fuente" value={displayDate(asset.sourceObservedAt ?? null)} />}
         </dl>
-        <p className="nexus-muted">No representa sincronización real con GLPI, Intune, Entra, Defender ni otras fuentes corporativas.</p>
+        <p className="nexus-muted">{isLive ? "La Web consume exclusivamente NEXUS API. GLPI permanece detrás del adapter y la procedencia canónica; no existe acceso Web → GLPI." : "No representa sincronización real con GLPI, Intune, Entra, Defender ni otras fuentes corporativas."}</p>
       </section>
 
-      <section className="nexus-asset-section" aria-labelledby="asset-relations-heading">
+      {isLive ? <section className="nexus-asset-section" aria-labelledby="asset-relations-heading">
+        <h2 id="asset-relations-heading">Relaciones</h2>
+        <div className="nexus-asset-status-row"><StatusBadge status="neutral">Sin evidencia live todavía</StatusBadge><Badge>V02-009 / V02-012</Badge></div>
+        <p>NEXUS no muestra relaciones sintéticas como si fueran reales.</p>
+        <p className="nexus-muted">La reconciliación multisource y la evidencia de relaciones se incorporarán en tickets posteriores.</p>
+      </section> : <section className="nexus-asset-section" aria-labelledby="asset-relations-heading">
         <h2 id="asset-relations-heading">Relaciones</h2>
         <div className="nexus-asset-status-row"><StatusBadge status="info">CMDB-010</StatusBadge><Badge>Technology Map</Badge></div>
         <p>Explora dependencias upstream, impacto downstream y conectividad del activo en un mapa navegable.</p>
         <p className="nexus-muted">Las relaciones de v0.1 son exclusivamente sintéticas y no provienen de discovery real.</p>
         <div className="nexus-asset-actions"><a className="nexus-asset-link" href={relationsHash(asset.id)}>Abrir grafo de relaciones</a></div>
-      </section>
+      </section>}
     </div>
   </div>;
 }
