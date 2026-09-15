@@ -6,11 +6,13 @@ import {
   type EvidenceReference,
   type ProvenanceRecord,
   type SourceReference,
+  type TaxonomyClassificationMethod,
   type TechnologyAsset,
   type TechnologyAttributeValue,
   type TechnologySnapshot,
 } from "@igx-nexus/types";
 import type { TechnologyProvider, TechnologyProviderDescriptor } from "./provider.js";
+import { classifyGlpiTaxonomy, resolvedTaxonomyValue } from "./taxonomy.js";
 
 export const glpiApiVersions = ["v2.3"] as const;
 export type GlpiApiVersion = (typeof glpiApiVersions)[number];
@@ -313,8 +315,9 @@ function addNamedReferenceAttributes(
   addAttribute(attributes, `${prefix}.completename`, value.completename);
 }
 
-function inferredMappingProvenance(
+function taxonomyMappingProvenance(
   fieldPath: "domain" | "assetClass" | "role",
+  method: TaxonomyClassificationMethod,
   source: SourceReference,
   evidence: EvidenceReference,
   observedAt: string,
@@ -323,7 +326,8 @@ function inferredMappingProvenance(
     fieldPath,
     source,
     observedAt,
-    authority: "inferred",
+    authority: method === "inferred" ? "inferred" : source.authority,
+    derivation: method,
     evidence: Object.freeze([evidence]),
   });
 }
@@ -352,6 +356,12 @@ export function mapGlpiComputerToTechnologyAsset(
   if (record.otherserial) identifiers.push(Object.freeze({ kind: "asset_tag", value: record.otherserial, source }));
   if (record.uuid) identifiers.push(Object.freeze({ kind: "hardware_uuid", value: record.uuid, source }));
 
+  const sourceType = record.type?.name ?? record.type?.completename;
+  const taxonomy = classifyGlpiTaxonomy({ itemType: "Computer", ...(sourceType === undefined ? {} : { sourceType }) });
+  const domain = resolvedTaxonomyValue(taxonomy.domain, "domain");
+  const assetClass = resolvedTaxonomyValue(taxonomy.assetClass, "assetClass");
+  const role = resolvedTaxonomyValue(taxonomy.role, "role");
+
   const attributes: Record<string, TechnologyAttributeValue> = {};
   addAttribute(attributes, "glpi.itemType", "Computer");
   addAttribute(attributes, "glpi.isDeleted", record.is_deleted);
@@ -366,6 +376,13 @@ export function mapGlpiComputerToTechnologyAsset(
   addNamedReferenceAttributes(attributes, "glpi.location", record.location);
   addNamedReferenceAttributes(attributes, "glpi.type", record.type);
   addNamedReferenceAttributes(attributes, "glpi.model", record.model);
+  addAttribute(attributes, "nexus.taxonomy.version", taxonomy.taxonomyVersion);
+  addAttribute(attributes, "nexus.taxonomy.domain.ruleId", taxonomy.domain.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.domain.reviewRequired", taxonomy.domain.reviewRequired);
+  addAttribute(attributes, "nexus.taxonomy.assetClass.ruleId", taxonomy.assetClass.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.assetClass.reviewRequired", taxonomy.assetClass.reviewRequired);
+  addAttribute(attributes, "nexus.taxonomy.role.ruleId", taxonomy.role.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.role.reviewRequired", taxonomy.role.reviewRequired);
 
   const displayName = record.name ?? `GLPI Computer ${record.id}`;
   const provenance: ProvenanceRecord[] = [
@@ -374,16 +391,18 @@ export function mapGlpiComputerToTechnologyAsset(
       source,
       observedAt,
       authority: record.name ? "authoritative" : "inferred",
+      derivation: record.name ? "observed" : "inferred",
       evidence: Object.freeze([evidence]),
     }),
-    inferredMappingProvenance("domain", source, evidence, observedAt),
-    inferredMappingProvenance("assetClass", source, evidence, observedAt),
-    inferredMappingProvenance("role", source, evidence, observedAt),
+    taxonomyMappingProvenance("domain", taxonomy.domain.method, source, evidence, observedAt),
+    taxonomyMappingProvenance("assetClass", taxonomy.assetClass.method, source, evidence, observedAt),
+    taxonomyMappingProvenance("role", taxonomy.role.method, source, evidence, observedAt),
     Object.freeze({
       fieldPath: "attributes",
       source,
       observedAt,
       authority: "authoritative",
+      derivation: "observed",
       evidence: Object.freeze([evidence]),
     }),
   ];
@@ -391,11 +410,13 @@ export function mapGlpiComputerToTechnologyAsset(
   return Object.freeze({
     id: canonicalAssetId(COMPUTER_COLLECTION_PATH, String(record.id)),
     displayName,
-    domain: "IT",
-    assetClass: "compute",
-    role: "custom:glpi-computer",
+    domain,
+    assetClass,
+    role,
+    taxonomy,
     lifecycle: "unknown",
     criticality: "unknown",
+    operationalContexts: Object.freeze([]),
     identifiers: Object.freeze(identifiers),
     sourceReferences: Object.freeze([source]),
     attributes: Object.freeze(attributes),
