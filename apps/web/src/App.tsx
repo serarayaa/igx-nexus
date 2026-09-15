@@ -7,7 +7,19 @@ import { LabelDesigner } from "./LabelDesigner";
 import { RelationshipGraph } from "./RelationshipGraph";
 import { CmdbHealth } from "./CmdbHealth";
 import { NexusShell } from "./NexusShell";
+import { demoProvider } from "./demo-provider";
+import { liveProvider } from "./live-provider";
+import type { InventoryProvider } from "./asset-model";
 import { routeFromHash, type AppRoute } from "./navigation-model";
+
+function configuredInventoryProvider(): { mode: "demo" | "live"; provider: InventoryProvider } {
+  const mode = import.meta.env.VITE_NEXUS_DATA_MODE?.trim() || "demo";
+  if (mode === "demo") return { mode, provider: demoProvider };
+  if (mode === "live") return { mode, provider: liveProvider };
+  throw new Error("VITE_NEXUS_DATA_MODE must be demo or live");
+}
+
+const inventory = configuredInventoryProvider();
 
 function savedRoute(): AppRoute | null {
   const value: unknown = window.history.state?.nexusRoute;
@@ -34,7 +46,8 @@ function routeTitle(route: AppRoute): string {
 }
 
 export function App() {
-  const [route, setRoute] = useState<AppRoute>(() => routeFromHash(window.location.hash) ?? savedRoute() ?? { view: "dashboard" });
+  const defaultRoute: AppRoute = inventory.mode === "live" ? { view: "assets" } : { view: "dashboard" };
+  const [route, setRoute] = useState<AppRoute>(() => routeFromHash(window.location.hash) ?? savedRoute() ?? defaultRoute);
 
   useEffect(() => {
     const onHashChange = () => {
@@ -65,9 +78,9 @@ export function App() {
     : route.view === "health"
       ? <CmdbHealth />
     : route.view === "assets"
-      ? <AssetExplorer />
+      ? <AssetExplorer provider={inventory.provider} />
       : route.view === "asset"
-        ? <Asset360 assetId={route.assetId} />
+        ? <Asset360 assetId={route.assetId} provider={inventory.provider} />
         : route.view === "relations"
           ? <RelationshipGraph assetId={route.assetId} />
         : route.view === "label"
