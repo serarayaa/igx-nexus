@@ -12,7 +12,7 @@ import {
   type TechnologySnapshot,
 } from "@igx-nexus/types";
 import type { TechnologyProvider, TechnologyProviderDescriptor } from "./provider.js";
-import { classifyGlpiTaxonomy, resolvedTaxonomyValue } from "./taxonomy.js";
+import { classifyGlpiTaxonomy, resolvedTaxonomyDecision } from "./taxonomy.js";
 
 export const glpiApiVersions = ["v2.3"] as const;
 export type GlpiApiVersion = (typeof glpiApiVersions)[number];
@@ -358,9 +358,12 @@ export function mapGlpiComputerToTechnologyAsset(
 
   const sourceType = record.type?.name ?? record.type?.completename;
   const taxonomy = classifyGlpiTaxonomy({ itemType: "Computer", ...(sourceType === undefined ? {} : { sourceType }) });
-  const domain = resolvedTaxonomyValue(taxonomy.domain, "domain");
-  const assetClass = resolvedTaxonomyValue(taxonomy.assetClass, "assetClass");
-  const role = resolvedTaxonomyValue(taxonomy.role, "role");
+  const domainDecision = resolvedTaxonomyDecision(taxonomy.domain, "domain");
+  const assetClassDecision = resolvedTaxonomyDecision(taxonomy.assetClass, "assetClass");
+  const roleDecision = resolvedTaxonomyDecision(taxonomy.role, "role");
+  const domain = domainDecision.value;
+  const assetClass = assetClassDecision.value;
+  const role = roleDecision.value;
 
   const attributes: Record<string, TechnologyAttributeValue> = {};
   addAttribute(attributes, "glpi.itemType", "Computer");
@@ -377,12 +380,12 @@ export function mapGlpiComputerToTechnologyAsset(
   addNamedReferenceAttributes(attributes, "glpi.type", record.type);
   addNamedReferenceAttributes(attributes, "glpi.model", record.model);
   addAttribute(attributes, "nexus.taxonomy.version", taxonomy.taxonomyVersion);
-  addAttribute(attributes, "nexus.taxonomy.domain.ruleId", taxonomy.domain.ruleId);
-  addAttribute(attributes, "nexus.taxonomy.domain.reviewRequired", taxonomy.domain.reviewRequired);
-  addAttribute(attributes, "nexus.taxonomy.assetClass.ruleId", taxonomy.assetClass.ruleId);
-  addAttribute(attributes, "nexus.taxonomy.assetClass.reviewRequired", taxonomy.assetClass.reviewRequired);
-  addAttribute(attributes, "nexus.taxonomy.role.ruleId", taxonomy.role.ruleId);
-  addAttribute(attributes, "nexus.taxonomy.role.reviewRequired", taxonomy.role.reviewRequired);
+  addAttribute(attributes, "nexus.taxonomy.domain.ruleId", domainDecision.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.domain.reviewRequired", domainDecision.reviewRequired);
+  addAttribute(attributes, "nexus.taxonomy.assetClass.ruleId", assetClassDecision.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.assetClass.reviewRequired", assetClassDecision.reviewRequired);
+  addAttribute(attributes, "nexus.taxonomy.role.ruleId", roleDecision.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.role.reviewRequired", roleDecision.reviewRequired);
 
   const displayName = record.name ?? `GLPI Computer ${record.id}`;
   const provenance: ProvenanceRecord[] = [
@@ -394,9 +397,9 @@ export function mapGlpiComputerToTechnologyAsset(
       derivation: record.name ? "observed" : "inferred",
       evidence: Object.freeze([evidence]),
     }),
-    taxonomyMappingProvenance("domain", taxonomy.domain.method, source, evidence, observedAt),
-    taxonomyMappingProvenance("assetClass", taxonomy.assetClass.method, source, evidence, observedAt),
-    taxonomyMappingProvenance("role", taxonomy.role.method, source, evidence, observedAt),
+    taxonomyMappingProvenance("domain", domainDecision.method, source, evidence, observedAt),
+    taxonomyMappingProvenance("assetClass", assetClassDecision.method, source, evidence, observedAt),
+    taxonomyMappingProvenance("role", roleDecision.method, source, evidence, observedAt),
     Object.freeze({
       fieldPath: "attributes",
       source,
