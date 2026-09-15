@@ -1,6 +1,6 @@
 # ADR-0018 — Live Asset 360 Vertical Slice
 
-Estado: **Validado en V02-008 / issue #60; pendiente de aceptación definitiva tras merge manual del PR #61**.
+Estado: **Aceptado tras merge manual del PR #61 y CI post-merge #334 verde**.
 
 ## Contexto
 
@@ -86,4 +86,4 @@ Rechazado. La identidad `svc-nexus-api` pertenece al backend; su password/client
 
 ## Gate de aceptación
 
-El gate técnico está **completado**. Este ADR pasa a estado **Aceptado** únicamente después de que Sergio realice el merge manual del PR #61 a `main` y se verifique la CI post-merge.
+El gate técnico y operativo quedó **completado**: PR #61 fue mergeado manualmente a `main` como `6471240dd1e32d1eab59fea94f03e6df552c1aea` y la CI post-merge #334 terminó en `success`.
