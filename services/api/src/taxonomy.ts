@@ -141,12 +141,19 @@ export function classifyGlpiTaxonomy(input: GlpiTaxonomyInput): TechnologyTaxono
   );
 }
 
+export function resolvedTaxonomyDecision<T extends string>(
+  decision: TaxonomyDecision<T>,
+  field: "domain" | "assetClass" | "role",
+): ClassifiedTaxonomyDecision<T> {
+  if (decision.state !== "classified") {
+    throw new TaxonomyMappingError([`taxonomy.${field}_unresolved`]);
+  }
+  return decision;
+}
+
 export function resolvedTaxonomyValue<T extends string>(
   decision: TaxonomyDecision<T>,
   field: "domain" | "assetClass" | "role",
 ): T {
-  if (decision.state !== "classified") {
-    throw new TaxonomyMappingError([`taxonomy.${field}_unresolved`]);
-  }
-  return decision.value;
+  return resolvedTaxonomyDecision(decision, field).value;
 }
