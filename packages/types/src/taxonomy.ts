@@ -4,13 +4,14 @@ import {
   operationalContextKinds,
   otTechnologyAssetClasses,
   otTechnologyRoles,
-  technologyAssetClasses,
   technologyDomains,
   technologyTaxonomyVersion,
   taxonomyClassificationMethods,
   taxonomyClassificationStates,
+  v2TechnologyAssetClasses,
   type OperationalContextReference,
   type TaxonomyDecision,
+  type TechnologyAsset,
   type TechnologyAssetClass,
   type TechnologyDomain,
   type TechnologyRole,
@@ -54,7 +55,6 @@ export function validateTaxonomyDecision<T extends string>(
     issues.push({ code: "taxonomy.state_invalid", path: `${path}.state`, message: "unsupported classification state" });
     return issues;
   }
-
   if (!decision.ruleId.trim()) {
     issues.push({ code: "taxonomy.rule_required", path: `${path}.ruleId`, message: "classification ruleId is required" });
   }
@@ -63,7 +63,7 @@ export function validateTaxonomyDecision<T extends string>(
     const known = allowedValues.includes(decision.value);
     const custom = allowCustom && decision.value.startsWith("custom:") && decision.value.slice("custom:".length).trim().length > 0;
     if (!known && !custom) {
-      issues.push({ code: "taxonomy.value_invalid", path: `${path}.value`, message: "unsupported classification value" });
+      issues.push({ code: "taxonomy.value_invalid", path: `${path}.value`, message: "unsupported v2 classification value" });
     }
     if (!taxonomyClassificationMethods.includes(decision.method)) {
       issues.push({ code: "taxonomy.method_invalid", path: `${path}.method`, message: "unsupported classification method" });
@@ -95,25 +95,40 @@ export function validateTechnologyTaxonomyAssessment(
     issues.push({ code: "taxonomy.version_invalid", path: "taxonomyVersion", message: `taxonomyVersion must be ${technologyTaxonomyVersion}` });
   }
   issues.push(...validateTaxonomyDecision(assessment.domain, technologyDomains, "domain"));
-  issues.push(...validateTaxonomyDecision(assessment.assetClass, technologyAssetClasses, "assetClass"));
+  issues.push(...validateTaxonomyDecision(assessment.assetClass, v2TechnologyAssetClasses, "assetClass"));
   issues.push(...validateTaxonomyDecision(assessment.role, [...itTechnologyRoles, ...otTechnologyRoles], "role", true));
 
   if (assessment.domain.state === "classified" && assessment.assetClass.state === "classified") {
     if (!assetClassBelongsToDomain(assessment.domain.value, assessment.assetClass.value)) {
-      issues.push({
-        code: "taxonomy.domain_class_mismatch",
-        path: "assetClass.value",
-        message: "assetClass is not valid for the classified domain",
-      });
+      issues.push({ code: "taxonomy.domain_class_mismatch", path: "assetClass.value", message: "assetClass is not valid for the classified domain" });
     }
   }
   if (assessment.domain.state === "classified" && assessment.role.state === "classified") {
     if (!technologyRoleBelongsToDomain(assessment.domain.value, assessment.role.value)) {
-      issues.push({
-        code: "taxonomy.domain_role_mismatch",
-        path: "role.value",
-        message: "role is not valid for the classified domain",
-      });
+      issues.push({ code: "taxonomy.domain_role_mismatch", path: "role.value", message: "role is not valid for the classified domain" });
+    }
+  }
+  return issues;
+}
+
+/** Valida que la proyección escalar de un asset v2 coincida con su assessment. */
+export function validateAssetTaxonomyProjection(
+  asset: TechnologyAsset,
+  path = "asset",
+): readonly TaxonomyValidationIssue[] {
+  if (!asset.taxonomy) return [];
+  const issues = [...validateTechnologyTaxonomyAssessment(asset.taxonomy)];
+  const comparisons: readonly ["domain" | "assetClass" | "role", string][] = [
+    ["domain", asset.domain],
+    ["assetClass", asset.assetClass],
+    ["role", asset.role],
+  ];
+  for (const [field, projectedValue] of comparisons) {
+    const decision = asset.taxonomy[field];
+    if (decision.state !== "classified") {
+      issues.push({ code: "taxonomy.projection_unresolved", path: `${path}.${field}`, message: "canonical projection requires a classified taxonomy decision" });
+    } else if (decision.value !== projectedValue) {
+      issues.push({ code: "taxonomy.projection_mismatch", path: `${path}.${field}`, message: "canonical value does not match taxonomy assessment" });
     }
   }
   return issues;
