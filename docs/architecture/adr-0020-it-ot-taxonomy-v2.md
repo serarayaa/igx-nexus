@@ -4,50 +4,47 @@ Estado: **Propuesto — V02-010 / PR #67**. Se considerará aceptado tras merge 
 
 ## Contexto
 
-V02-001 creó un modelo canónico mínimo con `domain`, `assetClass` y `role`, suficiente para desacoplar NEXUS de las clases de GLPI. Sin embargo, el vocabulario inicial mezclaba varias dimensiones: `compute` y `control` actuaban como clases amplias, mientras valores como `laptop`, `server`, `plc` o `hmi` aparecían como roles aunque describen principalmente forma, subtipo o familia técnica.
-
-V02-005 añadió además un mapping deliberadamente conservador para el primer vertical Live:
+V02-001 creó un modelo canónico mínimo con `domain`, `assetClass` y `role`, suficiente para desacoplar NEXUS de GLPI, pero el vocabulario inicial mezclaba forma física y función (`compute`, `control`, `laptop`, `server`, `plc`, `hmi`). V02-005 añadió un mapping provisional para habilitar el primer vertical Live:
 
 ```text
 GLPI Computer → IT / compute / custom:glpi-computer
 ```
 
-Ese mapping permitió validar la integración real, pero no constituye una taxonomía defendible para una plataforma IT/OT multisource.
+Ese mapping cumplió su propósito de integración, pero no es una taxonomía defendible para un Intelligence Layer multisource IT/OT. V02-009 dejó además pendiente cómo preservar taxonomía y contexto durante reconciliation.
 
-V02-009 dejó explícitamente la política taxonómica completa pendiente. V02-010 resuelve esa deuda bajo el principio:
+V02-010 resuelve ambas deudas bajo dos principios:
 
 > **IT and OT share a platform, not a taxonomy.**
+>
+> **Evidence before inference.**
 
-## Evidencia externa que influyó en la decisión
+## Evidencia externa
 
-La investigación no se utilizó para copiar un estándar o producto, sino para separar conceptos que distintas herramientas maduras mantienen independientes.
+La investigación contrastó fuentes primarias y patrones de productos maduros:
 
-| Fuente | Observación útil | Adaptación NEXUS |
+| Fuente | Hallazgo relevante | Adaptación NEXUS |
 | --- | --- | --- |
-| NIST SP 800-82 Rev. 3 | OT se caracteriza por interactuar/controlar el entorno físico y por requisitos particulares de seguridad, disponibilidad y confiabilidad. | OT no se modela como un subtipo genérico de endpoint IT y no se deduce únicamente de la forma física del equipo. |
-| ISA-95 | Los niveles 0–4 describen fronteras lógicas de actividad e integración, no una lista universal de clases de hardware. | Un nivel ISA-95/Purdue no pertenece a `assetClass` ni `role`; podrá representarse como contexto cuando exista evidencia. |
-| ISA/IEC 62443 | Zones y conduits describen segmentación/contexto de ciberseguridad del sistema bajo consideración. | `security_zone` es contexto; un conduit o flujo corresponde a relaciones/topología, no a clase del activo. |
-| GLPI | `ComputerType`/Asset Type es vocabulario administrable por cada instancia; GLPI no entrega una taxonomía universal predefinida de Notebook/Server/etc. | `GLPI item type` y `GLPI Type` se preservan como evidencia de fuente y sólo se normalizan mediante reglas explícitas. Type ausente queda `unknown`; Type presente sin mapping queda `unclassified`. |
-| NetBox / Nautobot | Device Type representa hardware/modelo; Device Role representa función; Location/Platform son dimensiones separadas. | NEXUS separa clase, función y contexto operacional. |
-| Microsoft Defender for IoT | Device Type/Subtype, Purdue Level, Site y Zone aparecen como dimensiones separadas del inventario. | Refuerza filtros/facetas independientes, no una mega-jerarquía única. |
-| ServiceNow OT | OT puede extender CIs basados tanto en hardware específico industrial como en hardware de clase IT —computadores, servidores y red— usado dentro de sistemas OT. | Un `Computer` o `Server` no demuestra por sí solo `domain=IT`; dominio y función requieren evidencia contextual o reglas gobernadas. |
-| Carbon / patrones de faceted navigation | Interfaces densas necesitan filtros independientes, búsqueda en listas largas y progressive disclosure. | La taxonomía se diseña para futuras facetas Domain / Class / Role / Context / Review state. |
+| NIST SP 800-82 Rev. 3 | OT se define por interacción/control del entorno físico y requisitos operacionales, no por apariencia del hardware. | No inferir IT/OT sólo desde `Computer`, modelo o fabricante. |
+| ISA-95 | Los niveles describen fronteras lógicas/funcionales. | Purdue/ISA-95 es contexto, no `assetClass`. |
+| ISA/IEC 62443 | Zones/conduits representan segmentación y comunicación del sistema bajo consideración. | `security_zone` pertenece a contexto; conduits/flows pertenecen a relaciones. |
+| GLPI | Asset Type / ComputerType es vocabulario configurable por instancia; no existe un catálogo universal predefinido. | Preservar Type como evidencia y mapear sólo mediante reglas explícitas. |
+| NetBox / Nautobot | Device Type/modelo físico y Device Role/función son dimensiones separadas. | Separar clase, rol y contexto. |
+| Microsoft Defender for IoT | Type/Subtype, Purdue Level, Site y Zone son dimensiones distintas. | Futuras facetas independientes, no mega-jerarquía. |
+| ServiceNow OT | CIs OT pueden estar montados sobre hardware típico de IT: computadores, servidores y red. | `Notebook`, `Server` o `NetworkEquipment` no prueban `domain=IT`. |
 
-Fuentes primarias y referencias:
+Referencias principales:
 
 - NIST SP 800-82 Rev. 3: <https://csrc.nist.gov/pubs/sp/800/82/r3/final>
 - ISA-95: <https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard>
 - ISA/IEC 62443: <https://www.isa.org/standards-and-publications/isa-standards/isa-iec-62443-series-of-standards>
-- GLPI — Asset type: <https://help.glpi-project.org/documentation/tabs/common_fields/asset_type>
-- NetBox device types: <https://netboxlabs.com/docs/netbox/models/dcim/devicetype/>
-- Nautobot roles: <https://docs.nautobot.com/projects/core/en/stable/user-guide/core-data-model/organization/role/>
-- Microsoft Defender for IoT device inventory: <https://learn.microsoft.com/azure/defender-for-iot/organizations/how-to-manage-device-inventory-for-organizations>
-- ServiceNow OT CI extension model: documentación pública de Operational Technology Management / OT CIs.
-- Carbon Data Table: <https://carbondesignsystem.com/components/data-table/usage/>
+- GLPI Asset Type: <https://help.glpi-project.org/documentation/tabs/common_fields/asset_type>
+- NetBox Device Type: <https://netboxlabs.com/docs/netbox/models/dcim/devicetype/>
+- Nautobot Role: <https://docs.nautobot.com/projects/core/en/stable/user-guide/core-data-model/organization/role/>
+- Microsoft Defender for IoT inventory: <https://learn.microsoft.com/azure/defender-for-iot/organizations/how-to-manage-device-inventory-for-organizations>
 
 ## Decisión
 
-### 1. Domain es semántica, no estado
+### 1. `domain` es semántica, no estado de conocimiento
 
 `TechnologyDomain` permanece cerrado a:
 
@@ -55,13 +52,9 @@ Fuentes primarias y referencias:
 IT | OT
 ```
 
-No se agregan `shared`, `hybrid`, `unknown` ni `unclassified` por conveniencia. Esos conceptos describen ambigüedad, ausencia de evidencia o estado del proceso de clasificación, no un tercer dominio tecnológico.
+`unknown`, `unclassified`, `conflict`, `hybrid` y `shared` no son domains. La incertidumbre vive en `TechnologyTaxonomyAssessment`.
 
-Un equipo construido sobre hardware habitual de IT puede cumplir una función OT. Por ello `itemType=Computer`, fabricante, modelo, sistema operativo o apariencia física no bastan para afirmar `domain=IT`.
-
-### 2. Asset Class responde “¿qué clase de tecnología es?”
-
-V02-010 introduce catálogos diferenciados.
+### 2. `assetClass` describe clase tecnológica
 
 IT:
 
@@ -91,11 +84,11 @@ metering_device
 industrial_gateway
 ```
 
-La granularidad se mantiene estable y útil para inventario. Un fabricante, modelo comercial, nivel Purdue o vocabulario específico de una fuente no se convierte automáticamente en clase canónica.
+La clase no contiene fabricante, modelo, planta, sistema, nivel Purdue ni zone.
 
-### 3. Role responde “¿qué función cumple?”
+### 3. `role` describe función
 
-Roles IT iniciales:
+IT:
 
 ```text
 user_endpoint
@@ -112,7 +105,7 @@ print_service
 infrastructure_service
 ```
 
-Roles OT iniciales:
+OT:
 
 ```text
 engineering_workstation
@@ -129,48 +122,46 @@ industrial_security
 protocol_gateway
 ```
 
-Un role puede evolucionar mediante `custom:<name>` cuando exista una necesidad justificada y auditable. Los valores custom no habilitan clases arbitrarias.
+`custom:<name>` queda disponible como escape gobernado para funciones legítimas no cubiertas por el catálogo.
 
-### 4. Assessment y scalar projection son conceptos distintos
+### 4. Assessment explícito
 
-`TechnologyTaxonomyAssessment` conserva una decisión para cada dimensión:
-
-- `classified`;
-- `unknown`;
-- `unclassified`;
-- `conflict`.
-
-Una decisión clasificada registra además:
-
-- valor;
-- método: `observed | normalized | inferred | manual`;
-- `reviewRequired`;
-- `ruleId`;
-- `reasonCode` cuando aporta explicación.
-
-`unknown`, `unclassified` y `conflict` requieren revisión humana. No contienen un valor canónico fingido.
-
-Cuando una dimensión está `classified`, `TechnologyAsset.domain / assetClass / role` debe coincidir con ese valor. Durante el puente V02-010 → V02-011, una decisión no resuelta puede convivir con un scalar de compatibilidad requerido por consumidores legacy. Ese scalar **no cambia ni resuelve el assessment** y debe quedar marcado como fallback.
-
-### 5. Método de clasificación y autoridad son independientes
-
-V02-009 ya modela autoridad y provenance. V02-010 añade `ProvenanceRecord.derivation` para indicar cómo se obtuvo el valor.
-
-Ejemplo:
+Cada dimensión tiene una `TaxonomyDecision`:
 
 ```text
-source = GLPI (authoritative para inventario)
-GLPI type = Notebook (observado)
-assetClass = endpoint (normalizado por NEXUS)
-domain = IT (inferido desde un Type configurable, reviewRequired)
-role = user_endpoint (inferido, reviewRequired)
+classified
+unknown
+unclassified
+conflict
 ```
 
-Que GLPI sea una fuente autoritativa no convierte una inferencia de NEXUS en un hecho observado.
+Una decisión `classified` contiene:
 
-### 6. System / operational context no es Asset Class
+- `value`;
+- `method = observed | normalized | inferred | manual`;
+- `reviewRequired`;
+- `ruleId`;
+- `reasonCode` cuando aporta contexto.
 
-Se introduce `OperationalContextReference` con kinds iniciales:
+Los estados no resueltos requieren revisión humana y no contienen un valor fingido.
+
+### 5. Método y autoridad son independientes
+
+V02-009 ya modela authority/provenance. V02-010 agrega `ProvenanceRecord.derivation` para registrar **cómo** se obtuvo un claim sin confundir eso con la autoridad de la fuente.
+
+Ejemplo válido:
+
+```text
+source authority = authoritative
+source Type = HMI
+assetClass derivation = normalized
+role derivation = inferred
+reviewRequired = true
+```
+
+### 6. Operational Context es ortogonal
+
+`OperationalContextReference` introduce:
 
 ```text
 system
@@ -182,15 +173,13 @@ security_zone
 custom:*
 ```
 
-Esto permite referenciar contextos sin hardcodear plantas, sistemas internos o topologías dentro de la taxonomía.
+Purdue/ISA-95, site y IEC 62443 zones pueden expresarse como contexto cuando exista evidencia. No se incorporan a `assetClass` ni `role`.
 
-V02-010 **no** convierte esos contextos en `TechnologyAsset` ni define todavía su grafo completo. Las relaciones/evidence de contexto se expandirán cuando el dominio lo necesite.
+### 7. Mapping GLPI: hardware genérico no determina IT
 
-### 7. Mapping GLPI centralizado, gobernado y fail-explicit
+El mapping vive centralizado en `services/api/src/taxonomy.ts`.
 
-El mapping GLPI vive en `services/api/src/taxonomy.ts`.
-
-La regla base es:
+Reglas base:
 
 ```text
 GLPI item type != NEXUS assetClass
@@ -198,153 +187,150 @@ GLPI Type != NEXUS role
 hardware shape != NEXUS domain
 ```
 
-El primer vertical sigue leyendo `Assets/Computer`. Como `ComputerType` es configurable en GLPI, los aliases reconocidos son una política NEXUS explícita, no un supuesto sobre todas las instalaciones GLPI.
+Como `ComputerType` es configurable, NEXUS no trata sus nombres como estándar universal.
 
-| GLPI item type | GLPI Type normalizado | Assessment NEXUS |
-| --- | --- | --- |
-| Computer | Notebook / Laptop / Desktop / Workstation | IT inferido / endpoint / user_endpoint* |
-| Computer | Server / Physical Server | IT inferido / server / infrastructure_service* |
-| Computer | Engineering Workstation / Industrial Workstation | OT / industrial_compute / engineering_workstation |
-| Computer | HMI / Human Machine Interface / Operator Station | OT / operator_interface / supervision* |
-| Computer | Historian / Historian Server | OT / industrial_compute / historian |
-| Computer | Type ausente | `unknown / unknown / unknown` |
-| Computer | Type presente sin regla | `unclassified / unclassified / unclassified` |
-| otro item type sin regla | cualquier Type | `unclassified / unclassified / unclassified` |
+| GLPI Type | Assessment NEXUS |
+| --- | --- |
+| Notebook / Laptop / Desktop / Workstation | `unclassified / unclassified / unclassified` |
+| Server / Physical Server | `unclassified / unclassified / unclassified` |
+| Engineering Workstation / Industrial Workstation | `OT / industrial_compute / engineering_workstation` + reviewRequired |
+| HMI / Human Machine Interface / Operator Station | `OT / operator_interface / supervision` + reviewRequired |
+| Historian / Historian Server | `OT / industrial_compute / historian` + reviewRequired |
+| Type ausente | `unknown / unknown / unknown` |
+| Type presente sin regla | `unclassified / unclassified / unclassified` |
+| item type futuro sin regla | `unclassified / unclassified / unclassified` |
 
-`*` indica una dimensión inferida que requiere revisión porque el nombre configurable del Type no demuestra por sí solo el contexto/función real.
+Los tipos puramente físicos permanecen no resueltos porque el mismo hardware puede pertenecer a IT u OT según sistema/función. Los aliases con semántica operacional explícita se normalizan, pero siguen marcados para revisión porque el vocabulario upstream es configurable.
 
-No se usan heurísticas ocultas basadas en hostname, modelo, fabricante o strings parciales para “adivinar” IT/OT.
+No se usan hostname, modelo, fabricante ni coincidencias parciales para adivinar la clasificación.
 
-### 8. Bridge de compatibilidad visible
+### 8. Bridge legacy visible y temporal
 
-V02-008 y consumidores heredados todavía esperan scalars concretos. Para no convertir V02-010 en un big-bang, `projectGlpiTaxonomyForLegacyScalars()` aplica:
+El contrato base `0.2` y V02-008 todavía requieren scalars concretos `domain/assetClass/role`. Para evitar un big-bang:
 
 ```text
 assessment completamente classified
-→ usar sus valores
+→ scalars = valores del assessment
 → compatibilityFallback = false
 
-assessment con unknown/unclassified/conflict
-→ scalar temporal IT / endpoint / user_endpoint
+assessment unknown/unclassified/conflict
+→ scalars temporales = IT / endpoint / user_endpoint
 → compatibilityFallback = true
-→ ruleId = glpi.computer.compatibility-projection
+→ projectionRuleId = glpi.computer.compatibility-projection
 ```
 
-El adapter registra `nexus.taxonomy.*.state`, `ruleId`, `reviewRequired`, `compatibilityProjection` y `projectionRuleId`. Así una pantalla legacy puede seguir funcionando sin que analytics o una futura UI confundan el fallback con una clasificación resuelta.
+El bridge **no modifica el assessment**. El adapter publica:
 
-V02-011 debe retirar este bridge al migrar dataset y consumidores al assessment v2.
+```text
+nexus.taxonomy.<dimension>.state
+nexus.taxonomy.<dimension>.ruleId
+nexus.taxonomy.<dimension>.reviewRequired
+nexus.taxonomy.compatibilityProjection
+nexus.taxonomy.projectionRuleId
+```
+
+V02-011 debe retirar este bridge al migrar consumers/dataset legacy.
 
 ### 9. Reconciliation es taxonomy-aware
 
-V02-009 ya conservaba claims, conflictos y provenance, pero su `projectCanonicalAsset()` original no preservaba `taxonomy` ni `operationalContexts` porque esos campos no existían entonces.
+V02-009 se integró antes de que existieran `taxonomy` y `operationalContexts`; su canonical projection original no podía preservarlos. V02-010 extiende `projectCanonicalAsset()` para:
 
-V02-010 extiende la proyección:
+- conservar/reconstruir `TechnologyTaxonomyAssessment`;
+- fusionar `operationalContexts` de forma determinista;
+- conservar el assessment asociado al claim ganador cuando la política resuelve una discrepancia;
+- producir `state=conflict`, `reviewRequired=true` cuando una discrepancia taxonómica queda empatada/no resoluble;
+- producir `unclassified` si el claim elegido proviene de un registro legacy sin assessment v2;
+- mantener claims alternativos y conflictos en el envelope V02-009;
+- incluir `derivation` en la deduplicación de provenance.
 
-- fusiona `operationalContexts` de forma determinista;
-- conserva la decisión taxonómica asociada al claim seleccionado;
-- si la política resuelve una discrepancia, conserva el assessment del claim ganador y los claims alternativos permanecen en el envelope;
-- si existe empate taxonómico no resoluble, el assessment resultante usa `state=conflict`, `reviewRequired=true` y razón explícita;
-- si gana un claim legacy sin assessment v2, la dimensión queda `unclassified` en lugar de inventar método/valor;
-- `derivation` participa en la deduplicación de provenance para no colapsar evidencia obtenida de forma distinta.
+El scalar preservado por estabilidad durante un conflicto no significa que el conflicto se considere resuelto.
 
-Esto evita que reconciliar fuentes degrade la explicabilidad introducida por V02-010.
+### 10. Gate v2 aditivo
 
-### 10. Migración aditiva, sin big-bang
+Para no romper el schema `0.2` durante la migración:
 
-El snapshot continúa en schema `0.2` para no romper V02-008/V02-009 durante este ticket.
+- `TechnologyAsset.taxonomy` y `operationalContexts` son opcionales en el contrato base;
+- providers migrados deben emitirlos y pasar `validateTechnologySnapshotTaxonomy()`;
+- `validateTechnologySnapshot()` sigue cubriendo el contrato base;
+- el gate taxonómico valida catálogo v2, invariantes Domain/Class/Role, scalar projection cuando la decisión está `classified`, context kind/source y existencia de assessment;
+- aliases legacy permanecen temporalmente en el tipo base, pero son inválidos dentro del assessment v2.
 
-Por ello:
+Demo y GLPI Live ejecutan ambos gates.
 
-- `TechnologyAsset.taxonomy` y `operationalContexts` son opcionales en el contrato base durante el puente V02-010 → V02-011;
-- providers migrados a v2 deben emitir assessment/context y pasar el gate v2;
-- `validateTechnologySnapshotTaxonomy()` valida estructura, invariantes y contextos;
-- aliases legacy permanecen temporalmente en el tipo base, pero son rechazados dentro de un `TechnologyTaxonomyAssessment` v2;
-- un assessment no resuelto puede coexistir temporalmente con scalar legacy, pero nunca se considera `classified` por ello.
+## Alternativas rechazadas
 
-Demo y GLPI Live ejecutan tanto `validateTechnologySnapshot()` como `validateTechnologySnapshotTaxonomy()`.
+### `Computer = IT`
 
-## Alternativas evaluadas y rechazadas
+Rechazada. Hardware de clase PC/server/network puede formar parte de OT.
 
-### Copiar directamente GLPI item types
+### `Notebook/Server = IT` por Type
 
-**Rechazada.** Acopla el dominio al proveedor y no resuelve Type configurable ni OT.
+Rechazada. Sigue siendo forma física/configurable y no prueba el sistema o función donde opera.
 
-### Asumir `Computer = IT`
+### Copiar item types GLPI
 
-**Rechazada.** Hardware de clase PC/server/network puede participar en sistemas OT. Sin evidencia/contexto suficiente, NEXUS debe conservar `unknown` o `unclassified`.
+Rechazada. Acopla NEXUS al proveedor y a vocabulario configurable.
 
-### Usar `domain = hybrid/shared/unknown`
+### `domain = hybrid/shared/unknown`
 
-**Rechazada.** Mezcla estado de conocimiento con semántica tecnológica. La ambigüedad se conserva como decisión no resuelta.
+Rechazada. Mezcla estado de conocimiento con semántica tecnológica.
 
-### Poner PLC/HMI/Notebook en `role`
+### PLC/HMI/Notebook como `role`
 
-**Rechazada.** Confunde forma/subtipo con función. Un mismo tipo físico puede cumplir roles distintos.
+Rechazada. Mezcla subtipo físico/familia con función.
 
-### Modelar Purdue/ISA-95 como jerarquía de clases
+### Purdue/ISA-95 como jerarquía de clases
 
-**Rechazada.** Los niveles sirven como contexto lógico/operacional y no describen de forma universal la clase del activo.
+Rechazada. Describe contexto lógico/operacional.
 
-### Convertir zones de IEC 62443 en clases OT
+### IEC 62443 zone como clase OT
 
-**Rechazada.** Una zona representa un agrupamiento de ciberseguridad; pertenece a contexto/topología.
-
-### Mega-enumeración cerrada de todo hardware IT/OT
-
-**Rechazada.** Sería frágil, difícil de gobernar y convertiría modelos/subtipos específicos en cambios de contrato.
+Rechazada. Es contexto de ciberseguridad/topología.
 
 ### Strings libres para todas las dimensiones
 
-**Rechazada.** Oculta typos/sinónimos, impide analytics consistente y vuelve imposible validar mappings.
+Rechazada. Impiden validación, analytics consistente y gobernanza.
 
-### Descartar taxonomía durante reconciliation
+### Descartar taxonomy/context durante reconciliation
 
-**Rechazada.** Rompe provenance y puede convertir una proyección escalar en verdad no explicable después de unir fuentes.
+Rechazada. Rompe provenance y explicabilidad multisource.
+
+## Consecuencias
+
+Positivas:
+
+- IT y OT comparten plataforma sin colapsar su semántica;
+- hardware, clase, función y contexto quedan separados;
+- incertidumbre/conflictos permanecen visibles;
+- source vocabulary no se convierte en contrato canónico sin reglas;
+- futuras fuentes pueden aportar evidencia sin mappings dispersos;
+- analytics futuros podrán filtrar por classification state/reviewRequired;
+- reconciliation ya no pierde taxonomy/context.
+
+Costos/deuda visible:
+
+- existe un bridge de scalars/aliases legacy hasta V02-011;
+- el mapping inicial formaliza únicamente `Computer`;
+- aliases de Type deberán gobernarse contra la configuración real de la instancia;
+- todavía no existe UI/persistencia de revisión manual;
+- Operational Context es referencia, no grafo completo;
+- V02-010 no implementa active scanning OT ni cambios de configuración en equipos.
 
 ## UX futura
 
-La UI no debe mostrar la taxonomía como un único árbol profundo. Asset Explorer 2.0 debería tratar al menos estas dimensiones como facetas independientes:
+Asset Explorer 2.0 debería tratar como facetas independientes:
 
 ```text
 Domain | Asset Class | Role | Operational Context | Classification State | Review Required
 ```
 
-Listas largas deberán soportar búsqueda. La pantalla de detalle podrá mostrar progresivamente método, regla, fallback y provenance cuando el usuario necesite explicar una clasificación, sin convertir cada fila del Explorer en una auditoría completa.
-
-Una UI futura debe diferenciar visualmente:
-
-```text
-classified
-inferred/review required
-unknown
-unclassified
-conflict
-compatibility fallback
-```
-
-## Consecuencias positivas
-
-- IT y OT pueden convivir sin reducir OT a endpoints IT con otra etiqueta;
-- clase y función quedan separadas;
-- incertidumbre y conflictos permanecen visibles;
-- source vocabulary no contamina el contrato canónico;
-- futuras fuentes pueden aportar claims sin duplicar mappings dispersos;
-- analytics y filtros futuros disponen de dimensiones estables;
-- provenance puede explicar por qué una clasificación existe;
-- reconciliation ya no elimina taxonomy/context.
-
-## Costos y límites
-
-- existe un bridge temporal de scalars/aliases legacy hasta V02-011;
-- el mapping inicial GLPI sólo formaliza `Computer`; otros item types requieren reglas futuras antes de proyectarse;
-- los aliases de Type son gobernados por NEXUS y deberán revisarse contra la configuración real de cada instancia;
-- todavía no existe UI de revisión humana;
-- operational context es referencia, no entidad/grafo completo;
-- V02-010 no define persistencia durable del catálogo ni historial de decisiones taxonómicas;
-- una taxonomía seria necesitará gobernanza para `custom:*`, reglas manuales y evolución versionada.
+Una UI futura debe diferenciar visualmente `classified`, `inferred/review required`, `unknown`, `unclassified`, `conflict` y `compatibility fallback`.
 
 ## Relación con ADR anteriores
 
-- ADR-0002 sigue vigente para **representación dentro de GLPI**, no como taxonomía canónica NEXUS.
-- ADR-0011 queda refinado: mantiene `domain / assetClass / role`, pero V02-010 corrige la semántica y granularidad de clase/rol.
-- ADR-0019 permanece vigente: evidencia, claims, conflictos y autoridad no se descartan; V02-010 añade método de derivación, assessment taxonómico y preservación de taxonomy/context durante canonical projection.
+- ADR-0002 sigue vigente para representación/configuración dentro de GLPI, no como taxonomía canónica NEXUS.
+- ADR-0011 mantiene la estructura `domain / assetClass / role`, refinada semánticamente por este ADR.
+- ADR-0015 conserva transporte, identidad inicial y mapping histórico V02-005; este ADR reemplaza su semántica taxonómica provisional para código nuevo.
+- ADR-0019 conserva Evidence before inference, claims, conflictos y canonical identity; este ADR añade assessment taxonómico, derivation y preservación de context durante reconciliation.
+
+Ver también [IT/OT Taxonomy v2](../taxonomy-v2.md) y [Threat Model Addendum V02-010](../security/threat-model-v02-010-taxonomy-addendum.md).
