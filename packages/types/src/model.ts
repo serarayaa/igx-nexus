@@ -4,10 +4,7 @@ export type TechnologySchemaVersion = typeof technologySchemaVersion;
 export const technologyTaxonomyVersion = "2" as const;
 export type TechnologyTaxonomyVersion = typeof technologyTaxonomyVersion;
 
-/**
- * Domain expresa el dominio tecnológico, no el estado de clasificación.
- * `unknown`, `unclassified` y equivalentes pertenecen a TaxonomyDecision.
- */
+/** Domain expresa semántica tecnológica; estados de clasificación viven en TaxonomyDecision. */
 export const technologyDomains = ["IT", "OT"] as const;
 export type TechnologyDomain = (typeof technologyDomains)[number];
 
@@ -35,16 +32,35 @@ export const otTechnologyAssetClasses = [
   "industrial_gateway",
 ] as const;
 
-export const technologyAssetClasses = [
+/** Catálogo gobernado por V02-010. */
+export const v2TechnologyAssetClasses = [
   ...itTechnologyAssetClasses,
   ...otTechnologyAssetClasses,
 ] as const;
-export type TechnologyAssetClass = (typeof technologyAssetClasses)[number];
 
 /**
- * Role responde a la función que cumple un activo. No representa modelo comercial,
- * item type de una fuente ni subtipo físico (por ejemplo PLC/RTU).
+ * Alias v0.2 previos a V02-010. Sólo preservan compatibilidad durante la migración;
+ * una TechnologyTaxonomyAssessment v2 nunca los considera valores válidos.
  */
+export const legacyTechnologyAssetClasses = [
+  "compute",
+  "network",
+  "mobile",
+  "control",
+  "monitoring",
+  "industrial_network",
+  "field_edge",
+  "energy_plant",
+  "other",
+] as const;
+
+export const technologyAssetClasses = [
+  ...v2TechnologyAssetClasses,
+  ...legacyTechnologyAssetClasses,
+] as const;
+export type TechnologyAssetClass = (typeof technologyAssetClasses)[number];
+
+/** Role expresa función; no modelo comercial, item type ni subtipo físico. */
 export const itTechnologyRoles = [
   "user_endpoint",
   "application_server",
@@ -75,27 +91,49 @@ export const otTechnologyRoles = [
   "protocol_gateway",
 ] as const;
 
-export const knownTechnologyRoles = [
-  ...itTechnologyRoles,
-  ...otTechnologyRoles,
+export const v2TechnologyRoles = [...itTechnologyRoles, ...otTechnologyRoles] as const;
+
+/** Alias funcionalmente ambiguos heredados; se retirarán con la migración de consumidores. */
+export const legacyTechnologyRoles = [
+  "laptop",
+  "desktop",
+  "server",
+  "virtual_machine",
+  "switch",
+  "router",
+  "firewall",
+  "access_point",
+  "smartphone",
+  "tablet",
+  "monitor",
+  "printer",
+  "docking_station",
+  "plc",
+  "rtu",
+  "hmi",
+  "scada_server",
+  "industrial_switch",
+  "industrial_firewall",
+  "industrial_gateway",
+  "ied",
+  "sensor",
+  "actuator",
+  "edge_gateway",
+  "meter",
+  "inverter",
+  "protection_relay",
+  "plant_controller",
+  "other",
 ] as const;
+
+export const knownTechnologyRoles = [...v2TechnologyRoles, ...legacyTechnologyRoles] as const;
 export type KnownTechnologyRole = (typeof knownTechnologyRoles)[number];
 export type TechnologyRole = KnownTechnologyRole | `custom:${string}`;
 
-export const taxonomyClassificationStates = [
-  "classified",
-  "unknown",
-  "unclassified",
-  "conflict",
-] as const;
+export const taxonomyClassificationStates = ["classified", "unknown", "unclassified", "conflict"] as const;
 export type TaxonomyClassificationState = (typeof taxonomyClassificationStates)[number];
 
-export const taxonomyClassificationMethods = [
-  "observed",
-  "normalized",
-  "inferred",
-  "manual",
-] as const;
+export const taxonomyClassificationMethods = ["observed", "normalized", "inferred", "manual"] as const;
 export type TaxonomyClassificationMethod = (typeof taxonomyClassificationMethods)[number];
 
 export interface ClassifiedTaxonomyDecision<T extends string> {
@@ -123,10 +161,6 @@ export interface ConflictingTaxonomyDecision<T extends string> {
   readonly reasonCode: string;
 }
 
-/**
- * Un resultado de clasificación es explícito: puede producir un valor canónico,
- * permanecer sin clasificar o conservar un conflicto sin convertirlo en un hecho.
- */
 export type TaxonomyDecision<T extends string> =
   | ClassifiedTaxonomyDecision<T>
   | UnresolvedTaxonomyDecision
@@ -182,10 +216,6 @@ export type SourceSystem = KnownSourceSystem | `custom:${string}`;
 export const authorityLevels = ["authoritative", "trusted", "observed", "inferred", "unknown"] as const;
 export type AuthorityLevel = (typeof authorityLevels)[number];
 
-/**
- * Identifica un registro en una fuente aguas arriba sin convertir esa clave en la
- * identidad canónica de NEXUS. `externalId` es opaco para el dominio.
- */
 export interface SourceReference {
   readonly source: SourceSystem;
   readonly externalId: string;
@@ -205,23 +235,18 @@ export interface EvidenceReference {
   readonly observedAt?: string;
 }
 
-/** Procedencia de un claim o atributo normalizado. */
 export interface ProvenanceRecord {
   readonly fieldPath: string;
   readonly source: SourceReference;
   readonly observedAt: string;
   readonly ingestedAt?: string;
   readonly authority: AuthorityLevel;
-  /** Describe cómo NEXUS obtuvo el valor sin confundir derivación con autoridad. */
+  /** Separado de authority: indica si el valor fue observado, normalizado, inferido o manual. */
   readonly derivation?: TaxonomyClassificationMethod;
   readonly confidence?: number;
   readonly evidence?: readonly EvidenceReference[];
 }
 
-/**
- * Referencia a un contexto operacional. No convierte sitio, sistema o zona en un
- * TechnologyAsset y deja su entidad/relaciones completas para tickets posteriores.
- */
 export interface OperationalContextReference {
   readonly id: string;
   readonly kind: OperationalContextKind;
@@ -242,10 +267,6 @@ export const assetIdentifierKinds = [
 export type KnownAssetIdentifierKind = (typeof assetIdentifierKinds)[number];
 export type AssetIdentifierKind = KnownAssetIdentifierKind | `custom:${string}`;
 
-/**
- * Identificador observado. Puede aportar evidencia para reconciliación futura,
- * pero ninguno de estos valores reemplaza por sí solo a `TechnologyAsset.id`.
- */
 export interface AssetIdentifier {
   readonly kind: AssetIdentifierKind;
   readonly value: string;
@@ -255,19 +276,20 @@ export interface AssetIdentifier {
 export type TechnologyScalar = string | number | boolean | null;
 export type TechnologyAttributeValue = TechnologyScalar | readonly TechnologyScalar[];
 
-/** Contrato canónico de un activo/CI dentro de IGX NEXUS. */
 export interface TechnologyAsset {
-  /** Identidad estable emitida por NEXUS, independiente de cualquier sistema fuente. */
   readonly id: string;
   readonly displayName: string;
-  /** Proyección canónica resuelta; taxonomy conserva método, incertidumbre y revisión. */
   readonly domain: TechnologyDomain;
   readonly assetClass: TechnologyAssetClass;
   readonly role: TechnologyRole;
-  readonly taxonomy: TechnologyTaxonomyAssessment;
+  /**
+   * Assessment v2. Opcional durante el puente de migración V02-010→V02-011;
+   * providers v2 nuevos deben emitirlo.
+   */
+  readonly taxonomy?: TechnologyTaxonomyAssessment;
   readonly lifecycle: LifecycleState;
   readonly criticality: Criticality;
-  readonly operationalContexts: readonly OperationalContextReference[];
+  readonly operationalContexts?: readonly OperationalContextReference[];
   readonly identifiers: readonly AssetIdentifier[];
   readonly sourceReferences: readonly SourceReference[];
   readonly attributes: Readonly<Record<string, TechnologyAttributeValue>>;
@@ -298,7 +320,6 @@ export type ObservationValue =
   | { readonly kind: "string"; readonly value: string }
   | { readonly kind: "boolean"; readonly value: boolean };
 
-/** Señal temporal. No representa CMDB Health ni un Device Health score. */
 export interface Observation {
   readonly id: string;
   readonly assetId: string;
@@ -313,10 +334,6 @@ export interface Observation {
   readonly evidence?: readonly EvidenceReference[];
 }
 
-/**
- * Relaciones entre TechnologyAsset canónicos. Ubicaciones, sitios y otros contextos
- * no tecnológicos se modelarán con contratos propios antes de participar del grafo.
- */
 export const knownRelationshipTypes = [
   "depends_on",
   "uses",
@@ -350,7 +367,6 @@ export interface TechnologyRelationship {
   readonly evidence: readonly RelationshipEvidence[];
 }
 
-/** Snapshot coherente de dominio; los providers demo/live futuros compartirán este contrato. */
 export interface TechnologySnapshot {
   readonly schemaVersion: TechnologySchemaVersion;
   readonly asOf: string;
@@ -359,7 +375,6 @@ export interface TechnologySnapshot {
   readonly observations: readonly Observation[];
 }
 
-/** Clave determinista para detectar la misma referencia de origen dentro de un activo. */
 export function sourceReferenceKey(reference: SourceReference): string {
   return JSON.stringify([
     reference.source,
