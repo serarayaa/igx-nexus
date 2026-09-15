@@ -21,7 +21,7 @@ export function createGlpiLiveTechnologyProvider(options: GlpiTechnologyProvider
     async checkAvailability() {
       try {
         const payload = await options.transport.get(COMPUTER_COLLECTION_PATH, { start: 0, limit: 1 });
-        if (!Array.isArray(payload)) return "unavailable";
+        if (!Array.isArray(payload) || payload.length > 1) return "unavailable";
         for (const record of payload) parseGlpiComputerRecord(record);
         return "ready";
       } catch {
