@@ -30,5 +30,6 @@ Principios fundamentales:
 - [ADR-0012 — Runtime de NEXUS API](adr-0012-nexus-api-runtime.md) — aceptado en V02-002 (PR #44).
 - [ADR-0013 — Baseline de seguridad de NEXUS API](adr-0013-api-security-baseline.md) — aceptado en V02-003 (PR #47 / issue #46).
 - [ADR-0014 — Provider Mode Contract](adr-0014-provider-mode-contract.md) — aceptado en V02-004 (PR #50 / issue #49).
+- [ADR-0015 — GLPI API v2 Adapter](adr-0015-glpi-api-v2-adapter.md) — propuesto en V02-005 (PR #53 / issue #52); aceptación efectiva al merge manual.
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.

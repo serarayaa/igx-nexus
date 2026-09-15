@@ -25,6 +25,8 @@ export interface TechnologyProviderDescriptor {
 export interface TechnologyProvider {
   readonly descriptor: TechnologyProviderDescriptor;
   getSnapshot(): Promise<TechnologySnapshot>;
+  /** Readiness probe opcional para providers con dependencias aguas arriba. */
+  checkAvailability?(): Promise<ProviderAvailability>;
 }
 
 export class ProviderConfigurationError extends Error {
@@ -167,6 +169,19 @@ export function resolveTechnologyProvider(
   const provider = mode === "demo" ? demoTechnologyProvider : unavailableLiveTechnologyProvider;
   assertDescriptor(provider, mode);
   return provider;
+}
+
+export async function technologyProviderAvailability(provider: TechnologyProvider): Promise<ProviderAvailability> {
+  if (provider.descriptor.availability !== "ready" || !provider.checkAvailability) {
+    return provider.descriptor.availability;
+  }
+
+  try {
+    const availability = await provider.checkAvailability();
+    return availability === "ready" || availability === "unavailable" ? availability : "unavailable";
+  } catch {
+    return "unavailable";
+  }
 }
 
 export function publicProviderDescriptor(

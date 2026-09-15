@@ -2,7 +2,7 @@
 
 `@igx-nexus/api` es la frontera HTTP de backend de **IGX NEXUS v0.2 — Technology Intelligence**.
 
-V02-002 creó el runtime real, V02-003 incorporó el baseline de seguridad y **V02-004 — Provider Mode Contract** desacopla el origen de datos del producto antes de conectar GLPI u otras fuentes reales.
+V02-002 creó el runtime real, V02-003 incorporó el baseline de seguridad, V02-004 desacopló Demo/Live mediante `TechnologyProvider` y **V02-005 — GLPI API v2 Adapter** incorpora el primer adapter Live read-only.
 
 ## Arquitectura
 
@@ -15,10 +15,13 @@ NEXUS API
    v
 TechnologyProvider
    |-- Demo Provider
-   `-- Live Provider -> adapters futuros
+   `-- GLPI Live Provider
+          |
+          v
+  GLPI 11 High-Level API v2.3
 ```
 
-La Web no debe acceder a tablas internas de GLPI/MariaDB ni conocer detalles de adapters. Autenticación/autorización y selección del provider son responsabilidad del servidor.
+La Web no accede a tablas internas de GLPI/MariaDB ni conoce tipos del adapter. GLPI sigue siendo System of Record CMDB/ITAM; NEXUS normaliza sus registros al modelo canónico antes de que participen en lógica de producto.
 
 ## Runtime
 
@@ -32,6 +35,7 @@ La Web no debe acceder a tablas internas de GLPI/MariaDB ni conocer detalles de 
 - rate limiting mediante `@fastify/rate-limit`
 - contratos canónicos desde `@igx-nexus/types`
 - `TechnologyProvider` como frontera común Demo/Live
+- GLPI v2.3 read-only como primer adapter Live
 
 `buildApp()` compone el servidor sin abrir un socket y permite inyectar `AuthenticationProvider` y `TechnologyProvider` en tests. `startServer()` es el único bootstrap que escucha host/puerto y registra shutdown ordenado.
 
@@ -40,12 +44,12 @@ La Web no debe acceder a tablas internas de GLPI/MariaDB ni conocer detalles de 
 | Método | Ruta | Propósito | Política actual |
 | --- | --- | --- | --- |
 | GET | `/health` | liveness del proceso y estado declarado del provider | pública, exenta de rate limit |
-| GET | `/ready` | readiness del runtime + provider | pública, exenta de rate limit |
+| GET | `/ready` | readiness del runtime + disponibilidad efectiva del provider | pública, exenta de rate limit |
 | GET | `/api/v1` | metadata/versionado HTTP | pública, rate-limited |
 | GET | `/api/v1/provider` | descriptor público del provider activo | pública, rate-limited |
 | GET | `/openapi.json` | contrato OpenAPI generado | pública, rate-limited |
 
-Todavía no existen endpoints productivos de activos. V02-004 define la frontera de datos; V02-005 incorporará el primer adapter real.
+Todavía no existen endpoints productivos de activos. V02-008 agregará el primer vertical Live de producto después de Service Identity y Live Lab.
 
 ## Provider Mode
 
@@ -64,18 +68,121 @@ La selección se realiza una sola vez durante composición mediante `NEXUS_PROVI
 
 La NEXUS API **no importa código desde `apps/web`**. El catálogo completo de 240 CIs continúa en la Web v0.1 hasta V02-011 — Demo Dataset v0.2 Migration.
 
-### Live
+### Live / GLPI
 
-`live` no cae nunca automáticamente a Demo. Mientras V02-005 no entregue un adapter real, el provider Live se declara `unavailable`:
+V02-005 implementa GLPI como provider Live inyectable. El adapter no se activa automáticamente por variables de entorno porque la identidad técnica/OAuth productiva pertenece a V02-006.
 
-- `/health` sigue respondiendo 200 porque el proceso está vivo;
-- `/ready` responde 503 porque el servicio no está apto para operar en modo Live;
-- `getSnapshot()` del placeholder Live falla con `ProviderUnavailableError`;
-- no se presentan datos sintéticos como si fueran datos reales.
+La composición esperada es:
 
-Un provider Live inyectado en composición debe declarar `mode=live`, disponibilidad coherente y la capability requerida para leer el snapshot.
+```text
+GlpiAccessTokenProvider
+        |
+        v
+GlpiApiTransport (GET-only)
+        |
+        v
+createGlpiLiveTechnologyProvider
+        |
+        v
+TechnologyProvider
+```
 
-### Descriptor y capabilities
+`live` nunca cae automáticamente a Demo.
+
+### Readiness dinámica
+
+`TechnologyProvider` admite `checkAvailability()` para providers con dependencias aguas arriba.
+
+El provider GLPI usa un probe mínimo y read-only:
+
+```text
+GET Assets/Computer?start=0&limit=1
+```
+
+Con GLPI inaccesible, token inválido o payload incompatible:
+
+- `/health` permanece 200 porque el proceso sigue vivo;
+- `/ready` responde 503;
+- no se propagan detalles del upstream;
+- no se presenta Demo como sustituto.
+
+## GLPI API v2 Adapter
+
+### Versión
+
+V02-005 soporta explícitamente:
+
+```text
+v2.3
+```
+
+El transporte construye rutas bajo:
+
+```text
+<glpi-root>/api.php/v2.3/
+```
+
+No consume una versión flotante y no usa `apirest.php` legacy.
+
+### Transporte
+
+`createGlpiFetchTransport()`:
+
+- sólo implementa `GET`;
+- exige HTTPS por defecto;
+- permite HTTP únicamente con `allowInsecureHttp=true` para laboratorio;
+- rechaza credenciales embebidas en URL;
+- rechaza redirects automáticos;
+- usa `Authorization: Bearer ...`;
+- aplica timeout/cancelación;
+- no incluye body de GLPI en errores HTTP;
+- no agrega tokens a URL, evidence ni descriptor público.
+
+La obtención/renovación del token es una dependencia inyectada (`GlpiAccessTokenProvider`) y queda fuera de este ticket.
+
+### Lectura `Assets/Computer`
+
+La colección se pagina con parámetros GLPI `start` y `limit`.
+
+El adapter aplica:
+
+- page size acotado;
+- máximo total configurable;
+- detección de IDs duplicados entre páginas;
+- error ante truncamiento potencial;
+- validación de que el payload sea un array;
+- validación mínima de cada registro antes del mapping.
+
+### Mapping canónico
+
+El primer mapping es deliberadamente conservador:
+
+```text
+GLPI Computer
+  -> domain: IT
+  -> assetClass: compute
+  -> role: custom:glpi-computer
+  -> lifecycle: unknown
+  -> criticality: unknown
+```
+
+No se infiere laptop/server/desktop desde strings de GLPI y no se traduce un status localizado a lifecycle NEXUS todavía.
+
+Identificadores preservados cuando existen:
+
+```text
+serial      -> serial_number
+otherserial -> asset_tag
+uuid        -> hardware_uuid
+```
+
+Metadata adicional se conserva bajo atributos `glpi.*`, incluyendo timestamps y referencias de status/entity/manufacturer/location/type/model cuando el payload las entrega.
+
+Cada asset conserva `SourceReference.source=glpi`, `entityType=Computer`, `sourceScope=Assets/Computer`, provenance y evidencia segura `api_response`.
+
+La identidad NEXUS se deriva de forma determinista y namespaced desde fuente + colección + externalId. V02-009 revisará la reconciliación multisource definitiva.
+
+## Descriptor y capabilities
 
 `TechnologyProviderDescriptor` publica sólo metadata declarativa:
 
@@ -115,7 +222,7 @@ audit:read
 security:admin
 ```
 
-## Configuración
+## Configuración del runtime HTTP
 
 | Variable | Default | Descripción |
 | --- | --- | --- |
@@ -131,7 +238,9 @@ security:admin
 | `NEXUS_API_TRUST_PROXY` | vacío | IP/CIDR de proxies confiables |
 | `NEXUS_PROVIDER_MODE` | `demo` en dev/test | `demo` o `live`; obligatorio en `production` |
 
-Valores inválidos fallan durante bootstrap. `production` exige `NEXUS_PROVIDER_MODE` explícito para evitar ejecutar Demo accidentalmente.
+V02-005 **no agrega variables con secretos GLPI**. Endpoint, token provider y transporte Live se inyectan en composición hasta que V02-006 defina la identidad técnica y su configuración segura.
+
+Valores inválidos del runtime fallan durante bootstrap. `production` exige `NEXUS_PROVIDER_MODE` explícito para evitar ejecutar Demo accidentalmente.
 
 ### CORS
 
@@ -151,7 +260,7 @@ Todas las respuestas actuales usan `Cache-Control: no-store`.
 
 El limiter usa `request.ip`; `/health` y `/ready` quedan exentos. El store actual es en memoria por proceso y no se presenta como protección distribuida.
 
-El runtime fija `bodyLimit` y `requestTimeout`; adapters futuros deben agregar sus propios timeouts/cancelación de upstream.
+El runtime fija `bodyLimit` y `requestTimeout`; el adapter GLPI agrega además timeout propio de upstream y límites de paginación.
 
 ## Errores, logging y auditoría
 
@@ -166,6 +275,8 @@ requestId
 
 Fastify no usa request logging automático. NEXUS registra método, route pattern y status, evitando persistir URL/query cruda. Headers sensibles se redactan y los security audit events no incluyen bearer tokens, cookies, API keys, bodies ni query strings crudas.
 
+El transporte GLPI nunca copia el body de un upstream fallido a `GlpiRequestError`.
+
 ## Desarrollo y QA
 
 Desde la raíz:
@@ -178,21 +289,24 @@ npm pack --dry-run --workspace @igx-nexus/api
 npm audit --audit-level=high
 ```
 
-Por defecto la API escucha sólo en `127.0.0.1:3100`.
+Los tests GLPI utilizan exclusivamente fixtures sintéticos y transportes in-memory; no requieren acceso a una instancia corporativa.
 
 ## Límites actuales
 
-V02-004 **no implementa ni simula**:
+V02-005 **no implementa ni simula**:
 
 - login o Entra SSO/OIDC real;
-- OAuth/credenciales GLPI;
-- adapter GLPI API v2;
-- Intune/Entra/Windows/Dell providers;
+- creación/configuración de OAuth Client GLPI;
+- usuario técnico/RBAC/rotación de credenciales GLPI;
+- GLPI Agent Live Lab;
+- NetworkEquipment/Printer/Monitor/Phone u otros tipos GLPI;
+- endpoints productivos de assets;
 - migración completa del dataset Web v0.1;
 - reconciliación multisource;
+- taxonomía IT/OT definitiva;
 - autorización por objeto;
 - TLS, reverse proxy, DNS o WAF;
 - secrets manager corporativo;
 - despliegue productivo.
 
-Ver [ADR-0013 — Baseline de seguridad](../../docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](../../docs/architecture/adr-0014-provider-mode-contract.md) y [Threat Model v0.2](../../docs/security/threat-model-v0.2.md).
+Ver [ADR-0013 — Baseline de seguridad](../../docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](../../docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](../../docs/architecture/adr-0015-glpi-api-v2-adapter.md) y [Threat Model v0.2](../../docs/security/threat-model-v0.2.md).
