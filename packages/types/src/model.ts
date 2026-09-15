@@ -1,59 +1,155 @@
 export const technologySchemaVersion = "0.2" as const;
 export type TechnologySchemaVersion = typeof technologySchemaVersion;
 
+export const technologyTaxonomyVersion = "2" as const;
+export type TechnologyTaxonomyVersion = typeof technologyTaxonomyVersion;
+
+/**
+ * Domain expresa el dominio tecnológico, no el estado de clasificación.
+ * `unknown`, `unclassified` y equivalentes pertenecen a TaxonomyDecision.
+ */
 export const technologyDomains = ["IT", "OT"] as const;
 export type TechnologyDomain = (typeof technologyDomains)[number];
 
-export const technologyAssetClasses = [
+export const itTechnologyAssetClasses = [
   "endpoint",
-  "compute",
-  "network",
-  "mobile",
+  "server",
+  "network_device",
+  "storage",
+  "printer",
+  "mobile_device",
+  "virtual_compute",
+  "infrastructure_appliance",
   "peripheral",
   "application",
-  "control",
-  "monitoring",
-  "industrial_network",
-  "field_edge",
-  "energy_plant",
-  "other",
 ] as const;
-export type TechnologyAssetClass = (typeof technologyAssetClasses)[number];
+
+export const otTechnologyAssetClasses = [
+  "controller",
+  "operator_interface",
+  "industrial_compute",
+  "industrial_network_device",
+  "field_device",
+  "protection_device",
+  "metering_device",
+  "industrial_gateway",
+] as const;
+
+export const technologyAssetClasses = [
+  ...itTechnologyAssetClasses,
+  ...otTechnologyAssetClasses,
+] as const;
+export type KnownTechnologyAssetClass = (typeof technologyAssetClasses)[number];
+export type TechnologyAssetClass = KnownTechnologyAssetClass | `custom:${string}`;
+
+/**
+ * Role responde a la función que cumple un activo. No representa modelo comercial,
+ * item type de una fuente ni subtipo físico (por ejemplo PLC/RTU).
+ */
+export const itTechnologyRoles = [
+  "user_endpoint",
+  "application_server",
+  "database_server",
+  "directory_service",
+  "virtualization_host",
+  "network_core",
+  "network_distribution",
+  "network_access",
+  "network_security",
+  "storage_service",
+  "print_service",
+  "infrastructure_service",
+] as const;
+
+export const otTechnologyRoles = [
+  "engineering_workstation",
+  "control",
+  "supervision",
+  "telemetry",
+  "historian",
+  "protection",
+  "metering",
+  "field_sensing",
+  "field_actuation",
+  "industrial_network",
+  "industrial_security",
+  "protocol_gateway",
+] as const;
 
 export const knownTechnologyRoles = [
-  "laptop",
-  "desktop",
-  "server",
-  "virtual_machine",
-  "switch",
-  "router",
-  "firewall",
-  "access_point",
-  "smartphone",
-  "tablet",
-  "monitor",
-  "printer",
-  "docking_station",
-  "plc",
-  "rtu",
-  "hmi",
-  "scada_server",
-  "historian",
-  "industrial_switch",
-  "industrial_firewall",
-  "industrial_gateway",
-  "ied",
-  "sensor",
-  "actuator",
-  "edge_gateway",
-  "meter",
-  "inverter",
-  "protection_relay",
-  "plant_controller",
-  "other",
+  ...itTechnologyRoles,
+  ...otTechnologyRoles,
 ] as const;
 export type KnownTechnologyRole = (typeof knownTechnologyRoles)[number];
 export type TechnologyRole = KnownTechnologyRole | `custom:${string}`;
+
+export const taxonomyClassificationStates = [
+  "classified",
+  "unknown",
+  "unclassified",
+  "conflict",
+] as const;
+export type TaxonomyClassificationState = (typeof taxonomyClassificationStates)[number];
+
+export const taxonomyClassificationMethods = [
+  "observed",
+  "normalized",
+  "inferred",
+  "manual",
+] as const;
+export type TaxonomyClassificationMethod = (typeof taxonomyClassificationMethods)[number];
+
+export interface ClassifiedTaxonomyDecision<T extends string> {
+  readonly state: "classified";
+  readonly value: T;
+  readonly method: TaxonomyClassificationMethod;
+  readonly reviewRequired: boolean;
+  readonly ruleId: string;
+  readonly reasonCode?: string;
+}
+
+export interface UnresolvedTaxonomyDecision {
+  readonly state: "unknown" | "unclassified";
+  readonly reviewRequired: true;
+  readonly ruleId: string;
+  readonly reasonCode: string;
+}
+
+export interface ConflictingTaxonomyDecision<T extends string> {
+  readonly state: "conflict";
+  readonly value?: T;
+  readonly method?: TaxonomyClassificationMethod;
+  readonly reviewRequired: true;
+  readonly ruleId: string;
+  readonly reasonCode: string;
+}
+
+/**
+ * Un resultado de clasificación es explícito: puede producir un valor canónico,
+ * permanecer sin clasificar o conservar un conflicto sin convertirlo en un hecho.
+ */
+export type TaxonomyDecision<T extends string> =
+  | ClassifiedTaxonomyDecision<T>
+  | UnresolvedTaxonomyDecision
+  | ConflictingTaxonomyDecision<T>;
+
+export interface TechnologyTaxonomyAssessment {
+  readonly taxonomyVersion: TechnologyTaxonomyVersion;
+  readonly domain: TaxonomyDecision<TechnologyDomain>;
+  readonly assetClass: TaxonomyDecision<TechnologyAssetClass>;
+  readonly role: TaxonomyDecision<TechnologyRole>;
+}
+
+export const operationalContextKinds = [
+  "system",
+  "service",
+  "environment",
+  "site",
+  "network_segment",
+  "security_zone",
+] as const;
+export type KnownOperationalContextKind = (typeof operationalContextKinds)[number];
+export type OperationalContextKind = KnownOperationalContextKind | `custom:${string}`;
 
 export const lifecycleStates = [
   "planned",
@@ -117,8 +213,21 @@ export interface ProvenanceRecord {
   readonly observedAt: string;
   readonly ingestedAt?: string;
   readonly authority: AuthorityLevel;
+  /** Describe cómo NEXUS obtuvo el valor sin confundir derivación con autoridad. */
+  readonly derivation?: TaxonomyClassificationMethod;
   readonly confidence?: number;
   readonly evidence?: readonly EvidenceReference[];
+}
+
+/**
+ * Referencia a un contexto operacional. No convierte sitio, sistema o zona en un
+ * TechnologyAsset y deja su entidad/relaciones completas para tickets posteriores.
+ */
+export interface OperationalContextReference {
+  readonly id: string;
+  readonly kind: OperationalContextKind;
+  readonly displayName?: string;
+  readonly source?: SourceReference;
 }
 
 export const assetIdentifierKinds = [
@@ -152,11 +261,13 @@ export interface TechnologyAsset {
   /** Identidad estable emitida por NEXUS, independiente de cualquier sistema fuente. */
   readonly id: string;
   readonly displayName: string;
+  /** Proyección canónica resuelta. La incertidumbre previa vive en TechnologyTaxonomyAssessment. */
   readonly domain: TechnologyDomain;
   readonly assetClass: TechnologyAssetClass;
   readonly role: TechnologyRole;
   readonly lifecycle: LifecycleState;
   readonly criticality: Criticality;
+  readonly operationalContexts: readonly OperationalContextReference[];
   readonly identifiers: readonly AssetIdentifier[];
   readonly sourceReferences: readonly SourceReference[];
   readonly attributes: Readonly<Record<string, TechnologyAttributeValue>>;
