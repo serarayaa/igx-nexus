@@ -75,7 +75,7 @@ hostname A == hostname B
 → automatic merge
 ```
 
-Ese comportamiento no existe en V02-009. `hostname` sólo puede producir una señal insuficiente y, como máximo, llevar el caso a revisión manual.
+Ese comportamiento no existe. `hostname` sólo puede producir una señal insuficiente y, como máximo, llevar el caso a revisión manual.
 
 ## Explicabilidad
 
@@ -90,18 +90,7 @@ Ese comportamiento no existe en V02-009. `hostname` sólo puede producir una se�
 - evidencia por candidato;
 - razones textuales deterministas.
 
-La evidencia explica el **tipo** de señal, no copia el valor sensible del identificador dentro de razones o errores. Por ejemplo:
-
-```text
-Decision: MATCHED
-Reasons:
-- exact strong evidence identifies one canonical candidate
-Evidence:
-- exact serial_number match
-- exact hardware_uuid match
-```
-
-Los valores reales permanecen en los objetos de dominio protegidos que ya los contienen; no se duplican innecesariamente en mensajes de diagnóstico.
+La evidencia explica el **tipo** de señal, no copia el valor sensible del identificador dentro de razones o errores.
 
 ## Determinismo
 
@@ -110,6 +99,7 @@ La misma entrada lógica debe producir la misma decisión. Para ello:
 - candidatos se ordenan por `TechnologyAsset.id` antes de serializar la salida;
 - evidencia se ordena mediante claves estables;
 - source references e identificadores de una proyección se ordenan/deduplican de forma determinista;
+- operational contexts añadidos por V02-010 se deduplican por `kind + id` y se ordenan de forma estable;
 - el orden del array de candidatos no actúa como tie-breaker;
 - no existe random, fuzzy matching ni llamada externa durante el matching.
 
@@ -124,7 +114,7 @@ V02-009 separa dos conceptos:
 
 La proyección `projectCanonicalAsset(anchor, matchedRecords)` conserva **siempre** `anchor.id`. Por lo tanto, incorporar una nueva fuente, cambiar hostname/IP o cambiar atributos no identificadores no re-keyea el activo.
 
-El adapter GLPI heredado de V02-005 conserva su estrategia de identidad inicial namespaced para no romper V02-008. V02-009 no reutiliza ese mecanismo para recalcular la identidad después de reconciliar nuevas fuentes.
+El adapter GLPI heredado de V02-005 conserva su estrategia de identidad inicial namespaced para no romper V02-008. El mecanismo de reconciliación no recalcula esa identidad después de incorporar nuevas fuentes.
 
 ## Claims y provenance por atributo
 
@@ -146,39 +136,46 @@ Cada `AttributeClaim` puede conservar:
 - confidence si ya existe evidencia explícita para ella;
 - evidence references.
 
-La proyección canónica además fusiona los `ProvenanceRecord` y source references de las representaciones reconciliadas. El envelope `CanonicalProjectionResult` es la evidencia auditable de la decisión de atributo y debe preservarse cuando V02-009 se conecte a una futura persistencia/historial.
+La proyección canónica además fusiona los `ProvenanceRecord` y source references de las representaciones reconciliadas. El envelope `CanonicalProjectionResult` es la evidencia auditable de la decisión de atributo y debe preservarse cuando se conecte a una futura persistencia/historial.
+
+V02-010 añade `ProvenanceRecord.derivation`; la deduplicación de provenance incluye esa dimensión para no colapsar dos claims iguales obtenidos mediante mecanismos distintos.
 
 ## Políticas de atributo
 
-La autoridad no significa que una fuente gane todos los campos. Las políticas están centralizadas en el motor:
+La autoridad no significa que una fuente gane todos los campos. Las políticas están centralizadas en el motor.
 
 ### Management
 
 Aplicada a campos como `displayName`, lifecycle, criticality, owner, location y atributos `management.*`.
 
-Prioridad de dimensión:
+Prioridad:
 
 1. fuente según política de management;
 2. autoridad;
 3. recencia.
 
-La política deja preparado el caso en que GLPI sea mejor autoridad de asset management sin convertir ese supuesto en un `if source === "glpi"` disperso.
-
 ### Technical
 
 Aplicada a manufacturer/model y atributos `hardware.*`, `os.*`, `technical.*`, `health.*` y compliance.
 
-Prioridad de dimensión:
+Prioridad:
 
 1. fuente técnica según política central;
 2. autoridad;
 3. recencia.
 
-Esto permite que una fuente técnica futura pueda superar una observación CMDB en atributos técnicos concretos sin alterar políticas de ownership o lifecycle.
-
 ### Taxonomy
 
-`domain`, `assetClass` y `role` usan autoridad sin incorporar todavía una prioridad entre GLPI/Intune. La taxonomía IT/OT completa pertenece a V02-010 y no se adelanta en este ticket.
+`domain`, `assetClass` y `role` usan una política deliberadamente conservadora basada en autoridad. V02-010 no convierte el origen de una fuente en un supuesto fijo como `GLPI siempre gana taxonomy`.
+
+La política escalar y el assessment taxonómico se relacionan así:
+
+- si claims equivalentes convergen, se conserva la decisión v2 del claim seleccionado;
+- si la política produce un ganador inequívoco, ese assessment se conserva y los claims alternativos siguen visibles en `AttributeResolution`;
+- si dos valores taxonómicos empatan y son incompatibles, el scalar existente del anchor se preserva por estabilidad, pero `TechnologyTaxonomyAssessment` pasa a `state=conflict`, `reviewRequired=true`;
+- si el claim seleccionado proviene de un activo legacy sin assessment v2, la dimensión queda `unclassified`, no se inventa un método ni una evidencia.
+
+El scalar preservado durante un conflicto no significa que el conflicto haya sido resuelto.
 
 ### Default
 
@@ -192,6 +189,31 @@ Cuando dos claims válidos tienen valores incompatibles:
 - si la política empata entre valores incompatibles, el conflicto queda `unresolved` y se preserva el valor del activo canónico existente en vez de escoger arbitrariamente según el orden de entrada.
 
 La contradicción nunca se elimina silenciosamente.
+
+## Taxonomy & Operational Context — extensión V02-010
+
+V02-009 se integró antes de que `TechnologyAsset` tuviera `taxonomy` y `operationalContexts`; por eso su canonical projection original no podía conservarlos.
+
+V02-010 extiende `projectCanonicalAsset()` para que:
+
+```text
+matched records
+→ scalar claim resolution (V02-009)
+→ taxonomy assessment reconciliation (V02-010)
+→ operational context merge (V02-010)
+→ provenance/source/identifier merge
+→ canonical projection validation
+```
+
+Reglas nuevas:
+
+- si ningún registro trae assessment v2, la proyección sigue siendo legacy-compatible y no inventa uno;
+- si existe al menos un assessment v2, el resultado emite `taxonomyVersion=2`;
+- un empate IT/OT o class/role incompatible queda `conflict`;
+- contexts se mantienen fuera de `assetClass` y se fusionan por referencia estable;
+- `validateAssetTaxonomyProjection()` y `validateOperationalContextReference()` forman parte del gate de salida de reconciliation.
+
+La taxonomía completa y sus mappings viven en [IT/OT Taxonomy v2](taxonomy-v2.md) y [ADR-0020](architecture/adr-0020-it-ot-taxonomy-v2.md).
 
 ## Autoridad y recencia
 
@@ -207,27 +229,28 @@ La recencia actúa después de las dimensiones anteriores. Una observación nuev
 
 ## Seguridad y privacidad
 
-- fixtures V02-009 son sintéticos y se identifican mediante `SYNTH-*`;
+- fixtures son sintéticos y se identifican mediante `SYNTH-*`;
 - no se copió inventario real del Live Lab;
 - razones de matching no contienen valores crudos de serial/UUID/MAC/IMEI/hostname/IP;
 - errores del motor entregan un mensaje genérico + códigos de validación, no payloads ni identificadores;
 - el motor no escribe logs;
 - no se añadieron secretos ni credenciales;
-- no se introdujeron dependencias nuevas.
+- no se introdujeron dependencias nuevas para V02-010.
 
-El addendum de amenazas específico está en `docs/security/threat-model-v02-009-reconciliation-addendum.md`.
+El addendum de amenazas de V02-009 sigue siendo aplicable y ADR-0020 documenta los nuevos riesgos taxonómicos.
 
 ## Reversibilidad y revisión manual futura
 
-V02-009 no implementa una UI de revisión manual, pero evita bloquearla:
+Todavía no existe una UI de revisión manual, pero el dominio evita bloquearla:
 
-- las decisiones son estructuras explícitas y versionadas;
+- decisiones de identidad y taxonomía son estructuras explícitas/versionadas;
 - el motor distingue `manual_review_required`, `ambiguous` y `conflict`;
+- taxonomy distingue `unknown`, `unclassified` y `conflict`;
 - claims y evidencia alternativa no se pierden;
-- la proyección sólo ocurre automáticamente para un match fuerte único;
+- la proyección automática sólo ocurre para un match fuerte único;
 - el `TechnologyAsset.id` existente se conserva.
 
-Una implementación futura podrá persistir el historial de decisiones y aplicar una decisión humana sin necesitar reconstruir evidencia desde logs.
+Una implementación futura podrá persistir el historial de decisiones y aplicar una decisión humana sin reconstruir evidencia desde logs.
 
 ## Tests contractuales
 
@@ -250,13 +273,15 @@ La matriz automatizada cubre, entre otros:
 - no pérdida de provenance;
 - estabilidad de canonical id;
 - rechazo de contratos inválidos;
-- no exposición de valores sensibles en decisiones/errores.
-
-`@igx-nexus/types` ejecuta ahora todos los `src/*.test.ts`, de modo que los contract tests V02-009 forman parte efectiva de CI.
+- no exposición de valores sensibles en decisiones/errores;
+- preservación de assessment v2;
+- conflicto taxonómico multisource;
+- fusión de operational contexts;
+- compatibilidad con activos legacy sin assessment.
 
 ## Fuera de alcance
 
-V02-009 no incorpora:
+V02-009/V02-010 no incorporan:
 
 - Intune real;
 - persistencia completa de historial de reconciliación;
@@ -264,5 +289,4 @@ V02-009 no incorpora:
 - Asset Explorer 2.0 / Asset 360 2.0;
 - Dashboard / Technology Map 2.0;
 - Device Health;
-- taxonomy IT/OT v2;
 - deployment corporativo.
