@@ -52,13 +52,29 @@ function displayDate(value: string | null): string {
   return value && validHealthDate(value) ? dateFormat.format(new Date(value)) : "Sin fecha verificable";
 }
 
-function warrantyPresentation(asset: Asset, asOf: string) {
-  if (asset.warrantyEnds && !validHealthDate(asset.warrantyEnds)) return { label: "No verificable", detail: "La fecha registrada no es válida; revisar calidad de datos.", tone: "neutral" as const };
+function warrantyPresentation(asset: Asset, asOf: string, isLive: boolean) {
+  if (asset.warrantyEnds && !validHealthDate(asset.warrantyEnds)) {
+    return {
+      label: "No verificable",
+      detail: isLive ? "La fecha registrada no es válida; revisar calidad de datos." : "La fecha registrada no es válida; revisar CMDB Health.",
+      tone: "neutral" as const,
+    };
+  }
   const days = warrantyDays(asset, asOf);
   if (days === null) return { label: "Desconocida", detail: "No hay fecha de garantía disponible.", tone: "neutral" as const };
   if (days < 0) return { label: "Vencida", detail: `Venció hace ${Math.abs(Math.ceil(days))} días.`, tone: "danger" as const };
-  if (days <= 90) return { label: "Próxima a vencer", detail: `Quedan ${Math.floor(days)} días según el snapshot.`, tone: "warning" as const };
-  return { label: "Vigente", detail: `Quedan ${Math.floor(days)} días según el snapshot.`, tone: "success" as const };
+  if (days <= 90) {
+    return {
+      label: "Próxima a vencer",
+      detail: `Quedan ${Math.floor(days)} días según ${isLive ? "el snapshot" : "el corte demo"}.`,
+      tone: "warning" as const,
+    };
+  }
+  return {
+    label: "Vigente",
+    detail: `Quedan ${Math.floor(days)} días según ${isLive ? "el snapshot" : "el corte demo"}.`,
+    tone: "success" as const,
+  };
 }
 
 function Field({ label, value, mono = false }: { label: string; value: string | null; mono?: boolean }) {
@@ -100,7 +116,7 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
   }, [state, assetId]);
 
   if (state.status === "loading") {
-    return <LoadingState title="Cargando detalle del activo" description="Preparando la ficha Asset 360." />;
+    return <LoadingState title="Cargando detalle del activo" description="Preparando la ficha Asset 360 de demostración." />;
   }
 
   if (state.status === "error") {
@@ -108,7 +124,7 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
   }
 
   if (state.snapshot.assets.length === 0) {
-    return <EmptyState title="El inventario está vacío" description="No hay activos disponibles en el provider configurado." action={<a href="#assets">Volver al inventario</a>} />;
+    return <EmptyState title="El inventario está vacío" description="No hay activos disponibles en este escenario de demostración." action={<a href="#assets">Volver al inventario</a>} />;
   }
 
   const asset = state.snapshot.assets.find((candidate) => candidate.id === assetId);
@@ -117,10 +133,15 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
   }
 
   const isLive = asset.dataMode === "live";
-  const warranty = warrantyPresentation(asset, state.snapshot.asOf);
+  const warranty = warrantyPresentation(asset, state.snapshot.asOf, isLive);
   const locator = isLive ? null : demoLocatorForAsset(asset.id);
   const criticality = asset.criticality ?? (asset.critical ? "critical" : "medium");
   const lifecycle = lifecycleLabels[asset.lifecycle];
+  const liveVigency = asset.lifecycle === "unknown"
+    ? "No determinada por la fuente"
+    : asset.lifecycle === "retired" || asset.lifecycle === "disposed"
+      ? "Fuera de servicio"
+      : "Registrado en inventario";
 
   return <div className="nexus-asset-360" ref={contentRef}>
     <nav className="nexus-breadcrumb" aria-label="Breadcrumb">
@@ -133,7 +154,7 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
 
     <PageHeader
       title={asset.name}
-      eyebrow={`ASSET 360 · INNERGEX CHILE · ${isLive ? "LIVE" : "DEMO"}`}
+      eyebrow={isLive ? "ASSET 360 · INNERGEX CHILE · LIVE" : "ASSET 360 · INNERGEX CHILE"}
       description={`Identidad NEXUS ${asset.id}`}
       meta={<div className="nexus-asset-header-status">
         <Badge>{asset.domain}</Badge>
@@ -179,17 +200,19 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
           <Field label="Fabricante" value={asset.manufacturer} />
           <Field label="Modelo" value={asset.model} />
           <Field label="Categoría" value={typeLabels[asset.type]} />
-          <Field label="IP" value={asset.ipAddress} mono />
+          <Field label={isLive ? "IP" : "IP demo"} value={asset.ipAddress} mono />
         </dl>
-        <p className="nexus-muted">{isLive ? "Sólo se muestran atributos normalizados presentes en el snapshot canónico." : "Las direcciones demo pertenecen a TEST-NET-1 y no representan direccionamiento corporativo."}</p>
+        <p className="nexus-muted">{isLive ? "Sólo se muestran atributos normalizados presentes en el snapshot canónico." : "Las direcciones pertenecen a TEST-NET-1 y no representan direccionamiento corporativo."}</p>
       </section>
 
       <section className="nexus-asset-section" aria-labelledby="asset-lifecycle-heading">
         <h2 id="asset-lifecycle-heading">Estado y ciclo de vida</h2>
-        <div className="nexus-asset-status-row"><StatusBadge status={lifecycleTones[asset.lifecycle]}>{lifecycle}</StatusBadge><StatusBadge status={criticality === "critical" || criticality === "high" ? "critical" : "neutral"}>Criticidad {criticalityLabels[criticality]}</StatusBadge></div>
+        {isLive
+          ? <div className="nexus-asset-status-row"><StatusBadge status={lifecycleTones[asset.lifecycle]}>{lifecycle}</StatusBadge><StatusBadge status={criticality === "critical" || criticality === "high" ? "critical" : "neutral"}>Criticidad {criticalityLabels[criticality]}</StatusBadge></div>
+          : <div className="nexus-asset-status-row"><StatusBadge status={lifecycleTones[asset.lifecycle]}>{lifecycle}</StatusBadge>{asset.critical ? <StatusBadge status="critical">Criticidad alta</StatusBadge> : <StatusBadge status="neutral">Criticidad normal</StatusBadge>}</div>}
         <dl className="nexus-asset-fields">
           <Field label="Estado lifecycle" value={lifecycle} />
-          <Field label="Vigencia" value={asset.lifecycle === "unknown" ? "No determinada por la fuente" : asset.lifecycle === "retired" || asset.lifecycle === "disposed" ? "Fuera de servicio" : "Registrado en inventario"} />
+          <Field label="Vigencia" value={isLive ? liveVigency : asset.lifecycle === "retired" ? "Dado de baja" : "Activo en inventario"} />
         </dl>
       </section>
 
@@ -217,7 +240,7 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
       </section>}
 
       <section className="nexus-asset-section" aria-labelledby="asset-source-heading">
-        <h2 id="asset-source-heading">Fuente y evidencia</h2>
+        <h2 id="asset-source-heading">{isLive ? "Fuente y evidencia" : "Fuente de datos"}</h2>
         <dl className="nexus-asset-fields">
           <Field label="Fuente" value={isLive ? (asset.sourceSystems?.join(", ") || "Provider Live") : "Dataset sintético / provider demo"} />
           <Field label="Corte del snapshot" value={displayDate(state.snapshot.asOf)} />
