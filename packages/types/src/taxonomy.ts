@@ -112,7 +112,14 @@ export function validateTechnologyTaxonomyAssessment(
   return issues;
 }
 
-/** Valida que la proyección escalar de un asset v2 coincida con su assessment. */
+/**
+ * Valida la proyección escalar de un asset v2.
+ *
+ * Mientras V02-010/V02-011 mantienen los campos escalares legacy obligatorios,
+ * una decisión `unknown`, `unclassified` o `conflict` puede convivir con una
+ * proyección de compatibilidad. Sólo una decisión `classified` afirma un valor
+ * taxonómico y, por lo tanto, debe coincidir exactamente con el scalar proyectado.
+ */
 export function validateAssetTaxonomyProjection(
   asset: TechnologyAsset,
   path = "asset",
@@ -129,10 +136,8 @@ export function validateAssetTaxonomyProjection(
   ];
   for (const [field, projectedValue] of comparisons) {
     const decision = asset.taxonomy[field];
-    if (decision.state !== "classified") {
-      issues.push({ code: "taxonomy.projection_unresolved", path: `${path}.${field}`, message: "canonical projection requires a classified taxonomy decision" });
-    } else if (decision.value !== projectedValue) {
-      issues.push({ code: "taxonomy.projection_mismatch", path: `${path}.${field}`, message: "canonical value does not match taxonomy assessment" });
+    if (decision.state === "classified" && decision.value !== projectedValue) {
+      issues.push({ code: "taxonomy.projection_mismatch", path: `${path}.${field}`, message: "canonical value does not match classified taxonomy assessment" });
     }
   }
   return issues;
