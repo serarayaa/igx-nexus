@@ -1,6 +1,6 @@
 # ADR-0015 — GLPI API v2 Adapter
 
-Estado: **Propuesto en V02-005 / issue #52 / PR #53**. Este ADR queda aceptado únicamente cuando dicho PR sea integrado manualmente a `main`.
+Estado: **Aceptado en V02-005 / issue #52 / PR #53**. Integrado a `main` mediante merge manual `10acf2533877b19a261d8f5291e90269df2014e8`; CI post-merge #247 verde.
 
 ## Contexto
 
@@ -133,7 +133,7 @@ Por ello `TechnologyProvider` admite un `checkAvailability()` opcional. El provi
 GET Assets/Computer?start=0&limit=1
 ```
 
-El probe valida conectividad/auth y forma básica del payload sin descargar el inventario completo.
+El probe valida conectividad/auth y forma básica del payload sin descargar el inventario completo. Para evitar que `/ready` martille el upstream, el resultado usa un cache corto y las solicitudes concurrentes comparten un mismo probe en vuelo.
 
 Consecuencia:
 
@@ -169,7 +169,7 @@ Una falla del probe devuelve 503 en `/ready` y no propaga detalles del upstream 
 
 - el primer adapter sólo cubre Computer;
 - lifecycle/criticality/taxonomía específica permanecen desconocidos por diseño;
-- no existe aún cache/retry/backoff/circuit breaker;
+- sólo existe cache corto para readiness; no existe todavía cache general de respuestas, retry/backoff ni circuit breaker;
 - el snapshot completo es una lectura paginada en memoria, suficiente para el laboratorio inicial pero no una decisión definitiva de escala;
 - la identidad derivada por fuente será revisada al implementar reconciliación multisource;
 - la obtención/renovación del token todavía debe ser resuelta por V02-006.
