@@ -31,7 +31,7 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-003 | API Security Baseline | P0 | ✅ Integrado — PR #47 / issue #46 |
 | V02-004 | Provider Mode Contract | P0 | ✅ Integrado — PR #50 / issue #49 |
 | V02-005 | GLPI API v2 Adapter | P0 | ✅ Integrado — PR #53 / issue #52 |
-| V02-006 | GLPI Service Identity & RBAC | P0 | ⚪ Pendiente |
+| V02-006 | GLPI Service Identity & RBAC | P0 | 🟡 PR #56 draft — issue #55 |
 | V02-007 | GLPI Agent Live Lab | P0 | ⚪ Pendiente |
 | V02-008 | Live Asset 360 Vertical Slice | P0 | ⚪ Pendiente |
 | V02-009 | Provenance & Reconciliation | P0 | ⚪ Pendiente |
@@ -131,7 +131,7 @@ Objetivo: incorporar el primer adapter Live read-only de GLPI 11 High-Level REST
 
 Dependencias: V02-001 / V02-002 / V02-003 / V02-004 ✅.
 
-Resultado integrado: issue #52 cerrado mediante PR #53; adapter incorporado a `main` en el merge `10acf2533877b19a261d8f5291e90269df2014e8`; CI post-merge #247 verde.
+Resultado integrado: issue #52 cerrado mediante PR #53; adapter incorporado a `main` en el merge `10acf2533877b19a261d8f5291e90269df2014e8`; CI post-merge #247 verde; housekeeping PR #54 y CI #249 verdes.
 
 Baseline integrado:
 
@@ -152,13 +152,31 @@ Baseline integrado:
 - probe GLPI mínimo `Assets/Computer?start=0&limit=1` para readiness dinámica, con cache corto y deduplicación de probes en vuelo;
 - ADR-0015 y threat model v0.2 actualizados.
 
-V02-005 **no** implementa OAuth/service identity productiva, RBAC GLPI, GLPI Agent, endpoints Web Live, otros tipos de assets, reconciliación multisource ni taxonomía IT/OT detallada. Esos alcances permanecen en V02-006/V02-007/V02-008/V02-009/V02-010.
-
 ### V02-006 — GLPI Service Identity & RBAC
 
-Identidad técnica y permisos mínimos de la futura NEXUS API; secretos fuera del repositorio.
+Objetivo: incorporar la identidad técnica OAuth y el baseline de mínimo privilegio que permiten al runtime Live autenticarse contra GLPI sin introducir secretos en el dominio ni en `ApiConfig`.
 
 Dependencias: V02-005 ✅.
+
+Entrega activa: issue #55 / PR #56 / `feature/v02-006-glpi-service-identity-rbac`.
+
+Baseline implementado en PR:
+
+- `GlpiCredentialSource` como frontera reemplazable de secretos;
+- backend environment sólo para laboratorio/desarrollo, sin valores versionados;
+- Password Grant + scope exacto `api`, porque GLPI 11 restringe Client Credentials a `inventory`;
+- token endpoint `/api.php/token` separado de recursos `/api.php/v2.3/...`;
+- parser defensivo de `Bearer`, `access_token` y `expires_in`;
+- access token sólo en memoria, renovación anticipada y deduplicación de adquisición concurrente;
+- secretos fuera de `ApiConfig`, descriptors, evidence, provenance y errores;
+- configuración Live no secreta validada y fail-closed;
+- HTTP inseguro permitido sólo con opt-in de laboratorio y prohibido en `production`;
+- composition root real: credenciales → OAuth → GLPI transport → GLPI Live TechnologyProvider;
+- usuario técnico dedicado + perfil `NEXUS API Read-Only` con baseline `Assets > Computers > Read`;
+- autorización por entidades mínimas y recursividad sólo con evidencia/necesidad;
+- runbook operativo y ADR-0016.
+
+V02-006 **no** configura una instancia corporativa automáticamente, no versiona credenciales, no implementa Entra SSO para callers NEXUS ni sustituye el secret manager corporativo de v0.3.
 
 ### V02-007 — GLPI Agent Live Lab
 
