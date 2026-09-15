@@ -2,7 +2,7 @@
 
 `@igx-nexus/api` es la frontera HTTP de backend de **IGX NEXUS v0.2 — Technology Intelligence**.
 
-V02-002 creó el runtime real, V02-003 incorporó el baseline de seguridad, V02-004 desacopló Demo/Live mediante `TechnologyProvider` y **V02-005 — GLPI API v2 Adapter** incorpora el primer adapter Live read-only.
+V02-002 creó el runtime real, V02-003 incorporó el baseline de seguridad, V02-004 desacopló Demo/Live mediante `TechnologyProvider`, V02-005 incorporó el adapter GLPI read-only y **V02-006 — GLPI Service Identity & RBAC** implementa la identidad técnica OAuth y la composición Live segura.
 
 ## Arquitectura
 
@@ -19,9 +19,17 @@ TechnologyProvider
           |
           v
   GLPI 11 High-Level API v2.3
+          ^
+          |
+ GlpiAccessTokenProvider
+          ^
+          |
+ GlpiCredentialSource
 ```
 
 La Web no accede a tablas internas de GLPI/MariaDB ni conoce tipos del adapter. GLPI sigue siendo System of Record CMDB/ITAM; NEXUS normaliza sus registros al modelo canónico antes de que participen en lógica de producto.
+
+La identidad upstream de GLPI es distinta de la autenticación de callers de NEXUS API.
 
 ## Runtime
 
@@ -36,8 +44,10 @@ La Web no accede a tablas internas de GLPI/MariaDB ni conoce tipos del adapter. 
 - contratos canónicos desde `@igx-nexus/types`
 - `TechnologyProvider` como frontera común Demo/Live
 - GLPI v2.3 read-only como primer adapter Live
+- OAuth Password Grant para service identity GLPI de v0.2
+- `GlpiCredentialSource` como frontera de secretos reemplazable
 
-`buildApp()` compone el servidor sin abrir un socket y permite inyectar `AuthenticationProvider` y `TechnologyProvider` en tests. `startServer()` es el único bootstrap que escucha host/puerto y registra shutdown ordenado.
+`buildApp()` compone el servidor sin abrir un socket y permite inyectar `AuthenticationProvider` y `TechnologyProvider` en tests. `startServer()` es el bootstrap real: en modo Live compone credenciales → OAuth → transporte GLPI → provider y luego abre host/puerto.
 
 ## Endpoints base
 
@@ -49,7 +59,7 @@ La Web no accede a tablas internas de GLPI/MariaDB ni conoce tipos del adapter. 
 | GET | `/api/v1/provider` | descriptor público del provider activo | pública, rate-limited |
 | GET | `/openapi.json` | contrato OpenAPI generado | pública, rate-limited |
 
-Todavía no existen endpoints productivos de activos. V02-008 agregará el primer vertical Live de producto después de Service Identity y Live Lab.
+Todavía no existen endpoints productivos de activos. V02-008 agregará el primer vertical Live de producto después del Live Lab.
 
 ## Provider Mode
 
@@ -70,15 +80,16 @@ La NEXUS API **no importa código desde `apps/web`**. El catálogo completo de 2
 
 ### Live / GLPI
 
-V02-005 implementa GLPI como provider Live inyectable. El adapter no se activa automáticamente por variables de entorno porque la identidad técnica/OAuth productiva pertenece a V02-006.
-
-La composición esperada es:
+V02-006 conecta el adapter de V02-005 al runtime real.
 
 ```text
-GlpiAccessTokenProvider
+GlpiCredentialSource
         |
         v
-GlpiApiTransport (GET-only)
+Password Grant Token Provider
+        |
+        v
+GlpiApiTransport (GET-only para recursos)
         |
         v
 createGlpiLiveTechnologyProvider
@@ -87,7 +98,7 @@ createGlpiLiveTechnologyProvider
 TechnologyProvider
 ```
 
-`live` nunca cae automáticamente a Demo.
+`live` nunca cae automáticamente a Demo. Configuración o secretos Live incompletos fallan cerrados durante bootstrap.
 
 ### Readiness dinámica
 
@@ -99,7 +110,7 @@ El provider GLPI usa un probe mínimo y read-only:
 GET Assets/Computer?start=0&limit=1
 ```
 
-Con GLPI inaccesible, token inválido o payload incompatible:
+Con GLPI inaccesible, autenticación inválida o payload incompatible:
 
 - `/health` permanece 200 porque el proceso sigue vivo;
 - `/ready` responde 503;
@@ -116,7 +127,7 @@ V02-005 soporta explícitamente:
 v2.3
 ```
 
-El transporte construye rutas bajo:
+El transporte de recursos construye rutas bajo:
 
 ```text
 <glpi-root>/api.php/v2.3/
@@ -124,7 +135,7 @@ El transporte construye rutas bajo:
 
 No consume una versión flotante y no usa `apirest.php` legacy.
 
-### Transporte
+### Transporte de recursos
 
 `createGlpiFetchTransport()`:
 
@@ -138,7 +149,7 @@ No consume una versión flotante y no usa `apirest.php` legacy.
 - no incluye body de GLPI en errores HTTP;
 - no agrega tokens a URL, evidence ni descriptor público.
 
-La obtención/renovación del token es una dependencia inyectada (`GlpiAccessTokenProvider`) y queda fuera de este ticket.
+La obtención/renovación del token continúa desacoplada mediante `GlpiAccessTokenProvider` y V02-006 implementa esa frontera.
 
 ### Lectura `Assets/Computer`
 
@@ -181,6 +192,79 @@ Metadata adicional se conserva bajo atributos `glpi.*`, incluyendo timestamps y 
 Cada asset conserva `SourceReference.source=glpi`, `entityType=Computer`, `sourceScope=Assets/Computer`, provenance y evidencia segura `api_response`.
 
 La identidad NEXUS se deriva de forma determinista y namespaced desde fuente + colección + externalId. V02-009 revisará la reconciliación multisource definitiva.
+
+## GLPI Service Identity & RBAC
+
+### Restricción de GLPI 11
+
+La documentación oficial actual de GLPI 11 indica que Client Credentials sólo está soportado para `scope=inventory`. Los recursos generales de High-Level API requieren un usuario autenticado y `scope=api`.
+
+Por eso V02-006 utiliza:
+
+```text
+grant_type=password
+scope=api
+```
+
+No se implementa una falsa service account vía Client Credentials para `Assets/Computer`.
+
+### Token endpoint
+
+El access token se obtiene en:
+
+```text
+POST <glpi-root>/api.php/token
+Content-Type: application/x-www-form-urlencoded
+```
+
+`createGlpiPasswordGrantAccessTokenProvider()`:
+
+- usa Password Grant + scope fijo `api`;
+- recibe Client ID y username como configuración no secreta;
+- obtiene `client_secret` y password mediante `GlpiCredentialSource`;
+- exige HTTPS salvo opt-in de laboratorio;
+- rechaza redirects;
+- descarta bodies de error;
+- valida `Bearer`, `access_token` y `expires_in`;
+- mantiene el access token sólo en memoria;
+- renueva antes de expiración con skew configurable;
+- deduplica adquisiciones concurrentes;
+- no usa ni persiste refresh tokens.
+
+### Secret source
+
+El backend de laboratorio incluido es `createEnvironmentGlpiCredentialSource()`.
+
+Los secretos:
+
+```text
+NEXUS_GLPI_OAUTH_CLIENT_SECRET
+NEXUS_GLPI_SERVICE_PASSWORD
+```
+
+no forman parte de `ApiConfig`.
+
+`GlpiCredentialSource` permite reemplazar environment por un secret manager futuro sin modificar mapping, transporte ni `TechnologyProvider`.
+
+### RBAC mínimo esperado en GLPI
+
+Perfil sugerido:
+
+```text
+NEXUS API Read-Only
+```
+
+Baseline inicial:
+
+```text
+Assets > Computers > Read
+```
+
+Sin Create/Update/Delete/Purge y sin permisos administrativos/setup innecesarios.
+
+La autorización usuario + perfil + entidad debe limitarse a las entidades realmente necesarias. La recursividad sólo se usa cuando exista un requerimiento explícito de lectura sobre entidades hijas.
+
+Ver [runbook de GLPI Service Identity](../../docs/integrations/glpi-service-identity.md).
 
 ## Descriptor y capabilities
 
@@ -238,7 +322,31 @@ security:admin
 | `NEXUS_API_TRUST_PROXY` | vacío | IP/CIDR de proxies confiables |
 | `NEXUS_PROVIDER_MODE` | `demo` en dev/test | `demo` o `live`; obligatorio en `production` |
 
-V02-005 **no agrega variables con secretos GLPI**. Endpoint, token provider y transporte Live se inyectan en composición hasta que V02-006 defina la identidad técnica y su configuración segura.
+## Configuración GLPI Live no secreta
+
+Requerida cuando el runtime real arranca con `NEXUS_PROVIDER_MODE=live`:
+
+| Variable | Default | Descripción |
+| --- | --- | --- |
+| `NEXUS_GLPI_BASE_URL` | — | raíz GLPI; HTTPS por defecto |
+| `NEXUS_GLPI_OAUTH_CLIENT_ID` | — | OAuth Client ID de NEXUS |
+| `NEXUS_GLPI_SERVICE_USERNAME` | — | usuario técnico dedicado |
+| `NEXUS_GLPI_REQUEST_TIMEOUT_MS` | `10000` | timeout OAuth + API GLPI |
+| `NEXUS_GLPI_TOKEN_REFRESH_SKEW_SECONDS` | `60` | anticipación de renovación |
+| `NEXUS_GLPI_PAGE_SIZE` | `100` | tamaño de página de Computer |
+| `NEXUS_GLPI_MAX_RECORDS` | `10000` | safety bound del snapshot |
+| `NEXUS_GLPI_ALLOW_INSECURE_HTTP` | `false` | sólo laboratorio; `true` prohibido en production |
+
+## Secretos GLPI del backend de laboratorio
+
+```text
+NEXUS_GLPI_OAUTH_CLIENT_SECRET
+NEXUS_GLPI_SERVICE_PASSWORD
+```
+
+Se leen mediante `GlpiCredentialSource`; no se incorporan a `ApiConfig`, descriptor ni respuestas.
+
+No versionar archivos `.env` con valores reales. El secret manager corporativo definitivo queda reservado para v0.3.
 
 Valores inválidos del runtime fallan durante bootstrap. `production` exige `NEXUS_PROVIDER_MODE` explícito para evitar ejecutar Demo accidentalmente.
 
@@ -275,7 +383,7 @@ requestId
 
 Fastify no usa request logging automático. NEXUS registra método, route pattern y status, evitando persistir URL/query cruda. Headers sensibles se redactan y los security audit events no incluyen bearer tokens, cookies, API keys, bodies ni query strings crudas.
 
-El transporte GLPI nunca copia el body de un upstream fallido a `GlpiRequestError`.
+El transporte GLPI nunca copia el body de un upstream fallido a `GlpiRequestError`. El token provider tampoco copia bodies OAuth ni valores del secret source a errores.
 
 ## Desarrollo y QA
 
@@ -289,24 +397,23 @@ npm pack --dry-run --workspace @igx-nexus/api
 npm audit --audit-level=high
 ```
 
-Los tests GLPI utilizan exclusivamente fixtures sintéticos y transportes in-memory; no requieren acceso a una instancia corporativa.
+Los tests GLPI utilizan exclusivamente fixtures sintéticos, credenciales ficticias y transportes/fetches in-memory; no requieren acceso a una instancia corporativa.
 
 ## Límites actuales
 
-V02-005 **no implementa ni simula**:
+V02-006 **no implementa ni simula**:
 
-- login o Entra SSO/OIDC real;
-- creación/configuración de OAuth Client GLPI;
-- usuario técnico/RBAC/rotación de credenciales GLPI;
+- login o Entra SSO/OIDC real para callers de NEXUS;
+- secret manager corporativo definitivo;
 - GLPI Agent Live Lab;
 - NetworkEquipment/Printer/Monitor/Phone u otros tipos GLPI;
 - endpoints productivos de assets;
 - migración completa del dataset Web v0.1;
 - reconciliación multisource;
 - taxonomía IT/OT definitiva;
-- autorización por objeto;
+- autorización NEXUS por objeto;
 - TLS, reverse proxy, DNS o WAF;
-- secrets manager corporativo;
-- despliegue productivo.
+- despliegue productivo;
+- escritura a GLPI.
 
-Ver [ADR-0013 — Baseline de seguridad](../../docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](../../docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](../../docs/architecture/adr-0015-glpi-api-v2-adapter.md) y [Threat Model v0.2](../../docs/security/threat-model-v0.2.md).
+Ver [ADR-0013 — Baseline de seguridad](../../docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](../../docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](../../docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](../../docs/architecture/adr-0016-glpi-service-identity-rbac.md), [runbook de GLPI Service Identity](../../docs/integrations/glpi-service-identity.md) y [Threat Model v0.2](../../docs/security/threat-model-v0.2.md).
