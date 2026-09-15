@@ -32,7 +32,7 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-004 | Provider Mode Contract | P0 | ✅ Integrado — PR #50 / issue #49 |
 | V02-005 | GLPI API v2 Adapter | P0 | ✅ Integrado — PR #53 / issue #52 |
 | V02-006 | GLPI Service Identity & RBAC | P0 | ✅ Integrado — PR #56 / issue #55 |
-| V02-007 | GLPI Agent Live Lab | P0 | ⚪ Siguiente |
+| V02-007 | GLPI Agent Live Lab | P0 | 🟡 En curso — issue #58 |
 | V02-008 | Live Asset 360 Vertical Slice | P0 | ⚪ Pendiente |
 | V02-009 | Provenance & Reconciliation | P0 | ⚪ Pendiente |
 | V02-010 | IT/OT Taxonomy v2 | P0 | ⚪ Pendiente |
@@ -180,7 +180,27 @@ V02-006 **no** configura una instancia corporativa automáticamente, no versiona
 
 ### V02-007 — GLPI Agent Live Lab
 
-Inventario controlado de uno a tres endpoints de laboratorio autorizados. Sin scanning de red corporativa ni OT.
+Objetivo: comprobar de forma controlada que uno a tres endpoints autorizados pueden inventariarse mediante GLPI Agent y llegar a GLPI sin ampliar la prueba a discovery de red, administración remota, despliegue masivo u OT.
+
+Dependencias: V02-005 / V02-006 ✅.
+
+Trabajo activo: issue #58 / `feature/v02-007-glpi-agent-live-lab`.
+
+Baseline del laboratorio:
+
+- GLPI Agent **1.19** x64 fijado y MSI verificado mediante SHA-256 oficial;
+- sólo tarea `Inventory` y `ITEMTYPE=Computer`;
+- HTTP server embebido y P2P deshabilitados;
+- sin NetDiscovery, NetInventory, RemoteInventory, Deploy, WakeOnLan ni ESX;
+- sin active scanning corporativo ni OT;
+- OAuth del Agent separado de NEXUS API: Client Credentials + `scope=inventory`;
+- secretos y datos identificables del endpoint fuera de Git;
+- preflight Windows read-only para verificar configuración sin instalar, modificar registro ni forzar inventario;
+- CI valida sintaxis del preflight pero no simula la ejecución de un endpoint real;
+- runbook y plantilla de evidencia sanitizada;
+- ADR-0017 y threat model v0.2.
+
+Gate de cierre: **CI, fixtures o documentación no demuestran inventario real**. V02-007 sólo puede declararse completamente validado cuando al menos un endpoint real autorizado haya enviado inventario a GLPI y exista evidencia manual sanitizada del resultado. La validación read-only posterior GLPI → NEXUS API prepara V02-008.
 
 ### V02-008 — Live Asset 360 Vertical Slice
 
