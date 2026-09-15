@@ -2,6 +2,7 @@ import {
   technologySchemaVersion,
   technologyTaxonomyVersion,
   validateTechnologySnapshot,
+  validateTechnologySnapshotTaxonomy,
   type SourceSystem,
   type TechnologyAsset,
   type TechnologySnapshot,
@@ -113,8 +114,9 @@ function createCanonicalDemoSnapshot(): TechnologySnapshot {
     observations: Object.freeze([]),
   });
 
-  const errors = validateTechnologySnapshot(snapshot).filter((issue) => issue.severity === "error");
-  if (errors.length > 0) {
+  const canonicalErrors = validateTechnologySnapshot(snapshot).filter((issue) => issue.severity === "error");
+  const taxonomyErrors = validateTechnologySnapshotTaxonomy(snapshot);
+  if (canonicalErrors.length > 0 || taxonomyErrors.length > 0) {
     throw new ProviderConfigurationError("Canonical demo provider produced an invalid TechnologySnapshot");
   }
   return snapshot;
