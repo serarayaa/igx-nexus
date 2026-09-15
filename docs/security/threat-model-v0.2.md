@@ -1,6 +1,6 @@
 # Threat Model v0.2 — NEXUS API
 
-Estado: **baseline vivo desde V02-003, actualizado hasta V02-006**. Este documento describe la frontera disponible hoy y los riesgos que deben revisarse a medida que v0.2 agregue adapters, identidades y datos reales.
+Estado: **baseline vivo desde V02-003, actualizado hasta V02-007**. Este documento describe la frontera disponible hoy y los riesgos que deben revisarse a medida que v0.2 agregue adapters, identidades y datos reales.
 
 No certifica producción ni cumplimiento normativo. Su propósito es evitar que el proyecto confunda controles presentes con controles futuros.
 
@@ -9,8 +9,17 @@ No certifica producción ni cumplimiento normativo. Su propósito es evitar que 
 Frontera modelada:
 
 ```text
-Browser / NEXUS Web
+Endpoint autorizado
         |
+        v
+   GLPI Agent 1.19
+        |
+        | OAuth Client Credentials
+        | scope=inventory
+        v
+       GLPI 11
+        |
+        | High-Level API v2.3
         v
     NEXUS API
         |
@@ -18,25 +27,25 @@ Browser / NEXUS Web
 TechnologyProvider
    |            |
  Demo          Live
-                |
-                v
-       GLPI API v2.3
-                ^
-                |
-     OAuth service identity
-                ^
-                |
-      GlpiCredentialSource
+
+NEXUS → GLPI usa otra identidad:
+Password Grant + scope=api
 ```
 
-V02-005 incorporó el primer adapter Live read-only para GLPI 11. V02-006 incorpora la identidad técnica OAuth que alimenta ese adapter, mantiene secretos fuera del dominio/API pública y documenta el perfil GLPI de mínimo privilegio. Los tests continúan utilizando exclusivamente datos y credenciales sintéticas.
+V02-005 incorporó el primer adapter Live read-only para GLPI 11. V02-006 incorporó la identidad técnica OAuth que alimenta ese adapter, mantiene secretos fuera del dominio/API pública y documenta el perfil GLPI de mínimo privilegio. V02-007 agrega un Live Lab controlado de GLPI Agent sobre 1–3 endpoints autorizados y mantiene **separada** la identidad de inventario del Agent respecto de la identidad API de NEXUS.
+
+Los tests y CI continúan utilizando exclusivamente datos y credenciales sintéticas. Una CI verde no constituye evidencia de que un endpoint real haya sido inventariado.
 
 ## Activos a proteger
 
 - identidad y permisos de usuarios/servicios;
 - inventario tecnológico obtenido desde GLPI y futuras fuentes;
-- Client Secret y password del usuario técnico GLPI;
-- access tokens GLPI en memoria;
+- Client Secret y password del usuario técnico GLPI usado por NEXUS API;
+- access tokens GLPI en memoria del runtime NEXUS;
+- OAuth client y Client Secret del GLPI Agent con `scope=inventory`;
+- inventario bruto recolectado en endpoints de laboratorio;
+- configuración y logs locales del GLPI Agent;
+- identificadores reales de endpoints: hostname, serial, asset tag, UUID, MAC/IP y usuario;
 - configuración del OAuth Client y perfil/entidades asignadas;
 - integridad del modo/provider seleccionado;
 - procedencia de los datos y distinción Demo/Live;
@@ -45,7 +54,8 @@ V02-005 incorporó el primer adapter Live read-only para GLPI 11. V02-006 incorp
 - trazabilidad/audit events;
 - configuración de trust boundaries;
 - contratos OpenAPI y surface inventory;
-- logs, evitando que se conviertan en un repositorio accidental de secretos.
+- instaladores/binarios usados en el Live Lab;
+- logs, evitando que se conviertan en un repositorio accidental de secretos o inventario identificable.
 
 ## Supuestos explícitos
 
@@ -58,9 +68,13 @@ V02-005 incorporó el primer adapter Live read-only para GLPI 11. V02-006 incorp
 - `live` sin configuración válida se considera indisponible/falla bootstrap y nunca reutiliza Demo como fallback;
 - el adapter GLPI es read-only para recursos;
 - el OAuth Password Grant es una restricción soportada por GLPI 11 para scripts automatizados, no una preferencia general de NEXUS;
-- GLPI 11 limita actualmente Client Credentials al scope `inventory`, por lo que no se usa para `scope=api`;
-- la conexión real a GLPI corporativo no forma parte de los tests de V02-006;
-- el backend de secretos por environment es un mecanismo de laboratorio/v0.2, no el secret manager corporativo definitivo.
+- GLPI 11 limita Client Credentials al scope `inventory`; V02-007 usa ese grant únicamente para la identidad del Agent;
+- la identidad `scope=inventory` del Agent y la identidad `scope=api` de NEXUS son independientes y revocables por separado;
+- V02-007 se limita a GLPI Agent 1.19, 1–3 endpoints autorizados y tarea local `Inventory`;
+- NetDiscovery, NetInventory, RemoteInventory, Deploy, WakeOnLan y ESX quedan fuera del Live Lab;
+- no se realiza active scanning corporativo ni OT;
+- el backend de secretos por environment de NEXUS es un mecanismo de laboratorio/v0.2, no el secret manager corporativo definitivo;
+- la conexión real de un endpoint a GLPI no forma parte de CI y requiere evidencia manual sanitizada.
 
 ## Fronteras y amenazas
 
@@ -88,7 +102,7 @@ V02-005 incorporó el primer adapter Live read-only para GLPI 11. V02-006 incorp
 | Environment → runtime | secretos expuestos por proceso/host | riesgo aceptado de laboratorio | environment encapsulado; no se imprime ni serializa | usar secret manager/identity backend productivo |
 | Secret source → OAuth | backend de secretos filtra mensajes sensibles | mitigado | errores del source se normalizan a `GlpiAuthenticationError` | tests específicos para nuevos backends |
 | NEXUS → OAuth | grant/scope incorrecto o excesivo | mitigado | `grant_type=password` y `scope=api` fijados en código | revisar si GLPI cambia capacidades OAuth |
-| NEXUS → OAuth | Client Credentials usado indebidamente para API general | mitigado por diseño | no se implementa; runbook registra limitación GLPI | reabrir sólo con soporte oficial de `api` |
+| NEXUS → OAuth | Client Credentials usado indebidamente para API general | mitigado por diseño | no se implementa para NEXUS API | reabrir sólo con soporte oficial de `api` |
 | NEXUS → OAuth | redirects hacia host inesperado | mitigado | `redirect: error` | egress/allowlist corporativa en deployment |
 | NEXUS → OAuth | request sin límite temporal | mitigado | timeout/cancelación propios | observar latencia real |
 | OAuth → NEXUS | body de error contiene secretos/contexto | mitigado | bodies no se copian a errores | mantener invariant con clientes futuros |
@@ -99,7 +113,7 @@ V02-005 incorporó el primer adapter Live read-only para GLPI 11. V02-006 incorp
 | Service user → GLPI | cuenta sobreprivilegiada | mitigado por runbook/gate | perfil dedicado `NEXUS API Read-Only`; baseline Computer Read | verificar permisos efectivos en Live Lab |
 | Service user → GLPI | acceso a demasiadas entidades | mitigado por runbook/gate | autorización sólo a entidades necesarias; recursividad explícita | confirmar alcance real con Infra/GLPI admin |
 | Service user → GLPI | uso humano de cuenta técnica | mitigado por política de diseño | cuenta dedicada, no compartida | controles corporativos/monitorización en v0.3 |
-| OAuth Client → GLPI | grant o alcance más amplio de lo necesario | mitigado por runbook | Password Grant + `api`; IP restriction cuando sea viable | validar configuración real antes del Live Lab |
+| OAuth Client NEXUS → GLPI | grant o alcance más amplio de lo necesario | mitigado por runbook | Password Grant + `api`; IP restriction cuando sea viable | validar configuración real antes de Live productivo |
 | API → GLPI | Unsafe Consumption of API | parcialmente mitigado | payload array validado, IDs tipados, errores/status seguros, snapshot validado | ampliar validación con cada campo/tipo nuevo |
 | API → GLPI | request sin límite temporal | mitigado | timeout/cancelación propia del transporte | evaluar retry/backoff/circuit breaker con evidencia |
 | API → GLPI | redirección a host inesperado | mitigado | `redirect: error` | revisar allowlist/egress en deployment corporativo |
@@ -109,6 +123,18 @@ V02-005 incorporó el primer adapter Live read-only para GLPI 11. V02-006 incorp
 | GLPI → NEXUS | strings localizadas convertidas en semántica falsa | mitigado por alcance | lifecycle/criticality quedan `unknown`; type/status se preservan | V02-010 define mappings explícitos |
 | GLPI pagination | truncamiento silencioso o páginas repetidas | mitigado | maxRecords con probe final + detección de IDs duplicados | evaluar estrategia incremental si escala |
 | `/ready` → GLPI | health check costoso | mitigado | probe `start=0&limit=1`, cache corto de 5 s y dedup de probes | observar frecuencia/latencia real |
+| Endpoint → Agent | binario adulterado/supply-chain | mitigado por runbook | Agent 1.19 fijado + SHA-256 oficial del MSI verificado antes de instalar | firma/origen corporativo para despliegue masivo futuro |
+| Endpoint → Agent | se habilitan tareas de discovery/deploy no autorizadas | mitigado por perfil/gate | `TASKS=Inventory`; otras tareas explícitamente fuera de alcance; preflight verifica allowlist | gestión centralizada sólo tras diseño posterior |
+| Agent → red local | active scanning accidental | mitigado por alcance | NetDiscovery/NetInventory/RemoteInventory prohibidos; no OT | cualquier cambio requiere threat model específico |
+| Agent → endpoint | recolección excesiva | parcialmente mitigado | home/profile scans deshabilitados; alcance Computer local | revisar datos reales observados antes de escalar |
+| Agent HTTPD → red | puerto 62354 expuesto | mitigado por perfil | `NO_HTTPD=1`; preflight comprueba que el puerto no escuche cuando puede | revisar si alguna feature futura requiere HTTPD |
+| Agent P2P → red | superficie P2P innecesaria | mitigado por perfil | `NO_P2P=1` | no habilitar sin caso documentado |
+| Agent → GLPI | TLS deshabilitado/MITM | mitigado por perfil | `NO_SSL_CHECK=0`; HTTP sólo tolerado sobre loopback estricto | TLS corporativo válido antes de multi-host |
+| Agent → OAuth | credencial de inventario reutilizada para NEXUS | mitigado por diseño | OAuth client dedicado Client Credentials + `scope=inventory` | rotación/revocación corporativa posterior |
+| Agent → OAuth | Client Secret expuesto en Git/log/captura | parcialmente mitigado | secret fuera de repo; preflight sólo reporta `present/missing`; evidencia sanitizada | secret manager/provisioning corporativo futuro |
+| Agent → GLPI | inventario enviado a destino equivocado | parcialmente mitigado | SERVER explícito; preflight valida política de transporte sin imprimir host | allowlist/gestión centralizada futura |
+| Agent logs/evidence → Git | fuga de hostname/serial/MAC/UUID/usuario | mitigado por proceso | logs completos e inventario bruto prohibidos; plantilla sanitizada | revisión humana de evidencia antes de versionar |
+| CI → evidencia | CI verde presentada como prueba de endpoint real | mitigado por gate | issue/ADR/runbook exigen evidencia manual sanitizada | mínimo un endpoint real antes de cerrar V02-007 |
 | Rotación de secretos | runtime conserva credenciales antiguas | riesgo conocido v0.2 | backend environment se carga al bootstrap; runbook exige reinicio | secret manager/rotación dinámica en v0.3 |
 | Revocación de token | token cacheado continúa hasta fallo/renovación | riesgo abierto | expiración/renovación acotada; no se asume revocación inmediata | validar semántica real GLPI en Live Lab |
 | API → Intune/Graph | scopes excesivos | pendiente | integración aún no existe | spike/permisos mínimos antes de consumo real |
@@ -156,7 +182,7 @@ sourceSystems
 
 No incluye token, Client Secret, password, username técnico, Client ID, URL privada, headers ni connection strings.
 
-## Frontera OAuth GLPI
+## Frontera OAuth GLPI de NEXUS API
 
 ### Restricción de grant
 
@@ -220,6 +246,50 @@ No se requiere Create, Update, Delete, Purge, Administration ni Setup.
 
 La autorización `usuario + perfil + entidad` debe limitarse a las entidades necesarias. Un 403 durante Live Lab no autoriza subir el perfil a Admin/Super-Admin: cualquier permiso adicional debe derivarse de un endpoint/objeto concreto y quedar documentado.
 
+## Frontera GLPI Agent Live Lab
+
+### Flujo de inventario
+
+```text
+endpoint autorizado
+        |
+        v
+GLPI Agent 1.19
+  TASKS=Inventory
+  ITEMTYPE=Computer
+        |
+        | OAuth Client Credentials
+        | scope=inventory
+        v
+      GLPI 11
+```
+
+El Agent **no habla con NEXUS API**. NEXUS lee posteriormente el `Computer` desde GLPI mediante la frontera read-only de V02-005/V02-006.
+
+### Perfil mínimo
+
+V02-007 exige:
+
+```text
+TASKS=Inventory
+ITEMTYPE=Computer
+NO_HTTPD=1
+NO_P2P=1
+ADD_FIREWALL_EXCEPTION=0
+SCAN_HOMEDIRS=0
+SCAN_PROFILES=0
+NO_SSL_CHECK=0
+TAG=nexus-live-lab
+```
+
+El OAuth client del Agent es dedicado al Live Lab y usa exclusivamente Client Credentials + `scope=inventory`.
+
+### Evidencia
+
+El repositorio sólo admite evidencia sanitizada. El inventario bruto y los logs completos se conservan fuera de Git.
+
+El preflight PowerShell es read-only: valida versión, servicio y configuración esperada sin modificar registro, instalar software, forzar inventario ni imprimir secretos. CI únicamente analiza su sintaxis; no ejecuta un inventario Windows real.
+
 ## Frontera GLPI de recursos
 
 El adapter soporta únicamente API v2.3 y construye rutas desde una raíz GLPI validada.
@@ -247,6 +317,7 @@ Caller -> NEXUS AuthenticationProvider -> SecurityPrincipal
 NEXUS  -> GlpiCredentialSource          -> credenciales upstream
 NEXUS  -> GlpiAccessTokenProvider       -> Bearer token upstream
 NEXUS  -> TechnologyProvider            -> TechnologySnapshot
+Agent  -> OAuth inventory client        -> inventario GLPI
 ```
 
 Estas responsabilidades no deben fusionarse.
@@ -256,6 +327,8 @@ Estas responsabilidades no deben fusionarse.
 `request.ip` alimenta rate limiting y audit events. Sin proxy confiable, `X-Forwarded-For` no determina la IP. Con proxy, sólo IP/CIDR explícito; trust-all está prohibido. El backend futuro debe quedar aislado para impedir saltarse el proxy.
 
 El endpoint GLPI corporativo y la política definitiva de egress se validarán antes del Corporate Deployment.
+
+El Live Lab no autoriza tráfico inbound hacia el endpoint del Agent: `NO_HTTPD=1` evita necesitar el HTTP server embebido. Tampoco autoriza discovery ni administración remota de otros equipos.
 
 ## Disponibilidad
 
@@ -286,7 +359,8 @@ Permitido por defecto:
 - remote IP;
 - subject estable cuando exista;
 - permiso requerido;
-- código/status normalizado cuando sea necesario.
+- código/status normalizado cuando sea necesario;
+- evidencia Live Lab sanitizada con alias genérico.
 
 No permitido por defecto:
 
@@ -294,25 +368,32 @@ No permitido por defecto:
 - cookies;
 - API keys/Client Secrets;
 - password de usuario técnico;
+- Client Secret del Agent;
 - body OAuth o GLPI;
 - query string cruda;
 - headers completos;
 - URL GLPI completa en errores públicos;
-- stack/message interno en la respuesta HTTP.
+- stack/message interno en la respuesta HTTP;
+- hostname/serial/UUID/MAC/IP/usuario del endpoint;
+- inventario bruto JSON/XML;
+- logs completos del Agent.
 
 ## Riesgos que permanecen abiertos
 
 1. **Autenticación NEXUS real**: deny-all es seguro pero no funcional para usuarios Live.
 2. **Secret manager corporativo**: V02-006 define la frontera, pero environment sigue siendo backend de laboratorio.
 3. **Validación real de RBAC GLPI**: el perfil mínimo debe comprobarse contra la instancia Live Lab antes de declararse suficiente.
-4. **Revocación/rotación**: la semántica efectiva de revocación de access tokens y rotación sin reinicio debe validarse/evolucionar.
-5. **BOLA**: no hay endpoints de objetos NEXUS todavía.
-6. **Cobertura GLPI**: sólo `Computer`; otros tipos requieren contrato/mapping/test propios.
-7. **Reconciliación/provenance multisource**: pendiente V02-009.
-8. **Taxonomía detallada**: pendiente V02-010; no inferir desde strings localizadas.
-9. **TLS/HSTS/network isolation**: corresponde al Corporate Deployment.
-10. **Rate limit distribuido / SIEM / retención**: pendientes si el runtime escala.
-11. **OT security**: cualquier conexión OT exige análisis específico y nunca habilita active scanning por defecto.
+4. **Evidencia real Agent → GLPI**: hasta ejecutar al menos un endpoint autorizado, V02-007 está preparado pero no completamente validado.
+5. **Provisioning/rotación del OAuth inventory client**: en V02-007 sigue siendo una operación manual fuera de Git.
+6. **Revocación/rotación NEXUS**: la semántica efectiva de revocación de access tokens y rotación sin reinicio debe validarse/evolucionar.
+7. **BOLA**: no hay endpoints de objetos NEXUS todavía.
+8. **Cobertura GLPI**: sólo `Computer`; otros tipos requieren contrato/mapping/test propios.
+9. **Reconciliación/provenance multisource**: pendiente V02-009.
+10. **Taxonomía detallada**: pendiente V02-010; no inferir desde strings localizadas.
+11. **TLS/HSTS/network isolation**: corresponde al Corporate Deployment.
+12. **Rate limit distribuido / SIEM / retención**: pendientes si el runtime escala.
+13. **OT security**: cualquier conexión OT exige análisis específico y nunca habilita active scanning por defecto.
+14. **Despliegue masivo del Agent**: GPO/Intune, actualización centralizada y lifecycle del Agent quedan fuera de V02-007.
 
 ## Triggers para actualizar este threat model
 
@@ -322,7 +403,9 @@ Actualizar cuando ocurra cualquiera de estos cambios:
 - nueva capability de TechnologyProvider;
 - nuevo tipo GLPI o campo normalizado;
 - cambio de versión GLPI API;
+- cambio de versión/tareas del GLPI Agent;
 - cambio de grant/scope OAuth GLPI;
+- habilitación de NetDiscovery, NetInventory, RemoteInventory, Deploy, WakeOnLan o ESX;
 - nuevo backend de `GlpiCredentialSource`;
 - cambio de perfil/entidades de la service identity;
 - nuevo tipo de principal o permiso NEXUS;
