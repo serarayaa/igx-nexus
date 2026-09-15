@@ -1,18 +1,18 @@
 # ADR-0018 — Live Asset 360 Vertical Slice
 
-Estado: **Propuesto en V02-008 / issue #60**.
+Estado: **Validado en V02-008 / issue #60; pendiente de aceptación definitiva tras merge manual del PR #61**.
 
 ## Contexto
 
-V02-007 probó inventario real desde un endpoint autorizado hacia GLPI y confirmó que NEXUS API Live puede leer `Assets/Computer` mediante una identidad GLPI dedicada. Sin embargo, la Web de v0.1 todavía consume exclusivamente un dataset sintético y Asset 360 contiene secciones explícitamente demo.
+V02-007 probó inventario real desde un endpoint autorizado hacia GLPI y confirmó que NEXUS API Live puede leer `Assets/Computer` mediante una identidad GLPI dedicada. Sin embargo, la Web de v0.1 todavía consumía exclusivamente un dataset sintético y Asset 360 contenía secciones explícitamente demo.
 
-El siguiente gate es demostrar el recorrido completo:
+El siguiente gate era demostrar el recorrido completo:
 
 ```text
 endpoint → GLPI Agent → GLPI → NEXUS API → NEXUS Web
 ```
 
-La solución debe conservar los controles introducidos en V02-003/V02-006: datos de activos no públicos, secretos GLPI fuera del navegador, Web desacoplada de GLPI y fail-closed cuando Live no está configurado.
+La solución debía conservar los controles introducidos en V02-003/V02-006: datos de activos no públicos, secretos GLPI fuera del navegador, Web desacoplada de GLPI y fail-closed cuando Live no está configurado.
 
 ## Decisión
 
@@ -30,7 +30,23 @@ La solución debe conservar los controles introducidos en V02-003/V02-006: datos
    - concede únicamente `technology:read`.
 8. Vite inyecta el bearer en el proxy `/api` del servidor de desarrollo. El navegador sólo realiza requests same-origin a `/api/*`.
 9. Asset 360 Live no renderiza QR/label, CMDB/Device Health ni relaciones sintéticas como si fueran información real.
-10. Entra SSO/OIDC, reverse proxy productivo y secret manager corporativo quedan para v0.3.
+10. En modo Live, rutas y navegación exclusivas del escenario Demo se normalizan/restringen para evitar que Dashboard, CMDB Health u otras vistas sintéticas se presenten dentro de una sesión Live.
+11. Entra SSO/OIDC, reverse proxy productivo y secret manager corporativo quedan para v0.3.
+
+## Validación observada
+
+El 2026-09-15 se completó el gate manual con evidencia sanitizada:
+
+- un endpoint Windows autorizado llegó a GLPI mediante GLPI Agent;
+- NEXUS API Live respondió `/health = 200` y `/ready = 200`;
+- el snapshot canónico respondió `401` sin autenticación;
+- Explorer Live mostró un único `Computer` real normalizado;
+- Asset 360 Live mostró fuente `glpi` y trató campos ausentes como `No informado` / `Desconocido`;
+- no se presentaron CMDB/Device Health, QR/label ni relaciones sintéticas como evidencia real;
+- la navegación Live quedó limitada al vertical soportado;
+- la CI del head posterior a estas correcciones quedó verde.
+
+La evidencia versionada está en `docs/integrations/live-asset-360-evidence-2026-09-15.md` y excluye identificadores reales, secretos, tokens, inventario bruto y capturas sin sanitizar.
 
 ## Consecuencias
 
@@ -46,7 +62,7 @@ La solución debe conservar los controles introducidos en V02-003/V02-006: datos
 
 - el bearer local es deliberadamente un mecanismo de laboratorio y no puede usarse para deployment corporativo;
 - el provider Web Live de V02-008 sólo soporta `Computer`;
-- Dashboard, Health, Technology Map y otras vistas siguen perteneciendo al escenario demo hasta sus tickets de migración;
+- Dashboard, Health, Technology Map y otras vistas siguen perteneciendo al escenario Demo hasta sus tickets de migración;
 - no existe aún autorización por objeto/asset;
 - no hay reconciliación multisource.
 
@@ -70,10 +86,4 @@ Rechazado. La identidad `svc-nexus-api` pertenece al backend; su password/client
 
 ## Gate de aceptación
 
-Este ADR sólo se considera aceptado cuando:
-
-- CI del ticket esté verde;
-- el endpoint canónico protegido funcione;
-- el Computer real validado en V02-007 sea visible en Asset 360 Live;
-- exista evidencia manual sanitizada;
-- PR # correspondiente sea mergeado manualmente por Sergio.
+El gate técnico está **completado**. Este ADR pasa a estado **Aceptado** únicamente después de que Sergio realice el merge manual del PR #61 a `main` y se verifique la CI post-merge.
