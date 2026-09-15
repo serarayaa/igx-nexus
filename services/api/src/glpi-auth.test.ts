@@ -76,6 +76,28 @@ describe("GLPI OAuth service identity", () => {
     expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
+  it("renews short-lived tokens no later than half their lifetime when configured skew is larger", async () => {
+    let now = 0;
+    let sequence = 0;
+    const fetchImpl = vi.fn(async () => tokenResponse(`short-${++sequence}`, 10)) as unknown as typeof fetch;
+    const provider = createGlpiPasswordGrantAccessTokenProvider({
+      baseUrl: "https://glpi.example",
+      clientId: "nexus-client",
+      username: "svc-nexus",
+      credentialSource: credentials,
+      refreshSkewSeconds: 60,
+      now: () => now,
+      fetchImpl,
+    });
+
+    await expect(provider()).resolves.toBe("short-1");
+    now = 4_999;
+    await expect(provider()).resolves.toBe("short-1");
+    now = 5_000;
+    await expect(provider()).resolves.toBe("short-2");
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
   it("deduplicates concurrent token acquisition", async () => {
     const fetchImpl = vi.fn(async () => tokenResponse("shared-token", 120)) as unknown as typeof fetch;
     const provider = createGlpiPasswordGrantAccessTokenProvider({
