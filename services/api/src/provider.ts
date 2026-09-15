@@ -1,5 +1,6 @@
 import {
   technologySchemaVersion,
+  technologyTaxonomyVersion,
   validateTechnologySnapshot,
   type SourceSystem,
   type TechnologyAsset,
@@ -65,14 +66,22 @@ function demoAsset(
   criticality: TechnologyAsset["criticality"],
 ): TechnologyAsset {
   const source = demoSource(id);
+  const ruleId = `demo.v0.1.${domain.toLocaleLowerCase("en-US")}`;
   return Object.freeze({
     id,
     displayName,
     domain,
     assetClass,
     role,
+    taxonomy: Object.freeze({
+      taxonomyVersion: technologyTaxonomyVersion,
+      domain: Object.freeze({ state: "classified", value: domain, method: "normalized", reviewRequired: false, ruleId }),
+      assetClass: Object.freeze({ state: "classified", value: assetClass, method: "normalized", reviewRequired: false, ruleId }),
+      role: Object.freeze({ state: "classified", value: role, method: "normalized", reviewRequired: false, ruleId }),
+    }),
     lifecycle: "active",
     criticality,
+    operationalContexts: Object.freeze([]),
     identifiers: Object.freeze([
       Object.freeze({ kind: "asset_tag" as const, value: `DEMO-TAG-${id.slice(-4)}`, source }),
     ]),
@@ -85,6 +94,9 @@ function demoAsset(
         observedAt: DEMO_AS_OF,
         authority: "trusted" as const,
       }),
+      Object.freeze({ fieldPath: "domain", source, observedAt: DEMO_AS_OF, authority: "trusted" as const, derivation: "normalized" as const }),
+      Object.freeze({ fieldPath: "assetClass", source, observedAt: DEMO_AS_OF, authority: "trusted" as const, derivation: "normalized" as const }),
+      Object.freeze({ fieldPath: "role", source, observedAt: DEMO_AS_OF, authority: "trusted" as const, derivation: "normalized" as const }),
     ]),
   });
 }
@@ -94,8 +106,8 @@ function createCanonicalDemoSnapshot(): TechnologySnapshot {
     schemaVersion: technologySchemaVersion,
     asOf: DEMO_AS_OF,
     assets: Object.freeze([
-      demoAsset("DEMO-0007", "Notebook Demo Ingeniería", "IT", "endpoint", "laptop", "medium"),
-      demoAsset("DEMO-0013", "Consola Demo Supervisión Norte", "OT", "control", "hmi", "critical"),
+      demoAsset("DEMO-0007", "Notebook Demo Ingeniería", "IT", "endpoint", "user_endpoint", "medium"),
+      demoAsset("DEMO-0013", "Consola Demo Supervisión Norte", "OT", "operator_interface", "supervision", "critical"),
     ]),
     relationships: Object.freeze([]),
     observations: Object.freeze([]),
