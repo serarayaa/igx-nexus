@@ -9,7 +9,7 @@ Principios fundamentales:
 - La NEXUS API aísla la aplicación web de los detalles de implementación de los sistemas aguas arriba.
 - Las fuentes autoritativas se reconcilian en lugar de duplicarse ciegamente.
 - La seguridad, auditabilidad y capacidad de actualización son restricciones de diseño desde el primer día.
-- Utilizar identificadores QR seguros que no incorporen datos sensibles del activo.
+- El QR identifica una etiqueta/CI mediante locator opaco; nunca actúa como credencial ni apunta directamente a GLPI, bases de datos o dispositivos.
 - Desde v0.2, la identidad NEXUS y el modelo canónico permanecen independientes de las taxonomías/IDs internos de GLPI, Intune, Entra u otras fuentes.
 - La procedencia y la evidencia forman parte del contrato de dominio: NEXUS debe poder explicar de dónde proviene un dato antes de inferir sobre él.
 - Demo y Live deben compartir contratos de producto; la selección de origen ocurre en composición, no dentro de componentes ni handlers de dominio.
