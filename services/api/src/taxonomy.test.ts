@@ -7,41 +7,48 @@ import {
 } from "./taxonomy.js";
 
 describe("GLPI → NEXUS taxonomy mapping", () => {
-  it("normalizes an explicit Notebook type without equating item type to asset class", () => {
+  it("keeps generic Notebook hardware unclassified instead of asserting IT semantics", () => {
     const result = classifyGlpiTaxonomy({ itemType: "Computer", sourceType: "Notebook" });
-    expect(result.domain).toMatchObject({ state: "classified", value: "IT", method: "inferred", reviewRequired: true });
-    expect(result.assetClass).toMatchObject({ state: "classified", value: "endpoint", method: "normalized" });
-    expect(result.role).toMatchObject({ state: "classified", value: "user_endpoint", reviewRequired: true });
-    expect(projectGlpiTaxonomyForLegacyScalars(result)).toMatchObject({
+    expect(result.domain).toMatchObject({
+      state: "unclassified",
+      reviewRequired: true,
+      ruleId: "glpi.computer.type.generic-hardware",
+    });
+    expect(result.assetClass.state).toBe("unclassified");
+    expect(result.role.state).toBe("unclassified");
+    expect(projectGlpiTaxonomyForLegacyScalars(result)).toEqual({
       domain: "IT",
       assetClass: "endpoint",
       role: "user_endpoint",
-      compatibilityFallback: false,
+      compatibilityFallback: true,
+      ruleId: "glpi.computer.compatibility-projection",
     });
   });
 
-  it("separates a GLPI Server source type from endpoint classification", () => {
+  it("keeps generic Server hardware unclassified because it may participate in IT or OT", () => {
     const result = classifyGlpiTaxonomy({ itemType: "Computer", sourceType: "Server" });
-    expect(result.domain).toMatchObject({ state: "classified", value: "IT", reviewRequired: true });
-    expect(result.assetClass).toMatchObject({ state: "classified", value: "server" });
-    expect(result.role).toMatchObject({ state: "classified", value: "infrastructure_service", reviewRequired: true });
+    expect(result.domain).toMatchObject({ state: "unclassified", ruleId: "glpi.computer.type.generic-hardware" });
+    expect(result.assetClass.state).toBe("unclassified");
+    expect(result.role.state).toBe("unclassified");
   });
 
-  it("recognizes an OT engineering workstation without treating it as a common IT endpoint", () => {
+  it("recognizes an explicit OT engineering workstation but requires review of configurable source vocabulary", () => {
     const result = classifyGlpiTaxonomy({ itemType: "Computer", sourceType: "Engineering Workstation" });
-    expect(result.domain).toMatchObject({ state: "classified", value: "OT" });
-    expect(result.assetClass).toMatchObject({ state: "classified", value: "industrial_compute" });
-    expect(result.role).toMatchObject({ state: "classified", value: "engineering_workstation" });
+    expect(result.domain).toMatchObject({ state: "classified", value: "OT", reviewRequired: true });
+    expect(result.assetClass).toMatchObject({ state: "classified", value: "industrial_compute", reviewRequired: true });
+    expect(result.role).toMatchObject({ state: "classified", value: "engineering_workstation", reviewRequired: true });
   });
 
-  it("normalizes HMI and historian as different class/role combinations", () => {
+  it("normalizes HMI and historian as different OT class/role combinations with review state", () => {
     const hmi = classifyGlpiTaxonomy({ itemType: "Computer", sourceType: "HMI" });
-    expect(hmi.assetClass).toMatchObject({ state: "classified", value: "operator_interface" });
+    expect(hmi.domain).toMatchObject({ state: "classified", value: "OT", reviewRequired: true });
+    expect(hmi.assetClass).toMatchObject({ state: "classified", value: "operator_interface", reviewRequired: true });
     expect(hmi.role).toMatchObject({ state: "classified", value: "supervision", reviewRequired: true });
 
     const historian = classifyGlpiTaxonomy({ itemType: "Computer", sourceType: "Historian" });
-    expect(historian.assetClass).toMatchObject({ state: "classified", value: "industrial_compute" });
-    expect(historian.role).toMatchObject({ state: "classified", value: "historian" });
+    expect(historian.domain).toMatchObject({ state: "classified", value: "OT", reviewRequired: true });
+    expect(historian.assetClass).toMatchObject({ state: "classified", value: "industrial_compute", reviewRequired: true });
+    expect(historian.role).toMatchObject({ state: "classified", value: "historian", reviewRequired: true });
   });
 
   it("keeps a Computer without Type unknown instead of asserting IT", () => {
