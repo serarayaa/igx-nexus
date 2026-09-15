@@ -52,11 +52,11 @@ export function AssetExplorer({ provider = demoProvider, mode = "demo" }: { prov
       meta={<Badge>{live ? "LIVE LAB · NEXUS API" : "Datos sintéticos · escenario de demostración"}</Badge>}
     />
     {state.status === "loading" && <LoadingState title="Cargando inventario de activos" description={live ? "Consultando NEXUS API en modo Live." : "Preparando el inventario de demostración."} />}
-    {state.status === "error" && <ErrorState title="No se pudo cargar el inventario" description="Vuelve a intentar. Tu búsqueda se conservará y no se mostrarán detalles internos del error." action={<Button onPress={() => setAttempt(n => n + 1)}>Reintentar</Button>} />}
+    {state.status === "error" && <ErrorState title="No se pudo cargar el inventario" description={live ? "Vuelve a intentar. No se mostrarán detalles internos del error." : "Vuelve a intentar. Tu búsqueda se conservará."} action={<Button onPress={() => setAttempt(n => n + 1)}>Reintentar</Button>} />}
     {state.status === "ready" && state.snapshot.assets.length === 0 && <EmptyState title="El inventario está vacío" description={live ? "NEXUS API no devolvió activos para el provider Live." : "No hay activos disponibles en este escenario."} action={<Button onPress={() => setAttempt(n => n + 1)}>Volver a cargar</Button>} />}
     {state.status === "ready" && state.snapshot.assets.length > 0 && result && <>
       <div ref={searchRegion}>
-        <Search label="Buscar activos" showLabel value={query.search} onChange={search => changeQuery({ search })} placeholder="Nombre, serial, responsable, sitio…" description="Busca también por hostname, etiqueta, modelo, fabricante o IP. Combina palabras para afinar los resultados." />
+        <Search label="Buscar activos" showLabel value={query.search} onChange={search => changeQuery({ search })} placeholder="Nombre, serial, responsable, sitio…" description={live ? "Busca también por hostname, etiqueta, modelo, fabricante o IP. Combina palabras para afinar los resultados." : "Busca también por hostname, etiqueta, modelo, fabricante o IP demo. Combina palabras para afinar los resultados."} />
       </div>
       <ExplorerFilters snapshot={state.snapshot} filters={query.filters}
         onChange={(key, value) => changeQuery({ filters: { ...query.filters, [key]: value } })}
@@ -66,7 +66,7 @@ export function AssetExplorer({ provider = demoProvider, mode = "demo" }: { prov
       </p>} secondary={<label className="nexus-explorer-checkbox"><input type="checkbox" checked={showTechnical} onChange={e => setShowTechnical(e.target.checked)} />Mostrar identificación técnica</label>} />
       {result.total === 0 ? <EmptyState title="No hay activos que coincidan" description="Prueba otra búsqueda o elimina filtros para ampliar el inventario." action={<Button onPress={clearAll}>Restablecer búsqueda y filtros</Button>} /> : <>
         <p className="nexus-muted nexus-explorer-scroll-hint">Desplaza la tabla horizontalmente para consultar todas las columnas. Puedes ordenar desde sus encabezados.</p>
-        <AssetTable rows={result.rows} asOf={state.snapshot.asOf} sort={query.sort} onSortChange={sort => changeQuery({ sort })} showTechnical={showTechnical} />
+        <AssetTable rows={result.rows} asOf={state.snapshot.asOf} sort={query.sort} onSortChange={sort => changeQuery({ sort })} showTechnical={showTechnical} caption={live ? "Inventario de activos Live" : "Inventario de activos demo"} />
         <div className="nexus-explorer-pagination">
           <label className="nexus-select-field"><span>Activos por página</span><select value={query.pageSize} onChange={e => changeQuery({ pageSize: Number(e.target.value) })}>{[25, 50, 100].map(size => <option key={size} value={size}>{size}</option>)}</select></label>
           <Pagination page={result.page} totalPages={result.totalPages} ariaLabel="Páginas del inventario" onPageChange={page => {
@@ -75,7 +75,9 @@ export function AssetExplorer({ provider = demoProvider, mode = "demo" }: { prov
           }} />
         </div>
       </>}
-      <p className="nexus-muted"><time dateTime={state.snapshot.asOf}>{dateFormat.format(new Date(state.snapshot.asOf))}</time> · UTC. {live ? "Snapshot canónico servido por NEXUS API; GLPI permanece detrás del adapter Live." : "Corte demo; frescura relativa al corte. Sin conexión a fuentes corporativas."}</p>
+      {live
+        ? <p className="nexus-muted"><time dateTime={state.snapshot.asOf}>{dateFormat.format(new Date(state.snapshot.asOf))}</time> · UTC. Snapshot canónico servido por NEXUS API; GLPI permanece detrás del adapter Live.</p>
+        : <p className="nexus-muted">Corte demo: <time dateTime={state.snapshot.asOf}>{dateFormat.format(new Date(state.snapshot.asOf))}</time> · UTC. Frescura relativa al corte; incluye activos dados de baja. Sin conexión a fuentes corporativas.</p>}
     </>}
   </div>;
 }
