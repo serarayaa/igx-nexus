@@ -66,7 +66,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime** y **V02-003 — API Security Baseline** están integrados. El trabajo activo es **V02-004 — Provider Mode Contract**, issue #49 / PR #50, cuyo objetivo es que Demo y Live compartan una misma frontera de datos sin introducir ramas `if demo` / `if live` dispersas.
+**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline** y **V02-004 — Provider Mode Contract** están integrados. V02-004 quedó incorporado mediante PR #50 / issue #49 en el merge `70ae174d53ea09df5123ab136b849745200f4b11`; la CI post-merge #204 quedó verde. El siguiente ticket planificado es **V02-005 — GLPI API v2 Adapter**.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -139,7 +139,7 @@ V02-002 convirtió `services/api` en el primer runtime backend real de NEXUS. La
 
 V02-003 agregó un baseline de seguridad **deny-by-default**: autenticación desacoplada, autorización por permisos efectivos, policy obligatoria para rutas `/api` y `/api/*`, CORS allowlist, security headers, límites de body/timeout, rate limiting, trust proxy explícito y security audit events minimizados.
 
-V02-004 agrega `TechnologyProvider` como frontera común Demo/Live. `NEXUS_PROVIDER_MODE` selecciona el modo durante composición; `production` exige declararlo explícitamente. Demo produce un `TechnologySnapshot` canónico sintético y Live falla cerrado mientras no exista el adapter GLPI real de V02-005.
+V02-004 agregó `TechnologyProvider` como frontera común Demo/Live. `NEXUS_PROVIDER_MODE` selecciona el modo durante composición; `production` exige declararlo explícitamente. Demo produce un `TechnologySnapshot` canónico sintético y Live falla cerrado mientras no exista el adapter GLPI real de V02-005.
 
 Endpoints base actuales:
 
