@@ -92,6 +92,25 @@ describe("IT/OT taxonomy v2 domain invariants", () => {
     expect(validateTechnologyTaxonomyAssessment(assessment)).toEqual([]);
     expect("value" in assessment.domain).toBe(false);
   });
+
+  it("rejects an invalid optional method carried by a conflict payload", () => {
+    const invalid = {
+      taxonomyVersion: technologyTaxonomyVersion,
+      domain: {
+        state: "conflict",
+        value: "IT",
+        method: "magic",
+        reviewRequired: true,
+        ruleId: "test.conflict",
+        reasonCode: "synthetic_conflict",
+      },
+      assetClass: { state: "unclassified", reviewRequired: true, ruleId: "test", reasonCode: "unmapped" },
+      role: { state: "unclassified", reviewRequired: true, ruleId: "test", reasonCode: "unmapped" },
+    } as unknown as TechnologyTaxonomyAssessment;
+    expect(validateTechnologyTaxonomyAssessment(invalid)).toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: "taxonomy.method_invalid", path: "domain.method" }),
+    ]));
+  });
 });
 
 describe("taxonomy projection and operational context", () => {
@@ -125,6 +144,21 @@ describe("taxonomy projection and operational context", () => {
     expect(validateOperationalContextReference({ id: "zone-a", kind: "security_zone" })).toEqual([]);
     expect(validateOperationalContextReference({ id: "", kind: "system" })).toEqual(expect.arrayContaining([
       expect.objectContaining({ code: "context.id_required" }),
+    ]));
+  });
+
+  it("validates optional context source references defensively", () => {
+    expect(validateOperationalContextReference({
+      id: "ctx-source",
+      kind: "system",
+      source: {
+        source: "glpi",
+        externalId: "context-1",
+        observedAt: "not-a-timestamp",
+        authority: "trusted",
+      },
+    })).toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: "timestamp.invalid", path: "operationalContext.source.observedAt" }),
     ]));
   });
 
