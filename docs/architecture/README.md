@@ -32,5 +32,6 @@ Principios fundamentales:
 - [ADR-0014 — Provider Mode Contract](adr-0014-provider-mode-contract.md) — aceptado en V02-004 (PR #50 / issue #49).
 - [ADR-0015 — GLPI API v2 Adapter](adr-0015-glpi-api-v2-adapter.md) — aceptado en V02-005 (PR #53 / issue #52).
 - [ADR-0016 — GLPI Service Identity & RBAC](adr-0016-glpi-service-identity-rbac.md) — aceptado en V02-006 (PR #56 / issue #55).
+- [ADR-0017 — GLPI Agent Live Lab](adr-0017-glpi-agent-live-lab.md) — propuesto en V02-007 (issue #58); aceptación efectiva al cierre del Live Lab.
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
