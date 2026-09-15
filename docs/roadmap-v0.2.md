@@ -34,8 +34,8 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-006 | GLPI Service Identity & RBAC | P0 | ✅ Integrado — PR #56 / issue #55 |
 | V02-007 | GLPI Agent Live Lab | P0 | ✅ Integrado — PR #59 / issue #58 |
 | V02-008 | Live Asset 360 Vertical Slice | P0 | ✅ Integrado — PR #61 / issue #60 |
-| V02-009 | Provenance & Reconciliation | P0 | 🟡 En curso — issue #63 |
-| V02-010 | IT/OT Taxonomy v2 | P0 | ⚪ Pendiente |
+| V02-009 | Provenance & Reconciliation | P0 | ✅ Integrado — PR #64 / issue #63; housekeeping #65 |
+| V02-010 | IT/OT Taxonomy v2 | P0 | 🟡 En curso — issue #66 / PR #67 |
 | V02-011 | Demo Dataset v0.2 Migration | P0 | ⚪ Pendiente |
 | V02-012 | Relationship Evidence v2 | P1 | ⚪ Pendiente |
 | V02-013 | Product IA & Visual Direction | P0 | ⚪ Pendiente |
@@ -152,6 +152,8 @@ Baseline integrado:
 - probe GLPI mínimo `Assets/Computer?start=0&limit=1` para readiness dinámica, con cache corto y deduplicación de probes en vuelo;
 - ADR-0015 y threat model v0.2 actualizados.
 
+Este mapping histórico del primer vertical Live se conserva como parte del registro técnico y es refinado explícitamente por V02-010; no debe interpretarse como la taxonomía actual.
+
 ### V02-006 — GLPI Service Identity & RBAC
 
 Objetivo: incorporar la identidad técnica OAuth y el baseline de mínimo privilegio que permiten al runtime Live autenticarse contra GLPI sin introducir secretos en el dominio ni en `ApiConfig`.
@@ -229,9 +231,9 @@ Objetivo: formalizar identidad multisource, evidencia por atributo, conflictos y
 
 Dependencias: V02-008 ✅.
 
-Trabajo activo: issue #63 / `feature/v02-009-provenance-reconciliation`.
+Resultado integrado: issue #63 cerrado mediante PR #64; merge `209c400f88f556975e525f99b9977cd00e8957be`; CI post-merge #361 verde. El housekeeping PR #65 sincronizó documentación/ADR y dejó `main` en `b74b0cc5c9043f2087a7cf561cc9ff23ac03d36e`. ADR-0019 está Accepted.
 
-Alcance implementado en revisión:
+Baseline integrado:
 
 - capa explícita `candidate discovery → evidence evaluation → matching decision → conflict detection → canonical projection`;
 - reglas deterministas para identificadores fuertes, auxiliares, volátiles e insuficientes;
@@ -242,19 +244,39 @@ Alcance implementado en revisión:
 - políticas centralizadas por familia de atributo para fuente, autoridad y recencia;
 - canonical projection que preserva siempre el `TechnologyAsset.id` del activo ancla;
 - fixtures sintéticos para comportamiento multisource, sin integración Intune real;
-- matriz de tests contractuales/unitarios, ADR-0019 propuesto y threat-model addendum.
+- matriz de tests contractuales/unitarios, ADR-0019 y threat-model addendum.
 
-Gate de cierre: PR revisado, CI completa verde, regresión V02-008/Demo sin degradación, revisión de datos/secretos y merge manual de Sergio. ADR-0019 no se marca Accepted antes de ese merge.
+V02-009 cerró la frontera de identidad/provenance necesaria para que V02-010 pueda clasificar sin convertir inferencia débil en hecho ni mezclar identidad con taxonomía.
 
 ## Epic 3 — IT / OT Model
 
 ### V02-010 — IT/OT Taxonomy v2
 
-Formalizar clases, roles, sistemas/contextos y mapping hacia GLPI. No realizar active scanning OT.
+Objetivo: formalizar una taxonomía reusable y auditable donde IT y OT comparten plataforma/contratos, pero no una mega-taxonomía indiferenciada.
+
+Dependencias: V02-009 ✅.
+
+Trabajo activo: issue #66 / `feature/v02-010-it-ot-taxonomy` / PR #67.
+
+Alcance en implementación/revisión:
+
+- `domain` cerrado a semántica `IT | OT`; unknown/unclassified/conflict viven como estado de clasificación;
+- clases IT y OT diferenciadas;
+- `role` redefinido como función, no subtipo de hardware;
+- `TechnologyTaxonomyAssessment` con estado, método, `reviewRequired`, regla y razón;
+- derivación taxonómica integrada con provenance sin confundir método con autoridad;
+- `OperationalContextReference` separado de clase/rol para system/service/site/network/security context;
+- gate v2 estricto para providers migrados y puente de compatibilidad temporal para consumidores legacy;
+- mapping GLPI centralizado, explícito y basado en reglas; `GLPI item type !== NEXUS assetClass`;
+- `ComputerType` reconocido puede normalizar IT/OT; evidencia desconocida permanece revisable/no resuelta;
+- investigación externa registrada en ADR-0020 y `docs/taxonomy-v2.md`;
+- sin active scanning OT, sin integración Intune real y sin hardcodear plantas/sistemas internos.
+
+Gate de cierre: typecheck/build/tests/audit/CI verdes, revisión final del diff y merge manual. ADR-0020 permanece Proposed hasta ese merge.
 
 ### V02-011 — Demo Dataset v0.2 Migration
 
-Migrar la demo sintética al modelo canónico sin perder reproducibilidad, seguridad ni escenarios hero.
+Migrar la demo sintética al modelo canónico sin perder reproducibilidad, seguridad ni escenarios hero. Debe completar el retiro del puente de aliases taxonómicos legacy introducido temporalmente por V02-010.
 
 ### V02-012 — Relationship Evidence v2
 
@@ -352,9 +374,11 @@ V02-007 GLPI Agent Live Lab
 V02-008 primer Asset 360 LIVE
         ↓
 V02-009 Provenance & Reconciliation
+        ↓
+V02-010 IT/OT Taxonomy v2
 ```
 
-Sólo después de comprobar ese vertical slice deben crecer en paralelo IT/OT, Product Design, Analytics y Endpoint Intelligence.
+Sólo después de comprobar y estabilizar ese vertical slice deben crecer en paralelo IT/OT, Product Design, Analytics y Endpoint Intelligence.
 
 ## v0.3 — Corporate Deployment
 
