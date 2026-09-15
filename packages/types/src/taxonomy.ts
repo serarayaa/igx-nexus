@@ -18,6 +18,7 @@ import {
   type TechnologySnapshot,
   type TechnologyTaxonomyAssessment,
 } from "./model.js";
+import { validateSourceReference } from "./validation.js";
 
 export interface TaxonomyValidationIssue {
   readonly code: string;
@@ -78,11 +79,16 @@ export function validateTaxonomyDecision<T extends string>(
   if (!decision.reasonCode.trim()) {
     issues.push({ code: "taxonomy.reason_required", path: `${path}.reasonCode`, message: "unresolved classifications require a reasonCode" });
   }
-  if (decision.state === "conflict" && decision.value !== undefined) {
-    const known = allowedValues.includes(decision.value);
-    const custom = allowCustom && decision.value.startsWith("custom:") && decision.value.slice("custom:".length).trim().length > 0;
-    if (!known && !custom) {
-      issues.push({ code: "taxonomy.value_invalid", path: `${path}.value`, message: "unsupported conflicting candidate value" });
+  if (decision.state === "conflict") {
+    if (decision.value !== undefined) {
+      const known = allowedValues.includes(decision.value);
+      const custom = allowCustom && decision.value.startsWith("custom:") && decision.value.slice("custom:".length).trim().length > 0;
+      if (!known && !custom) {
+        issues.push({ code: "taxonomy.value_invalid", path: `${path}.value`, message: "unsupported conflicting candidate value" });
+      }
+    }
+    if (decision.method !== undefined && !taxonomyClassificationMethods.includes(decision.method)) {
+      issues.push({ code: "taxonomy.method_invalid", path: `${path}.method`, message: "unsupported classification method" });
     }
   }
   return issues;
@@ -158,6 +164,11 @@ export function validateOperationalContextReference(
   }
   if (context.displayName !== undefined && !context.displayName.trim()) {
     issues.push({ code: "context.name_empty", path: `${path}.displayName`, message: "displayName cannot be empty when provided" });
+  }
+  if (context.source !== undefined) {
+    validateSourceReference(context.source, `${path}.source`).forEach((sourceIssue) => {
+      issues.push({ code: sourceIssue.code, path: sourceIssue.path, message: sourceIssue.message });
+    });
   }
   return issues;
 }
