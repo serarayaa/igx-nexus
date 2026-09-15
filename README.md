@@ -66,7 +66,7 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline**, **V02-004 — Provider Mode Contract**, **V02-005 — GLPI API v2 Adapter** y **V02-006 — GLPI Service Identity & RBAC** están integrados. V02-006 quedó incorporado mediante PR #56 / issue #55 en el merge `1ea04772fd4fa57e956f7797b2cb298730bad5bc`, con CI post-merge #275 verde. El siguiente trabajo es **V02-007 — GLPI Agent Live Lab**.
+**V02-001 — Canonical Technology Model**, **V02-002 — NEXUS API Runtime**, **V02-003 — API Security Baseline**, **V02-004 — Provider Mode Contract**, **V02-005 — GLPI API v2 Adapter** y **V02-006 — GLPI Service Identity & RBAC** están integrados. V02-006 quedó incorporado mediante PR #56 / issue #55 en el merge `1ea04772fd4fa57e956f7797b2cb298730bad5bc`; su housekeeping PR #57 dejó `main` en `2c8885828578ad56d38495619288502baeaf35e2` con CI #277 verde. El trabajo activo es **V02-007 — GLPI Agent Live Lab**, issue #58.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -145,6 +145,8 @@ V02-005 agregó el primer adapter GLPI Live read-only. La versión de High-Level
 
 V02-006 implementó esa identidad upstream sin mezclarla con los callers de NEXUS: un `GlpiCredentialSource` entrega secretos al token provider OAuth, que usa Password Grant + scope `api` por la restricción actual de GLPI 11, mantiene el access token sólo en memoria y lo renueva antes de expirar. El runtime Live compone esta identidad con el adapter de V02-005. El RBAC esperado es un usuario técnico dedicado con perfil GLPI read-only y alcance por entidad mínimo.
 
+V02-007 prepara el primer Live Lab con **GLPI Agent 1.19** sobre 1–3 endpoints autorizados. El Agent usa una identidad OAuth separada (`client_credentials`, `scope=inventory`), queda restringido a la tarea `Inventory`, deshabilita HTTPD/P2P y prohíbe discovery, remote inventory y scanning OT. El éxito del ticket requiere evidencia manual sanitizada; CI por sí sola no demuestra un inventario real.
+
 Endpoints base actuales:
 
 ```text
@@ -159,4 +161,4 @@ GET /openapi.json
 
 La configuración HTTP usa variables `NEXUS_API_*` y `NEXUS_PROVIDER_MODE`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. Los secretos GLPI no forman parte de `ApiConfig` ni se versionan.
 
-Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](docs/architecture/adr-0016-glpi-service-identity-rbac.md), [runbook de GLPI Service Identity](docs/integrations/glpi-service-identity.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
+Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](docs/architecture/adr-0016-glpi-service-identity-rbac.md), [ADR-0017 — GLPI Agent Live Lab](docs/architecture/adr-0017-glpi-agent-live-lab.md), [runbook de GLPI Service Identity](docs/integrations/glpi-service-identity.md), [runbook de GLPI Agent Live Lab](docs/integrations/glpi-agent-live-lab.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
