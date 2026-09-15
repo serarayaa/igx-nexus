@@ -1,7 +1,11 @@
 import { technologySchemaVersion } from "@igx-nexus/types";
 import type { FastifyInstance } from "fastify";
 import { API_SERVICE_NAME, API_SERVICE_VERSION, API_VERSION } from "./contracts.js";
-import { publicProviderDescriptor, type TechnologyProvider } from "./provider.js";
+import {
+  publicProviderDescriptor,
+  technologyProviderAvailability,
+  type TechnologyProvider,
+} from "./provider.js";
 import { publicRouteSecurity } from "./security.js";
 
 const runtimeStatusSchema = {
@@ -103,13 +107,15 @@ export function registerBaseRoutes(app: FastifyInstance, provider: TechnologyPro
       },
     },
     async (_request, reply) => {
-      const ready = descriptor.availability === "ready";
+      const providerAvailability = await technologyProviderAvailability(provider);
+      const ready = providerAvailability === "ready";
       return reply.status(ready ? 200 : 503).send({
         status: ready ? "ready" : "not_ready",
         service: API_SERVICE_NAME,
         apiVersion: API_VERSION,
         technologySchemaVersion,
-        ...runtimeProviderFields,
+        providerMode: descriptor.mode,
+        providerAvailability,
       });
     },
   );
