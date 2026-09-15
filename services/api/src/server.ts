@@ -2,6 +2,10 @@ import { pathToFileURL } from "node:url";
 import type { FastifyInstance } from "fastify";
 import { buildApp } from "./app.js";
 import { loadConfig, type ApiConfig } from "./config.js";
+import {
+  createRuntimeTechnologyProvider,
+  type RuntimeTechnologyProviderOptions,
+} from "./glpi-runtime.js";
 
 export interface SignalRuntime {
   exitCode: NodeJS.Process["exitCode"];
@@ -41,8 +45,15 @@ export function installShutdownHandlers(
   return { shutdown };
 }
 
-export async function startServer(config: ApiConfig = loadConfig()): Promise<FastifyInstance> {
-  const app = await buildApp({ config });
+export async function startServer(
+  config: ApiConfig = loadConfig(),
+  runtimeOptions: RuntimeTechnologyProviderOptions = {},
+): Promise<FastifyInstance> {
+  const technologyProvider = createRuntimeTechnologyProvider(config, runtimeOptions);
+  const app = await buildApp({
+    config,
+    ...(technologyProvider === undefined ? {} : { technologyProvider }),
+  });
   installShutdownHandlers(app);
   await app.listen({ host: config.host, port: config.port });
   return app;
