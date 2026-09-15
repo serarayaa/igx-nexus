@@ -37,10 +37,14 @@ describe("GLPI Live TechnologyProvider readiness", () => {
     const invalidRecord = createGlpiLiveTechnologyProvider({
       transport: { async get() { return [{ name: "missing-id" }]; } },
     });
+    const oversizedProbe = createGlpiLiveTechnologyProvider({
+      transport: { async get() { return [{ id: 1 }, { id: 2 }]; } },
+    });
 
     await expect(throwing.checkAvailability?.()).resolves.toBe("unavailable");
     await expect(wrongShape.checkAvailability?.()).resolves.toBe("unavailable");
     await expect(invalidRecord.checkAvailability?.()).resolves.toBe("unavailable");
+    await expect(oversizedProbe.checkAvailability?.()).resolves.toBe("unavailable");
   });
 
   it("makes /ready reflect GLPI runtime availability without taking /health down", async () => {
