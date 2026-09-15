@@ -7,7 +7,21 @@ import { LabelDesigner } from "./LabelDesigner";
 import { RelationshipGraph } from "./RelationshipGraph";
 import { CmdbHealth } from "./CmdbHealth";
 import { NexusShell } from "./NexusShell";
+import { demoProvider } from "./demo-provider";
+import { liveProvider } from "./live-provider";
+import type { InventoryProvider } from "./asset-model";
 import { routeFromHash, type AppRoute } from "./navigation-model";
+
+type InventoryMode = "demo" | "live";
+
+function configuredInventoryProvider(): { mode: InventoryMode; provider: InventoryProvider } {
+  const mode = import.meta.env.VITE_NEXUS_DATA_MODE?.trim() || "demo";
+  if (mode === "demo") return { mode, provider: demoProvider };
+  if (mode === "live") return { mode, provider: liveProvider };
+  throw new Error("VITE_NEXUS_DATA_MODE must be demo or live");
+}
+
+const inventory = configuredInventoryProvider();
 
 function savedRoute(): AppRoute | null {
   const value: unknown = window.history.state?.nexusRoute;
@@ -23,6 +37,13 @@ function savedRoute(): AppRoute | null {
   return null;
 }
 
+function normalizeRouteForMode(route: AppRoute | null, mode: InventoryMode): AppRoute {
+  if (mode === "demo") return route ?? { view: "dashboard" };
+  if (route?.view === "asset") return route;
+  if (route?.view === "assets") return route;
+  return { view: "assets" };
+}
+
 function routeTitle(route: AppRoute): string {
   if (route.view === "dashboard") return "Panel principal";
   if (route.view === "health") return "CMDB Health";
@@ -34,16 +55,28 @@ function routeTitle(route: AppRoute): string {
 }
 
 export function App() {
-  const [route, setRoute] = useState<AppRoute>(() => routeFromHash(window.location.hash) ?? savedRoute() ?? { view: "dashboard" });
+  const [route, setRoute] = useState<AppRoute>(() => normalizeRouteForMode(
+    routeFromHash(window.location.hash) ?? savedRoute(),
+    inventory.mode,
+  ));
 
   useEffect(() => {
     const onHashChange = () => {
-      const next = routeFromHash(window.location.hash) ?? savedRoute() ?? route;
+      const parsed = routeFromHash(window.location.hash) ?? savedRoute() ?? route;
+      const next = normalizeRouteForMode(parsed, inventory.mode);
       window.history.replaceState({ ...window.history.state, nexusRoute: next }, "");
       setRoute(next);
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
+  }, [route]);
+
+  useEffect(() => {
+    if (inventory.mode !== "live") return;
+    const expectedHash = route.view === "asset" ? `#assets/${encodeURIComponent(route.assetId)}` : "#assets";
+    if (window.location.hash !== expectedHash) {
+      window.history.replaceState({ ...window.history.state, nexusRoute: route }, "", expectedHash);
+    }
   }, [route]);
 
   useEffect(() => {
@@ -65,14 +98,14 @@ export function App() {
     : route.view === "health"
       ? <CmdbHealth />
     : route.view === "assets"
-      ? <AssetExplorer />
+      ? <AssetExplorer provider={inventory.provider} mode={inventory.mode} />
       : route.view === "asset"
-        ? <Asset360 assetId={route.assetId} />
+        ? <Asset360 assetId={route.assetId} provider={inventory.provider} />
         : route.view === "relations"
           ? <RelationshipGraph assetId={route.assetId} />
         : route.view === "label"
           ? <LabelDesigner assetId={route.assetId} />
           : <DemoQrResolver locator={route.locator} />;
 
-  return <NexusShell view={route.view}>{content}</NexusShell>;
+  return <NexusShell view={route.view} mode={inventory.mode}>{content}</NexusShell>;
 }

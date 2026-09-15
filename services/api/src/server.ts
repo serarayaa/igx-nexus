@@ -6,6 +6,7 @@ import {
   createRuntimeTechnologyProvider,
   type RuntimeTechnologyProviderOptions,
 } from "./glpi-runtime.js";
+import { createLabAuthenticationProvider } from "./lab-auth.js";
 
 export interface SignalRuntime {
   exitCode: NodeJS.Process["exitCode"];
@@ -50,9 +51,11 @@ export async function startServer(
   runtimeOptions: RuntimeTechnologyProviderOptions = {},
 ): Promise<FastifyInstance> {
   const technologyProvider = createRuntimeTechnologyProvider(config, runtimeOptions);
+  const authenticationProvider = createLabAuthenticationProvider(config);
   const app = await buildApp({
     config,
     ...(technologyProvider === undefined ? {} : { technologyProvider }),
+    ...(authenticationProvider === undefined ? {} : { authenticationProvider }),
   });
   installShutdownHandlers(app);
   await app.listen({ host: config.host, port: config.port });

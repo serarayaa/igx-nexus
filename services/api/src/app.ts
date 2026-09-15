@@ -14,6 +14,7 @@ import {
   registerSecurity,
   type AuthenticationProvider,
 } from "./security.js";
+import { registerTechnologyRoutes } from "./technology-routes.js";
 
 export interface BuildAppOptions {
   readonly config?: ApiConfig;
@@ -107,13 +108,17 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
         description: "Frontera HTTP de Technology Intelligence para IGX NEXUS.",
         version: API_SERVICE_VERSION,
       },
-      tags: [{ name: "Runtime", description: "Estado y metadata del runtime NEXUS API" }],
+      tags: [
+        { name: "Runtime", description: "Estado y metadata del runtime NEXUS API" },
+        { name: "Technology", description: "Lecturas canónicas de Technology Intelligence" },
+      ],
     },
   });
 
   registerErrorHandlers(app);
   registerSecurity(app, authenticationProvider);
   registerBaseRoutes(app, technologyProvider);
+  registerTechnologyRoutes(app, technologyProvider);
 
   return app;
 }
