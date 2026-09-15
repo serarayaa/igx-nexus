@@ -2,7 +2,7 @@
 
 `@igx-nexus/api` es la frontera HTTP de backend de **IGX NEXUS v0.2 — Technology Intelligence**.
 
-La evolución integrada/activa es acumulativa: V02-002 creó el runtime real; V02-003 incorporó seguridad; V02-004 desacopló Demo/Live; V02-005 añadió GLPI read-only; V02-006 incorporó service identity/RBAC; V02-008 expuso el primer vertical Live; V02-009 formalizó provenance/reconciliation; y V02-010 introduce la taxonomía IT/OT v2.
+V02-002 creó el runtime real, V02-003 incorporó el baseline de seguridad, V02-004 desacopló Demo/Live mediante `TechnologyProvider`, V02-005 incorporó el adapter GLPI read-only, V02-006 añadió la identidad técnica OAuth, V02-009 formalizó provenance/reconciliation y **V02-010 — IT/OT Taxonomy v2** añade el contrato taxonómico explícito usado por Demo y GLPI Live.
 
 ## Arquitectura
 
@@ -13,7 +13,7 @@ NEXUS Web
 NEXUS API
    |
    v
-TechnologyProvider / Reconciliation / Taxonomy
+TechnologyProvider
    |-- Demo Provider
    `-- GLPI Live Provider
           |
@@ -29,7 +29,7 @@ TechnologyProvider / Reconciliation / Taxonomy
 
 La Web no accede a tablas internas de GLPI/MariaDB ni conoce tipos del adapter. GLPI sigue siendo System of Record CMDB/ITAM; NEXUS normaliza sus registros al modelo canónico antes de que participen en lógica de producto.
 
-La identidad upstream de GLPI es distinta de la autenticación de callers de NEXUS API y de `TechnologyAsset.id`.
+La identidad upstream de GLPI es distinta de la autenticación de callers de NEXUS API.
 
 ## Runtime
 
@@ -46,8 +46,7 @@ La identidad upstream de GLPI es distinta de la autenticación de callers de NEX
 - GLPI v2.3 read-only como primer adapter Live
 - OAuth Password Grant para service identity GLPI de v0.2
 - `GlpiCredentialSource` como frontera de secretos reemplazable
-- reconciliación determinista y evidence-first
-- mapping taxonómico GLPI centralizado
+- taxonomy v2 y gate taxonómico para providers migrados
 
 `buildApp()` compone el servidor sin abrir un socket y permite inyectar `AuthenticationProvider` y `TechnologyProvider` en tests. `startServer()` es el bootstrap real: en modo Live compone credenciales → OAuth → transporte GLPI → provider y luego abre host/puerto.
 
@@ -59,10 +58,8 @@ La identidad upstream de GLPI es distinta de la autenticación de callers de NEX
 | GET | `/ready` | readiness del runtime + disponibilidad efectiva del provider | pública, exenta de rate limit |
 | GET | `/api/v1` | metadata/versionado HTTP | pública, rate-limited |
 | GET | `/api/v1/provider` | descriptor público del provider activo | pública, rate-limited |
-| GET | `/api/v1/technology/snapshot` | snapshot canónico usado por el vertical Live | permiso `technology:read`, rate-limited |
+| GET | `/api/v1/technology/snapshot` | snapshot tecnológico canónico | permiso `technology:read` |
 | GET | `/openapi.json` | contrato OpenAPI generado | pública, rate-limited |
-
-La Web Live consume `/api/v1/technology/snapshot`; nunca llama GLPI directamente y nunca usa Demo como fallback silencioso.
 
 ## Provider Mode
 
@@ -79,7 +76,7 @@ La selección se realiza una sola vez durante composición mediante `NEXUS_PROVI
 
 `demo` usa un provider canónico mínimo sobre identidades sintéticas existentes. Actualmente normaliza un subconjunto deliberado de la demo v0.1 (`DEMO-0007` y `DEMO-0013`) al `TechnologySnapshot` v0.2 y conserva `SourceReference.source = demo`.
 
-Desde V02-010 ese subconjunto emite taxonomía v2 explícita (`IT / endpoint / user_endpoint` y `OT / operator_interface / supervision`) con provenance de la normalización.
+Los assets del provider Demo ya emiten `TechnologyTaxonomyAssessment` v2 y pasan tanto el validador base como `validateTechnologySnapshotTaxonomy()`.
 
 La NEXUS API **no importa código desde `apps/web`**. El catálogo completo de 240 CIs continúa en la Web v0.1 hasta V02-011 — Demo Dataset v0.2 Migration.
 
@@ -95,10 +92,7 @@ Password Grant Token Provider
 GlpiApiTransport (GET-only para recursos)
         |
         v
-GLPI record parser
-        |
-        v
-Taxonomy mapping / canonical asset
+createGlpiLiveTechnologyProvider
         |
         v
 TechnologyProvider
@@ -170,39 +164,96 @@ El adapter aplica:
 - validación de que el payload sea un array;
 - validación mínima de cada registro antes del mapping.
 
-### Mapping taxonómico v2
+### Taxonomía v2 y mapping GLPI
 
-V02-010 reemplaza el hardcode histórico `IT / compute / custom:glpi-computer` por una frontera explícita en `services/api/src/taxonomy.ts`.
-
-Regla fundamental:
+El mapping vive en `services/api/src/taxonomy.ts`. La regla arquitectónica es:
 
 ```text
 GLPI item type != NEXUS assetClass
 GLPI Type != NEXUS role
+hardware shape != NEXUS domain
 ```
 
-GLPI permite que `Computer Type` sea vocabulario configurado por la organización. Por eso el adapter preserva `glpi.type.*` como evidencia de fuente y sólo proyecta valores NEXUS mediante reglas conocidas.
+GLPI permite que `ComputerType` sea configurable. NEXUS no presupone que todos los `Computer` sean IT ni trata los nombres de Type como un estándar universal.
 
-Mapping inicial:
-
-| GLPI ItemType | GLPI Type | Domain | Asset Class | Role | Review |
-| --- | --- | --- | --- | --- | --- |
-| Computer | Notebook / Laptop / Desktop / Workstation | IT | endpoint | user_endpoint | role |
-| Computer | Server / Physical Server | IT | server | infrastructure_service | role |
-| Computer | Engineering Workstation / Industrial Workstation | OT | industrial_compute | engineering_workstation | no |
-| Computer | HMI / Human Machine Interface / Operator Station | OT | operator_interface | supervision | role |
-| Computer | Historian / Historian Server | OT | industrial_compute | historian | no |
-
-`Computer` sin Type reconocido conserva la compatibilidad del vertical Live como:
+Aliases gobernados inicialmente:
 
 ```text
-IT / endpoint / user_endpoint
-method = inferred
-reviewRequired = true
-ruleId = glpi.computer.compatibility-default
+Notebook/Laptop/Desktop/Workstation
+  -> domain IT (inferred + reviewRequired)
+  -> class endpoint (normalized)
+  -> role user_endpoint (inferred + reviewRequired)
+
+Server/Physical Server
+  -> domain IT (inferred + reviewRequired)
+  -> class server
+  -> role infrastructure_service (inferred + reviewRequired)
+
+Engineering Workstation/Industrial Workstation
+  -> OT / industrial_compute / engineering_workstation
+
+HMI/Human Machine Interface/Operator Station
+  -> OT / operator_interface / supervision (role reviewRequired)
+
+Historian/Historian Server
+  -> OT / industrial_compute / historian
 ```
 
-Esto es una inferencia visible, no un hecho observado. Item types futuros sin regla quedan `unclassified`; el clasificador no inventa equivalencias.
+Casos no resueltos:
+
+```text
+Computer sin Type
+  -> taxonomy: unknown / unknown / unknown
+
+Computer con Type sin regla
+  -> taxonomy: unclassified / unclassified / unclassified
+
+item type futuro sin mapping
+  -> taxonomy: unclassified / unclassified / unclassified
+```
+
+No se infiere clasificación desde hostname, modelo, fabricante ni coincidencias parciales.
+
+### Bridge temporal para V02-008/V02-011
+
+El contrato base `0.2` todavía exige scalars `domain`, `assetClass` y `role`. Para no romper consumidores legacy, `projectGlpiTaxonomyForLegacyScalars()` mantiene temporalmente:
+
+```text
+assessment resuelto
+  -> scalars del assessment
+  -> nexus.taxonomy.compatibilityProjection = false
+
+assessment no resuelto
+  -> scalars IT / endpoint / user_endpoint
+  -> nexus.taxonomy.compatibilityProjection = true
+  -> projectionRuleId = glpi.computer.compatibility-projection
+```
+
+El fallback **no cambia el assessment**. Un asset puede mostrar scalars legacy y seguir estando `unknown`, `unclassified` o `conflict` en taxonomía v2.
+
+El adapter expone bajo `attributes`:
+
+```text
+nexus.taxonomy.version
+nexus.taxonomy.<dimension>.state
+nexus.taxonomy.<dimension>.ruleId
+nexus.taxonomy.<dimension>.reviewRequired
+nexus.taxonomy.compatibilityProjection
+nexus.taxonomy.projectionRuleId
+```
+
+### Gate v2
+
+El provider GLPI valida antes de devolver el snapshot:
+
+```text
+validateTechnologySnapshot(snapshot)
+validateTechnologySnapshotTaxonomy(snapshot)
+```
+
+El primer gate mantiene compatibilidad de schema `0.2`; el segundo verifica assessment v2, invariantes y operational contexts.
+
+### Identificadores y metadata
 
 Identificadores preservados cuando existen:
 
@@ -212,28 +263,37 @@ otherserial -> asset_tag
 uuid        -> hardware_uuid
 ```
 
-Metadata adicional se conserva bajo atributos `glpi.*`, incluyendo timestamps y referencias de status/entity/manufacturer/location/type/model cuando el payload las entrega. Los rule IDs y estados de revisión taxonómica también quedan disponibles bajo `nexus.taxonomy.*`.
+Metadata adicional se conserva bajo atributos `glpi.*`, incluyendo timestamps y referencias de status/entity/manufacturer/location/type/model cuando el payload las entrega.
 
-Cada asset conserva `SourceReference.source=glpi`, `entityType=Computer`, `sourceScope=Assets/Computer`, provenance y evidencia segura `api_response`. `ProvenanceRecord.derivation` distingue `normalized`/`inferred` de la autoridad de GLPI.
+Cada asset conserva `SourceReference.source=glpi`, `entityType=Computer`, `sourceScope=Assets/Computer`, provenance y evidencia segura `api_response`.
 
-La identidad inicial del registro GLPI continúa namespaced y determinista para mantener V02-008; V02-009 establece que la reconciliación posterior preserva el `TechnologyAsset.id` del activo canónico y nunca re-keyea por hostname.
+La identidad NEXUS se deriva de forma determinista y namespaced desde fuente + colección + externalId. Reconciliation multisource posterior preserva ese id canónico ancla.
 
-Ver [IT/OT Taxonomy v2](../../docs/taxonomy-v2.md), [ADR-0020](../../docs/architecture/adr-0020-it-ot-taxonomy-v2.md) y [Provenance & Reconciliation](../../docs/reconciliation.md).
+## Reconciliation y taxonomy
+
+V02-010 hace que `projectCanonicalAsset()` sea consciente de los campos añadidos por la taxonomía:
+
+- preserva/reconstruye `TechnologyTaxonomyAssessment`;
+- fusiona `operationalContexts` de forma determinista;
+- mantiene el assessment asociado al claim elegido cuando la política resuelve una discrepancia;
+- crea `state=conflict` cuando una discrepancia taxonómica queda sin resolver;
+- usa `unclassified` si el claim seleccionado es legacy y carece de assessment v2;
+- conserva claims/provenance alternativos en el envelope de reconciliación.
+
+Así reconciliar una nueva fuente no borra la explicación de cómo se clasificó el activo.
 
 ## GLPI Service Identity & RBAC
 
 ### Restricción de GLPI 11
 
-La documentación oficial actual de GLPI 11 indica que Client Credentials sólo está soportado para `scope=inventory`. Los recursos generales de High-Level API requieren un usuario autenticado y `scope=api`.
+La documentación oficial de GLPI 11 indica que Client Credentials sólo está soportado para `scope=inventory`. Los recursos generales de High-Level API requieren un usuario autenticado y `scope=api`.
 
-Por eso V02-006 utiliza:
+Por eso el runtime utiliza:
 
 ```text
 grant_type=password
 scope=api
 ```
-
-No se implementa una falsa service account vía Client Credentials para `Assets/Computer`.
 
 ### Token endpoint
 
@@ -270,8 +330,6 @@ NEXUS_GLPI_SERVICE_PASSWORD
 ```
 
 no forman parte de `ApiConfig`.
-
-`GlpiCredentialSource` permite reemplazar environment por un secret manager futuro sin modificar mapping, transporte ni `TechnologyProvider`.
 
 ### RBAC mínimo esperado en GLPI
 
@@ -375,8 +433,6 @@ Se leen mediante `GlpiCredentialSource`; no se incorporan a `ApiConfig`, descrip
 
 No versionar archivos `.env` con valores reales. El secret manager corporativo definitivo queda reservado para v0.3.
 
-Valores inválidos del runtime fallan durante bootstrap. `production` exige `NEXUS_PROVIDER_MODE` explícito para evitar ejecutar Demo accidentalmente.
-
 ### CORS
 
 CORS es deny-by-default. No se acepta `*`, no se reflejan origins dinámicamente y en `production` las origins configuradas deben usar HTTPS.
@@ -417,6 +473,9 @@ El transporte GLPI nunca copia el body de un upstream fallido a `GlpiRequestErro
 Desde la raíz:
 
 ```bash
+npm run typecheck --workspace @igx-nexus/types
+npm run test --workspace @igx-nexus/types
+npm run build --workspace @igx-nexus/types
 npm run typecheck --workspace @igx-nexus/api
 npm run test --workspace @igx-nexus/api
 npm run build --workspace @igx-nexus/api
@@ -426,23 +485,32 @@ npm audit --audit-level=high
 
 Los tests GLPI utilizan exclusivamente fixtures sintéticos, credenciales ficticias y transportes/fetches in-memory; no requieren acceso a una instancia corporativa.
 
+V02-010 añade pruebas para:
+
+- invariantes IT/OT;
+- Type conocido/missing/unmapped;
+- bridge legacy explícito;
+- gate taxonómico en Demo y Live;
+- mapping HMI/historian/engineering workstation;
+- preservación de taxonomy durante reconciliation;
+- conflicto taxonómico multisource;
+- fusión de operational contexts;
+- compatibilidad con activos legacy sin assessment.
+
 ## Límites actuales
 
 V02-010 **no implementa ni simula**:
 
 - login o Entra SSO/OIDC real para callers de NEXUS;
 - secret manager corporativo definitivo;
-- NetworkEquipment/Printer/Monitor/Phone u otros item types GLPI;
-- mappings taxonómicos futuros sin evidencia/regla explícita;
-- integración Intune real;
-- persistencia/historial de revisión taxonómica;
-- UI de revisión humana;
+- mappings completos de NetworkEquipment/Printer/Monitor/Phone u otros tipos GLPI;
 - migración completa del dataset Web v0.1;
-- grafo completo de operational contexts / zones / conduits;
+- integración Intune real;
+- UI/persistencia de revisión manual taxonómica;
+- modelado completo Purdue/ISA-95 o zones/conduits;
 - autorización NEXUS por objeto;
 - TLS, reverse proxy, DNS o WAF;
 - despliegue productivo;
-- escritura a GLPI;
-- active scanning OT.
+- escritura a GLPI.
 
-Ver [ADR-0013 — Baseline de seguridad](../../docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](../../docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](../../docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](../../docs/architecture/adr-0016-glpi-service-identity-rbac.md), [ADR-0019 — Provenance & Reconciliation](../../docs/architecture/adr-0019-provenance-reconciliation.md), [ADR-0020 — IT/OT Taxonomy v2](../../docs/architecture/adr-0020-it-ot-taxonomy-v2.md), [runbook de GLPI Service Identity](../../docs/integrations/glpi-service-identity.md) y [Threat Model v0.2](../../docs/security/threat-model-v0.2.md).
+Ver [ADR-0013 — Baseline de seguridad](../../docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](../../docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](../../docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](../../docs/architecture/adr-0016-glpi-service-identity-rbac.md), [ADR-0019 — Provenance & Reconciliation](../../docs/architecture/adr-0019-provenance-reconciliation.md), [ADR-0020 — IT/OT Taxonomy v2](../../docs/architecture/adr-0020-it-ot-taxonomy-v2.md), [taxonomía v2](../../docs/taxonomy-v2.md) y [Threat Model v0.2](../../docs/security/threat-model-v0.2.md).
