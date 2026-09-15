@@ -1,6 +1,6 @@
 # ADR-0019 — Provenance & Reconciliation
 
-Estado: **Propuesto — pendiente de merge manual de V02-009**.
+Estado: **Aceptado — V02-009 integrado mediante PR #64**.
 
 ## Contexto
 
@@ -189,4 +189,4 @@ La decisión evita colapsar evidencia destructivamente. Claims alternativos, con
 
 V02-009 incorpora tests contractuales y unitarios para matching fuerte/débil, contradicciones, ambigüedad, orden de entrada, políticas de atributo, recencia, autoridad, provenance, estabilidad del id, validación y no exposición de identificadores sensibles.
 
-La aceptación de este ADR queda condicionada al merge manual de V02-009 y a CI verde. Hasta entonces su estado permanece **Propuesto**.
+V02-009 quedó integrado mediante PR #64 en el merge `209c400f88f556975e525f99b9977cd00e8957be`; la CI post-merge #361 quedó verde. Con esos gates satisfechos, este ADR queda formalmente **Aceptado**.
