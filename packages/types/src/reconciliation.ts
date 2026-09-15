@@ -129,6 +129,10 @@ function isKnownOrCustomIdentifier(kind: string): boolean {
     || (kind.startsWith("custom:") && kind.slice("custom:".length).trim().length > 0);
 }
 
+function valueKey(value: TechnologyAttributeValue): string {
+  return JSON.stringify(value);
+}
+
 function validateAttributeValue(value: TechnologyAttributeValue, path: string): ValidationIssue[] {
   const values = Array.isArray(value) ? value : [value];
   const issues: ValidationIssue[] = [];
@@ -271,6 +275,16 @@ function claimKey(claim: AttributeClaim): string {
   ]);
 }
 
+function conflictKey(conflict: AttributeConflict): string {
+  return JSON.stringify([
+    conflict.fieldPath,
+    conflict.status,
+    conflict.resolutionRule,
+    [...conflict.claims].map(claimKey).sort(),
+    conflict.preferredClaim === undefined ? null : claimKey(conflict.preferredClaim),
+  ]);
+}
+
 function validateAttributeClaim(claim: AttributeClaim, path: string): ValidationIssue[] {
   const issues: ValidationIssue[] = [...validateSourceReference(claim.source, `${path}.source`)];
   if (!claim.fieldPath.trim()) {
@@ -309,6 +323,7 @@ export function validateAttributeResolution(
   if (resolution.claims.length === 0) {
     issues.push(validationIssue("reconciliation.claims_required", `${path}.claims`, "attribute resolution requires at least one claim"));
   }
+
   const claimKeys = new Set<string>();
   resolution.claims.forEach((claim, index) => {
     issues.push(...validateAttributeClaim(claim, `${path}.claims[${index}]`));
@@ -317,11 +332,19 @@ export function validateAttributeResolution(
     }
     claimKeys.add(claimKey(claim));
   });
+
   issues.push(...validateAttributeClaim(resolution.selectedClaim, `${path}.selectedClaim`));
-  if (!claimKeys.has(claimKey(resolution.selectedClaim))) {
+  const selectedKey = claimKey(resolution.selectedClaim);
+  if (!claimKeys.has(selectedKey)) {
     issues.push(validationIssue("reconciliation.selected_claim_unlinked", `${path}.selectedClaim`, "selectedClaim must be one of the preserved claims"));
   }
+  if (resolution.selectedClaim.fieldPath !== resolution.fieldPath) {
+    issues.push(validationIssue("reconciliation.selected_claim_field_mismatch", `${path}.selectedClaim.fieldPath`, "selectedClaim fieldPath must match its resolution"));
+  }
   issues.push(...validateAttributeValue(resolution.value, `${path}.value`));
+  if (valueKey(resolution.value) !== valueKey(resolution.selectedClaim.value)) {
+    issues.push(validationIssue("reconciliation.resolution_value_mismatch", `${path}.value`, "resolution value must equal selectedClaim value"));
+  }
 
   if (resolution.conflict !== undefined) {
     const conflict = resolution.conflict;
@@ -331,18 +354,40 @@ export function validateAttributeResolution(
     if (!conflict.resolutionRule.trim()) {
       issues.push(validationIssue("reconciliation.conflict_rule_required", `${path}.conflict.resolutionRule`, "conflict resolution rule is required"));
     }
-    const distinctValues = new Set(conflict.claims.map((claim) => JSON.stringify(claim.value)));
+
+    const conflictClaimKeys = new Set<string>();
+    const distinctValues = new Set(conflict.claims.map((claim) => valueKey(claim.value)));
     if (conflict.claims.length < 2 || distinctValues.size < 2) {
       issues.push(validationIssue("reconciliation.conflict_claims_invalid", `${path}.conflict.claims`, "conflict requires at least two incompatible claims"));
     }
     conflict.claims.forEach((claim, index) => {
-      issues.push(...validateAttributeClaim(claim, `${path}.conflict.claims[${index}]`));
+      const conflictClaimPath = `${path}.conflict.claims[${index}]`;
+      issues.push(...validateAttributeClaim(claim, conflictClaimPath));
+      if (claim.fieldPath !== resolution.fieldPath) {
+        issues.push(validationIssue("reconciliation.conflict_claim_field_mismatch", `${conflictClaimPath}.fieldPath`, "conflict claim fieldPath must match its resolution"));
+      }
+      const key = claimKey(claim);
+      conflictClaimKeys.add(key);
+      if (!claimKeys.has(key)) {
+        issues.push(validationIssue("reconciliation.conflict_claim_unlinked", conflictClaimPath, "conflict claims must be preserved by the resolution"));
+      }
     });
+
     if (conflict.status === "resolved" && conflict.preferredClaim === undefined) {
       issues.push(validationIssue("reconciliation.conflict_preference_required", `${path}.conflict.preferredClaim`, "resolved conflict requires preferredClaim"));
     }
+    if (conflict.status === "unresolved" && conflict.preferredClaim !== undefined) {
+      issues.push(validationIssue("reconciliation.conflict_preference_forbidden", `${path}.conflict.preferredClaim`, "unresolved conflict must not expose preferredClaim"));
+    }
     if (conflict.preferredClaim !== undefined) {
       issues.push(...validateAttributeClaim(conflict.preferredClaim, `${path}.conflict.preferredClaim`));
+      const preferredKey = claimKey(conflict.preferredClaim);
+      if (!conflictClaimKeys.has(preferredKey)) {
+        issues.push(validationIssue("reconciliation.conflict_preference_unlinked", `${path}.conflict.preferredClaim`, "preferredClaim must be one of the conflict claims"));
+      }
+      if (conflict.status === "resolved" && preferredKey !== selectedKey) {
+        issues.push(validationIssue("reconciliation.conflict_preference_mismatch", `${path}.conflict.preferredClaim`, "resolved conflict preferredClaim must equal selectedClaim"));
+      }
     }
   }
 
@@ -355,17 +400,40 @@ export function validateCanonicalProjectionResult(
 ): readonly ValidationIssue[] {
   const issues: ValidationIssue[] = [...validateTechnologyAsset(result.asset, `${path}.asset`)];
   const resolutionPaths = new Set<string>();
+  const expectedConflicts = new Map<string, string>();
+
   result.resolutions.forEach((resolution, index) => {
     issues.push(...validateAttributeResolution(resolution, `${path}.resolutions[${index}]`));
     if (resolutionPaths.has(resolution.fieldPath)) {
       issues.push(validationIssue("reconciliation.resolution_duplicate", `${path}.resolutions[${index}].fieldPath`, "field may only be resolved once"));
     }
     resolutionPaths.add(resolution.fieldPath);
-  });
-  result.conflicts.forEach((conflict, index) => {
-    if (!resolutionPaths.has(conflict.fieldPath)) {
-      issues.push(validationIssue("reconciliation.conflict_unlinked", `${path}.conflicts[${index}].fieldPath`, "conflict must belong to an attribute resolution"));
+    if (resolution.conflict !== undefined) {
+      expectedConflicts.set(resolution.fieldPath, conflictKey(resolution.conflict));
     }
   });
+
+  const exposedConflictFields = new Set<string>();
+  result.conflicts.forEach((conflict, index) => {
+    const conflictPath = `${path}.conflicts[${index}]`;
+    if (exposedConflictFields.has(conflict.fieldPath)) {
+      issues.push(validationIssue("reconciliation.conflict_duplicate", `${conflictPath}.fieldPath`, "field may only expose one conflict"));
+    }
+    exposedConflictFields.add(conflict.fieldPath);
+
+    const expected = expectedConflicts.get(conflict.fieldPath);
+    if (expected === undefined) {
+      issues.push(validationIssue("reconciliation.conflict_unlinked", `${conflictPath}.fieldPath`, "conflict must belong to an attribute resolution"));
+    } else if (expected !== conflictKey(conflict)) {
+      issues.push(validationIssue("reconciliation.conflict_mismatch", conflictPath, "exposed conflict must equal the conflict preserved by its resolution"));
+    }
+  });
+
+  expectedConflicts.forEach((_key, fieldPath) => {
+    if (!exposedConflictFields.has(fieldPath)) {
+      issues.push(validationIssue("reconciliation.conflict_missing", `${path}.conflicts`, `resolution conflict for ${fieldPath} must be exposed`));
+    }
+  });
+
   return issues;
 }
