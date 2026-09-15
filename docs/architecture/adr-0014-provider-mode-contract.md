@@ -1,6 +1,6 @@
 # ADR-0014 — Provider Mode Contract
 
-Estado: **Propuesto en V02-004 / issue #49 / PR #50**. Este ADR queda aceptado únicamente cuando dicho PR sea integrado manualmente a `main`.
+Estado: **Aceptado en V02-004 / issue #49 / PR #50**. Integrado a `main` mediante el merge `70ae174d53ea09df5123ab136b849745200f4b11`; CI post-merge #204 verde.
 
 ## Contexto
 
