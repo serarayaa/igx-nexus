@@ -79,7 +79,7 @@ function Test-LoopbackHost {
         return $true
     }
 
-    $address = $null
+    [System.Net.IPAddress]$address = $null
     if ([System.Net.IPAddress]::TryParse($HostName, [ref]$address)) {
         return [System.Net.IPAddress]::IsLoopback($address)
     }
