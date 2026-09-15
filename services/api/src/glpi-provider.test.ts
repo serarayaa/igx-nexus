@@ -13,7 +13,7 @@ afterEach(async () => {
 });
 
 describe("GLPI Live TechnologyProvider readiness", () => {
-  it("uses a bounded read-only probe and reports ready when GLPI responds with a valid collection", async () => {
+  it("uses a bounded read-only probe and caches consecutive readiness checks", async () => {
     const calls: Array<{ path: string; query: unknown }> = [];
     const transport: GlpiApiTransport = {
       async get(path, query = {}) {
@@ -24,7 +24,31 @@ describe("GLPI Live TechnologyProvider readiness", () => {
     const provider = createGlpiLiveTechnologyProvider({ transport });
 
     await expect(provider.checkAvailability?.()).resolves.toBe("ready");
+    await expect(provider.checkAvailability?.()).resolves.toBe("ready");
     expect(calls).toEqual([{ path: "Assets/Computer", query: { start: 0, limit: 1 } }]);
+  });
+
+  it("deduplicates concurrent readiness probes", async () => {
+    let calls = 0;
+    let release: (() => void) | undefined;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const provider = createGlpiLiveTechnologyProvider({
+      transport: {
+        async get() {
+          calls += 1;
+          await gate;
+          return [];
+        },
+      },
+    });
+
+    const first = provider.checkAvailability?.();
+    const second = provider.checkAvailability?.();
+    release?.();
+
+    await expect(first).resolves.toBe("ready");
+    await expect(second).resolves.toBe("ready");
+    expect(calls).toBe(1);
   });
 
   it("fails readiness closed when connectivity/auth or payload validation fails", async () => {
