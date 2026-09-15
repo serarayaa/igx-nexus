@@ -95,11 +95,29 @@ describe("IT/OT taxonomy v2 domain invariants", () => {
 });
 
 describe("taxonomy projection and operational context", () => {
-  it("requires scalar projection to match the assessment", () => {
+  it("requires classified scalar projection to match the assessment", () => {
     const inconsistent = asset({ role: "database_server" });
     expect(validateAssetTaxonomyProjection(inconsistent)).toEqual(expect.arrayContaining([
       expect.objectContaining({ code: "taxonomy.projection_mismatch", path: "asset.role" }),
     ]));
+  });
+
+  it("allows explicit unresolved assessment beside temporary legacy scalars", () => {
+    const unresolved: TechnologyTaxonomyAssessment = {
+      taxonomyVersion: technologyTaxonomyVersion,
+      domain: { state: "unknown", reviewRequired: true, ruleId: "source.missing", reasonCode: "domain_not_observed" },
+      assetClass: { state: "unclassified", reviewRequired: true, ruleId: "source.unmapped", reasonCode: "class_not_mapped" },
+      role: { state: "unclassified", reviewRequired: true, ruleId: "source.unmapped", reasonCode: "role_not_mapped" },
+    };
+    const bridged = asset({ taxonomy: unresolved, domain: "IT", assetClass: "endpoint", role: "user_endpoint" });
+    expect(validateAssetTaxonomyProjection(bridged)).toEqual([]);
+    expect(validateTechnologySnapshotTaxonomy({
+      schemaVersion: technologySchemaVersion,
+      asOf: "2026-09-15T19:30:00Z",
+      assets: [bridged],
+      relationships: [],
+      observations: [],
+    })).toEqual([]);
   });
 
   it("models system and security-zone context outside assetClass", () => {
