@@ -231,6 +231,15 @@ function normalizeAccessToken(token: string): string {
   return normalized;
 }
 
+async function getAccessToken(provider: GlpiAccessTokenProvider): Promise<string> {
+  try {
+    return normalizeAccessToken(await provider());
+  } catch (error) {
+    if (error instanceof GlpiAuthenticationError) throw error;
+    throw new GlpiAuthenticationError();
+  }
+}
+
 export function createGlpiFetchTransport(options: GlpiFetchTransportOptions): GlpiApiTransport {
   const apiVersion = options.apiVersion ?? DEFAULT_GLPI_API_VERSION;
   if (!glpiApiVersions.includes(apiVersion)) {
@@ -250,7 +259,7 @@ export function createGlpiFetchTransport(options: GlpiFetchTransportOptions): Gl
     async get(path: string, query: GlpiQuery = {}) {
       const endpoint = new URL(validateApiPath(path), apiBaseUrl);
       for (const [key, value] of Object.entries(query)) endpoint.searchParams.set(key, String(value));
-      const token = normalizeAccessToken(await options.accessTokenProvider());
+      const token = await getAccessToken(options.accessTokenProvider);
 
       let response: Response;
       try {
@@ -304,6 +313,21 @@ function addNamedReferenceAttributes(
   addAttribute(attributes, `${prefix}.completename`, value.completename);
 }
 
+function inferredMappingProvenance(
+  fieldPath: "domain" | "assetClass" | "role",
+  source: SourceReference,
+  evidence: EvidenceReference,
+  observedAt: string,
+): ProvenanceRecord {
+  return Object.freeze({
+    fieldPath,
+    source,
+    observedAt,
+    authority: "inferred",
+    evidence: Object.freeze([evidence]),
+  });
+}
+
 export function mapGlpiComputerToTechnologyAsset(
   record: GlpiComputerRecord,
   observedAt: string,
@@ -352,6 +376,9 @@ export function mapGlpiComputerToTechnologyAsset(
       authority: record.name ? "authoritative" : "inferred",
       evidence: Object.freeze([evidence]),
     }),
+    inferredMappingProvenance("domain", source, evidence, observedAt),
+    inferredMappingProvenance("assetClass", source, evidence, observedAt),
+    inferredMappingProvenance("role", source, evidence, observedAt),
     Object.freeze({
       fieldPath: "attributes",
       source,
@@ -386,8 +413,9 @@ async function readAllComputers(
   let start = 0;
 
   while (records.length < maxRecords) {
+    const requestLimit = Math.min(pageSize, maxRecords - records.length);
     const page = parseComputerCollection(
-      await transport.get(COMPUTER_COLLECTION_PATH, { start, limit: Math.min(pageSize, maxRecords - records.length) }),
+      await transport.get(COMPUTER_COLLECTION_PATH, { start, limit: requestLimit }),
     );
     if (page.length === 0) break;
 
@@ -399,7 +427,6 @@ async function readAllComputers(
       records.push(record);
     }
 
-    if (page.length < pageSize) break;
     start += page.length;
   }
 
