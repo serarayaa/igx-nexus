@@ -1,6 +1,6 @@
 const DAY = 86_400_000;
 
-export const DEMO_DATASET_VERSION = "2.0.0";
+export const DEMO_DATASET_VERSION = "2.1.0";
 export const DEMO_LEGACY_DATASET_VERSION = "1.0.0";
 export const DEMO_AS_OF = "2026-09-09T12:00:00.000Z";
 
@@ -253,16 +253,45 @@ function toCanonicalAsset(asset) {
   });
 }
 
-function relationship(number, source, target, type, observedAt = DEMO_AS_OF) {
+function relationshipSourceFor(relationshipId) {
   return Object.freeze({
-    id: `DEMO-REL-${String(number).padStart(3, "0")}`,
-    sourceId: id(source),
-    targetId: id(target),
+    source: "demo",
+    externalId: relationshipId,
+    entityType: "synthetic_relationship",
+    sourceScope: "demo-v0.2",
+    observedAt: DEMO_AS_OF,
+    authority: "trusted",
+  });
+}
+
+function relationship(number, source, target, type, observedAt = DEMO_AS_OF) {
+  const relationshipId = `DEMO-REL-${String(number).padStart(3, "0")}`;
+  const sourceReference = relationshipSourceFor(relationshipId);
+  const evidenceReference = {
+    kind: "source_record",
+    reference: `demo-dataset:${relationshipId}`,
+    label: "Synthetic relationship fixture",
+  };
+  if (observedAt !== null) evidenceReference.observedAt = observedAt;
+
+  return Object.freeze({
+    id: relationshipId,
+    sourceAssetId: id(source),
+    targetAssetId: id(target),
     type,
     direction: type === "connected_to" ? "bidirectional" : "directed",
     status: "active",
-    source: "demo",
     observedAt,
+    evidence: Object.freeze([
+      Object.freeze({
+        source: sourceReference,
+        observedAt,
+        authority: "trusted",
+        derivation: "manual",
+        confidence: 1,
+        evidence: Object.freeze([Object.freeze(evidenceReference)]),
+      }),
+    ]),
   });
 }
 
@@ -303,7 +332,7 @@ export function createCanonicalDemoSnapshot() {
     schemaVersion: "0.2",
     asOf: DEMO_AS_OF,
     assets: Object.freeze(assets),
-    relationships: Object.freeze([]),
+    relationships: Object.freeze([...demoRelationshipFixtures]),
     observations: Object.freeze([]),
   });
 }
