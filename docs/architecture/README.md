@@ -36,5 +36,6 @@ Principios fundamentales:
 - [ADR-0017 — GLPI Agent Live Lab](adr-0017-glpi-agent-live-lab.md) — aceptado tras V02-007 (PR #59 / issue #58).
 - [ADR-0018 — Live Asset 360 Vertical Slice](adr-0018-live-asset-360-vertical-slice.md) — aceptado tras V02-008 (PR #61 / issue #60).
 - [ADR-0019 — Provenance & Reconciliation](adr-0019-provenance-reconciliation.md) — aceptado tras V02-009 (PR #64 / issue #63).
+- [ADR-0020 — IT/OT Taxonomy v2](adr-0020-it-ot-taxonomy-v2.md) — aceptado tras V02-010 (PR #67 / issue #66).
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.

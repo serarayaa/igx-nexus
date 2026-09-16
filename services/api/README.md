@@ -176,34 +176,40 @@ hardware shape != NEXUS domain
 
 GLPI permite que `ComputerType` sea configurable. NEXUS no presupone que todos los `Computer` sean IT ni trata los nombres de Type como un estándar universal.
 
-Aliases gobernados inicialmente:
+Reglas iniciales gobernadas:
 
 ```text
 Notebook/Laptop/Desktop/Workstation
-  -> domain IT (inferred + reviewRequired)
-  -> class endpoint (normalized)
-  -> role user_endpoint (inferred + reviewRequired)
+  -> taxonomy: unclassified / unclassified / unclassified
+  -> hardware genérico no determina domain, clase canónica ni función
 
 Server/Physical Server
-  -> domain IT (inferred + reviewRequired)
-  -> class server
-  -> role infrastructure_service (inferred + reviewRequired)
+  -> taxonomy: unclassified / unclassified / unclassified
+  -> hardware genérico no determina domain, clase canónica ni función
 
 Engineering Workstation/Industrial Workstation
   -> OT / industrial_compute / engineering_workstation
+  -> reviewRequired=true
 
 HMI/Human Machine Interface/Operator Station
-  -> OT / operator_interface / supervision (role reviewRequired)
+  -> OT / operator_interface / supervision
+  -> reviewRequired=true
 
 Historian/Historian Server
   -> OT / industrial_compute / historian
+  -> reviewRequired=true
 ```
+
+Los aliases OT con semántica operacional explícita se normalizan como candidatos concretos, pero siguen requiriendo revisión porque `ComputerType` continúa siendo configurable por la instancia GLPI.
 
 Casos no resueltos:
 
 ```text
 Computer sin Type
   -> taxonomy: unknown / unknown / unknown
+
+Computer con Type genérico de hardware
+  -> taxonomy: unclassified / unclassified / unclassified
 
 Computer con Type sin regla
   -> taxonomy: unclassified / unclassified / unclassified
@@ -431,7 +437,7 @@ NEXUS_GLPI_SERVICE_PASSWORD
 
 Se leen mediante `GlpiCredentialSource`; no se incorporan a `ApiConfig`, descriptor ni respuestas.
 
-No versionar archivos `.env` con valores reales. El secret manager corporativo definitivo queda reservado para v0.3.
+No versionar archivos `.env` con valores reales. El secret manager corporativo definitivo queda reservado para la etapa de infraestructura corporativa (conceptualmente v0.5).
 
 ### CORS
 
