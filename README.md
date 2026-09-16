@@ -66,9 +66,9 @@ La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
 
 La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-**V02-001 a V02-009 están integrados.** V02-009 — Provenance & Reconciliation quedó incorporado mediante PR #64 / issue #63 en el merge `209c400f88f556975e525f99b9977cd00e8957be`; la CI post-merge #361 quedó verde y ADR-0019 está aceptado.
+**V02-001 a V02-010 están integrados.** V02-010 — IT/OT Taxonomy v2 quedó incorporado mediante PR #67 / issue #66 en el merge `92b78f0d62a3dab0ddb06b6acbeba2c845b3b801`; el CI del head #421 quedó verde y ADR-0020 está aceptado.
 
-**V02-010 — IT/OT Taxonomy v2 está en revisión mediante issue #66 / PR #67.** El ticket separa Domain / Asset Class / Role / Operational Context, hace explícitos `unknown`, `unclassified` y `conflict`, centraliza el mapping GLPI y extiende reconciliation para preservar taxonomía/contexto sin convertir inferencias débiles en hechos.
+El siguiente ticket es **V02-011 — Demo Dataset v0.2 Migration**, encargado de migrar la demo sintética al modelo canónico y retirar los bridges/aliases legacy que V02-010 mantuvo temporalmente para evitar un big-bang.
 
 El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -84,7 +84,7 @@ La v0.2 prioriza:
 - analytics orientado a decisiones;
 - Endpoint Intelligence explicable.
 
-El despliegue/hardening completo en infraestructura corporativa se reserva conceptualmente para **v0.3 — Corporate Deployment**, evitando que v0.2 dependa del notebook local o requiera una reescritura para su traslado.
+La dirección conceptual posterior reserva **v0.3** para Intelligence & Automation, **v0.4** para Product Experience, **v0.5** para Corporate Infrastructure, **v0.6** para Cybersecurity Assurance y **v0.7** para Quality Assurance. Ese norte no debe hacer que v0.2 dependa del notebook local ni requiera una reescritura para su futuro traslado.
 
 ## Flujo de desarrollo
 
@@ -157,7 +157,7 @@ V02-008 conectó ese inventario de extremo a extremo con NEXUS Web. La Web Live 
 
 V02-009 incorpora un motor de reconciliación puro y determinista detrás de los contratos/provider boundaries existentes. Clasifica identificadores fuertes, auxiliares, volátiles e insuficientes, detecta ambigüedad/conflictos, conserva claims y provenance por atributo, centraliza políticas de autoridad/recencia y preserva el id canónico del activo ancla.
 
-V02-010 hace que Demo/GLPI Live emitan assessment v2, introduce un gate taxonómico adicional y vuelve `projectCanonicalAsset()` consciente de taxonomy/operational contexts. GLPI Type sólo se traduce por reglas explícitas; Type ausente queda `unknown` y Type no mapeado queda `unclassified`.
+V02-010 hace que Demo/GLPI Live emitan assessment v2, introduce un gate taxonómico adicional y vuelve `projectCanonicalAsset()` consciente de taxonomy/operational contexts. GLPI Type sólo se traduce por reglas explícitas; hardware genérico no prueba `domain=IT`, Type ausente queda `unknown` y Type no mapeado queda `unclassified`.
 
 Endpoints base actuales:
 
