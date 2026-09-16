@@ -52,15 +52,29 @@ GLPI Agent Live Lab
 primer Asset 360 LIVE
         ↓
 Provenance & Reconciliation
+        ↓
+IT/OT Taxonomy v2
+        ↓
+Demo Dataset v0.2 Migration
 ```
 
 La v0.2 prioriza integraciones reales controladas, procedencia, modelo IT/OT correcto, Product Design 2.0, analytics orientado a decisiones y Endpoint Intelligence explicable. GLPI continúa como CMDB/ITAM; Jira continúa como Service Desk.
 
-## v0.3 — Corporate Deployment
+## Dirección conceptual posterior
 
-El traslado desde el entorno local hacia infraestructura corporativa queda reservado conceptualmente para v0.3, una vez que v0.2 haya demostrado un vertical slice real estable.
+El detalle posterior a v0.2 se definirá con evidencia obtenida durante el desarrollo. Como norte actual:
 
-v0.3 deberá cubrir, entre otros:
+### v0.3 — Intelligence & Automation
+
+Profundizar el valor operacional mediante automatización, reporting/auditoría, observabilidad, ciencia de datos, Graph Intelligence, detección de anomalías e IA/ML explicable. La IA puede recomendar, detectar y explicar, pero no reemplaza provenance ni revisión humana.
+
+### v0.4 — Product Experience
+
+Concentrar el esfuerzo en UI/UX, arquitectura de información, Design System, visualización, Asset 360, Technology Map, accesibilidad, responsive/mobile, motion y flujos por persona, evitando que esta etapa se convierta en otra gran expansión de backend.
+
+### v0.5 — Corporate Infrastructure
+
+Trasladar oficialmente NEXUS desde el entorno local/laboratorio hacia infraestructura centralizada, incluyendo:
 
 - servidor/hosting corporativo;
 - DNS / HTTPS;
@@ -71,14 +85,24 @@ v0.3 deberá cubrir, entre otros:
 - persistencia y almacenamiento;
 - backup/restore;
 - observabilidad y logging;
-- auditoría;
-- hardening;
 - firewall/networking;
 - estrategia dev/staging/prod;
 - CI/CD y rollback;
 - runbooks y recuperación ante fallos.
 
-v0.2 debe diseñarse para que este traslado sea una promoción/hardening del producto, no una reescritura.
+### v0.6 — Cybersecurity Assurance
+
+Realizar auditoría integral de seguridad sobre aplicación, APIs, identidad, supply chain, dependencias, infraestructura, configuración y trust boundaries IT/OT ya desplegados.
+
+### v0.7 — Quality Assurance
+
+Realizar auditoría integral funcional, regresión, integración, performance, concurrencia, resiliencia, restore, accesibilidad, cross-browser y calidad de datos, incluyendo regresión de los controles incorporados en v0.6.
+
+### v0.8+ / v1.0
+
+Las siguientes etapas se definirán según evidencia. Podrán incluir Operational Readiness y piloto productivo antes de declarar una versión 1.0 corporativa.
+
+v0.2 debe diseñarse para que el traslado de v0.5 sea una promoción/hardening del producto, no una reescritura.
 
 ## Referencias
 
