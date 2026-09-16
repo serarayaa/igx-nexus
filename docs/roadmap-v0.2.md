@@ -47,7 +47,7 @@ Dirección conceptual posterior:
 | V02-010 | IT/OT Taxonomy v2 | P0 | ✅ Integrado — PR #67 / issue #66; housekeeping #68 |
 | V02-011 | Demo Dataset v0.2 Migration | P0 | ✅ Integrado — PR #70 / merge `45b1adc4`; CI #454 verde |
 | V02-012 | Relationship Evidence v2 | P1 | ✅ Integrado — PR #73 / issue #72 / merge `e174700c`; CI #481 verde |
-| V02-013 | Product IA & Visual Direction | P0 | ⚪ Siguiente |
+| V02-013 | Product IA & Visual Direction | P0 | 🟡 En implementación — issue #75 |
 | V02-014 | Shell & Motion 2.0 | P1 | ⚪ Pendiente |
 | V02-015 | Technology Overview | P1 | ⚪ Pendiente |
 | V02-016 | Asset Explorer 2.0 | P1 | ⚪ Pendiente |
@@ -175,9 +175,34 @@ No introduce discovery activo OT, graph analytics ni inferencia automática de t
 
 ## Epic 4 — Product Design 2.0
 
-### V02-013 — Product IA & Visual Direction — siguiente
+### V02-013 — Product IA & Visual Direction — en implementación
 
-Auditar/rediseñar arquitectura de información y dirección visual. Evitar un producto reducido a cards genéricas.
+Issue #75. Baseline de inicio: `39615a759f29e2d6a4cc6766eaeb885c2193bfad`; CI post-housekeeping V02-012 #483 verde.
+
+Objetivo: definir la arquitectura de información y lenguaje visual antes de implementar las superficies Product Design 2.0.
+
+Dirección propuesta:
+
+- cada pantalla responde una pregunta operacional;
+- IA estable entre Demo y Live; el provider cambia cobertura/evidencia, no la estructura mental del producto;
+- navegación global separada de navegación contextual;
+- Overview responde **¿Qué requiere atención ahora y por qué?**;
+- Assets/Explorer y Technology Map funcionan como workspaces de investigación;
+- Asset 360 evoluciona hacia jerarquía por intención (`Overview`, `Inventory`, `Evidence & Sources`, `Relationships`, `History`) en lugar de sumar cards indefinidamente;
+- Data Quality permanece separada de Device Health;
+- Technology Map es focus/scope-first y requiere alternativa semántica table/tree;
+- QR/Label son acciones contextuales del CI;
+- visual direction sobria, data-dense cuando corresponde, sin card/donut/AI-glow por defecto;
+- WCAG 2.2 AA es contrato de producto.
+
+Entregables de la rama:
+
+- `docs/product/product-ia-v2.md`;
+- `docs/product/visual-direction-v2.md`;
+- `docs/product/screen-purpose-matrix.md`;
+- ADR-0023 Product Information Architecture v2 (**Propuesto** hasta merge + CI post-merge).
+
+V02-013 no implementa Shell/Overview/Explorer/Asset 360/Technology Map 2.0: entrega handoff normativo a V02-014..019.
 
 ### V02-014 — Shell & Motion 2.0
 
