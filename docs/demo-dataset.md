@@ -1,8 +1,8 @@
 # Demo Dataset — catálogo sintético canónico
 
-Estado actual: **V02-011 integrado**; **V02-012 — Relationship Evidence v2 en implementación mediante issue #72 / PR #73**.
+Estado actual: **V02-011 y V02-012 integrados**. V02-012 — Relationship Evidence v2 quedó incorporado mediante PR #73, merge `e174700cb5af944c622f4899d812eb9c6fb2c261`; CI post-merge #481 verde.
 
-La decisión histórica de CMDB-012 permanece en [ADR-0010](architecture/adr-0010-demo-dataset.md). La fuente canónica compartida está gobernada por [ADR-0021](architecture/adr-0021-canonical-demo-dataset-v02.md) y la semántica relacional de V02-012 por [ADR-0022](architecture/adr-0022-relationship-evidence-v2.md), aún Propuesto hasta merge manual y CI post-merge verde.
+La decisión histórica de CMDB-012 permanece en [ADR-0010](architecture/adr-0010-demo-dataset.md). La fuente canónica compartida está gobernada por [ADR-0021](architecture/adr-0021-canonical-demo-dataset-v02.md) y la semántica relacional por [ADR-0022](architecture/adr-0022-relationship-evidence-v2.md), Accepted tras merge manual y CI post-merge verde.
 
 ## Propósito
 
@@ -196,7 +196,7 @@ V02-011 retiró los aliases canónicos pre-v2. Valores como `compute`, `laptop`,
 
 ## Relaciones canónicas
 
-V02-012 migra los 18 fixtures a `TechnologyRelationship`. El snapshot Demo contiene:
+V02-012 migró los 18 fixtures a `TechnologyRelationship`. El snapshot Demo contiene:
 
 ```text
 relationships.length = 18
@@ -331,6 +331,8 @@ npm test
 npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
+
+CI post-merge V02-012: **#481 verde**.
 
 ## Límites actuales
 
