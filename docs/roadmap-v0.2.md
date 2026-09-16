@@ -10,7 +10,7 @@ La pregunta de v0.2 es:
 
 v0.2 convierte la prueba de concepto local en una plataforma capaz de integrar fuentes reales de forma segura, conservar procedencia, modelar IT/OT correctamente y producir inteligencia operacional explicable.
 
-El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporate Deployment**. v0.2 debe, sin embargo, evitar decisiones que impidan ese traslado: secretos fuera del código, configuración por entorno, servicios desacoplados y arquitectura desplegable.
+El traslado completo a infraestructura corporativa se reserva conceptualmente para **v0.5 — Corporate Infrastructure**. v0.2 debe, sin embargo, evitar decisiones que impidan ese traslado: secretos fuera del código, configuración por entorno, servicios desacoplados y arquitectura desplegable. Las versiones v0.3 y v0.4 se reservan conceptualmente para inteligencia/automatización y Product Experience, respectivamente.
 
 ## Principios
 
@@ -35,7 +35,7 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-007 | GLPI Agent Live Lab | P0 | ✅ Integrado — PR #59 / issue #58 |
 | V02-008 | Live Asset 360 Vertical Slice | P0 | ✅ Integrado — PR #61 / issue #60 |
 | V02-009 | Provenance & Reconciliation | P0 | ✅ Integrado — PR #64 / issue #63; housekeeping #65 |
-| V02-010 | IT/OT Taxonomy v2 | P0 | 🟡 En revisión — issue #66 / PR #67 |
+| V02-010 | IT/OT Taxonomy v2 | P0 | ✅ Integrado — PR #67 / issue #66 |
 | V02-011 | Demo Dataset v0.2 Migration | P0 | ⚪ Pendiente |
 | V02-012 | Relationship Evidence v2 | P1 | ⚪ Pendiente |
 | V02-013 | Product IA & Visual Direction | P0 | ⚪ Pendiente |
@@ -159,23 +159,22 @@ Objetivo: formalizar `domain`, `assetClass`, `role`, estado/método de clasifica
 
 Dependencias: V02-009 ✅.
 
-Trabajo en revisión: issue #66 / PR #67 / `feature/v02-010-it-ot-taxonomy`.
+Resultado integrado: issue #66 cerrado mediante PR #67; merge manual `92b78f0d62a3dab0ddb06b6acbeba2c845b3b801`. CI del head #421 verde y ADR-0020 Accepted.
 
-Alcance implementado en PR:
+Baseline integrado:
 
 - `TechnologyTaxonomyAssessment` v2 con `classified`, `unknown`, `unclassified`, `conflict`;
 - métodos `observed`, `normalized`, `inferred`, `manual` independientes de authority;
 - catálogos IT y OT separados dentro de un contrato compartido;
 - `OperationalContextReference` para system/service/environment/site/network segment/security zone;
 - mapping GLPI centralizado con Type configurable tratado como evidencia, no estándar universal;
+- hardware genérico `Notebook/Laptop/Desktop/Workstation/Server` no determina automáticamente `domain=IT`;
 - `Computer` sin Type → assessment `unknown`; Type presente sin regla → `unclassified`;
 - bridge escalar legacy explícito/auditable hasta V02-011;
 - Demo y GLPI Live pasan gate base + gate taxonómico v2;
-- reconciliation preserva assessment/context, y discrepancias no resueltas producen `conflict`;
-- ADR-0020, documentación y threat-model addendum específicos;
+- reconciliation preserva assessment/context y discrepancias no resueltas producen `conflict`;
+- threat-model addendum específico y documentación taxonómica;
 - tests para invariantes IT/OT, mapping GLPI, incertidumbre, conflictos multisource y context merge.
-
-Gate de cierre: CI completa verde, revisión final del diff, PR Ready for Review y merge manual de Sergio. No auto-merge.
 
 ### V02-011 — Demo Dataset v0.2 Migration
 
@@ -279,28 +278,38 @@ V02-008 primer Asset 360 LIVE
 V02-009 Provenance & Reconciliation
         ↓
 V02-010 IT/OT Taxonomy v2
+        ↓
+V02-011 Demo Dataset v0.2 Migration
 ```
 
 Sólo después de comprobar estos foundations deben crecer en paralelo Product Design, Analytics y Endpoint Intelligence.
 
-## v0.3 — Corporate Deployment
+## Dirección conceptual posterior a v0.2
 
-v0.3 queda conceptualmente reservada para promover una v0.2 funcional a infraestructura corporativa con, entre otros:
+Estas versiones son un norte y no un compromiso de alcance detallado. Sus tickets se definirán con evidencia obtenida durante el desarrollo.
 
-- servidor/hosting corporativo;
-- DNS y HTTPS;
-- Entra ID / SSO;
-- RBAC productivo;
-- secrets management;
-- reverse proxy;
-- persistencia;
-- backup/restore;
-- observabilidad y logging;
-- auditoría;
-- hardening;
-- firewall/networking;
-- estrategia dev/staging/prod;
-- CI/CD y rollback;
-- runbooks y recuperación.
+### v0.3 — Intelligence & Automation
 
-v0.2 NO debe depender del notebook local de Sergio de manera que obligue a una reescritura para realizar ese traslado.
+Reservada conceptualmente para profundizar el valor operacional de NEXUS mediante automatización, reporting/auditoría, observabilidad, ciencia de datos, Graph Intelligence, detección de anomalías, IA/ML y asistentes basados en evidencia. La IA recomienda, detecta y explica; no reemplaza provenance ni revisión humana.
+
+### v0.4 — Product Experience
+
+Reservada para una revisión profunda de UI/UX, arquitectura de información, Design System, visualización de datos, Technology Map, Asset 360, accesibilidad, responsive/mobile, motion y flujos por persona. No debería transformarse en una versión dominada por grandes capacidades backend nuevas.
+
+### v0.5 — Corporate Infrastructure
+
+Reservada para trasladar NEXUS oficialmente desde el entorno local/laboratorio a infraestructura centralizada, incluyendo servidor/hosting corporativo, DNS/HTTPS, Entra ID/SSO, RBAC productivo, secrets management, reverse proxy, persistencia, backup/restore, observabilidad, firewall/networking, ambientes, CI/CD, rollback y runbooks.
+
+### v0.6 — Cybersecurity Assurance
+
+Reservada para una auditoría integral de seguridad sobre aplicación, APIs, dependencias, supply chain, autenticación/autorización, infraestructura, configuración y trust boundaries IT/OT ya desplegados. El enfoque OT seguirá siendo conservador, read-only/pasivo y de mínimo privilegio.
+
+### v0.7 — Quality Assurance
+
+Reservada para una auditoría integral de QA: funcional, regresión, integración, rendimiento, concurrencia, resiliencia/failure testing, restore real de backups, accesibilidad, cross-browser y calidad de datos, incluyendo regresión de los controles de v0.6.
+
+### v0.8+ / v1.0
+
+Se definirán según evidencia acumulada. Una posible etapa posterior podrá abordar Operational Readiness y piloto productivo antes de declarar **IGX NEXUS v1.0** como release corporativo.
+
+v0.2 NO debe depender del notebook local de Sergio de manera que obligue a una reescritura para realizar el traslado de v0.5.
