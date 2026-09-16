@@ -1,8 +1,8 @@
 # Demo Dataset — catálogo sintético canónico
 
-Estado actual: **V02-011 integrado mediante PR #70**, merge `45b1adc4f4977732f10f707e993588ced368578a`; CI post-merge #454 verde.
+Estado actual: **V02-011 integrado**; **V02-012 — Relationship Evidence v2 en implementación mediante issue #72 / PR #73**.
 
-La decisión histórica de CMDB-012 permanece documentada en [ADR-0010](architecture/adr-0010-demo-dataset.md). La arquitectura vigente está gobernada por [ADR-0021](architecture/adr-0021-canonical-demo-dataset-v02.md).
+La decisión histórica de CMDB-012 permanece en [ADR-0010](architecture/adr-0010-demo-dataset.md). La fuente canónica compartida está gobernada por [ADR-0021](architecture/adr-0021-canonical-demo-dataset-v02.md) y la semántica relacional de V02-012 por [ADR-0022](architecture/adr-0022-relationship-evidence-v2.md), aún Propuesto hasta merge manual y CI post-merge verde.
 
 ## Propósito
 
@@ -17,13 +17,14 @@ El catálogo Demo ejercita:
 - contratos canónicos v0.2;
 - Taxonomy v2;
 - provenance/source references;
-- operational contexts.
+- operational contexts;
+- Relationship Evidence v2.
 
 No representa inventario, personas, cantidades ni topología real de Innergex Chile.
 
 ## Fuente única actual
 
-Desde V02-011 la fuente autorada vive en:
+La fuente autorada vive en:
 
 ```text
 packages/demo-data
@@ -36,23 +37,24 @@ packages/demo-data
       |
       |-- NEXUS API Demo -> TechnologySnapshot v0.2
       |
-      `-- Web Demo -> adapter temporal v0.1
+      `-- Web Demo -> adapters temporales v0.1
 ```
 
-`apps/web/src/demo-dataset.ts` ya no autoriza los 240 registros; proyecta desde el snapshot canónico para preservar la experiencia v0.1.
+`apps/web/src/demo-dataset.ts` no autoriza los activos ni las relaciones. Proyecta desde el snapshot canónico para preservar la experiencia Web v0.1.
 
 No existe una segunda copia manual en `services/api`.
 
 ## Reproducibilidad
 
-Baseline preservado:
+Baseline actual:
 
 ```text
-dataset version = 1.0.0
+canonical dataset version = 2.1.0
+legacy Web dataset version = 1.0.0
 cutoff = 2026-09-09T12:00:00.000Z
 assets = 240
 heroes = 11
-relationship fixtures = 18
+canonical relationships = 18
 randomness = none
 network dependency = none
 clock dependency = none
@@ -62,6 +64,7 @@ Los IDs permanecen estables:
 
 ```text
 DEMO-0001 .. DEMO-0240
+DEMO-REL-001 .. DEMO-REL-018
 ```
 
 No reordenar rangos ni reciclar IDs.
@@ -72,7 +75,13 @@ La proyección Web conserva el digest histórico:
 290589c730513eec3c04c7db008bc4ff95d03eb7b142aab7c991f89117d087f1
 ```
 
-El snapshot canónico completo tiene además su propio digest de regresión definido por V02-011.
+El snapshot canónico V02-012 queda protegido por:
+
+```text
+b97fb701d94332e2726e5f0c4673a1ed20e0cfbfb4a83c95c30bb89e0819943d
+```
+
+Actualizar un digest sólo después de revisar y comprender el cambio semántico.
 
 ## Datos preservados
 
@@ -185,19 +194,77 @@ V02-011 retiró los aliases canónicos pre-v2. Valores como `compute`, `laptop`,
 | DEMO-0023 | stock | owner no aplicable |
 | DEMO-0024 | reparación | registro confiable en repair |
 
-## Relaciones
+## Relaciones canónicas
 
-Los 18 relationship fixtures permanecen compartidos para preservar la Web v0.1.
-
-V02-011 **no** los convierte todavía a `TechnologyRelationship` con evidence/provenance. Esa migración pertenece a **V02-012 — Relationship Evidence v2**.
-
-Por ello el snapshot canónico Demo mantiene actualmente:
+V02-012 migra los 18 fixtures a `TechnologyRelationship`. El snapshot Demo contiene:
 
 ```text
-relationships = []
+relationships.length = 18
 ```
 
-Esto es un límite explícito, no pérdida accidental de datos.
+Se preservan los tres componentes históricos:
+
+1. Oficina;
+2. Planta Norte;
+3. Puestos.
+
+Los tipos actuales del fixture son:
+
+```text
+depends_on
+uses
+connected_to
+```
+
+`depends_on` y `uses` son dirigidos. `connected_to` es bidireccional.
+
+Cada edge Demo posee `RelationshipEvidence` explícita:
+
+```text
+source = demo
+authority = trusted
+derivation = manual
+confidence = 1
+kind = source_record
+```
+
+Esto significa confianza total en que el **fixture sintético declara el claim**, no evidencia sobre infraestructura real.
+
+### Temporalidad
+
+La fecha de la fuente y la fecha de la relación no se mezclan.
+
+`SourceReference.observedAt` usa el corte del dataset porque representa el registro sintético disponible en la fuente.
+
+`TechnologyRelationship.observedAt` representa la fecha del claim cuando se conoce.
+
+Caso intencional:
+
+```text
+DEMO-REL-013.observedAt = null
+```
+
+`null` significa fecha desconocida. No se sustituye por `DEMO_AS_OF`, hora de ingestión ni fecha actual.
+
+`DEMO-REL-016` conserva una observación de 20 días antes del corte para ejercitar freshness.
+
+### Duplicados semánticos
+
+Un edge canónico no debe duplicarse sólo porque exista más de una evidencia.
+
+Para bidireccionales:
+
+```text
+A connected_to B == B connected_to A
+```
+
+El validador reporta duplicados semánticos para que futuras fuentes agreguen evidence al claim en vez de inflar el grafo.
+
+### Compatibilidad Web
+
+La Web v0.1 proyecta las relaciones desde `TechnologySnapshot.relationships`. El adapter acepta explícitamente los tipos/estados soportados por la experiencia actual y falla si recibe una semántica canónica que aún no sabe representar.
+
+Technology Map 2.0 sigue reservado para V02-018.
 
 ## Métricas históricas Web v0.1
 
@@ -235,10 +302,11 @@ Estos valores se preservan para regresión; no representan objetivos corporativo
 - asset tags `DEMO-TAG-*`;
 - responsables numerados/ficticios;
 - sitios, fabricantes y modelos ficticios;
+- relaciones `synthetic_relationship` y evidencia `demo-dataset:*`;
 - sin emails, credenciales o URLs corporativas;
 - QR Demo usa `.invalid` y locator opaco.
 
-Demo nunca debe presentarse como inventario real.
+Demo nunca debe presentarse como inventario o topología real.
 
 ## Mantenimiento
 
@@ -247,11 +315,12 @@ Para agregar o cambiar casos:
 1. preservar IDs existentes;
 2. no reciclar rangos;
 3. usar Taxonomy v2;
-4. no inferir desde hostname/fabricante/modelo;
+4. no inferir assets/relaciones desde hostname, fabricante, modelo o ubicación;
 5. mantener datos sintéticos y TEST-NET;
-6. revisar cambios de métricas conscientemente;
-7. actualizar digest sólo tras comprender el cambio;
-8. ejecutar regresión completa.
+6. no fabricar temporalidad ausente;
+7. revisar cambios de métricas conscientemente;
+8. actualizar digest sólo tras comprender el cambio;
+9. ejecutar regresión completa.
 
 Validación:
 
@@ -263,12 +332,13 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-CI post-merge V02-011: **#454 verde**.
-
 ## Límites actuales
 
-- la UI v0.1 todavía usa un adapter de presentación;
+- la UI v0.1 todavía usa adapters de presentación;
 - la UI muestra sólo una parte de la riqueza canónica disponible;
-- relaciones canónicas con evidence esperan V02-012;
+- GLPI Live todavía no emite relaciones porque no existe fuente real gobernada para hacerlo;
+- reconciliation multisource de edges aún no está implementada;
+- Technology Map 2.0 y graph intelligence son trabajo posterior;
 - Demo no se importa a GLPI;
-- no existe discovery/telemetría real dentro del fixture.
+- no existe discovery/telemetría real dentro del fixture;
+- no se realiza active scanning OT.

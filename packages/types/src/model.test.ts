@@ -267,6 +267,28 @@ describe("canonical relationships", () => {
     expect(validateTechnologyRelationship(relationship)).toEqual([]);
   });
 
+  it("preserves unknown relationship observation time instead of inventing a timestamp", () => {
+    const relationship: TechnologyRelationship = {
+      id: "REL-MANUAL-UNKNOWN-TIME",
+      sourceAssetId: "NEXUS-IT-0001",
+      targetAssetId: "NEXUS-IT-0002",
+      type: "uses",
+      direction: "directed",
+      status: "active",
+      observedAt: null,
+      evidence: [{
+        source: glpi,
+        observedAt: null,
+        authority: "trusted",
+        derivation: "manual",
+        confidence: 1,
+      }],
+    };
+    expect(validateTechnologyRelationship(relationship)).toEqual([]);
+    expect(relationship.observedAt).toBeNull();
+    expect(relationship.evidence[0]?.observedAt).toBeNull();
+  });
+
   it("rejects self relationships and incompatible direction", () => {
     const relationship: TechnologyRelationship = {
       id: "REL-BAD",
@@ -281,6 +303,27 @@ describe("canonical relationships", () => {
     const issues = validateTechnologyRelationship(relationship);
     expect(issues.some((entry) => entry.code === "relationship.self_reference")).toBe(true);
     expect(issues.some((entry) => entry.code === "relationship.direction_invalid")).toBe(true);
+  });
+
+  it("rejects unsupported runtime status and derivation values", () => {
+    const relationship = {
+      id: "REL-RUNTIME-BAD",
+      sourceAssetId: "NEXUS-IT-0001",
+      targetAssetId: "NEXUS-IT-0002",
+      type: "depends_on",
+      direction: "directed",
+      status: "invented-status",
+      observedAt: "2026-09-11T15:00:00Z",
+      evidence: [{
+        source: glpi,
+        observedAt: "2026-09-11T15:00:00Z",
+        authority: "trusted",
+        derivation: "guessed",
+      }],
+    } as unknown as TechnologyRelationship;
+    const issues = validateTechnologyRelationship(relationship);
+    expect(issues.some((entry) => entry.code === "relationship.status_invalid")).toBe(true);
+    expect(issues.some((entry) => entry.code === "derivation.invalid")).toBe(true);
   });
 });
 
@@ -327,5 +370,40 @@ describe("technology snapshot", () => {
       assets: [itAsset(), itAsset({ displayName: "Duplicado" })],
     }));
     expect(issues.some((entry) => entry.code === "snapshot.asset_id_duplicate")).toBe(true);
+  });
+
+  it("detects semantically duplicated bidirectional edges regardless of endpoint order", () => {
+    const peer = itAsset({
+      id: "NEXUS-IT-0002",
+      displayName: "Switch laboratorio",
+      identifiers: [],
+      provenance: [],
+    });
+    const common = {
+      type: "connected_to" as const,
+      direction: "bidirectional" as const,
+      status: "active" as const,
+      observedAt: "2026-09-11T15:00:00Z",
+      evidence: [{ source: glpi, observedAt: "2026-09-11T15:00:00Z", authority: "trusted" as const }],
+    };
+    const relationships: readonly TechnologyRelationship[] = [
+      {
+        id: "REL-CONNECT-A",
+        sourceAssetId: "NEXUS-IT-0001",
+        targetAssetId: "NEXUS-IT-0002",
+        ...common,
+      },
+      {
+        id: "REL-CONNECT-B",
+        sourceAssetId: "NEXUS-IT-0002",
+        targetAssetId: "NEXUS-IT-0001",
+        ...common,
+      },
+    ];
+    const issues = validateTechnologySnapshot(snapshot({
+      assets: [itAsset(), peer],
+      relationships,
+    }));
+    expect(issues.some((entry) => entry.code === "snapshot.relationship_semantic_duplicate")).toBe(true);
   });
 });

@@ -14,8 +14,8 @@ import { describe, expect, it } from "vitest";
 
 const snapshot = createCanonicalDemoSnapshot();
 
-describe("V02-011 canonical demo dataset", () => {
-  it("preserves all 240 stable synthetic identities", () => {
+describe("V02-011/V02-012 canonical demo dataset", () => {
+  it("preserves all 240 stable synthetic identities and 18 canonical relationships", () => {
     expect(snapshot.asOf).toBe(DEMO_AS_OF);
     expect(snapshot.assets).toHaveLength(240);
     expect(snapshot.assets.map((asset) => asset.id)).toEqual(
@@ -24,12 +24,56 @@ describe("V02-011 canonical demo dataset", () => {
     expect(new Set(snapshot.assets.map((asset) => asset.id)).size).toBe(240);
     expect(demoHeroes).toHaveLength(11);
     expect(demoRelationshipFixtures).toHaveLength(18);
+    expect(snapshot.relationships).toHaveLength(18);
+    expect(snapshot.relationships.map((relationship) => relationship.id)).toEqual(
+      Array.from({ length: 18 }, (_, index) => `DEMO-REL-${String(index + 1).padStart(3, "0")}`),
+    );
   });
 
-  it("passes canonical and taxonomy v2 gates for every asset", () => {
-    expect(validateTechnologySnapshot(snapshot).filter((issue) => issue.severity === "error")).toEqual([]);
+  it("passes canonical and taxonomy v2 gates without unresolved relationship endpoints", () => {
+    expect(validateTechnologySnapshot(snapshot)).toEqual([]);
     expect(validateTechnologySnapshotTaxonomy(snapshot)).toEqual([]);
     expect(snapshot.assets.every((asset) => asset.taxonomy?.taxonomyVersion === "2")).toBe(true);
+
+    const assetIds = new Set(snapshot.assets.map((asset) => asset.id));
+    for (const relationship of snapshot.relationships) {
+      expect(assetIds.has(relationship.sourceAssetId)).toBe(true);
+      expect(assetIds.has(relationship.targetAssetId)).toBe(true);
+    }
+  });
+
+  it("keeps relationship evidence explicit without inventing unknown observation time", () => {
+    for (const relationship of snapshot.relationships) {
+      expect(relationship.evidence).toHaveLength(1);
+      const record = relationship.evidence[0]!;
+      expect(record).toMatchObject({
+        authority: "trusted",
+        derivation: "manual",
+        confidence: 1,
+      });
+      expect(record.source).toMatchObject({
+        source: "demo",
+        externalId: relationship.id,
+        entityType: "synthetic_relationship",
+        sourceScope: "demo-v0.2",
+        observedAt: DEMO_AS_OF,
+        authority: "trusted",
+      });
+      expect(record.evidence?.[0]).toMatchObject({
+        kind: "source_record",
+        reference: `demo-dataset:${relationship.id}`,
+        label: "Synthetic relationship fixture",
+      });
+    }
+
+    const unknownTime = snapshot.relationships.find((relationship) => relationship.id === "DEMO-REL-013");
+    expect(unknownTime?.observedAt).toBeNull();
+    expect(unknownTime?.evidence[0]?.observedAt).toBeNull();
+    expect(unknownTime?.evidence[0]?.evidence?.[0]?.observedAt).toBeUndefined();
+
+    const oldRelationship = snapshot.relationships.find((relationship) => relationship.id === "DEMO-REL-016");
+    expect(oldRelationship?.observedAt).toBe("2026-08-20T12:00:00.000Z");
+    expect(oldRelationship?.evidence[0]?.observedAt).toBe(oldRelationship?.observedAt);
   });
 
   it("keeps the synthetic boundary explicit and free from corporate identifiers", () => {
@@ -89,9 +133,12 @@ describe("V02-011 canonical demo dataset", () => {
     expect(Object.isFrozen(snapshot)).toBe(true);
     expect(Object.isFrozen(snapshot.assets)).toBe(true);
     expect(Object.isFrozen(snapshot.assets[0])).toBe(true);
+    expect(Object.isFrozen(snapshot.relationships)).toBe(true);
+    expect(Object.isFrozen(snapshot.relationships[0])).toBe(true);
+    expect(Object.isFrozen(snapshot.relationships[0]?.evidence)).toBe(true);
 
     // Review semantic changes before intentionally updating this digest.
     const digest = createHash("sha256").update(JSON.stringify(snapshot)).digest("hex");
-    expect(digest).toBe("16031e20423ff29f64b658ed56cea3b78f9b92039850d811879dac49822d9033");
+    expect(digest).toBe("b97fb701d94332e2726e5f0c4673a1ed20e0cfbfb4a83c95c30bb89e0819943d");
   });
 });

@@ -301,8 +301,11 @@ export type RelationshipStatus = "active" | "degraded" | "inactive" | "unknown";
 
 export interface RelationshipEvidence {
   readonly source: SourceReference;
-  readonly observedAt: string;
+  /** null representa temporalidad desconocida; nunca debe reemplazarse por el asOf del snapshot. */
+  readonly observedAt: string | null;
   readonly authority: AuthorityLevel;
+  /** Cómo se obtuvo el claim de relación, separado de su authority. */
+  readonly derivation?: TaxonomyClassificationMethod;
   readonly confidence?: number;
   readonly evidence?: readonly EvidenceReference[];
 }
@@ -314,7 +317,8 @@ export interface TechnologyRelationship {
   readonly type: RelationshipType;
   readonly direction: RelationshipDirection;
   readonly status: RelationshipStatus;
-  readonly observedAt: string;
+  /** null expresa que la relación carece de fecha de observación conocida. */
+  readonly observedAt: string | null;
   readonly evidence: readonly RelationshipEvidence[];
 }
 

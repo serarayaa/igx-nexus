@@ -46,7 +46,7 @@ Dirección conceptual posterior:
 | V02-009 | Provenance & Reconciliation | P0 | ✅ Integrado — PR #64 / issue #63; housekeeping #65 |
 | V02-010 | IT/OT Taxonomy v2 | P0 | ✅ Integrado — PR #67 / issue #66; housekeeping #68 |
 | V02-011 | Demo Dataset v0.2 Migration | P0 | ✅ Integrado — PR #70 / merge `45b1adc4`; CI #454 verde |
-| V02-012 | Relationship Evidence v2 | P1 | ⚪ Siguiente |
+| V02-012 | Relationship Evidence v2 | P1 | 🟡 En implementación — issue #72 / PR #73 |
 | V02-013 | Product IA & Visual Direction | P0 | ⚪ Pendiente |
 | V02-014 | Shell & Motion 2.0 | P1 | ⚪ Pendiente |
 | V02-015 | Technology Overview | P1 | ⚪ Pendiente |
@@ -153,24 +153,27 @@ Resultado:
 
 ADR-0021 Accepted.
 
-### V02-012 — Relationship Evidence v2 — siguiente
+### V02-012 — Relationship Evidence v2 — en implementación
 
-Objetivo: migrar los relationship fixtures y la semántica de relaciones hacia el contrato canónico con evidencia explícita.
+Issue #72 / draft PR #73.
 
-Debe resolver, como mínimo:
+Objetivo: migrar los 18 relationship fixtures hacia `TechnologyRelationship` canónico con evidencia explícita, sin fabricar topología ni temporalidad.
 
-- `TechnologyRelationship` como representación canónica;
-- provenance/evidence por relación;
-- `observedAt`, authority, confidence y status explicables;
-- dirección/semántica consistente;
-- endpoints canónicos válidos;
-- detección de duplicados/autorrelaciones;
-- ausencia de evidencia fabricada;
-- compatibilidad temporal con Technology Map v0.1;
-- comportamiento determinista;
-- límites de incertidumbre y freshness.
+Dirección implementada actualmente en la rama:
 
-No debe introducir discovery activo OT ni convertir topología inferida en hecho observado.
+- 18 relaciones canónicas dentro del snapshot Demo;
+- IDs y endpoints históricos preservados;
+- `RelationshipEvidence` con source, authority, derivation, confidence y evidence;
+- `observedAt=null` representa fecha realmente desconocida y no se sustituye por `snapshot.asOf`;
+- separación explícita entre fecha de lectura/registro de la fuente y fecha del claim relacional;
+- detección de self-relations, dirección/status inválidos y duplicados semánticos;
+- edges bidireccionales consideran A↔B y B↔A la misma semántica;
+- Web v0.1 proyecta desde el snapshot canónico y falla explícitamente ante tipos/estados aún no soportados;
+- GLPI Live no fabrica relaciones y continúa vacío hasta disponer de una fuente real defendible.
+
+ADR-0022 permanece **Propuesto** hasta merge manual y CI post-merge verde.
+
+No introduce discovery activo OT, graph analytics ni inferencia automática de topología.
 
 ## Epic 4 — Product Design 2.0
 
