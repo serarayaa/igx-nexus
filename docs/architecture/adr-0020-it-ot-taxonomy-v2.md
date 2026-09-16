@@ -1,6 +1,6 @@
 # ADR-0020 — IT/OT Taxonomy v2
 
-Estado: **Propuesto — V02-010 / PR #67**. Se considerará aceptado tras merge manual del PR y CI verde.
+Estado: **Aceptado — V02-010 integrado mediante PR #67**. Merge manual `92b78f0d62a3dab0ddb06b6acbeba2c845b3b801`; CI del head #421 verde antes de integración.
 
 ## Contexto
 
