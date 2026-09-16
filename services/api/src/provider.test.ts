@@ -1,4 +1,8 @@
-import { technologySchemaVersion, validateTechnologySnapshot } from "@igx-nexus/types";
+import {
+  technologySchemaVersion,
+  validateTechnologySnapshot,
+  validateTechnologySnapshotTaxonomy,
+} from "@igx-nexus/types";
 import { describe, expect, it } from "vitest";
 import {
   ProviderConfigurationError,
@@ -11,7 +15,7 @@ import {
 } from "./provider.js";
 
 describe("Technology Provider contract", () => {
-  it("exposes a valid canonical synthetic snapshot in demo mode", async () => {
+  it("exposes the complete valid canonical synthetic snapshot in demo mode", async () => {
     const provider = resolveTechnologyProvider("demo");
     const snapshot = await provider.getSnapshot();
 
@@ -23,9 +27,34 @@ describe("Technology Provider contract", () => {
       capabilities: ["technology.snapshot.read"],
     });
     expect(snapshot.schemaVersion).toBe(technologySchemaVersion);
-    expect(snapshot.assets.map((asset) => asset.id)).toEqual(["DEMO-0007", "DEMO-0013"]);
+    expect(snapshot.assets).toHaveLength(240);
+    expect(snapshot.assets.map((asset) => asset.id)).toEqual(
+      Array.from({ length: 240 }, (_, index) => `DEMO-${String(index + 1).padStart(4, "0")}`),
+    );
     expect(snapshot.assets.every((asset) => asset.sourceReferences.every((ref) => ref.source === "demo"))).toBe(true);
+    expect(snapshot.assets.every((asset) => asset.taxonomy?.taxonomyVersion === "2")).toBe(true);
     expect(validateTechnologySnapshot(snapshot).filter((issue) => issue.severity === "error")).toEqual([]);
+    expect(validateTechnologySnapshotTaxonomy(snapshot)).toEqual([]);
+  });
+
+  it("preserves the intended IT and OT hero semantics", async () => {
+    const snapshot = await demoTechnologyProvider.getSnapshot();
+    const byId = new Map(snapshot.assets.map((asset) => [asset.id, asset]));
+
+    expect(byId.get("DEMO-0007")).toMatchObject({
+      domain: "IT",
+      assetClass: "endpoint",
+      role: "user_endpoint",
+      lifecycle: "active",
+      criticality: "medium",
+    });
+    expect(byId.get("DEMO-0013")).toMatchObject({
+      domain: "OT",
+      assetClass: "operator_interface",
+      role: "supervision",
+      lifecycle: "active",
+      criticality: "critical",
+    });
   });
 
   it("fails closed in live mode instead of silently falling back to demo", async () => {
