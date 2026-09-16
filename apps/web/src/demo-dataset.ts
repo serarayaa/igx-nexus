@@ -7,7 +7,7 @@ import {
   demoSites as sharedDemoSites,
   type DemoHero as SharedDemoHero,
 } from "../../../packages/demo-data/index.mjs";
-import type { TechnologyAsset, TechnologyAttributeValue } from "@igx-nexus/types";
+import type { TechnologyAsset, TechnologyAttributeValue, TechnologyRelationship } from "@igx-nexus/types";
 import type { Asset, AssetType, InventorySnapshot, Lifecycle } from "./asset-model";
 import type { Relationship, RelationshipSnapshot } from "./relationship-model";
 
@@ -80,15 +80,18 @@ function projectAsset(asset: TechnologyAsset): Asset {
   });
 }
 
-function projectRelationship(relationship: (typeof demoRelationshipFixtures)[number]): Relationship {
+function projectRelationship(relationship: TechnologyRelationship): Relationship {
+  const hasDemoEvidence = relationship.evidence.some((record) => record.source.source === "demo");
+  if (!hasDemoEvidence) throw new Error(`Demo relationship ${relationship.id} is missing demo evidence`);
+
   return Object.freeze({
     id: relationship.id,
-    sourceId: relationship.sourceId,
-    targetId: relationship.targetId,
-    type: relationship.type,
+    sourceId: relationship.sourceAssetId,
+    targetId: relationship.targetAssetId,
+    type: relationship.type as Relationship["type"],
     direction: relationship.direction,
-    status: relationship.status,
-    source: relationship.source,
+    status: relationship.status as Relationship["status"],
+    source: "demo",
     observedAt: relationship.observedAt,
   });
 }
