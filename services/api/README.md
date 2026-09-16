@@ -13,6 +13,7 @@ NEXUS API separa la experiencia Web de los sistemas fuente y concentra:
 - provenance;
 - reconciliation;
 - Taxonomy v2;
+- Relationship Evidence v2;
 - readiness y health;
 - contratos HTTP/OpenAPI.
 
@@ -56,7 +57,7 @@ GLPI continúa como System of Record CMDB/ITAM. NEXUS actúa como capa de integr
 - contratos `@igx-nexus/types`
 - `TechnologyProvider` Demo/Live
 - GLPI v2.3 read-only
-- Taxonomy v2 y reconciliation
+- Taxonomy v2, reconciliation y relaciones con evidencia
 
 ## Endpoints base
 
@@ -82,16 +83,20 @@ live
 
 ### Demo
 
-Desde **V02-011**, Demo ya no es un subconjunto de dos activos.
+Desde V02-011, Demo consume `packages/demo-data` como fuente compartida y devuelve el universo sintético completo.
 
-El provider consume `packages/demo-data` y devuelve el universo sintético completo:
+V02-012 incorpora además las relaciones al mismo snapshot canónico. El resultado contiene:
 
 - 240 `TechnologyAsset`;
 - IDs `DEMO-0001..DEMO-0240`;
+- 18 `TechnologyRelationship` con IDs estables `DEMO-REL-001..018`;
 - `TechnologyTaxonomyAssessment` v2;
 - provenance/source references Demo;
 - site operational contexts cuando existe ubicación;
-- marca explícita `demo.synthetic=true`;
+- relationship evidence explícita;
+- temporalidad relacional conocida o `null` cuando realmente se desconoce;
+- `authority` separada de `derivation`;
+- marca explícita `demo.synthetic=true` para assets;
 - snapshots deterministas e inmutables.
 
 Antes de publicar ejecuta:
@@ -101,9 +106,11 @@ validateTechnologySnapshot()
 validateTechnologySnapshotTaxonomy()
 ```
 
-La API no importa desde `apps/web`. La Web y API consumen la misma fuente compartida.
+La API no importa desde `apps/web`. Web y API consumen la misma fuente compartida.
 
-Las 18 relaciones históricas permanecen como fixtures compartidos hasta **V02-012 — Relationship Evidence v2**; V02-011 no inventa evidence canónico para adelantarse a ese ticket.
+Las relaciones Demo representan claims sintéticos autorados manualmente. No implican discovery real, network scanning ni evidencia corporativa. `DEMO-REL-013` conserva `observedAt=null`: la fecha de corte del dataset no se reutiliza como fecha inventada del hecho.
+
+El provider Live GLPI continúa con `relationships=[]` mientras no exista una fuente real y defendible de relaciones. V02-012 no deriva topología desde hostname, ubicación, fabricante, modelo ni proximidad de red.
 
 ### Live / GLPI
 
@@ -231,16 +238,37 @@ assessment unknown/unclassified/conflict
 
 El fallback nunca modifica el assessment. La verdad taxonómica sigue siendo `unknown`, `unclassified` o `conflict` cuando corresponde.
 
-Atributos publicados para observabilidad:
+## Relationship Evidence v2
+
+Una relación canónica es un claim entre IDs NEXUS y no una simple arista de presentación.
+
+`TechnologyRelationship` conserva:
 
 ```text
-nexus.taxonomy.version
-nexus.taxonomy.<dimension>.state
-nexus.taxonomy.<dimension>.ruleId
-nexus.taxonomy.<dimension>.reviewRequired
-nexus.taxonomy.compatibilityProjection
-nexus.taxonomy.projectionRuleId
+id
+sourceAssetId
+targetAssetId
+type
+direction
+status
+observedAt: string | null
+evidence[]
 ```
+
+`RelationshipEvidence` separa:
+
+- fuente (`SourceReference`);
+- authority;
+- derivation (`observed | normalized | inferred | manual`);
+- confidence opcional;
+- temporalidad conocida o `null`;
+- referencias de evidencia.
+
+Una relación con temporalidad desconocida no recibe `snapshot.asOf` artificialmente. El `SourceReference.observedAt` puede indicar cuándo se leyó/registró una fuente sin afirmar cuándo ocurrió el vínculo representado.
+
+Los validators detectan además edges semánticamente duplicados. Para un edge bidireccional, invertir source/target no crea una segunda relación. Cuando múltiples fuentes soporten el mismo claim, la dirección es combinar evidence sobre un edge canónico, no duplicar la topología.
+
+Ver ADR-0022.
 
 ## Identificadores y metadata GLPI
 
@@ -265,6 +293,8 @@ La reconciliación:
 - preserva el `TechnologyAsset.id` del ancla;
 - mantiene taxonomy y operational contexts;
 - hace visibles conflictos no resueltos.
+
+V02-012 no implementa todavía reconciliation multisource de relaciones reales. Primero consolida el contrato y la Demo canónica.
 
 ## GLPI Service Identity & RBAC
 
@@ -360,8 +390,6 @@ npm run build
 npm test
 ```
 
-CI post-merge de V02-011: **#454 verde**.
-
 ## Referencias
 
 - [ADR-0012 — NEXUS API Runtime](../../docs/architecture/adr-0012-nexus-api-runtime.md)
@@ -374,6 +402,7 @@ CI post-merge de V02-011: **#454 verde**.
 - [ADR-0019 — Provenance & Reconciliation](../../docs/architecture/adr-0019-provenance-reconciliation.md)
 - [ADR-0020 — IT/OT Taxonomy v2](../../docs/architecture/adr-0020-it-ot-taxonomy-v2.md)
 - [ADR-0021 — Demo Dataset canónico v0.2](../../docs/architecture/adr-0021-canonical-demo-dataset-v02.md)
+- [ADR-0022 — Relationship Evidence v2](../../docs/architecture/adr-0022-relationship-evidence-v2.md)
 - [IT/OT Taxonomy v2](../../docs/taxonomy-v2.md)
 - [Provenance & Reconciliation](../../docs/reconciliation.md)
 - [Threat Model v0.2](../../docs/security/threat-model-v0.2.md)
