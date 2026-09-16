@@ -1,30 +1,60 @@
 # ADR-0010 — Catálogo sintético único y escenarios de demo
 
-Estado: Aceptado en CMDB-012; integrado mediante PR #32 (`9afb26d`).
+Estado: **Aceptado históricamente en CMDB-012; supersedido arquitectónicamente por ADR-0021 desde V02-011.**
 
-## Contexto
+Integración original: PR #32 (`9afb26d`).
 
-CMDB-006 a CMDB-011 comparten inventario, pero su fixture preliminar mezcla ciclos uniformes y las relaciones declaran su corte aparte. CMDB-012 necesita escenarios intencionales, identidad estable entre vistas y pruebas de integridad sin crear otro inventario ni una integración GLPI prematura.
+## Contexto histórico
 
-## Decisión
+CMDB-006 a CMDB-011 compartían inventario, pero el fixture preliminar mezclaba ciclos uniformes y relaciones con cortes separados. CMDB-012 necesitaba escenarios intencionales, identidad estable entre vistas y pruebas de integridad sin crear integración GLPI prematura.
 
-Concentrar inventario y relaciones en `demo-dataset.ts`. Combinar 24 activos declarativos con 216 activos de cohortes tipadas y rangos de ID explícitos. Las nueve familias usan las cinco clases del modelo actual. Un corte fijo y offsets reproducibles reemplazan cualquier dependencia del reloj. Devolver snapshots congelados con una factoría pura y compartir una instancia mediante los providers existentes.
+## Decisión original
 
-Mantener los 240 IDs y el contrato de locators. Tres componentes de relaciones, máximo siete nodos, ejercitan el layout actual sin requerir clustering. Metadatos de héroes indican intención funcional, pero no participan en scoring. Health calcula sobre los datos; no recibe scores ni bandas prefijadas.
+Concentrar inventario y relaciones en `apps/web/src/demo-dataset.ts`, combinando 24 activos declarativos con 216 activos de cohortes tipadas y rangos de ID explícitos.
 
-Tests de integridad y un digest del contenido detectan drift. Valores agregados y ejemplos hero son expectativas explícitas de revisión. Los tests adversos de dominio continúan fuera del catálogo: no necesitamos endpoints inválidos para demostrar observaciones antiguas o desconocidas.
+La decisión estableció:
 
-## Alternativas
+- 240 IDs estables;
+- corte fijo;
+- snapshots reproducibles;
+- cero aleatoriedad;
+- 11 escenarios hero;
+- componentes pequeños de relaciones;
+- Health calculado desde datos, no scores prefijados;
+- tests de integridad y digest.
 
-- JSON completo de 240 registros: claro, pero introduce repetición y revisión ruidosa.
-- Sólo generación uniforme: compacto, pero no permite explicar fácilmente escenarios particulares.
-- Faker/aleatoriedad con seed: dependencia y cambios de versión afectan reproducibilidad sin aportar valor aquí.
-- Importar a GLPI: requiere contratos y permisos aún no implementados; crearía una integración fuera de alcance.
+## Alternativas rechazadas en v0.1
 
-## Consecuencias
+- JSON completo de 240 registros;
+- generación uniforme sin héroes;
+- Faker/aleatoriedad;
+- importar el fixture a GLPI antes de contar con contratos/integración aprobada.
 
-Los cambios de contenido son intencionales y versionados. Los rangos no se reordenan ni reciclan; los locators permanecen estables por ID. Congelar datos evita mutaciones compartidas; los tests construyen copias para escenarios adversos. La factoría no contiene reglas de UI, consultas, autenticación ni reconciliación futura. El fixture se reemplazará mediante providers al conectar NEXUS API.
+## Consecuencias históricas
 
-Los valores son sintéticos y no representan distribución real de Innergex. CMDB-013, discovery e integraciones productivas siguen pendientes. Reglas de coherencia entre tipos/sitios/estados en tests pertenecen a este catálogo; no se imponen como políticas universales de CMDB.
+La Web v0.1 obtuvo una única fuente de inventario, identidad estable y escenarios reproducibles. Los valores permanecieron sintéticos y nunca representaron distribución real de Innergex.
 
-Detalles y mantenimiento: [Dataset de Demo](../demo-dataset.md).
+## Evolución en V02-011
+
+La premisa de “fuente única” se mantiene, pero **la ubicación arquitectónica cambia**.
+
+V02-011 detectó que mantener el catálogo autorado dentro de la Web y, paralelamente, un Demo Provider API distinto produciría drift. ADR-0021 migra la fuente a:
+
+```text
+packages/demo-data
+```
+
+Desde V02-011:
+
+- `packages/demo-data` es la fuente autorada;
+- NEXUS API Demo consume los 240 CIs canónicos;
+- `apps/web/src/demo-dataset.ts` es un adapter temporal de presentación;
+- API y Web comparten la misma fuente;
+- los IDs, QR, métricas y escenarios v0.1 se preservan;
+- las relaciones permanecen como fixtures compartidos hasta V02-012.
+
+Esta ADR no se elimina porque explica por qué existen los rangos, héroes, digest y reglas de reproducibilidad originales.
+
+Decisión vigente: [ADR-0021 — Demo Dataset canónico v0.2](adr-0021-canonical-demo-dataset-v02.md).
+
+Detalles actuales: [Dataset de Demo](../demo-dataset.md).
