@@ -92,6 +92,6 @@ describe("V02-011 canonical demo dataset", () => {
 
     // Review semantic changes before intentionally updating this digest.
     const digest = createHash("sha256").update(JSON.stringify(snapshot)).digest("hex");
-    expect(digest).toMatch(/^[a-f0-9]{64}$/);
+    expect(digest).toBe("16031e20423ff29f64b658ed56cea3b78f9b92039850d811879dac49822d9033");
   });
 });
