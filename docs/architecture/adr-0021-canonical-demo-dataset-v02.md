@@ -116,6 +116,20 @@ La implementación inicial evaluó convertir `packages/demo-data` en un workspac
 
 La ausencia de `package.json` propio no convierte a Web/API en dueños del catálogo: la fuente sigue viviendo en `packages/demo-data` y no importa desde ninguna aplicación.
 
+### 9. Retiro del vocabulario canónico legacy
+
+V02-010 mantuvo temporalmente aliases pre-v2 dentro de los tipos base para evitar una migración big-bang. V02-011 elimina esos aliases de `TechnologyAssetClass` y `TechnologyRole` una vez migrados los consumers activos.
+
+Desde este ticket:
+
+- `technologyAssetClasses` contiene exclusivamente `v2TechnologyAssetClasses`;
+- `knownTechnologyRoles` contiene exclusivamente `v2TechnologyRoles`;
+- valores históricos como `compute`, `laptop`, `plc` o `hmi` pueden sobrevivir como vocabulario de fuente, ejemplos históricos o payloads adversos, pero no como valores canónicos válidos;
+- los validators siguen rechazando defensivamente esos valores si un payload sin tipar intenta introducirlos;
+- el compatibility projection de GLPI para assessments no resueltos sigue usando valores **v2** (`IT / endpoint / user_endpoint`) y no reintroduce aliases antiguos.
+
+Esto separa el retiro del vocabulario legacy de la existencia temporal de scalars obligatorios en schema `0.2`.
+
 ## Alternativas rechazadas
 
 ### Copiar los 238 CIs faltantes a `services/api`
@@ -146,6 +160,7 @@ Positivas:
 - API Demo ya puede representar el universo completo de 240 CIs;
 - la Web deja de poseer el inventario sintético;
 - taxonomy/provenance/context pueden probarse a escala del fixture completo;
+- los aliases taxonómicos pre-v2 dejan de formar parte del contrato activo;
 - se preserva la Demo v0.1 mientras Product Experience evoluciona por separado.
 
 Costos/deuda:
@@ -173,5 +188,5 @@ Demo nunca debe presentarse como inventario real de Innergex.
 - ADR-0010 permanece como decisión histórica del catálogo v0.1; esta decisión mueve su fuente de verdad al modelo canónico.
 - ADR-0011 define los contratos que ahora consume el catálogo completo.
 - ADR-0014 mantiene Provider Mode Demo/Live; Demo deja de ser un subconjunto mínimo.
-- ADR-0020 gobierna la taxonomía emitida por el fixture.
+- ADR-0020 gobierna la taxonomía emitida por el fixture y documenta el bridge de scalars v2 para assessments no resueltos.
 - V02-012 añadirá evidence/provenance a relaciones sin reabrir la decisión sobre la fuente sintética.
