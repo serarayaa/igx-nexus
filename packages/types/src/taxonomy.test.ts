@@ -64,11 +64,13 @@ describe("IT/OT taxonomy v2 domain invariants", () => {
     expect(technologyRoleBelongsToDomain("OT", "custom:vendor-specific-function")).toBe(true);
   });
 
-  it("does not allow legacy v0.2 values inside a v2 assessment", () => {
-    const assessment = classifiedAssessment({
+  it("rejects legacy v0.2 values at runtime even when an untyped payload bypasses TypeScript", () => {
+    const assessment = {
+      taxonomyVersion: technologyTaxonomyVersion,
+      domain: { state: "classified", value: "IT", method: "inferred", reviewRequired: false, ruleId: "test.it" },
       assetClass: { state: "classified", value: "compute", method: "normalized", reviewRequired: true, ruleId: "legacy" },
       role: { state: "classified", value: "laptop", method: "normalized", reviewRequired: true, ruleId: "legacy" },
-    });
+    } as unknown as TechnologyTaxonomyAssessment;
     const codes = validateTechnologyTaxonomyAssessment(assessment).map((entry) => entry.code);
     expect(codes).toContain("taxonomy.value_invalid");
   });
@@ -121,7 +123,7 @@ describe("taxonomy projection and operational context", () => {
     ]));
   });
 
-  it("allows explicit unresolved assessment beside temporary legacy scalars", () => {
+  it("allows explicit unresolved assessment beside temporary compatibility scalars", () => {
     const unresolved: TechnologyTaxonomyAssessment = {
       taxonomyVersion: technologyTaxonomyVersion,
       domain: { state: "unknown", reviewRequired: true, ruleId: "source.missing", reasonCode: "domain_not_observed" },

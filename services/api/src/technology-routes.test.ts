@@ -36,7 +36,7 @@ describe("Technology snapshot route", () => {
     expect(response.body).not.toContain("DEMO-0007");
   });
 
-  it("returns the canonical snapshot to technology readers", async () => {
+  it("returns the complete canonical demo snapshot to technology readers", async () => {
     app = await buildApp({
       config: loadConfig({ NEXUS_API_ENV: "test" }),
       authenticationProvider: readerAuthenticationProvider,
@@ -44,10 +44,16 @@ describe("Technology snapshot route", () => {
 
     const response = await app.inject({ method: "GET", url: "/api/v1/technology/snapshot" });
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toMatchObject({
-      schemaVersion: "0.2",
-      assets: [{ id: "DEMO-0007" }, { id: "DEMO-0013" }],
-    });
+    const body = response.json<{
+      schemaVersion: string;
+      assets: readonly { id: string }[];
+    }>();
+    expect(body.schemaVersion).toBe("0.2");
+    expect(body.assets).toHaveLength(240);
+    expect(body.assets[0]?.id).toBe("DEMO-0001");
+    expect(body.assets[6]?.id).toBe("DEMO-0007");
+    expect(body.assets[12]?.id).toBe("DEMO-0013");
+    expect(body.assets[239]?.id).toBe("DEMO-0240");
   });
 
   it("maps an unavailable provider to a safe, masked 503", async () => {

@@ -9,8 +9,8 @@ const canonicalComputer = {
       id: "NXS-TEST",
       displayName: "LAB-ENDPOINT",
       domain: "IT",
-      assetClass: "compute",
-      role: "custom:glpi-computer",
+      assetClass: "endpoint",
+      role: "user_endpoint",
       lifecycle: "unknown",
       criticality: "unknown",
       identifiers: [

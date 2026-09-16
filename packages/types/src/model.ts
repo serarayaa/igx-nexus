@@ -32,32 +32,14 @@ export const otTechnologyAssetClasses = [
   "industrial_gateway",
 ] as const;
 
-/** Catálogo gobernado por V02-010. */
+/** Catálogo canónico gobernado por V02-010 y cerrado a valores Taxonomy v2 desde V02-011. */
 export const v2TechnologyAssetClasses = [
   ...itTechnologyAssetClasses,
   ...otTechnologyAssetClasses,
 ] as const;
 
-/**
- * Alias v0.2 previos a V02-010. Sólo preservan compatibilidad durante la migración;
- * una TechnologyTaxonomyAssessment v2 nunca los considera valores válidos.
- */
-export const legacyTechnologyAssetClasses = [
-  "compute",
-  "network",
-  "mobile",
-  "control",
-  "monitoring",
-  "industrial_network",
-  "field_edge",
-  "energy_plant",
-  "other",
-] as const;
-
-export const technologyAssetClasses = [
-  ...v2TechnologyAssetClasses,
-  ...legacyTechnologyAssetClasses,
-] as const;
+/** Alias público conservado para consumers del contrato; ya no incluye vocabulario pre-V02-010. */
+export const technologyAssetClasses = v2TechnologyAssetClasses;
 export type TechnologyAssetClass = (typeof technologyAssetClasses)[number];
 
 /** Role expresa función; no modelo comercial, item type ni subtipo físico. */
@@ -93,40 +75,8 @@ export const otTechnologyRoles = [
 
 export const v2TechnologyRoles = [...itTechnologyRoles, ...otTechnologyRoles] as const;
 
-/** Alias funcionalmente ambiguos heredados; se retirarán con la migración de consumidores. */
-export const legacyTechnologyRoles = [
-  "laptop",
-  "desktop",
-  "server",
-  "virtual_machine",
-  "switch",
-  "router",
-  "firewall",
-  "access_point",
-  "smartphone",
-  "tablet",
-  "monitor",
-  "printer",
-  "docking_station",
-  "plc",
-  "rtu",
-  "hmi",
-  "scada_server",
-  "industrial_switch",
-  "industrial_firewall",
-  "industrial_gateway",
-  "ied",
-  "sensor",
-  "actuator",
-  "edge_gateway",
-  "meter",
-  "inverter",
-  "protection_relay",
-  "plant_controller",
-  "other",
-] as const;
-
-export const knownTechnologyRoles = [...v2TechnologyRoles, ...legacyTechnologyRoles] as const;
+/** Catálogo de roles conocido; desde V02-011 contiene exclusivamente roles Taxonomy v2. */
+export const knownTechnologyRoles = v2TechnologyRoles;
 export type KnownTechnologyRole = (typeof knownTechnologyRoles)[number];
 export type TechnologyRole = KnownTechnologyRole | `custom:${string}`;
 
@@ -283,8 +233,9 @@ export interface TechnologyAsset {
   readonly assetClass: TechnologyAssetClass;
   readonly role: TechnologyRole;
   /**
-   * Assessment v2. Opcional durante el puente de migración V02-010→V02-011;
-   * providers v2 nuevos deben emitirlo.
+   * Assessment Taxonomy v2. Permanece opcional en el tipo base para poder validar
+   * snapshots históricos/importados; providers v2 actuales deben emitirlo y pasar
+   * validateTechnologySnapshotTaxonomy().
    */
   readonly taxonomy?: TechnologyTaxonomyAssessment;
   readonly lifecycle: LifecycleState;

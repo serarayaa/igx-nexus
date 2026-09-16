@@ -39,7 +39,7 @@ function itAsset(overrides: Partial<TechnologyAsset> = {}): TechnologyAsset {
     displayName: "Notebook laboratorio 75",
     domain: "IT",
     assetClass: "endpoint",
-    role: "laptop",
+    role: "user_endpoint",
     lifecycle: "active",
     criticality: "medium",
     identifiers: [
@@ -79,8 +79,8 @@ function otAsset(): TechnologyAsset {
     id: "NEXUS-OT-0001",
     displayName: "PLC laboratorio sintético",
     domain: "OT",
-    assetClass: "control",
-    role: "plc",
+    assetClass: "controller",
+    role: "control",
     lifecycle: "active",
     criticality: "high",
     identifiers: [{ kind: "custom:controller-id", value: "PLC-DEMO-01", source }],
@@ -112,8 +112,8 @@ describe("canonical technology model", () => {
   it("models OT as an explicit domain and role instead of a peripheral subtype", () => {
     const asset = otAsset();
     expect(asset.domain).toBe("OT");
-    expect(asset.assetClass).toBe("control");
-    expect(asset.role).toBe("plc");
+    expect(asset.assetClass).toBe("controller");
+    expect(asset.role).toBe("control");
     expect(validateTechnologyAsset(asset)).toEqual([]);
   });
 

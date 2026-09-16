@@ -1,8 +1,12 @@
-# IGX NEXUS Web — Demo v0.1
+# IGX NEXUS Web — Demo v0.1 sobre contratos v0.2
 
-La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. El escenario actual usa exclusivamente 240 activos sintéticos y 18 relaciones con corte fijo, desde `src/demo-dataset.ts`. No requiere GLPI, credenciales ni Docker para la demostración Web.
+La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. La experiencia Demo conserva 240 activos sintéticos y 18 relaciones con corte fijo, pero desde V02-011 **la Web ya no es dueña del inventario sintético**.
 
-Dashboard, Asset Explorer, Asset 360, QR/Label, Technology Map y CMDB Health trabajan sobre el mismo dataset. Ver [guía de Demo v0.1](../../docs/demo-v0.1.md) y [catálogo de datos/activos hero](../../docs/demo-dataset.md).
+La fuente compartida vive en `packages/demo-data`. `src/demo-dataset.ts` es un adaptador de compatibilidad explícito que proyecta el snapshot canónico v0.2 al modelo de presentación histórico de la Web v0.1. Dashboard, Asset Explorer, Asset 360, QR/Label, Technology Map y CMDB Health siguen viendo exactamente los mismos IDs y escenarios funcionales.
+
+La Demo local no requiere GLPI, credenciales, Docker ni NEXUS API. El modo Live, en cambio, consume NEXUS API y nunca habla directamente con GLPI.
+
+Ver [guía de Demo v0.1](../../docs/demo-v0.1.md), [catálogo de datos/activos hero](../../docs/demo-dataset.md) y [ADR-0021 — Canonical Demo Dataset v0.2](../../docs/architecture/adr-0021-canonical-demo-dataset-v02.md).
 
 ## Ejecución local
 
@@ -29,13 +33,21 @@ Abrir `http://127.0.0.1:3000`. El servidor se limita a loopback y falla si el pu
 
 El QR exportado **no** contiene la ruta hash. En la demo contiene `https://nexus-demo.invalid/q/<locator>` para evitar simular un dominio corporativo inexistente. En producción `/q/:locator` será una ruta de servidor con autenticación/RBAC antes de Asset 360.
 
-`navigation-model.ts` concentra el parsing y generación de rutas internas. Se mantiene el enfoque liviano de ADR-0006; no se introduce React Router para la demo.
+`navigation-model.ts` concentra el parsing y generación de rutas internas. Se mantiene el enfoque liviano de ADR-0006; no se introduce React Router sólo para la demo.
 
 ## Providers y datos
 
-Dashboard, Explorer, Asset 360, diseñador y resolver comparten `Asset`/`AssetSummary`. Technology Map consume el mismo inventario y un provider de relaciones separado. CMDB Health evalúa ambos snapshots con el mismo corte.
+### Demo
 
-Los providers asíncronos reciben `AbortSignal`. La futura NEXUS API reemplazará el provider; nunca se debe conectar el navegador directamente a GLPI, MariaDB, Graph con secretos o dispositivos OT.
+`packages/demo-data` genera el `TechnologySnapshot` canónico sintético. `src/demo-dataset.ts` lo proyecta al `InventorySnapshot` de la UI v0.1 y preserva los 240 IDs, campos de presentación, heroes, relaciones, QR/locator y comportamiento de Health.
+
+El adaptador existe para evitar mezclar V02-011 con el rediseño de Product Design 2.0. No debe transformarse en una segunda fuente de verdad ni volver a contener una copia de los 240 registros.
+
+### Live
+
+La Web Live consume NEXUS API mediante su provider dedicado. La Web nunca debe conectarse directamente a GLPI, MariaDB, Graph con secretos ni dispositivos OT.
+
+Los providers asíncronos reciben `AbortSignal`. Demo y Live comparten el lenguaje canónico detrás de sus fronteras, pero no existe fallback silencioso Live → Demo.
 
 El locator demo es determinista sólo para tests y demostración. No debe utilizarse como generador productivo.
 
@@ -68,14 +80,15 @@ Para ejecutar sólo los tests de modelo, sin navegador:
 npm exec --workspace @igx-nexus/web -- vitest run --project=model
 ```
 
-`DemoV01.browser.test.tsx` es el smoke integrado de CMDB-013. Las suites Browser específicas continúan cubriendo estados, filtros, navegación, foco, axe, keyboard y reflow responsive. No se duplica ese flujo en un script Node separado.
+`demo-dataset.test.ts` protege además la proyección de compatibilidad mediante el digest histórico del catálogo Web. `DemoV01.browser.test.tsx` continúa siendo el smoke integrado de CMDB-013. Las suites Browser específicas cubren estados, filtros, navegación, foco, axe, keyboard y reflow responsive.
 
 ## Límites actuales
 
-- datos exclusivamente sintéticos;
-- sin NEXUS API real;
-- sin GLPI/Intune/Entra/Defender/SNMP reales;
-- sin autenticación productiva;
+- la Demo contiene datos exclusivamente sintéticos;
+- el adaptador Web v0.1 todavía usa su modelo de presentación histórico;
+- sólo existe un vertical Live acotado; no toda la experiencia Demo está disponible como Live;
+- sin Intune/Entra/Defender/SNMP reales en la experiencia Web actual;
+- sin autenticación productiva de usuario final;
 - sin endpoint productivo `/q/:locator`;
 - sin impresora/vendor adapter específico;
 - sin edición, persistencia o discovery real de relaciones;
