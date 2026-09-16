@@ -87,7 +87,7 @@ function makeAsset(options: AssetOptions): TechnologyAsset {
     displayName: options.displayName ?? `Synthetic asset ${options.id}`,
     domain: "IT",
     assetClass: "endpoint",
-    role: "laptop",
+    role: "user_endpoint",
     lifecycle: "active",
     criticality: "medium",
     identifiers: Object.freeze((options.identifiers ?? []).map((identifier) => Object.freeze({
