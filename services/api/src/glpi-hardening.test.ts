@@ -54,6 +54,8 @@ describe("GLPI adapter hardening", () => {
     const snapshot = await provider.getSnapshot();
 
     expect(snapshot.assets.map((asset) => asset.displayName)).toEqual(["PC-1", "PC-2", "PC-3"]);
+    expect(snapshot.assets.every((asset) => asset.taxonomy?.domain.state === "unknown")).toBe(true);
+    expect(snapshot.assets.every((asset) => asset.attributes["nexus.taxonomy.compatibilityProjection"] === true)).toBe(true);
     expect(queries).toEqual([
       { start: 0, limit: 10 },
       { start: 1, limit: 9 },
@@ -72,17 +74,20 @@ describe("GLPI adapter hardening", () => {
     await expect(provider.getSnapshot()).rejects.toBeInstanceOf(GlpiPaginationError);
   });
 
-  it("marks NEXUS semantic mapping as inferred provenance rather than raw GLPI truth", () => {
+  it("marks a compatibility scalar as inferred instead of raw GLPI truth", () => {
     const asset = mapGlpiComputerToTechnologyAsset(
       parseGlpiComputerRecord({ id: 9, name: "CONTROL-PC" }),
       OBSERVED_AT,
     );
 
+    expect(asset.taxonomy?.domain.state).toBe("unknown");
+    expect(asset.attributes["nexus.taxonomy.compatibilityProjection"]).toBe(true);
     for (const fieldPath of ["domain", "assetClass", "role"]) {
       expect(asset.provenance).toContainEqual(
         expect.objectContaining({
           fieldPath,
           authority: "inferred",
+          derivation: "inferred",
           source: expect.objectContaining({ source: "glpi", externalId: "9" }),
         }),
       );

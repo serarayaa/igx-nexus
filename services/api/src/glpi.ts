@@ -2,15 +2,19 @@ import { createHash } from "node:crypto";
 import {
   technologySchemaVersion,
   validateTechnologySnapshot,
+  validateTechnologySnapshotTaxonomy,
   type AssetIdentifier,
   type EvidenceReference,
   type ProvenanceRecord,
   type SourceReference,
+  type TaxonomyClassificationMethod,
   type TechnologyAsset,
   type TechnologyAttributeValue,
   type TechnologySnapshot,
+  type TechnologyTaxonomyAssessment,
 } from "@igx-nexus/types";
 import type { TechnologyProvider, TechnologyProviderDescriptor } from "./provider.js";
+import { classifyGlpiTaxonomy, projectGlpiTaxonomyForLegacyScalars } from "./taxonomy.js";
 
 export const glpiApiVersions = ["v2.3"] as const;
 export type GlpiApiVersion = (typeof glpiApiVersions)[number];
@@ -313,8 +317,9 @@ function addNamedReferenceAttributes(
   addAttribute(attributes, `${prefix}.completename`, value.completename);
 }
 
-function inferredMappingProvenance(
+function taxonomyMappingProvenance(
   fieldPath: "domain" | "assetClass" | "role",
+  method: TaxonomyClassificationMethod,
   source: SourceReference,
   evidence: EvidenceReference,
   observedAt: string,
@@ -323,9 +328,18 @@ function inferredMappingProvenance(
     fieldPath,
     source,
     observedAt,
-    authority: "inferred",
+    authority: method === "inferred" ? "inferred" : source.authority,
+    derivation: method,
     evidence: Object.freeze([evidence]),
   });
+}
+
+function taxonomyProjectionMethod(
+  assessment: TechnologyTaxonomyAssessment,
+  field: "domain" | "assetClass" | "role",
+): TaxonomyClassificationMethod {
+  const decision = assessment[field];
+  return decision.state === "classified" ? decision.method : "inferred";
 }
 
 export function mapGlpiComputerToTechnologyAsset(
@@ -352,6 +366,10 @@ export function mapGlpiComputerToTechnologyAsset(
   if (record.otherserial) identifiers.push(Object.freeze({ kind: "asset_tag", value: record.otherserial, source }));
   if (record.uuid) identifiers.push(Object.freeze({ kind: "hardware_uuid", value: record.uuid, source }));
 
+  const sourceType = record.type?.name ?? record.type?.completename;
+  const taxonomy = classifyGlpiTaxonomy({ itemType: "Computer", ...(sourceType === undefined ? {} : { sourceType }) });
+  const projection = projectGlpiTaxonomyForLegacyScalars(taxonomy);
+
   const attributes: Record<string, TechnologyAttributeValue> = {};
   addAttribute(attributes, "glpi.itemType", "Computer");
   addAttribute(attributes, "glpi.isDeleted", record.is_deleted);
@@ -366,6 +384,18 @@ export function mapGlpiComputerToTechnologyAsset(
   addNamedReferenceAttributes(attributes, "glpi.location", record.location);
   addNamedReferenceAttributes(attributes, "glpi.type", record.type);
   addNamedReferenceAttributes(attributes, "glpi.model", record.model);
+  addAttribute(attributes, "nexus.taxonomy.version", taxonomy.taxonomyVersion);
+  addAttribute(attributes, "nexus.taxonomy.domain.state", taxonomy.domain.state);
+  addAttribute(attributes, "nexus.taxonomy.domain.ruleId", taxonomy.domain.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.domain.reviewRequired", taxonomy.domain.reviewRequired);
+  addAttribute(attributes, "nexus.taxonomy.assetClass.state", taxonomy.assetClass.state);
+  addAttribute(attributes, "nexus.taxonomy.assetClass.ruleId", taxonomy.assetClass.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.assetClass.reviewRequired", taxonomy.assetClass.reviewRequired);
+  addAttribute(attributes, "nexus.taxonomy.role.state", taxonomy.role.state);
+  addAttribute(attributes, "nexus.taxonomy.role.ruleId", taxonomy.role.ruleId);
+  addAttribute(attributes, "nexus.taxonomy.role.reviewRequired", taxonomy.role.reviewRequired);
+  addAttribute(attributes, "nexus.taxonomy.compatibilityProjection", projection.compatibilityFallback);
+  addAttribute(attributes, "nexus.taxonomy.projectionRuleId", projection.ruleId);
 
   const displayName = record.name ?? `GLPI Computer ${record.id}`;
   const provenance: ProvenanceRecord[] = [
@@ -374,16 +404,18 @@ export function mapGlpiComputerToTechnologyAsset(
       source,
       observedAt,
       authority: record.name ? "authoritative" : "inferred",
+      derivation: record.name ? "observed" : "inferred",
       evidence: Object.freeze([evidence]),
     }),
-    inferredMappingProvenance("domain", source, evidence, observedAt),
-    inferredMappingProvenance("assetClass", source, evidence, observedAt),
-    inferredMappingProvenance("role", source, evidence, observedAt),
+    taxonomyMappingProvenance("domain", taxonomyProjectionMethod(taxonomy, "domain"), source, evidence, observedAt),
+    taxonomyMappingProvenance("assetClass", taxonomyProjectionMethod(taxonomy, "assetClass"), source, evidence, observedAt),
+    taxonomyMappingProvenance("role", taxonomyProjectionMethod(taxonomy, "role"), source, evidence, observedAt),
     Object.freeze({
       fieldPath: "attributes",
       source,
       observedAt,
       authority: "authoritative",
+      derivation: "observed",
       evidence: Object.freeze([evidence]),
     }),
   ];
@@ -391,11 +423,13 @@ export function mapGlpiComputerToTechnologyAsset(
   return Object.freeze({
     id: canonicalAssetId(COMPUTER_COLLECTION_PATH, String(record.id)),
     displayName,
-    domain: "IT",
-    assetClass: "compute",
-    role: "custom:glpi-computer",
+    domain: projection.domain,
+    assetClass: projection.assetClass,
+    role: projection.role,
+    taxonomy,
     lifecycle: "unknown",
     criticality: "unknown",
+    operationalContexts: Object.freeze([]),
     identifiers: Object.freeze(identifiers),
     sourceReferences: Object.freeze([source]),
     attributes: Object.freeze(attributes),
@@ -467,8 +501,11 @@ export function createGlpiTechnologyProvider(options: GlpiTechnologyProviderOpti
         relationships: Object.freeze([]),
         observations: Object.freeze([]),
       });
-      const errors = validateTechnologySnapshot(snapshot).filter((issue) => issue.severity === "error");
-      if (errors.length > 0) throw new GlpiPayloadError("GLPI adapter produced an invalid TechnologySnapshot");
+      const canonicalErrors = validateTechnologySnapshot(snapshot).filter((issue) => issue.severity === "error");
+      const taxonomyErrors = validateTechnologySnapshotTaxonomy(snapshot);
+      if (canonicalErrors.length > 0 || taxonomyErrors.length > 0) {
+        throw new GlpiPayloadError("GLPI adapter produced an invalid TechnologySnapshot");
+      }
       return snapshot;
     },
   });

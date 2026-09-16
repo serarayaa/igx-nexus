@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { SourceReference, SourceSystem, TechnologyAsset } from "@igx-nexus/types";
+import { technologyTaxonomyVersion, type SourceReference, type SourceSystem, type TechnologyAsset } from "@igx-nexus/types";
 import { projectCanonicalAsset } from "./reconciliation.js";
 
 const observedAt = "2026-09-15T18:00:00Z";
@@ -18,15 +18,23 @@ function syntheticAsset(
     observedAt,
     authority: "trusted",
   });
+  const ruleId = "test.synthetic.it-endpoint";
 
   return Object.freeze({
     id,
     displayName: `Synthetic asset ${id}`,
     domain: "IT",
     assetClass: "endpoint",
-    role: "laptop",
+    role: "user_endpoint",
+    taxonomy: Object.freeze({
+      taxonomyVersion: technologyTaxonomyVersion,
+      domain: Object.freeze({ state: "classified", value: "IT", method: "inferred", reviewRequired: false, ruleId }),
+      assetClass: Object.freeze({ state: "classified", value: "endpoint", method: "inferred", reviewRequired: false, ruleId }),
+      role: Object.freeze({ state: "classified", value: "user_endpoint", method: "inferred", reviewRequired: false, ruleId }),
+    }),
     lifecycle: "active",
     criticality: "medium",
+    operationalContexts: Object.freeze([]),
     identifiers: Object.freeze([
       Object.freeze({ kind: "serial_number" as const, value: "SYNTH-SERIAL-STABLE", source }),
       Object.freeze({ kind: "hostname" as const, value: hostname, source }),
@@ -35,9 +43,9 @@ function syntheticAsset(
     attributes: Object.freeze({ syntheticState: "stable" }),
     provenance: Object.freeze([
       Object.freeze({ fieldPath: "displayName", source, observedAt, authority: "trusted" as const }),
-      Object.freeze({ fieldPath: "domain", source, observedAt, authority: "inferred" as const }),
-      Object.freeze({ fieldPath: "assetClass", source, observedAt, authority: "inferred" as const }),
-      Object.freeze({ fieldPath: "role", source, observedAt, authority: "inferred" as const }),
+      Object.freeze({ fieldPath: "domain", source, observedAt, authority: "inferred" as const, derivation: "inferred" as const }),
+      Object.freeze({ fieldPath: "assetClass", source, observedAt, authority: "inferred" as const, derivation: "inferred" as const }),
+      Object.freeze({ fieldPath: "role", source, observedAt, authority: "inferred" as const, derivation: "inferred" as const }),
       Object.freeze({ fieldPath: "lifecycle", source, observedAt, authority: "trusted" as const }),
       Object.freeze({ fieldPath: "criticality", source, observedAt, authority: "trusted" as const }),
       Object.freeze({ fieldPath: "attributes.syntheticState", source, observedAt, authority: "trusted" as const }),

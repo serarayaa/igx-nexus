@@ -34,8 +34,8 @@ El despliegue/hardening corporativo completo se reserva para **v0.3 — Corporat
 | V02-006 | GLPI Service Identity & RBAC | P0 | ✅ Integrado — PR #56 / issue #55 |
 | V02-007 | GLPI Agent Live Lab | P0 | ✅ Integrado — PR #59 / issue #58 |
 | V02-008 | Live Asset 360 Vertical Slice | P0 | ✅ Integrado — PR #61 / issue #60 |
-| V02-009 | Provenance & Reconciliation | P0 | 🟡 En curso — issue #63 |
-| V02-010 | IT/OT Taxonomy v2 | P0 | ⚪ Pendiente |
+| V02-009 | Provenance & Reconciliation | P0 | ✅ Integrado — PR #64 / issue #63; housekeeping #65 |
+| V02-010 | IT/OT Taxonomy v2 | P0 | 🟡 En revisión — issue #66 / PR #67 |
 | V02-011 | Demo Dataset v0.2 Migration | P0 | ⚪ Pendiente |
 | V02-012 | Relationship Evidence v2 | P1 | ⚪ Pendiente |
 | V02-013 | Product IA & Visual Direction | P0 | ⚪ Pendiente |
@@ -84,22 +84,6 @@ Dependencias: V02-002 ✅.
 
 Resultado integrado: issue #46 cerrado mediante PR #47; baseline incorporado a `main` en el merge `900540033a0b0ff62bd4be1edcb52bcf6fb7ef97`; CI post-merge #175 verde.
 
-Baseline integrado:
-
-- `AuthenticationProvider` desacoplado y provider por defecto deny-all;
-- `SecurityPrincipal` y autorización por permisos efectivos;
-- policy explícita `public | authenticated | permission` para rutas `/api` y `/api/*`;
-- security headers, `Cache-Control: no-store` y errores seguros;
-- CORS deny-by-default con allowlist y HTTPS obligatorio para origins productivas;
-- body limit, request receive timeout y rate limit configurables;
-- `/health` y `/ready` exentos del limiter;
-- `trustProxy=false` por defecto y sólo IP/CIDR explícitos no globales;
-- logging HTTP por route pattern y audit events minimizados, sin URL/query cruda, tokens o bodies;
-- `npm audit --audit-level=high` incorporado a CI;
-- ADR-0013 y threat model v0.2.
-
-V02-003 **no** implementa Entra SSO/OIDC, secretos corporativos, OAuth GLPI, Provider Mode ni TLS/reverse proxy; esos alcances permanecen en tickets posteriores.
-
 ### V02-004 — Provider Mode Contract
 
 Objetivo: permitir Demo sintética y Live Lab mediante los mismos contratos, sin dispersar condicionales `if demo` por la aplicación.
@@ -107,21 +91,6 @@ Objetivo: permitir Demo sintética y Live Lab mediante los mismos contratos, sin
 Dependencias: V02-001 / V02-002 / V02-003 ✅.
 
 Resultado integrado: issue #49 cerrado mediante PR #50; Provider Mode incorporado a `main` en el merge `70ae174d53ea09df5123ab136b849745200f4b11`; CI post-merge #204 verde.
-
-Baseline integrado:
-
-- `ProviderMode = demo | live` y selección centralizada mediante `NEXUS_PROVIDER_MODE`;
-- `TechnologyProvider` desacoplado de GLPI/Intune/Web;
-- descriptor inmutable con availability, capabilities y source systems;
-- provider Demo canónico mínimo con procedencia `demo`;
-- provider Live placeholder fail-closed, sin fallback silencioso a Demo;
-- `production` exige declarar `NEXUS_PROVIDER_MODE` explícitamente;
-- `/health` representa liveness y `/ready` depende de disponibilidad del provider;
-- `/api/v1/provider` expone sólo metadata declarativa del provider;
-- inyección de provider en `buildApp()` para tests y adapters futuros;
-- ADR-0014 y documentación de NEXUS API.
-
-V02-004 **no** implementa GLPI API v2, OAuth/service identity, reconciliación multisource ni la migración completa del dataset sintético. Esos alcances permanecen en V02-005/V02-006/V02-009/V02-011.
 
 ## Epic 2 — Live CMDB / GLPI
 
@@ -133,24 +102,7 @@ Dependencias: V02-001 / V02-002 / V02-003 / V02-004 ✅.
 
 Resultado integrado: issue #52 cerrado mediante PR #53; adapter incorporado a `main` en el merge `10acf2533877b19a261d8f5291e90269df2014e8`; CI post-merge #247 verde; housekeeping PR #54 y CI #249 verdes.
 
-Baseline integrado:
-
-- versión GLPI API `v2.3` explícita; no `/v2` flotante;
-- transporte HTTP read-only (`GET`) con Bearer token inyectado;
-- HTTPS por defecto, HTTP sólo opt-in de laboratorio;
-- timeout/cancelación, redirects rechazados y errores sin copiar body de upstream;
-- lectura paginada de `Assets/Computer` con `start` / `limit` hasta página vacía para evitar truncamiento silencioso;
-- límite total, rechazo de páginas que exceden `limit` y detección de IDs duplicados;
-- parser defensivo de payloads;
-- mapping conservador a `TechnologyAsset`: IT / compute / `custom:glpi-computer`, lifecycle y criticality desconocidos;
-- serial, asset tag y UUID preservados cuando existen;
-- identidad NEXUS determinista namespaced sin convertir el ID GLPI en identidad pública;
-- `SourceReference`, provenance y evidence GLPI;
-- `domain`, `assetClass` y `role` registrados como inferencia NEXUS;
-- `TechnologySnapshot` validado antes de salir del provider;
-- `checkAvailability()` opcional en `TechnologyProvider` para upstreams reales;
-- probe GLPI mínimo `Assets/Computer?start=0&limit=1` para readiness dinámica, con cache corto y deduplicación de probes en vuelo;
-- ADR-0015 y threat model v0.2 actualizados.
+Nota histórica: V02-005 integró deliberadamente el mapping conservador `IT / compute / custom:glpi-computer`. V02-010 lo refina mediante assessment taxonómico v2, estados de incertidumbre y mappings explícitos. Esta sección conserva el resultado histórico del ticket, no la semántica vigente.
 
 ### V02-006 — GLPI Service Identity & RBAC
 
@@ -160,24 +112,6 @@ Dependencias: V02-005 ✅.
 
 Resultado integrado: issue #55 cerrado mediante PR #56; identidad GLPI y baseline RBAC incorporados a `main` en el merge `1ea04772fd4fa57e956f7797b2cb298730bad5bc`; CI post-merge #275 verde.
 
-Baseline integrado:
-
-- `GlpiCredentialSource` como frontera reemplazable de secretos;
-- backend environment sólo para laboratorio/desarrollo, sin valores versionados;
-- Password Grant + scope exacto `api`, porque GLPI 11 restringe Client Credentials a `inventory`;
-- token endpoint `/api.php/token` separado de recursos `/api.php/v2.3/...`;
-- parser defensivo de `Bearer`, `access_token` y `expires_in`;
-- access token sólo en memoria, renovación anticipada y deduplicación de adquisición concurrente;
-- secretos fuera de `ApiConfig`, descriptors, evidence, provenance y errores;
-- configuración Live no secreta validada y fail-closed;
-- HTTP inseguro permitido sólo con opt-in de laboratorio y prohibido en `production`;
-- composition root real: credenciales → OAuth → GLPI transport → GLPI Live TechnologyProvider;
-- usuario técnico dedicado + perfil `NEXUS API Read-Only` con baseline `Assets > Computers > Read`;
-- autorización por entidades mínimas y recursividad sólo con evidencia/necesidad;
-- runbook operativo y ADR-0016.
-
-V02-006 **no** configura una instancia corporativa automáticamente, no versiona credenciales, no implementa Entra SSO para callers NEXUS ni sustituye el secret manager corporativo de v0.3.
-
 ### V02-007 — GLPI Agent Live Lab
 
 Objetivo: comprobar de forma controlada que uno a tres endpoints autorizados pueden inventariarse mediante GLPI Agent y llegar a GLPI sin ampliar la prueba a discovery de red, administración remota, despliegue masivo u OT.
@@ -185,19 +119,6 @@ Objetivo: comprobar de forma controlada que uno a tres endpoints autorizados pue
 Dependencias: V02-005 / V02-006 ✅.
 
 Resultado integrado: issue #58 cerrado mediante PR #59; merge `403f194bceef4d5050f2650a8bec7664d3c5cd4b`. El gate manual quedó satisfecho con un endpoint autorizado y evidencia sanitizada; la CI final del PR (#297) quedó verde.
-
-Baseline validado:
-
-- GLPI Agent **1.19** x64 fijado y MSI verificado mediante SHA-256 oficial;
-- sólo tarea `Inventory` y `ITEMTYPE=Computer`;
-- HTTP server embebido y P2P deshabilitados;
-- sin NetDiscovery, NetInventory, RemoteInventory, Deploy, WakeOnLan ni ESX;
-- sin active scanning corporativo ni OT;
-- OAuth del Agent separado de NEXUS API: Client Credentials + `scope=inventory`;
-- secretos y datos identificables del endpoint fuera de Git;
-- preflight Windows read-only;
-- inventario real recibido por GLPI como `Computer` y leído posteriormente desde el vertical Live;
-- runbook, evidencia sanitizada y ADR-0017.
 
 ### V02-008 — Live Asset 360 Vertical Slice
 
@@ -211,50 +132,54 @@ Dependencias: V02-007 ✅.
 
 Resultado integrado: issue #60 cerrado mediante PR #61; merge `6471240dd1e32d1eab59fea94f03e6df552c1aea`. El housekeeping PR #62 dejó `main` en `340ccebc28aa2330d1df06dab55a2c6f0156f25d` con CI post-housekeeping #336 verde y ADR-0018 Accepted.
 
-Baseline integrado:
-
-- endpoint canónico `/api/v1/technology/snapshot` detrás de autorización `technology:read`;
-- Web Live consume NEXUS API y nunca GLPI directamente;
-- Provider Mode Live permanece fail-closed, sin fallback silencioso a Demo;
-- Asset Explorer y Asset 360 pueden visualizar el Computer real a través del modelo canónico;
-- features demo-only no se presentan como evidencia Live;
-- secretos del bridge Live Lab no llegan al navegador;
-- GLPI continúa como System of Record y NEXUS como Intelligence Layer.
-
-V02-008 cerró el gate técnico principal de la primera etapa v0.2 y habilitó el trabajo multisource de V02-009.
-
 ### V02-009 — Provenance & Reconciliation
 
 Objetivo: formalizar identidad multisource, evidencia por atributo, conflictos y reglas explícitas de matching bajo **Evidence before inference**. Hostname por sí solo nunca fusiona CIs automáticamente.
 
 Dependencias: V02-008 ✅.
 
-Trabajo activo: issue #63 / `feature/v02-009-provenance-reconciliation`.
+Resultado integrado: issue #63 cerrado mediante PR #64 en merge `209c400f88f556975e525f99b9977cd00e8957be`; housekeeping PR #65 sincronizó documentación/ADR-0019 y dejó `main` en `b74b0cc5c9043f2087a7cf561cc9ff23ac03d36e` con CI post-housekeeping verde.
 
-Alcance implementado en revisión:
+Baseline integrado:
 
-- capa explícita `candidate discovery → evidence evaluation → matching decision → conflict detection → canonical projection`;
+- `candidate discovery → evidence evaluation → matching decision → conflict detection → canonical projection`;
 - reglas deterministas para identificadores fuertes, auxiliares, volátiles e insuficientes;
 - `hostname` e `ip_address` nunca producen auto-match por sí solos;
 - resultados `matched`, `not_matched`, `ambiguous`, `conflict` y `manual_review_required`;
-- evidencia estructurada y versionada sin duplicar valores crudos de identificadores sensibles en razones/errores;
-- claims y provenance por atributo con conflictos resueltos/no resueltos visibles;
-- políticas centralizadas por familia de atributo para fuente, autoridad y recencia;
-- canonical projection que preserva siempre el `TechnologyAsset.id` del activo ancla;
-- fixtures sintéticos para comportamiento multisource, sin integración Intune real;
-- matriz de tests contractuales/unitarios, ADR-0019 propuesto y threat-model addendum.
-
-Gate de cierre: PR revisado, CI completa verde, regresión V02-008/Demo sin degradación, revisión de datos/secretos y merge manual de Sergio. ADR-0019 no se marca Accepted antes de ese merge.
+- claims/provenance por atributo con conflictos resueltos/no resueltos visibles;
+- políticas centralizadas por familia de atributo;
+- canonical projection preservando siempre el `TechnologyAsset.id` del activo ancla;
+- ADR-0019 Accepted.
 
 ## Epic 3 — IT / OT Model
 
 ### V02-010 — IT/OT Taxonomy v2
 
-Formalizar clases, roles, sistemas/contextos y mapping hacia GLPI. No realizar active scanning OT.
+Objetivo: formalizar `domain`, `assetClass`, `role`, estado/método de clasificación, operational contexts y mapping hacia GLPI sin realizar active scanning OT.
+
+Dependencias: V02-009 ✅.
+
+Trabajo en revisión: issue #66 / PR #67 / `feature/v02-010-it-ot-taxonomy`.
+
+Alcance implementado en PR:
+
+- `TechnologyTaxonomyAssessment` v2 con `classified`, `unknown`, `unclassified`, `conflict`;
+- métodos `observed`, `normalized`, `inferred`, `manual` independientes de authority;
+- catálogos IT y OT separados dentro de un contrato compartido;
+- `OperationalContextReference` para system/service/environment/site/network segment/security zone;
+- mapping GLPI centralizado con Type configurable tratado como evidencia, no estándar universal;
+- `Computer` sin Type → assessment `unknown`; Type presente sin regla → `unclassified`;
+- bridge escalar legacy explícito/auditable hasta V02-011;
+- Demo y GLPI Live pasan gate base + gate taxonómico v2;
+- reconciliation preserva assessment/context, y discrepancias no resueltas producen `conflict`;
+- ADR-0020, documentación y threat-model addendum específicos;
+- tests para invariantes IT/OT, mapping GLPI, incertidumbre, conflictos multisource y context merge.
+
+Gate de cierre: CI completa verde, revisión final del diff, PR Ready for Review y merge manual de Sergio. No auto-merge.
 
 ### V02-011 — Demo Dataset v0.2 Migration
 
-Migrar la demo sintética al modelo canónico sin perder reproducibilidad, seguridad ni escenarios hero.
+Migrar la demo sintética al modelo canónico sin perder reproducibilidad, seguridad ni escenarios hero. Debe retirar el bridge/aliases legacy que V02-010 mantiene temporalmente para evitar un big-bang.
 
 ### V02-012 — Relationship Evidence v2
 
@@ -352,9 +277,11 @@ V02-007 GLPI Agent Live Lab
 V02-008 primer Asset 360 LIVE
         ↓
 V02-009 Provenance & Reconciliation
+        ↓
+V02-010 IT/OT Taxonomy v2
 ```
 
-Sólo después de comprobar ese vertical slice deben crecer en paralelo IT/OT, Product Design, Analytics y Endpoint Intelligence.
+Sólo después de comprobar estos foundations deben crecer en paralelo Product Design, Analytics y Endpoint Intelligence.
 
 ## v0.3 — Corporate Deployment
 

@@ -1,9 +1,13 @@
 import {
   isIsoTimestamp,
   sourceReferenceKey,
+  technologyTaxonomyVersion,
+  validateAssetTaxonomyProjection,
   validateCanonicalProjectionResult,
+  validateOperationalContextReference,
   validateReconciliationDecision,
   validateTechnologyAsset,
+  validateTechnologyTaxonomyAssessment,
   type AssetIdentifier,
   type AssetIdentifierKind,
   type AttributeClaim,
@@ -12,6 +16,7 @@ import {
   type AuthorityLevel,
   type CandidateDecisionKind,
   type CanonicalProjectionResult,
+  type OperationalContextReference,
   type ProvenanceRecord,
   type ReconciliationCandidateEvaluation,
   type ReconciliationDecision,
@@ -19,8 +24,10 @@ import {
   type ReconciliationEvidenceStrength,
   type SourceReference,
   type SourceSystem,
+  type TaxonomyDecision,
   type TechnologyAsset,
   type TechnologyAttributeValue,
+  type TechnologyTaxonomyAssessment,
 } from "@igx-nexus/types";
 
 export const reconciliationRuleVersion = "v02-009.1" as const;
@@ -64,6 +71,7 @@ const TECHNICAL_SOURCE_PRIORITY: readonly SourceSystem[] = Object.freeze([
 ]);
 
 type SelectionDimension = "source" | "authority" | "recency";
+type TaxonomyField = "domain" | "assetClass" | "role";
 
 interface AttributePolicy {
   readonly id: string;
@@ -672,6 +680,30 @@ function mergeIdentifiers(records: readonly TechnologyAsset[]): readonly AssetId
   return Object.freeze([...identifiers.values()]);
 }
 
+function operationalContextKey(context: OperationalContextReference): string {
+  return JSON.stringify([context.kind, context.id]);
+}
+
+function operationalContextStableKey(context: OperationalContextReference): string {
+  return JSON.stringify([
+    operationalContextKey(context),
+    context.displayName ?? "",
+    sourceKey(context.source),
+  ]);
+}
+
+function mergeOperationalContexts(records: readonly TechnologyAsset[]): readonly OperationalContextReference[] {
+  const contexts = records
+    .flatMap((record) => record.operationalContexts ?? [])
+    .sort((left, right) => operationalContextStableKey(left).localeCompare(operationalContextStableKey(right)));
+  const merged = new Map<string, OperationalContextReference>();
+  contexts.forEach((context) => {
+    const key = operationalContextKey(context);
+    if (!merged.has(key)) merged.set(key, context);
+  });
+  return Object.freeze([...merged.values()].sort((left, right) => operationalContextKey(left).localeCompare(operationalContextKey(right))));
+}
+
 function claimToProvenance(claim: AttributeClaim): ProvenanceRecord {
   return Object.freeze({
     fieldPath: claim.fieldPath,
@@ -700,6 +732,7 @@ function provenanceKey(record: ProvenanceRecord): string {
     sourceReferenceKey(record.source),
     record.observedAt,
     record.authority,
+    record.derivation ?? "",
     record.ingestedAt ?? "",
     record.confidence ?? "",
     record.evidence ?? [],
@@ -731,6 +764,91 @@ function resolvedString(resolutions: ReadonlyMap<string, AttributeResolution>, f
   return value;
 }
 
+function unresolvedTaxonomyDecision<T extends string>(
+  field: TaxonomyField,
+  reasonCode: string,
+): TaxonomyDecision<T> {
+  return Object.freeze({
+    state: "unclassified",
+    reviewRequired: true,
+    ruleId: `reconciliation.taxonomy.${field}.unclassified`,
+    reasonCode,
+  });
+}
+
+function conflictingTaxonomyDecision<T extends string>(field: TaxonomyField): TaxonomyDecision<T> {
+  return Object.freeze({
+    state: "conflict",
+    reviewRequired: true,
+    ruleId: `reconciliation.taxonomy.${field}.conflict`,
+    reasonCode: "multisource_taxonomy_conflict",
+  });
+}
+
+function recordScalarValue(record: TechnologyAsset, field: TaxonomyField): string {
+  return record[field];
+}
+
+function selectedRecordForTaxonomy(
+  field: TaxonomyField,
+  resolution: AttributeResolution,
+  records: readonly TechnologyAsset[],
+): TechnologyAsset | undefined {
+  const selectedSourceKey = sourceReferenceKey(resolution.selectedClaim.source);
+  return [...records]
+    .filter((record) => {
+      if (stableValueKey(recordScalarValue(record, field)) !== stableValueKey(resolution.value)) return false;
+      return record.sourceReferences.some((reference) => sourceReferenceKey(reference) === selectedSourceKey);
+    })
+    .sort((left, right) => left.id.localeCompare(right.id))[0];
+}
+
+function taxonomyDecisionFromResolution<T extends string>(
+  field: TaxonomyField,
+  resolution: AttributeResolution,
+  records: readonly TechnologyAsset[],
+): TaxonomyDecision<T> {
+  if (resolution.conflict?.status === "unresolved") {
+    return conflictingTaxonomyDecision<T>(field);
+  }
+
+  const selectedRecord = selectedRecordForTaxonomy(field, resolution, records);
+  const decision = selectedRecord?.taxonomy?.[field] as TaxonomyDecision<T> | undefined;
+  if (decision === undefined) {
+    return unresolvedTaxonomyDecision<T>(field, "selected_claim_has_no_v2_taxonomy");
+  }
+  if (decision.state === "classified" && stableValueKey(decision.value) !== stableValueKey(resolution.value)) {
+    return conflictingTaxonomyDecision<T>(field);
+  }
+  return decision;
+}
+
+function reconcileTaxonomyAssessment(
+  records: readonly TechnologyAsset[],
+  resolutionsByField: ReadonlyMap<string, AttributeResolution>,
+): TechnologyTaxonomyAssessment | undefined {
+  if (!records.some((record) => record.taxonomy !== undefined)) return undefined;
+
+  const domainResolution = resolutionsByField.get("domain");
+  const classResolution = resolutionsByField.get("assetClass");
+  const roleResolution = resolutionsByField.get("role");
+  if (!domainResolution || !classResolution || !roleResolution) {
+    throw new ReconciliationOutputError(["reconciliation.taxonomy_resolution_missing"]);
+  }
+
+  const assessment: TechnologyTaxonomyAssessment = Object.freeze({
+    taxonomyVersion: technologyTaxonomyVersion,
+    domain: taxonomyDecisionFromResolution<TechnologyAsset["domain"]>("domain", domainResolution, records),
+    assetClass: taxonomyDecisionFromResolution<TechnologyAsset["assetClass"]>("assetClass", classResolution, records),
+    role: taxonomyDecisionFromResolution<TechnologyAsset["role"]>("role", roleResolution, records),
+  });
+  const issues = validateTechnologyTaxonomyAssessment(assessment);
+  if (issues.length > 0) {
+    throw new ReconciliationOutputError(issues.map((issue) => issue.code));
+  }
+  return assessment;
+}
+
 /**
  * Proyecta un match ya aceptado sobre un activo canónico existente. El id del
  * anchor se preserva siempre; nuevas fuentes, atributos u orden de entrada no lo
@@ -760,19 +878,31 @@ export function projectCanonicalAsset(
     }
   });
 
+  const taxonomy = reconcileTaxonomyAssessment(records, resolutionsByField);
+  const operationalContexts = mergeOperationalContexts(records);
   const asset: TechnologyAsset = Object.freeze({
     id: anchor.id,
     displayName: resolvedString(resolutionsByField, "displayName"),
     domain: resolvedString(resolutionsByField, "domain") as TechnologyAsset["domain"],
     assetClass: resolvedString(resolutionsByField, "assetClass") as TechnologyAsset["assetClass"],
     role: resolvedString(resolutionsByField, "role") as TechnologyAsset["role"],
+    ...(taxonomy === undefined ? {} : { taxonomy }),
     lifecycle: resolvedString(resolutionsByField, "lifecycle") as TechnologyAsset["lifecycle"],
     criticality: resolvedString(resolutionsByField, "criticality") as TechnologyAsset["criticality"],
+    operationalContexts,
     identifiers: mergeIdentifiers(records),
     sourceReferences: mergeSourceReferences(records),
     attributes: Object.freeze(attributes),
     provenance: mergeProvenance(records, resolutions),
   });
+
+  const taxonomyIssues = taxonomy === undefined ? [] : validateAssetTaxonomyProjection(asset);
+  const contextIssues = operationalContexts.flatMap((context, index) =>
+    validateOperationalContextReference(context, `asset.operationalContexts[${index}]`),
+  );
+  if (taxonomyIssues.length > 0 || contextIssues.length > 0) {
+    throw new ReconciliationOutputError([...taxonomyIssues, ...contextIssues].map((issue) => issue.code));
+  }
 
   const conflicts = Object.freeze(resolutions.flatMap((resolution) => resolution.conflict === undefined ? [] : [resolution.conflict]));
   const result: CanonicalProjectionResult = Object.freeze({
