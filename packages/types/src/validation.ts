@@ -10,6 +10,7 @@ import {
   lifecycleStates,
   observationCategories,
   sourceReferenceKey,
+  taxonomyClassificationMethods,
   technologyAssetClasses,
   technologyDomains,
   technologySchemaVersion,
@@ -89,6 +90,13 @@ function validateAuthority(value: AuthorityLevel, path: string): ValidationIssue
     : [issue("authority.invalid", path, `unsupported authority level: ${String(value)}`)];
 }
 
+function validateDerivation(value: string | undefined, path: string): ValidationIssue[] {
+  if (value === undefined) return [];
+  return taxonomyClassificationMethods.includes(value as (typeof taxonomyClassificationMethods)[number])
+    ? []
+    : [issue("derivation.invalid", path, `unsupported derivation method: ${String(value)}`)];
+}
+
 export function validateSourceReference(reference: SourceReference, path = "source"): readonly ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   if (!isKnownOrCustom(reference.source, knownSourceSystems)) {
@@ -139,6 +147,7 @@ function validateProvenance(record: ProvenanceRecord, path: string): ValidationI
     issues.push(issue("timestamp.invalid", `${path}.ingestedAt`, "ingestedAt must be an ISO-8601 timestamp with timezone"));
   }
   issues.push(...validateAuthority(record.authority, `${path}.authority`));
+  issues.push(...validateDerivation(record.derivation, `${path}.derivation`));
   issues.push(...validateConfidence(record.confidence, `${path}.confidence`));
   record.evidence?.forEach((evidence, index) => {
     issues.push(...validateEvidence(evidence, `${path}.evidence[${index}]`));
@@ -239,11 +248,16 @@ export function validateObservation(observation: Observation, path = "observatio
 
 const BIDIRECTIONAL_TYPES = new Set(["connected_to", "communicates_with"]);
 const DIRECTED_TYPES = new Set(["depends_on", "uses", "hosts", "controls", "monitors"]);
+const RELATIONSHIP_DIRECTIONS = new Set(["directed", "bidirectional"]);
+const RELATIONSHIP_STATUSES = new Set(["active", "degraded", "inactive", "unknown"]);
 
 function validateRelationshipEvidence(record: RelationshipEvidence, path: string): ValidationIssue[] {
   const issues: ValidationIssue[] = [...validateSourceReference(record.source, `${path}.source`)];
-  if (!isIsoTimestamp(record.observedAt)) issues.push(issue("timestamp.invalid", `${path}.observedAt`, "observedAt must be an ISO-8601 timestamp with timezone"));
+  if (record.observedAt !== null && !isIsoTimestamp(record.observedAt)) {
+    issues.push(issue("timestamp.invalid", `${path}.observedAt`, "observedAt must be null or an ISO-8601 timestamp with timezone"));
+  }
   issues.push(...validateAuthority(record.authority, `${path}.authority`));
+  issues.push(...validateDerivation(record.derivation, `${path}.derivation`));
   issues.push(...validateConfidence(record.confidence, `${path}.confidence`));
   record.evidence?.forEach((evidence, index) => {
     issues.push(...validateEvidence(evidence, `${path}.evidence[${index}]`));
@@ -262,14 +276,20 @@ export function validateTechnologyRelationship(relationship: TechnologyRelations
   if (!isKnownOrCustom(relationship.type, knownRelationshipTypes)) {
     issues.push(issue("relationship.type_invalid", `${path}.type`, "relationship type must be known or use custom:<name>"));
   }
+  if (!RELATIONSHIP_DIRECTIONS.has(relationship.direction)) {
+    issues.push(issue("relationship.direction_invalid", `${path}.direction`, "unsupported relationship direction"));
+  }
+  if (!RELATIONSHIP_STATUSES.has(relationship.status)) {
+    issues.push(issue("relationship.status_invalid", `${path}.status`, "unsupported relationship status"));
+  }
   if (BIDIRECTIONAL_TYPES.has(relationship.type) && relationship.direction !== "bidirectional") {
     issues.push(issue("relationship.direction_invalid", `${path}.direction`, `${relationship.type} must be bidirectional`));
   }
   if (DIRECTED_TYPES.has(relationship.type) && relationship.direction !== "directed") {
     issues.push(issue("relationship.direction_invalid", `${path}.direction`, `${relationship.type} must be directed`));
   }
-  if (!isIsoTimestamp(relationship.observedAt)) {
-    issues.push(issue("timestamp.invalid", `${path}.observedAt`, "observedAt must be an ISO-8601 timestamp with timezone"));
+  if (relationship.observedAt !== null && !isIsoTimestamp(relationship.observedAt)) {
+    issues.push(issue("timestamp.invalid", `${path}.observedAt`, "observedAt must be null or an ISO-8601 timestamp with timezone"));
   }
   if (relationship.evidence.length === 0) {
     issues.push(issue("relationship.evidence_required", `${path}.evidence`, "at least one evidence record is required"));
@@ -294,6 +314,19 @@ function duplicateIdIssues<T extends { readonly id: string }>(
   return issues;
 }
 
+function relationshipSemanticKey(relationship: TechnologyRelationship): string {
+  if (relationship.direction === "bidirectional") {
+    const endpoints = [relationship.sourceAssetId, relationship.targetAssetId].sort();
+    return JSON.stringify([relationship.type, "bidirectional", endpoints[0], endpoints[1]]);
+  }
+  return JSON.stringify([
+    relationship.type,
+    "directed",
+    relationship.sourceAssetId,
+    relationship.targetAssetId,
+  ]);
+}
+
 export function validateTechnologySnapshot(snapshot: TechnologySnapshot): readonly ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   if (snapshot.schemaVersion !== technologySchemaVersion) {
@@ -308,6 +341,19 @@ export function validateTechnologySnapshot(snapshot: TechnologySnapshot): readon
   issues.push(...duplicateIdIssues(snapshot.assets, "snapshot.assets", "snapshot.asset_id_duplicate"));
   issues.push(...duplicateIdIssues(snapshot.relationships, "snapshot.relationships", "snapshot.relationship_id_duplicate"));
   issues.push(...duplicateIdIssues(snapshot.observations, "snapshot.observations", "snapshot.observation_id_duplicate"));
+
+  const relationshipKeys = new Set<string>();
+  snapshot.relationships.forEach((relationship, index) => {
+    const key = relationshipSemanticKey(relationship);
+    if (relationshipKeys.has(key)) {
+      issues.push(issue(
+        "snapshot.relationship_semantic_duplicate",
+        `snapshot.relationships[${index}]`,
+        "duplicate canonical relationship semantics; merge supporting evidence instead of duplicating the edge",
+      ));
+    }
+    relationshipKeys.add(key);
+  });
 
   const assetIds = new Set(snapshot.assets.map((asset) => asset.id));
   snapshot.relationships.forEach((relationship, index) => {
