@@ -1,6 +1,6 @@
 # ADR-0022 — Relationship Evidence v2
 
-Estado: **Propuesto — V02-012 / PR #73**. Se considerará aceptado únicamente después del merge manual y CI post-merge verde.
+Estado: **Aceptado — V02-012 / PR #73**. Merge manual `e174700cb5af944c622f4899d812eb9c6fb2c261`; CI post-merge #481 verde.
 
 ## Contexto
 
