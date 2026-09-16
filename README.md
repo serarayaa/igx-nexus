@@ -4,37 +4,48 @@
 
 IGX NEXUS es una plataforma interna de **CMDB, IT Asset Management e Inteligencia de Activos Tecnológicos** para **Innergex Chile**.
 
-La plataforma está enfocada en gestión de configuración, inteligencia de activos, descubrimiento, relaciones entre elementos de configuración (CI), identificación mediante códigos QR, calidad de datos, seguridad, ciclo de vida e integraciones con fuentes corporativas autoritativas.
+Su objetivo es transformar inventario técnico y evidencia multisource en una visión tecnológica trazable, explicable y útil para operación, gestión de activos, calidad CMDB, lifecycle y futuras capacidades de inteligencia.
 
 ## Alcance actual
 
-La implementación actual está diseñada exclusivamente para **Innergex Chile**. La arquitectura deberá permanecer preparada para una futura expansión hacia otras entidades o países de Innergex, pero esa expansión no forma parte del alcance actual.
+La implementación actual está diseñada para Innergex Chile. La arquitectura debe seguir preparada para expansión futura, pero esa expansión no forma parte del alcance actual.
 
 ### Incluido
-- CMDB / ITAM
-- Descubrimiento e inventario de activos
-- Relaciones entre elementos de configuración
-- Vistas Asset 360°
-- Identificación mediante QR e inventario físico
-- CMDB Health y calidad de datos
-- Ciclo de vida, responsables, ubicaciones, contratos, garantías y cumplimiento
-- Integraciones con GLPI, Microsoft Intune, Microsoft Entra ID y otras fuentes autoritativas
-- Gestión de asignación, entrega, devolución y trazabilidad de activos
-- Base para actas digitales de entrega y recepción con evidencias y consentimiento
-- Métricas, KPI y capacidades analíticas de Asset Management
-- UI/UX moderna con identidad visual de Innergex
-- Auditabilidad y seguridad desde el diseño
+
+- CMDB / ITAM;
+- descubrimiento e inventario de activos;
+- relaciones entre elementos de configuración;
+- Asset 360;
+- identificación mediante QR;
+- CMDB Health y calidad de datos;
+- lifecycle, responsables, ubicaciones y garantías;
+- integración con fuentes corporativas autoritativas;
+- provenance y reconciliación multisource;
+- taxonomía IT/OT explícita;
+- métricas y capacidades analíticas;
+- auditabilidad y seguridad desde el diseño.
 
 ### Fuera de alcance
-- Service Desk / Help Desk
-- Creación y gestión de tickets de soporte
-- Despliegue operativo para otras entidades de Innergex durante la etapa Chile
 
-Innergex ya utiliza Jira para los flujos de soporte. IGX NEXUS no debe duplicar esa responsabilidad.
+- Service Desk / Help Desk;
+- creación y gestión de tickets de soporte;
+- active scanning sobre OT;
+- despliegue productivo corporativo durante v0.2.
 
-## Principio de arquitectura
+Jira continúa siendo el sistema de Service Desk; NEXUS no debe duplicar esa responsabilidad.
 
-La experiencia personalizada de IGX NEXUS permanece desacoplada del núcleo de GLPI. La interfaz web se comunica con una API dedicada, **NEXUS API**, responsable de autorización, normalización, reconciliación, lógica de negocio, flujos QR, integraciones y auditabilidad.
+## Principios de arquitectura
+
+1. **GLPI continúa como System of Record CMDB/ITAM.**
+2. **NEXUS actúa como Intelligence Layer.**
+3. **Evidence before inference.**
+4. **IT and OT share a platform, not a taxonomy.**
+5. **Human before automation.**
+6. La Web nunca habla directamente con GLPI.
+7. Demo nunca se presenta como evidencia corporativa real.
+8. No se versionan secretos, PII ni inventario corporativo real.
+
+Arquitectura lógica actual:
 
 ```text
 IGX NEXUS Web
@@ -44,122 +55,118 @@ IGX NEXUS Web
       |
       v
 TechnologyProvider / Reconciliation Layer
-  |            |
- Demo         Live
-               |
-          GLPI v2.3
+      |                    |
+     Demo                 Live
+      |                    |
+packages/demo-data       GLPI v2.3
 ```
 
-Desde v0.2, la identidad NEXUS y los contratos canónicos permanecen desacoplados de los IDs y taxonomías internas de cada fuente. GLPI sigue siendo el System of Record CMDB/ITAM; NEXUS actúa como capa de integración, contexto e inteligencia. La reconciliación sigue **Evidence before inference**: señales débiles como hostname pueden descubrir candidatos, pero nunca fusionan CIs automáticamente por sí solas.
+Desde v0.2, la identidad NEXUS y los contratos canónicos permanecen desacoplados de IDs y taxonomías internas de cada fuente.
 
 ## Estado del proyecto
 
 ### v0.1 — Demo Local Innergex Chile ✅
 
-La Demo v0.1 está completada e integrada.
+Completada: **13/13 tickets — 100%**.
 
-Avance formal integrado en `main`: **13/13 tickets — 100%**. CMDB-013 — Demo v0.1 quedó integrado mediante PR #37 (`58fabd8`); issue #35 completado y CI post-merge #138 verde.
+La v0.1 respondió:
 
-La v0.1 responde la pregunta: **«¿Podemos construir la idea?»**
+> **¿Podemos construir la idea?**
 
 ### v0.2 — Technology Intelligence 🚧
 
-La v0.2 está iniciada y responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
+La v0.2 responde:
 
-**V02-001 a V02-010 están integrados.** V02-010 — IT/OT Taxonomy v2 quedó incorporado mediante PR #67 / issue #66 en el merge `92b78f0d62a3dab0ddb06b6acbeba2c845b3b801`; el CI del head #421 quedó verde y ADR-0020 está aceptado.
+> **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-El siguiente ticket es **V02-011 — Demo Dataset v0.2 Migration**, encargado de migrar la demo sintética al modelo canónico y retirar los bridges/aliases legacy que V02-010 mantuvo temporalmente para evitar un big-bang.
+**V02-001 a V02-011 están integrados.**
 
-El roadmap activo está en [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
+V02-011 — Demo Dataset v0.2 Migration quedó incorporado mediante PR #70 en el merge `45b1adc4f4977732f10f707e993588ced368578a`; CI post-merge #454 verde. La Demo canónica completa vive en `packages/demo-data`, NEXUS API Demo entrega los 240 CIs y la Web v0.1 proyecta compatibilidad desde la misma fuente.
 
-La v0.2 prioriza:
+El siguiente ticket planificado es **V02-012 — Relationship Evidence v2**.
 
-- modelo canónico multisource;
-- NEXUS API real;
-- Provider Mode Demo/Live;
-- integración GLPI / Live Lab;
-- procedencia y reconciliación;
-- taxonomía IT/OT correcta;
-- Product Design 2.0;
-- analytics orientado a decisiones;
-- Endpoint Intelligence explicable.
+Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
-La dirección conceptual posterior reserva **v0.3** para Intelligence & Automation, **v0.4** para Product Experience, **v0.5** para Corporate Infrastructure, **v0.6** para Cybersecurity Assurance y **v0.7** para Quality Assurance. Ese norte no debe hacer que v0.2 dependa del notebook local ni requiera una reescritura para su futuro traslado.
+La dirección conceptual posterior reserva:
 
-## Flujo de desarrollo
+- **v0.3 — Intelligence & Automation**;
+- **v0.4 — Product Experience**;
+- **v0.5 — Corporate Infrastructure**;
+- **v0.6 — Cybersecurity Assurance**;
+- **v0.7 — Quality Assurance**.
 
-- `main` es la línea base estable de desarrollo.
-- El trabajo se implementa por ticket en ramas dedicadas.
-- Los Pull Requests se revisan antes del merge.
-- Se utiliza Conventional Commits.
-- El merge final a `main` permanece manual.
-- Nunca deben versionarse secretos ni datos corporativos reales.
+Ese norte no debe introducir scope creep dentro de v0.2.
 
-## Idioma del proyecto
+## Demo canónica
 
-- La documentación del repositorio se mantiene en **español**.
-- Los issues y descripciones de Pull Requests se redactan en **español**.
-- El código, identificadores, nombres de variables, contratos de API y términos técnicos que requieran consistencia pueden mantenerse en inglés.
-- Los nombres oficiales del producto y de tecnologías de terceros no se traducen.
+La Demo mantiene:
 
----
+- 240 CIs sintéticos;
+- IDs estables `DEMO-0001..DEMO-0240`;
+- corte fijo `2026-09-09T12:00:00.000Z`;
+- 11 escenarios hero;
+- 18 relationship fixtures;
+- TEST-NET para IP;
+- QR/locators reproducibles;
+- comportamiento histórico de Dashboard, Explorer, Asset 360 y CMDB Health.
 
-**IGX NEXUS — The Technology Map**  
-Inteligencia interna de activos tecnológicos para Innergex Chile.
-
-## Ejecutar la demostración Web v0.1
-
-Con la versión de Node indicada en `.nvmrc`, ejecutar `npm ci` y `npm run dev` desde la raíz. Abrir `http://127.0.0.1:3000`. La Web v0.1 usa datos sintéticos y no requiere conectarse a GLPI.
-
-Rutas principales de demostración:
+La fuente autorada es:
 
 ```text
-/#overview                       Panel principal
-/#health                         CMDB Health
-/#assets                         Explorador de activos
-/#assets/DEMO-0013               Asset 360 hero OT
-/#assets/DEMO-0013/label         Diseñador QR/etiqueta
-/#assets/DEMO-0013/relations     Technology Map
-/#q/<demo-locator>               Simulador interno del resolver QR
+packages/demo-data
 ```
 
-El QR físico de la demo no codifica estas rutas internas: utiliza una URL `.invalid` con locator opaco. El diseñador permite perfiles físicos, 203/300 DPI y exportación SVG real; no simula PNG/PDF ni impresoras que todavía no existen.
+`apps/web/src/demo-dataset.ts` es un adapter temporal de presentación para la Web v0.1; no es una segunda fuente de inventario.
 
-Ver [guía de Demo v0.1](docs/demo-v0.1.md), [instrucciones de Web](apps/web/README.md), [Dashboard](docs/dashboard.md), [Asset Explorer](docs/asset-explorer.md), [Asset 360](docs/asset-360.md), [Motor QR y Etiquetado](docs/qr-label-engine.md), [Grafo de Relaciones](docs/relationship-graph.md) y [CMDB Health](docs/cmdb-health.md).
-
-Validación completa: `npm run typecheck`, `npm run build`, `npm test`, `npm run test:demo` y `npm run storybook:build --workspace @igx-nexus/ui`. Las pruebas de navegador requieren `npx playwright install --with-deps chromium`.
+Ver [Dataset de Demo](docs/demo-dataset.md) y [ADR-0021](docs/architecture/adr-0021-canonical-demo-dataset-v02.md).
 
 ## Contratos canónicos v0.2
 
-V02-001 incorporó `@igx-nexus/types` bajo `packages/types`. El package modela identidad NEXUS, IT/OT, referencias de fuentes, procedencia, observaciones temporales y relaciones con evidencia sin migrar todavía los consumidores Web de v0.1.
+`@igx-nexus/types` modela:
 
-V02-009 extiende esos contratos de forma aditiva con decisiones de reconciliación, evidencia evaluada, claims por atributo, conflictos y canonical projection. Los contratos distinguen explícitamente matching de identity assignment y permiten conservar evidencia multisource sin recalcular `TechnologyAsset.id`.
+- identidad canónica;
+- `SourceReference`;
+- provenance/evidence;
+- observations;
+- relationships;
+- lifecycle y criticality;
+- `TechnologyTaxonomyAssessment`;
+- `OperationalContextReference`;
+- reconciliación multisource.
 
-V02-010 añade `TechnologyTaxonomyAssessment`, derivación taxonómica y `OperationalContextReference`. `domain` permanece cerrado a `IT | OT`; `unknown`, `unclassified` y `conflict` son estados del assessment. Durante el puente hacia V02-011, consumers legacy pueden recibir scalars temporales sin que esos scalars resuelvan artificialmente el assessment.
+Taxonomy v2 mantiene `domain` cerrado a `IT | OT`. `unknown`, `unclassified` y `conflict` son estados del assessment, no domains.
 
-Ver [ADR-0011 — Modelo canónico de Technology Intelligence](docs/architecture/adr-0011-canonical-technology-model.md), [Provenance & Reconciliation](docs/reconciliation.md), [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md), [IT/OT Taxonomy v2](docs/taxonomy-v2.md) y [ADR-0020 — IT/OT Taxonomy v2](docs/architecture/adr-0020-it-ot-taxonomy-v2.md).
+V02-011 retiró del contrato activo los aliases taxonómicos pre-v2 (`compute`, `laptop`, `plc`, `hmi`, etc.). Esos términos pueden existir como vocabulario de fuente o documentación histórica, pero ya no son valores canónicos válidos.
+
+GLPI conserva temporalmente un **compatibility scalar projection** para assessments no resueltos porque schema `0.2` aún exige scalars concretos. Ese fallback usa únicamente valores v2 (`IT / endpoint / user_endpoint`), queda marcado como compatibilidad y nunca altera la verdad del assessment.
+
+Ver:
+
+- [ADR-0011 — Canonical Technology Model](docs/architecture/adr-0011-canonical-technology-model.md)
+- [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md)
+- [IT/OT Taxonomy v2](docs/taxonomy-v2.md)
+- [ADR-0020 — IT/OT Taxonomy v2](docs/architecture/adr-0020-it-ot-taxonomy-v2.md)
+- [ADR-0021 — Demo Dataset canónico v0.2](docs/architecture/adr-0021-canonical-demo-dataset-v02.md)
 
 ## NEXUS API v0.2
 
-V02-002 convirtió `services/api` en el primer runtime backend real de NEXUS. La API usa Node.js 24, TypeScript ESM, Fastify 5, logging estructurado y OpenAPI generado desde los schemas del runtime.
+Runtime actual:
 
-V02-003 agregó un baseline de seguridad **deny-by-default**: autenticación desacoplada, autorización por permisos efectivos, policy obligatoria para rutas `/api` y `/api/*`, CORS allowlist, security headers, límites de body/timeout, rate limiting, trust proxy explícito y security audit events minimizados.
+- Node.js 24;
+- TypeScript ESM / NodeNext;
+- Fastify 5;
+- OpenAPI;
+- logging estructurado;
+- CORS explícito;
+- security headers;
+- rate limiting;
+- auth/authz deny-by-default para rutas de dominio;
+- Provider Mode Demo/Live;
+- adapter GLPI 11 High-Level API v2.3 read-only;
+- OAuth de identidad técnica GLPI;
+- reconciliation y Taxonomy v2.
 
-V02-004 agregó `TechnologyProvider` como frontera común Demo/Live. `NEXUS_PROVIDER_MODE` selecciona el modo durante composición; `production` exige declararlo explícitamente. Demo produce un `TechnologySnapshot` canónico sintético y Live nunca cae silenciosamente a Demo.
-
-V02-005 agregó el primer adapter GLPI Live read-only. La versión de High-Level API se fija en `v2.3`; el transporte sólo permite GET, valida HTTPS/base URL, aplica timeout y recibe un Bearer token mediante una abstracción inyectable. `Assets/Computer` se pagina con `start`/`limit` y se normaliza conservadoramente al modelo NEXUS con source/provenance/evidence.
-
-V02-006 implementó esa identidad upstream sin mezclarla con los callers de NEXUS: un `GlpiCredentialSource` entrega secretos al token provider OAuth, que usa Password Grant + scope `api` por la restricción actual de GLPI 11, mantiene el access token sólo en memoria y lo renueva antes de expirar. El runtime Live compone esta identidad con el adapter de V02-005. El RBAC esperado es un usuario técnico dedicado con perfil GLPI read-only y alcance por entidad mínimo.
-
-V02-007 validó el primer Live Lab con **GLPI Agent 1.19** sobre un endpoint autorizado. El Agent usa una identidad OAuth separada (`client_credentials`, `scope=inventory`), queda restringido a `Inventory`, deshabilita HTTPD/P2P y excluye discovery, remote inventory, deploy y scanning OT. La evidencia real se versionó sanitizada, sin identificadores ni secretos.
-
-V02-008 conectó ese inventario de extremo a extremo con NEXUS Web. La Web Live consume NEXUS API, no GLPI; el snapshot Live permanece protegido y no mezcla features Demo como si fueran evidencia real.
-
-V02-009 incorpora un motor de reconciliación puro y determinista detrás de los contratos/provider boundaries existentes. Clasifica identificadores fuertes, auxiliares, volátiles e insuficientes, detecta ambigüedad/conflictos, conserva claims y provenance por atributo, centraliza políticas de autoridad/recencia y preserva el id canónico del activo ancla.
-
-V02-010 hace que Demo/GLPI Live emitan assessment v2, introduce un gate taxonómico adicional y vuelve `projectCanonicalAsset()` consciente de taxonomy/operational contexts. GLPI Type sólo se traduce por reglas explícitas; hardware genérico no prueba `domain=IT`, Type ausente queda `unknown` y Type no mapeado queda `unclassified`.
-
-Endpoints base actuales:
+Endpoints base:
 
 ```text
 GET /health
@@ -170,8 +177,66 @@ GET /api/v1/technology/snapshot
 GET /openapi.json
 ```
 
-`/health` expresa liveness del proceso. `/ready` verifica además disponibilidad efectiva del provider; el provider GLPI usa un probe read-only mínimo y devuelve 503 si upstream/auth/payload no están disponibles, sin tumbar el proceso ni caer a Demo.
+`/health` expresa liveness. `/ready` comprueba además disponibilidad efectiva del provider y no cae silenciosamente de Live a Demo.
 
-La configuración HTTP usa variables `NEXUS_API_*` y `NEXUS_PROVIDER_MODE`; por defecto escucha sólo en `127.0.0.1:3100`, no autoriza origins cross-site y no confía en `X-Forwarded-*`. Los secretos GLPI no forman parte de `ApiConfig` ni se versionan.
+Ver [README de NEXUS API](services/api/README.md).
 
-Ver [README de NEXUS API](services/api/README.md), [ADR-0012 — Runtime de NEXUS API](docs/architecture/adr-0012-nexus-api-runtime.md), [ADR-0013 — Baseline de seguridad](docs/architecture/adr-0013-api-security-baseline.md), [ADR-0014 — Provider Mode Contract](docs/architecture/adr-0014-provider-mode-contract.md), [ADR-0015 — GLPI API v2 Adapter](docs/architecture/adr-0015-glpi-api-v2-adapter.md), [ADR-0016 — GLPI Service Identity & RBAC](docs/architecture/adr-0016-glpi-service-identity-rbac.md), [ADR-0017 — GLPI Agent Live Lab](docs/architecture/adr-0017-glpi-agent-live-lab.md), [ADR-0018 — Live Asset 360 Vertical Slice](docs/architecture/adr-0018-live-asset-360-vertical-slice.md), [ADR-0019 — Provenance & Reconciliation](docs/architecture/adr-0019-provenance-reconciliation.md), [ADR-0020 — IT/OT Taxonomy v2](docs/architecture/adr-0020-it-ot-taxonomy-v2.md), [runbook de GLPI Service Identity](docs/integrations/glpi-service-identity.md), [runbook de GLPI Agent Live Lab](docs/integrations/glpi-agent-live-lab.md), [Provenance & Reconciliation](docs/reconciliation.md), [IT/OT Taxonomy v2](docs/taxonomy-v2.md) y [Threat Model v0.2](docs/security/threat-model-v0.2.md).
+## Demo Web v0.1
+
+Con Node indicado en `.nvmrc`:
+
+```bash
+npm ci
+npm run dev
+```
+
+Abrir `http://127.0.0.1:3000`.
+
+Rutas principales:
+
+```text
+/#overview
+/#health
+/#assets
+/#assets/DEMO-0013
+/#assets/DEMO-0013/label
+/#assets/DEMO-0013/relations
+/#q/<demo-locator>
+```
+
+La Web Demo no necesita GLPI, credenciales ni Docker.
+
+## Validación
+
+Baseline de CI exige, entre otros:
+
+```bash
+npm ci
+npm run typecheck
+npm run build
+npm test
+npm run test:demo
+npm run storybook:build --workspace @igx-nexus/ui
+```
+
+CI post-merge de V02-011: **#454 verde**.
+
+## Flujo de desarrollo
+
+- `main` es la línea base estable;
+- cada ticket se implementa en rama dedicada;
+- Conventional Commits;
+- PR + CI antes de integrar;
+- merge final a `main` permanece manual;
+- no auto-merge.
+
+## Idioma
+
+- documentación, issues y PRs: español;
+- código e identificadores técnicos: inglés cuando favorezca consistencia;
+- nombres oficiales de tecnologías no se traducen.
+
+---
+
+**IGX NEXUS — The Technology Map**  
+Technology Intelligence para Innergex Chile.
