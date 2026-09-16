@@ -1,10 +1,8 @@
+import { createCanonicalDemoSnapshot } from "../../../packages/demo-data/index.mjs";
 import {
-  technologySchemaVersion,
-  technologyTaxonomyVersion,
   validateTechnologySnapshot,
   validateTechnologySnapshotTaxonomy,
   type SourceSystem,
-  type TechnologyAsset,
   type TechnologySnapshot,
 } from "@igx-nexus/types";
 
@@ -45,75 +43,8 @@ export class ProviderUnavailableError extends Error {
   }
 }
 
-const DEMO_AS_OF = "2026-09-09T12:00:00.000Z";
-
-function demoSource(externalId: string) {
-  return Object.freeze({
-    source: "demo" as const,
-    externalId,
-    entityType: "asset",
-    sourceScope: "demo-v0.1",
-    observedAt: DEMO_AS_OF,
-    authority: "trusted" as const,
-  });
-}
-
-function demoAsset(
-  id: string,
-  displayName: string,
-  domain: TechnologyAsset["domain"],
-  assetClass: TechnologyAsset["assetClass"],
-  role: TechnologyAsset["role"],
-  criticality: TechnologyAsset["criticality"],
-): TechnologyAsset {
-  const source = demoSource(id);
-  const ruleId = `demo.v0.1.${domain.toLocaleLowerCase("en-US")}`;
-  return Object.freeze({
-    id,
-    displayName,
-    domain,
-    assetClass,
-    role,
-    taxonomy: Object.freeze({
-      taxonomyVersion: technologyTaxonomyVersion,
-      domain: Object.freeze({ state: "classified", value: domain, method: "normalized", reviewRequired: false, ruleId }),
-      assetClass: Object.freeze({ state: "classified", value: assetClass, method: "normalized", reviewRequired: false, ruleId }),
-      role: Object.freeze({ state: "classified", value: role, method: "normalized", reviewRequired: false, ruleId }),
-    }),
-    lifecycle: "active",
-    criticality,
-    operationalContexts: Object.freeze([]),
-    identifiers: Object.freeze([
-      Object.freeze({ kind: "asset_tag" as const, value: `DEMO-TAG-${id.slice(-4)}`, source }),
-    ]),
-    sourceReferences: Object.freeze([source]),
-    attributes: Object.freeze({ dataset: "demo-v0.1", synthetic: true }),
-    provenance: Object.freeze([
-      Object.freeze({
-        fieldPath: "displayName",
-        source,
-        observedAt: DEMO_AS_OF,
-        authority: "trusted" as const,
-      }),
-      Object.freeze({ fieldPath: "domain", source, observedAt: DEMO_AS_OF, authority: "trusted" as const, derivation: "normalized" as const }),
-      Object.freeze({ fieldPath: "assetClass", source, observedAt: DEMO_AS_OF, authority: "trusted" as const, derivation: "normalized" as const }),
-      Object.freeze({ fieldPath: "role", source, observedAt: DEMO_AS_OF, authority: "trusted" as const, derivation: "normalized" as const }),
-    ]),
-  });
-}
-
-function createCanonicalDemoSnapshot(): TechnologySnapshot {
-  const snapshot: TechnologySnapshot = Object.freeze({
-    schemaVersion: technologySchemaVersion,
-    asOf: DEMO_AS_OF,
-    assets: Object.freeze([
-      demoAsset("DEMO-0007", "Notebook Demo Ingeniería", "IT", "endpoint", "user_endpoint", "medium"),
-      demoAsset("DEMO-0013", "Consola Demo Supervisión Norte", "OT", "operator_interface", "supervision", "critical"),
-    ]),
-    relationships: Object.freeze([]),
-    observations: Object.freeze([]),
-  });
-
+function validatedCanonicalDemoSnapshot(): TechnologySnapshot {
+  const snapshot = createCanonicalDemoSnapshot();
   const canonicalErrors = validateTechnologySnapshot(snapshot).filter((issue) => issue.severity === "error");
   const taxonomyErrors = validateTechnologySnapshotTaxonomy(snapshot);
   if (canonicalErrors.length > 0 || taxonomyErrors.length > 0) {
@@ -143,7 +74,7 @@ const unavailableLiveDescriptor: TechnologyProviderDescriptor = Object.freeze({
 export const demoTechnologyProvider: TechnologyProvider = Object.freeze({
   descriptor: demoDescriptor,
   async getSnapshot() {
-    return createCanonicalDemoSnapshot();
+    return validatedCanonicalDemoSnapshot();
   },
 });
 
