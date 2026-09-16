@@ -46,8 +46,8 @@ Dirección conceptual posterior:
 | V02-009 | Provenance & Reconciliation | P0 | ✅ Integrado — PR #64 / issue #63; housekeeping #65 |
 | V02-010 | IT/OT Taxonomy v2 | P0 | ✅ Integrado — PR #67 / issue #66; housekeeping #68 |
 | V02-011 | Demo Dataset v0.2 Migration | P0 | ✅ Integrado — PR #70 / merge `45b1adc4`; CI #454 verde |
-| V02-012 | Relationship Evidence v2 | P1 | 🟡 En implementación — issue #72 / PR #73 |
-| V02-013 | Product IA & Visual Direction | P0 | ⚪ Pendiente |
+| V02-012 | Relationship Evidence v2 | P1 | ✅ Integrado — PR #73 / issue #72 / merge `e174700c`; CI #481 verde |
+| V02-013 | Product IA & Visual Direction | P0 | ⚪ Siguiente |
 | V02-014 | Shell & Motion 2.0 | P1 | ⚪ Pendiente |
 | V02-015 | Technology Overview | P1 | ⚪ Pendiente |
 | V02-016 | Asset Explorer 2.0 | P1 | ⚪ Pendiente |
@@ -153,13 +153,11 @@ Resultado:
 
 ADR-0021 Accepted.
 
-### V02-012 — Relationship Evidence v2 — en implementación
+### V02-012 — Relationship Evidence v2 ✅
 
-Issue #72 / draft PR #73.
+Integrado mediante PR #73, merge `e174700cb5af944c622f4899d812eb9c6fb2c261`; issue #72 cerrado; CI post-merge #481 verde.
 
-Objetivo: migrar los 18 relationship fixtures hacia `TechnologyRelationship` canónico con evidencia explícita, sin fabricar topología ni temporalidad.
-
-Dirección implementada actualmente en la rama:
+Resultado:
 
 - 18 relaciones canónicas dentro del snapshot Demo;
 - IDs y endpoints históricos preservados;
@@ -171,13 +169,13 @@ Dirección implementada actualmente en la rama:
 - Web v0.1 proyecta desde el snapshot canónico y falla explícitamente ante tipos/estados aún no soportados;
 - GLPI Live no fabrica relaciones y continúa vacío hasta disponer de una fuente real defendible.
 
-ADR-0022 permanece **Propuesto** hasta merge manual y CI post-merge verde.
+ADR-0022 Accepted.
 
 No introduce discovery activo OT, graph analytics ni inferencia automática de topología.
 
 ## Epic 4 — Product Design 2.0
 
-### V02-013 — Product IA & Visual Direction
+### V02-013 — Product IA & Visual Direction — siguiente
 
 Auditar/rediseñar arquitectura de información y dirección visual. Evitar un producto reducido a cards genéricas.
 
