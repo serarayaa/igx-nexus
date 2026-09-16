@@ -79,11 +79,11 @@ La v0.2 responde:
 
 > **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-**V02-001 a V02-011 están integrados.**
+**V02-001 a V02-012 están integrados.**
 
-V02-011 — Demo Dataset v0.2 Migration quedó incorporado mediante PR #70 en el merge `45b1adc4f4977732f10f707e993588ced368578a`; CI post-merge #454 verde. La Demo canónica completa vive en `packages/demo-data`, NEXUS API Demo entrega los 240 CIs y la Web v0.1 proyecta compatibilidad desde la misma fuente.
+V02-012 — Relationship Evidence v2 quedó incorporado mediante PR #73 en el merge `e174700cb5af944c622f4899d812eb9c6fb2c261`; CI post-merge #481 verde. La Demo canónica contiene 240 CIs + 18 `TechnologyRelationship` con evidence, temporalidad y semántica explícitas, mientras la Web v0.1 proyecta compatibilidad desde la misma fuente.
 
-El siguiente ticket planificado es **V02-012 — Relationship Evidence v2**.
+El siguiente ticket planificado es **V02-013 — Product IA & Visual Direction**.
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -103,9 +103,9 @@ La Demo mantiene:
 
 - 240 CIs sintéticos;
 - IDs estables `DEMO-0001..DEMO-0240`;
+- 18 relaciones canónicas `DEMO-REL-001..DEMO-REL-018`;
 - corte fijo `2026-09-09T12:00:00.000Z`;
 - 11 escenarios hero;
-- 18 relationship fixtures;
 - TEST-NET para IP;
 - QR/locators reproducibles;
 - comportamiento histórico de Dashboard, Explorer, Asset 360 y CMDB Health.
@@ -116,9 +116,9 @@ La fuente autorada es:
 packages/demo-data
 ```
 
-`apps/web/src/demo-dataset.ts` es un adapter temporal de presentación para la Web v0.1; no es una segunda fuente de inventario.
+`apps/web/src/demo-dataset.ts` es un adapter temporal de presentación para la Web v0.1; no es una segunda fuente de inventario ni relaciones.
 
-Ver [Dataset de Demo](docs/demo-dataset.md) y [ADR-0021](docs/architecture/adr-0021-canonical-demo-dataset-v02.md).
+Ver [Dataset de Demo](docs/demo-dataset.md), [ADR-0021](docs/architecture/adr-0021-canonical-demo-dataset-v02.md) y [ADR-0022](docs/architecture/adr-0022-relationship-evidence-v2.md).
 
 ## Contratos canónicos v0.2
 
@@ -140,6 +140,8 @@ V02-011 retiró del contrato activo los aliases taxonómicos pre-v2 (`compute`, 
 
 GLPI conserva temporalmente un **compatibility scalar projection** para assessments no resueltos porque schema `0.2` aún exige scalars concretos. Ese fallback usa únicamente valores v2 (`IT / endpoint / user_endpoint`), queda marcado como compatibilidad y nunca altera la verdad del assessment.
 
+V02-012 establece que una relación es un claim canónico respaldado por evidencia. `RelationshipEvidence` separa source, authority, derivation y confidence; `observedAt=null` representa fecha realmente desconocida y no se sustituye por el corte del snapshot.
+
 Ver:
 
 - [ADR-0011 — Canonical Technology Model](docs/architecture/adr-0011-canonical-technology-model.md)
@@ -147,6 +149,7 @@ Ver:
 - [IT/OT Taxonomy v2](docs/taxonomy-v2.md)
 - [ADR-0020 — IT/OT Taxonomy v2](docs/architecture/adr-0020-it-ot-taxonomy-v2.md)
 - [ADR-0021 — Demo Dataset canónico v0.2](docs/architecture/adr-0021-canonical-demo-dataset-v02.md)
+- [ADR-0022 — Relationship Evidence v2](docs/architecture/adr-0022-relationship-evidence-v2.md)
 
 ## NEXUS API v0.2
 
@@ -164,7 +167,7 @@ Runtime actual:
 - Provider Mode Demo/Live;
 - adapter GLPI 11 High-Level API v2.3 read-only;
 - OAuth de identidad técnica GLPI;
-- reconciliation y Taxonomy v2.
+- reconciliation, Taxonomy v2 y Relationship Evidence v2.
 
 Endpoints base:
 
@@ -219,7 +222,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-CI post-merge de V02-011: **#454 verde**.
+CI post-merge de V02-012: **#481 verde**.
 
 ## Flujo de desarrollo
 
