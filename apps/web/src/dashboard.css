@@ -3,16 +3,23 @@ body { margin: 0; font-family: var(--igx-font-family-sans); font-size: 1rem; lin
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: var(--igx-semantic-color-text-link); }
 a:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 4px; }
+/* Shell 2.0 usa 200 ms para orientación espacial sin alterar el token global usado por otros componentes. */
+.igx-app-shell__navigation { --igx-semantic-motion-spatial-duration: var(--igx-semantic-motion-transition-duration); }
 .nexus-dashboard { display: grid; gap: var(--igx-density-section-gap); max-width: 100rem; margin-inline: auto; }
 .nexus-dashboard > *, .nexus-two-column > *, .nexus-metrics > * { min-width: 0; }
 .nexus-dashboard [id] { scroll-margin-block: 6rem; }
 .nexus-brand { display: grid; gap: var(--igx-spacing-3); }
 .nexus-brand img { display: block; max-width: 100%; height: auto; background: var(--igx-semantic-color-surface-base); padding: var(--igx-spacing-2); border-radius: var(--igx-semantic-shape-card); }
 .nexus-brand span { font-size: .875rem; color: var(--igx-semantic-color-text-secondary); }
+.nexus-shell-mode { display: inline-flex; align-items: center; }
+.nexus-source-context { display: grid; gap: var(--igx-spacing-2); }
+.nexus-source-context > div { display: flex; flex-wrap: wrap; align-items: center; gap: var(--igx-spacing-2); }
+.nexus-source-context strong { color: var(--igx-semantic-color-text-primary); font-size: .8125rem; }
+.nexus-source-context p { margin: 0; font-size: .75rem; line-height: 1.45; }
 .nexus-nav-link { display: flex; align-items: center; gap: var(--igx-spacing-3); padding: var(--igx-spacing-3); text-decoration: none; border-radius: var(--igx-semantic-shape-control); font-size: .875rem; min-height: 44px; }
 .nexus-nav-link[aria-current] { background: var(--igx-semantic-color-action-primary-background); color: var(--igx-semantic-color-action-primary-foreground); font-weight: 600; }
 .nexus-nav-link svg, .nexus-metric-label svg, .nexus-future svg { width: 20px; height: 20px; flex: none; }
-.nexus-nav-heading { margin: var(--igx-spacing-6) var(--igx-spacing-3) var(--igx-spacing-1); color: var(--igx-semantic-color-text-secondary); font-size: .875rem; }
+.nexus-nav-heading { margin: var(--igx-spacing-2) var(--igx-spacing-3) var(--igx-spacing-1); color: var(--igx-semantic-color-text-secondary); font-size: .6875rem; font-weight: var(--igx-font-weight-semibold); letter-spacing: .08em; text-transform: uppercase; }
 .nexus-filter, .nexus-warranty-summary { display: flex; flex-wrap: wrap; gap: var(--igx-spacing-2); }
 .nexus-muted, .nexus-metrics p { color: var(--igx-semantic-color-text-secondary); font-size: .875rem; }
 .nexus-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--igx-density-content-gap); }

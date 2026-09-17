@@ -67,9 +67,9 @@ try {
   await page.setViewportSize({ width: 390, height: 1000 });
   await page.goto("http://127.0.0.1:4173/#overview");
   await page.getByRole("button", { name: /Abrir navegación/ }).click();
-  await page.getByRole("link", { name: "CMDB Health", exact: true }).first().click();
+  await page.getByRole("link", { name: "Calidad de datos", exact: true }).first().click();
   await page.getByRole("heading", { name: "Score de registros CI" }).waitFor();
-  assert(await page.getByRole("link", { name: "CMDB Health", exact: true, includeHidden: true }).getAttribute("aria-current") === "page");
+  assert(await page.getByRole("link", { name: "Calidad de datos", exact: true, includeHidden: true }).getAttribute("aria-current") === "page");
   checks.push("mobile navigation drawer → Health");
   await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
   await page.getByRole("combobox", { name: "Estado Health", exact: true }).focus();

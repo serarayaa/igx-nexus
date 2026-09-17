@@ -22,6 +22,19 @@ Documentos:
 - [Screen Purpose Matrix](screen-purpose-matrix.md)
 - [ADR-0023 — Product Information Architecture v2](../architecture/adr-0023-product-information-architecture-v2.md)
 
+## V02-014 — Shell & Motion 2.0
+
+Baseline de implementación:
+
+`02e297c15d367894ad7c4380333a9f2fe9780bbe`
+
+Documentos:
+
+- [Shell & Motion 2.0](shell-motion-v2.md)
+- [Technology Scan V02-014](technology-scan-v02-014.md)
+
+V02-014 materializa la IA global, source context, preferencias visuales, responsive y motion accesible sin adelantar Overview/Explorer/Asset 360/Technology Map 2.0.
+
 ## Principios
 
 1. Cada pantalla responde una pregunta operacional.
@@ -37,11 +50,11 @@ Documentos:
 
 ## Handoff
 
-- V02-014 — Shell & Motion 2.0
+- V02-014 — Shell & Motion 2.0 — en implementación
 - V02-015 — Technology Overview
 - V02-016 — Asset Explorer 2.0
 - V02-017 — Asset 360 2.0
 - V02-018 — Technology Map 2.0
 - V02-019 — Analytics Contract Layer
 
-Los tickets siguientes deben tratar estos documentos como baseline de producto una vez que ADR-0023 sea aceptado mediante merge manual y CI post-merge verde.
+ADR-0023 permanece como baseline normativo de Product IA. Cada ticket de implementación debe mantener sus límites de scope y preservar los principios de producto ya aceptados.

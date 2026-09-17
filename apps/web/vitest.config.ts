@@ -7,6 +7,7 @@ export default defineConfig({
       { test: { name: "model", include: ["src/**/*.test.ts"] } },
       { test: {
         name: "dashboard", include: ["src/**/*.browser.test.tsx"],
+        setupFiles: ["./src/test/browser-setup.ts"],
         browser: { enabled: true, headless: true, provider: playwright(), instances: [{ browser: "chromium" }], viewport: { width: 1440, height: 1000 } },
       } },
     ],

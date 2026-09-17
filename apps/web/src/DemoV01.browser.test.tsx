@@ -65,7 +65,7 @@ it("recorre Dashboard → Explorer → Asset 360 → QR → Graph → Health con
   const selection = screen.getByRole("region", { name: "Switch Demo Celda Norte" });
   expect(within(selection).getByRole("link", { name: "Enfocar este CI" })).toBeTruthy();
 
-  await userEvent.click(screen.getByRole("link", { name: "CMDB Health" }));
+  await userEvent.click(screen.getByRole("link", { name: "Calidad de datos" }));
   const healthHeading = await screen.findByRole("heading", { name: "CMDB Health", level: 1 });
   await waitFor(() => expect(document.activeElement).toBe(healthHeading));
   expect(screen.getByRole("heading", { name: "Score de registros CI", level: 2 })).toBeTruthy();
