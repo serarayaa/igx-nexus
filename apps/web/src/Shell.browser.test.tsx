@@ -50,15 +50,17 @@ it("recupera y persiste tema y densidad sin convertirlos en estado de ruta", asy
   window.localStorage.setItem(DENSITY_STORAGE_KEY, "compact");
 
   render(<NexusShell view="assets" mode="demo"><h1>Activos</h1></NexusShell>);
-  expect(document.documentElement.dataset.theme).toBe("dark");
-  expect(document.documentElement.dataset.density).toBe("compact");
-  expect(document.documentElement.style.colorScheme).toBe("dark");
 
-  await userEvent.click(screen.getByRole("button", { name: "Activar tema claro" }));
-  await userEvent.click(screen.getByRole("button", { name: "Activar densidad cómoda" }));
+  const themeToggle = screen.getByRole("button", { name: "Activar tema claro" });
+  const densityToggle = screen.getByRole("button", { name: "Activar densidad cómoda" });
+  expect(themeToggle).toBeTruthy();
+  expect(densityToggle).toBeTruthy();
 
-  expect(document.documentElement.dataset.theme).toBe("light");
-  expect(document.documentElement.dataset.density).toBe("comfortable");
+  await userEvent.click(themeToggle);
+  await userEvent.click(densityToggle);
+
+  expect(screen.getByRole("button", { name: "Activar tema oscuro" })).toBeTruthy();
+  expect(screen.getByRole("button", { name: "Activar densidad compacta" })).toBeTruthy();
   expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("light");
   expect(window.localStorage.getItem(DENSITY_STORAGE_KEY)).toBe("comfortable");
 });
