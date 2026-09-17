@@ -150,11 +150,6 @@
   border-radius: var(--igx-semantic-shape-control);
   color: var(--igx-semantic-color-text-primary);
   text-decoration: none;
-  transition:
-    background-color var(--igx-semantic-motion-feedback-duration)
-      var(--igx-semantic-motion-feedback-easing),
-    color var(--igx-semantic-motion-feedback-duration)
-      var(--igx-semantic-motion-feedback-easing);
 }
 
 .igx-app-sidebar__nav a:hover {
