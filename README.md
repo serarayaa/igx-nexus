@@ -79,11 +79,11 @@ La v0.2 responde:
 
 > **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-**V02-001 a V02-012 están integrados.**
+**V02-001 a V02-013 están integrados.**
 
-V02-012 — Relationship Evidence v2 quedó incorporado mediante PR #73 en el merge `e174700cb5af944c622f4899d812eb9c6fb2c261`; CI post-merge #481 verde. La Demo canónica contiene 240 CIs + 18 `TechnologyRelationship` con evidence, temporalidad y semántica explícitas, mientras la Web v0.1 proyecta compatibilidad desde la misma fuente.
+V02-013 — Product IA & Visual Direction quedó incorporado mediante PR #76 en el merge `fe4ff067b60f89645635bd3711e74abb593e3725`; CI post-merge #493 verde. NEXUS ya cuenta con una arquitectura de información estable entre Demo y Live, una dirección visual v2, una matriz de propósito por pantalla y ADR-0023 como decisión normativa de producto.
 
-El siguiente ticket planificado es **V02-013 — Product IA & Visual Direction**.
+El siguiente ticket planificado es **V02-014 — Shell & Motion 2.0**.
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -96,6 +96,22 @@ La dirección conceptual posterior reserva:
 - **v0.7 — Quality Assurance**.
 
 Ese norte no debe introducir scope creep dentro de v0.2.
+
+## Product IA v2
+
+V02-013 establece como baseline:
+
+- Demo y Live comparten una arquitectura mental única;
+- Overview responde **¿Qué requiere atención ahora y por qué?**;
+- navegación global y navegación contextual permanecen separadas;
+- Assets/Explorer y Technology Map son workspaces de investigación;
+- Asset 360 se organiza por intención y no como scroll infinito de cards;
+- Data Quality permanece separada de Device Health;
+- Technology Map adopta focus/scope-first y alternativa semántica table/tree;
+- QR/Label son acciones contextuales del CI;
+- WCAG 2.2 AA forma parte del contrato de producto.
+
+Ver [Product IA v2](docs/product/product-ia-v2.md), [Visual Direction v2](docs/product/visual-direction-v2.md), [Screen Purpose Matrix](docs/product/screen-purpose-matrix.md) y [ADR-0023](docs/architecture/adr-0023-product-information-architecture-v2.md).
 
 ## Demo canónica
 
@@ -150,6 +166,7 @@ Ver:
 - [ADR-0020 — IT/OT Taxonomy v2](docs/architecture/adr-0020-it-ot-taxonomy-v2.md)
 - [ADR-0021 — Demo Dataset canónico v0.2](docs/architecture/adr-0021-canonical-demo-dataset-v02.md)
 - [ADR-0022 — Relationship Evidence v2](docs/architecture/adr-0022-relationship-evidence-v2.md)
+- [ADR-0023 — Product Information Architecture v2](docs/architecture/adr-0023-product-information-architecture-v2.md)
 
 ## NEXUS API v0.2
 
@@ -222,7 +239,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-CI post-merge de V02-012: **#481 verde**.
+CI post-merge de V02-013: **#493 verde**.
 
 ## Flujo de desarrollo
 
