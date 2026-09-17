@@ -1,6 +1,6 @@
 # ADR-0023 — Product Information Architecture v2
 
-Estado: **Propuesto — V02-013 / issue #75**. Se considerará aceptado únicamente después del merge manual y CI post-merge verde.
+Estado: **Aceptado — V02-013 / issue #75 / PR #76**. Integrado mediante merge `fe4ff067b60f89645635bd3711e74abb593e3725`; CI post-merge #493 verde.
 
 ## Contexto
 
