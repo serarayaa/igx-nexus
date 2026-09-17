@@ -92,7 +92,7 @@ export function NexusShell({ children, view = "dashboard", mode = "demo" }: { ch
       title={viewLabels[view]}
       context="IGX NEXUS · Innergex Chile"
       actions={<>
-        <span className="nexus-shell-mode" aria-label={`Origen de datos: ${modeLabel}`}><Badge>{modeLabel}</Badge></span>
+        <span className="nexus-shell-mode"><Badge>{modeLabel}</Badge></span>
         <IconButton variant="secondary" aria-label={theme === "light" ? "Activar tema oscuro" : "Activar tema claro"} onPress={toggleTheme}>{theme === "light" ? <Moon /> : <Sun />}</IconButton>
         <IconButton variant="secondary" aria-label={density === "comfortable" ? "Activar densidad compacta" : "Activar densidad cómoda"} onPress={toggleDensity}><SlidersHorizontal /></IconButton>
       </>}
