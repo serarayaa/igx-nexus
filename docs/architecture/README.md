@@ -39,6 +39,6 @@ Principios fundamentales:
 - [ADR-0020 — IT/OT Taxonomy v2](adr-0020-it-ot-taxonomy-v2.md) — aceptado tras V02-010 (PR #67 / issue #66).
 - [ADR-0021 — Demo Dataset canónico v0.2](adr-0021-canonical-demo-dataset-v02.md) — aceptado tras V02-011 (PR #70; housekeeping #71).
 - [ADR-0022 — Relationship Evidence v2](adr-0022-relationship-evidence-v2.md) — aceptado tras V02-012 (PR #73; housekeeping #74).
-- [ADR-0023 — Product Information Architecture v2](adr-0023-product-information-architecture-v2.md) — **propuesto** en V02-013 / issue #75.
+- [ADR-0023 — Product Information Architecture v2](adr-0023-product-information-architecture-v2.md) — aceptado tras V02-013 (PR #76 / issue #75; CI post-merge #493).
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
