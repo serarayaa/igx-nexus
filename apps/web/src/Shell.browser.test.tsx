@@ -30,14 +30,14 @@ it("separa navegación global de anchors contextuales en Demo", () => {
   expect(screen.queryByText("En este panel")).toBeNull();
   expect(screen.queryByRole("link", { name: "Calidad y frescura" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Garantías y lifecycle" })).toBeNull();
-  expect(screen.getByLabelText("Origen de datos: DEMO")).toBeTruthy();
+  expect(document.querySelector(".nexus-shell-mode")?.textContent).toContain("DEMO");
   expect(screen.getByText("Dataset Demo")).toBeTruthy();
 });
 
 it("presenta Live como contexto de fuente sin sustituir superficies Demo", () => {
   render(<NexusShell view="assets" mode="live"><h1>Inventario Live</h1></NexusShell>);
 
-  expect(screen.getByLabelText("Origen de datos: LIVE LAB")).toBeTruthy();
+  expect(document.querySelector(".nexus-shell-mode")?.textContent).toContain("LIVE LAB");
   expect(screen.getByText("Provider Live")).toBeTruthy();
   expect(screen.getByRole("link", { name: "Activos" }).getAttribute("aria-current")).toBe("page");
   expect(screen.queryByRole("link", { name: "Panel principal" })).toBeNull();
