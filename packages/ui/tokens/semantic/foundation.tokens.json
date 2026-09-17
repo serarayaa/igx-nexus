@@ -57,7 +57,7 @@
       "spatial": {
         "duration": {
           "$type": "duration",
-          "$value": "{duration.normal}"
+          "$value": "{duration.slow}"
         },
         "easing": {
           "$type": "cubicBezier",
