@@ -37,5 +37,8 @@ Principios fundamentales:
 - [ADR-0018 — Live Asset 360 Vertical Slice](adr-0018-live-asset-360-vertical-slice.md) — aceptado tras V02-008 (PR #61 / issue #60).
 - [ADR-0019 — Provenance & Reconciliation](adr-0019-provenance-reconciliation.md) — aceptado tras V02-009 (PR #64 / issue #63).
 - [ADR-0020 — IT/OT Taxonomy v2](adr-0020-it-ot-taxonomy-v2.md) — aceptado tras V02-010 (PR #67 / issue #66).
+- [ADR-0021 — Demo Dataset canónico v0.2](adr-0021-canonical-demo-dataset-v02.md) — aceptado tras V02-011 (PR #70; housekeeping #71).
+- [ADR-0022 — Relationship Evidence v2](adr-0022-relationship-evidence-v2.md) — aceptado tras V02-012 (PR #73; housekeeping #74).
+- [ADR-0023 — Product Information Architecture v2](adr-0023-product-information-architecture-v2.md) — **propuesto** en V02-013 / issue #75.
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
