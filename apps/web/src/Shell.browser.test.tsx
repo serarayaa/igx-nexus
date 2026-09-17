@@ -50,7 +50,7 @@ it("recupera y persiste tema y densidad sin convertirlos en estado de ruta", asy
   window.localStorage.setItem(DENSITY_STORAGE_KEY, "compact");
 
   render(<NexusShell view="assets" mode="demo"><h1>Activos</h1></NexusShell>);
-  await waitFor(() => expect(document.documentElement.dataset.theme).toBe("dark"));
+  expect(document.documentElement.dataset.theme).toBe("dark");
   expect(document.documentElement.dataset.density).toBe("compact");
   expect(document.documentElement.style.colorScheme).toBe("dark");
 
