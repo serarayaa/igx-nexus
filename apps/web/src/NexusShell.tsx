@@ -20,7 +20,7 @@ type NexusDataMode = "demo" | "live";
 
 const viewLabels: Record<NexusView, string> = {
   dashboard: "Panel principal",
-  health: "CMDB Health",
+  health: "Calidad de datos",
   assets: "Activos",
   asset: "Asset 360",
   relations: "Technology Map",
@@ -104,7 +104,7 @@ export function NexusShell({ children, view = "dashboard", mode = "demo" }: { ch
       <p className="nexus-nav-heading">Espacios de trabajo</p>
       {!live && <a className="nexus-nav-link" href="#overview" aria-current={view === "dashboard" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><LayoutDashboard aria-hidden="true" />Panel principal</a>}
       <a className="nexus-nav-link" href="#assets" aria-current={assetsCurrent ? "page" : undefined} onClick={() => setNavigationOpen(false)}><Boxes aria-hidden="true" />Activos</a>
-      {!live && <a className="nexus-nav-link" href="#health" aria-current={view === "health" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><ShieldCheck aria-hidden="true" />CMDB Health</a>}
+      {!live && <a className="nexus-nav-link" href="#health" aria-current={view === "health" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><ShieldCheck aria-hidden="true" />Calidad de datos</a>}
     </AppSidebar>}>
 
     {children}
