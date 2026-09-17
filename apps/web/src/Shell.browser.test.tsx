@@ -26,7 +26,7 @@ it("separa navegación global de anchors contextuales en Demo", () => {
   expect(screen.getByText("Espacios de trabajo")).toBeTruthy();
   expect(screen.getByRole("link", { name: "Panel principal" }).getAttribute("aria-current")).toBe("page");
   expect(screen.getByRole("link", { name: "Activos" })).toBeTruthy();
-  expect(screen.getByRole("link", { name: "CMDB Health" })).toBeTruthy();
+  expect(screen.getByRole("link", { name: "Calidad de datos" })).toBeTruthy();
   expect(screen.queryByText("En este panel")).toBeNull();
   expect(screen.queryByRole("link", { name: "Calidad y frescura" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Garantías y lifecycle" })).toBeNull();
@@ -41,7 +41,7 @@ it("presenta Live como contexto de fuente sin sustituir superficies Demo", () =>
   expect(screen.getByText("Provider Live")).toBeTruthy();
   expect(screen.getByRole("link", { name: "Activos" }).getAttribute("aria-current")).toBe("page");
   expect(screen.queryByRole("link", { name: "Panel principal" })).toBeNull();
-  expect(screen.queryByRole("link", { name: "CMDB Health" })).toBeNull();
+  expect(screen.queryByRole("link", { name: "Calidad de datos" })).toBeNull();
   expect(screen.getByText(/nunca sustituye datos Live por Demo/i)).toBeTruthy();
 });
 
