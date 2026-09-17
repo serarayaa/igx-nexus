@@ -3,6 +3,8 @@ body { margin: 0; font-family: var(--igx-font-family-sans); font-size: 1rem; lin
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: var(--igx-semantic-color-text-link); }
 a:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 4px; }
+/* Shell 2.0 usa 200 ms para orientación espacial sin alterar el token global usado por otros componentes. */
+.igx-app-shell__navigation { --igx-semantic-motion-spatial-duration: var(--igx-semantic-motion-transition-duration); }
 .nexus-dashboard { display: grid; gap: var(--igx-density-section-gap); max-width: 100rem; margin-inline: auto; }
 .nexus-dashboard > *, .nexus-two-column > *, .nexus-metrics > * { min-width: 0; }
 .nexus-dashboard [id] { scroll-margin-block: 6rem; }
