@@ -76,6 +76,7 @@
   display: flex;
   flex: 1;
   min-inline-size: 0;
+  min-block-size: 4rem;
   align-items: center;
   justify-content: space-between;
   gap: var(--igx-density-content-gap);
@@ -149,6 +150,11 @@
   border-radius: var(--igx-semantic-shape-control);
   color: var(--igx-semantic-color-text-primary);
   text-decoration: none;
+  transition:
+    background-color var(--igx-semantic-motion-feedback-duration)
+      var(--igx-semantic-motion-feedback-easing),
+    color var(--igx-semantic-motion-feedback-duration)
+      var(--igx-semantic-motion-feedback-easing);
 }
 
 .igx-app-sidebar__nav a:hover {
@@ -188,6 +194,7 @@
     z-index: var(--igx-semantic-layer-modal);
     inline-size: min(var(--igx-app-shell-sidebar-width), calc(100vw - 3rem));
     overflow-y: auto;
+    overscroll-behavior: contain;
     visibility: hidden;
     box-shadow: var(--igx-semantic-elevation-overlay);
     transform: translateX(-100%);
@@ -229,6 +236,25 @@
     position: sticky;
     inset-block-start: 0;
     z-index: var(--igx-semantic-layer-sticky);
+  }
+}
+
+@media (width < 30rem) {
+  .igx-app-shell__navigation-open {
+    padding-inline-start: var(--igx-spacing-2);
+  }
+
+  .igx-app-header {
+    gap: var(--igx-spacing-2);
+    padding-inline: var(--igx-spacing-2);
+  }
+
+  .igx-app-header__context {
+    display: none;
+  }
+
+  .igx-app-header__actions {
+    gap: var(--igx-spacing-1);
   }
 }
 
