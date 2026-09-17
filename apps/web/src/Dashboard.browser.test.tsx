@@ -58,7 +58,7 @@ it("cancela solicitudes anteriores e ignora respuestas fuera de orden", async ()
 
 it("expone un recorrido de demo sobre capacidades ya integradas", async () => {
   render(<Dashboard />); await ready();
-  expect(screen.getAllByText("Recorrido de la demo").length).toBeGreaterThanOrEqual(2);
+  expect(screen.getAllByText("Recorrido de la demo")).toHaveLength(1);
   expect(screen.getByRole("link", { name: "Explorar activos" }).getAttribute("href")).toBe("#assets");
   expect(screen.getByRole("link", { name: "Asset 360° hero OT" }).getAttribute("href")).toBe("#assets/DEMO-0013");
   expect(screen.getByRole("link", { name: "QR y etiquetado" }).getAttribute("href")).toBe("#assets/DEMO-0013/label");
