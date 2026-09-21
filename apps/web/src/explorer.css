@@ -38,7 +38,7 @@
 .nexus-explorer-scope-facts { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--igx-spacing-4); }
 .nexus-explorer-scope-facts dt { color: var(--igx-semantic-color-text-secondary); font-size: .75rem; }
 .nexus-explorer-scope-facts dd { margin: var(--igx-spacing-1) 0 0; font-size: .875rem; font-weight: var(--igx-font-weight-semibold); overflow-wrap: anywhere; }
-.nexus-explorer-coverage-warning { grid-column: 1 / -1; padding: var(--igx-spacing-3) var(--igx-spacing-4); border-inline-start: 3px solid var(--igx-semantic-color-status-warning-border); background: var(--igx-semantic-color-status-warning-surface); color: var(--igx-semantic-color-text-primary); font-size: .875rem; }
+.nexus-explorer-coverage-warning { grid-column: 1 / -1; padding: var(--igx-spacing-3) var(--igx-spacing-4); border-inline-start: 3px solid var(--igx-semantic-color-status-warning-solid); background: var(--igx-semantic-color-status-warning-surface); color: var(--igx-semantic-color-text-primary); font-size: .875rem; }
 .nexus-asset-table table { min-width: 78rem; }
 .nexus-asset-classification { min-width: 14rem; }
 .nexus-asset-classification-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--igx-spacing-2); }
