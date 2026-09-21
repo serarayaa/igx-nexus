@@ -48,7 +48,7 @@ Dirección conceptual posterior:
 | V02-011 | Demo Dataset v0.2 Migration | P0 | ✅ Integrado — PR #70 / merge `45b1adc4`; CI #454 verde |
 | V02-012 | Relationship Evidence v2 | P1 | ✅ Integrado — PR #73 / issue #72 / merge `e174700c`; CI #481 verde |
 | V02-013 | Product IA & Visual Direction | P0 | ✅ Integrado — PR #76 / issue #75 / merge `fe4ff067`; CI #493 verde |
-| V02-014 | Shell & Motion 2.0 | P1 | 🟡 En implementación — issue #79 |
+| V02-014 | Shell & Motion 2.0 | P1 | ✅ Integrado — PR #80 / issue #79 / merge `e650e288`; CI #537 verde |
 | V02-015 | Technology Overview | P1 | ⚪ Pendiente |
 | V02-016 | Asset Explorer 2.0 | P1 | ⚪ Pendiente |
 | V02-017 | Asset 360 2.0 | P1 | ⚪ Pendiente |
@@ -200,21 +200,37 @@ Documentos normativos:
 - `docs/product/screen-purpose-matrix.md`;
 - ADR-0023 Product Information Architecture v2 — Accepted.
 
-### V02-014 — Shell & Motion 2.0 — en implementación
+### V02-014 — Shell & Motion 2.0 ✅
 
-Issue #79. Implementar el shell y modelo de navegación conforme a ADR-0023 y los documentos de producto, respetando reduced motion y WCAG 2.2 AA.
+Integrado mediante PR #80, merge `e650e288b47903d6811675aa265ac7f0141f51a7`; CI post-merge #537 verde.
 
-Decisión de implementación:
+Resultado:
 
-- CSS / Design System NEXUS como baseline;
-- Motion for React en Hold para este ticket / Assess futuro;
-- View Transitions API en Assess;
-- sin reemplazo de router mientras no exista necesidad demostrada.
+- navegación global separada de anchors contextuales;
+- header contextual por view/workspace;
+- Demo/Live presentados como contexto de fuente, no como productos distintos;
+- Live no cae silenciosamente a Demo;
+- preferencias `light | dark` y `comfortable | compact` con persistencia segura;
+- fallback de tema a `prefers-color-scheme` cuando no existe elección guardada;
+- drawer móvil preserva focus trap, Escape, restore focus, `inert` y bloqueo de scroll;
+- responsive reforzado hasta 320 CSS px;
+- motion espacial del shell acotado localmente y compatible con reduced motion;
+- regresión de contraste detectada por CI y corregida antes del merge;
+- sin nuevas dependencias, router nuevo ni cambios de contratos/API/providers/reconciliación/demo-data.
 
-Documentos de trabajo:
+Decisión tecnológica:
+
+- CSS / Design System NEXUS — Adopt;
+- Motion for React — Hold para V02-014 / Assess futuro;
+- View Transitions API — Assess;
+- router adicional — Hold mientras no exista necesidad demostrada.
+
+Documentos:
 
 - `docs/product/shell-motion-v2.md`;
 - `docs/product/technology-scan-v02-014.md`.
+
+Siguiente trabajo: **V02-015 — Technology Overview**.
 
 ### V02-015 — Technology Overview
 
