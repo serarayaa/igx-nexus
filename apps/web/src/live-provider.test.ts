@@ -95,6 +95,18 @@ describe("Live Web provider projection", () => {
     }));
   });
 
+  it("treats missing taxonomy review metadata as unresolved and review-required", () => {
+    const incomplete = structuredClone(canonicalComputer);
+    delete incomplete.assets[0]!.attributes["nexus.taxonomy.domain.state"];
+    delete incomplete.assets[0]!.attributes["nexus.taxonomy.domain.reviewRequired"];
+    delete incomplete.assets[0]!.attributes["nexus.taxonomy.assetClass.reviewRequired"];
+    delete incomplete.assets[0]!.attributes["nexus.taxonomy.role.reviewRequired"];
+
+    const asset = projectCanonicalSnapshot(incomplete).assets[0]!;
+    expect(asset.taxonomyState).toBe("unknown");
+    expect(asset.taxonomyReviewRequired).toBe(true);
+  });
+
   it("fails closed for unsupported asset types", () => {
     const unsupported = structuredClone(canonicalComputer);
     unsupported.assets[0]!.attributes["glpi.itemType"] = "NetworkEquipment";
