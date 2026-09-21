@@ -66,9 +66,10 @@ Baseline de implementación:
 
 `229e1f57cf6a15c1d369af23a2bdc0db797b072f`
 
-Documento:
+Documentos:
 
 - [Asset 360 2.0 — plan y decisiones](asset-360-v2-plan.md)
+- [Technology Scan V02-017](technology-scan-v02-017.md)
 
 V02-017 reorganiza el detalle del CI por intención: **Resumen / Inventario / Evidencia y fuentes / Relaciones**. Mantiene Demo/Live con la misma IA, hace explícito taxonomy fallback y coverage, y separa calidad CMDB, freshness, lifecycle y futura salud técnica.
 
