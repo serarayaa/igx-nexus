@@ -1,6 +1,6 @@
 # V02-017 — Asset 360 2.0
 
-Estado: **en implementación**; issue canónico: [#89](https://github.com/serarayaa/igx-nexus/issues/89).
+Estado: **integrado mediante V02-017 / PR #90**; issue canónico: [#89](https://github.com/serarayaa/igx-nexus/issues/89).
 
 ## Objetivo
 Responder: **¿Qué es este CI, qué sabemos de él, de dónde lo sabemos y qué requiere atención?**
@@ -9,10 +9,11 @@ Evolucionar Asset 360 conforme a ADR-0023 y Product IA v2, preservando React, De
 
 ## Baseline verificado — 2026-09-21
 - PR funcional #87 y housekeeping #88 mergeados manualmente.
-- main: `229e1f57cf6a15c1d369af23a2bdc0db797b072f`.
-- [CI post-housekeeping #610](https://github.com/serarayaa/igx-nexus/actions/runs/35624258155): completed / success, evento push sobre ese SHA.
-- #85 cerrado como completed tras verificar CI.
-- Rama dedicada: `feature/v02-017-asset-360-2`.
+- baseline de implementación: `229e1f57cf6a15c1d369af23a2bdc0db797b072f`.
+- PR funcional #90 mergeado manualmente.
+- integrado en `main`: `4cc6e7b25b8e4d1bde56fc7a735be6e81261fcd8`.
+- [CI post-merge #651](https://github.com/serarayaa/igx-nexus/actions/runs/35637910287): completed / success, evento push sobre ese SHA.
+- Rama dedicada de implementación: `feature/v02-017-asset-360-2`.
 
 ## Auditoría de código y documentación
 Revisados Asset360.tsx, asset-model.ts, live-provider.ts, Asset360.browser.test.tsx, HealthDetails.tsx, relationship-model.ts; Product IA v2, Screen Purpose Matrix, roadmap y ADR-0020/0023.
@@ -88,7 +89,7 @@ Consulta: 2026-09-21. Patrones de producto, no copia visual.
 - [x] Tests unitarios/browser, axe por tema/densidad, 320 px, forced colors y reduced motion incorporados.
 - [x] Legacy digest, contratos y API permanecen sin cambios de dominio ni regresión deliberada.
 - [x] Documentación de implementación y technology scan actualizados según evidencia.
-- [ ] CI final del PR verde; merge manual de Sergio; luego CI post-merge y housekeeping.
+- [x] CI final del PR verde; merge manual de Sergio y CI post-merge #651 verde.
 
 ## Fuera de alcance
 V02-018 Technology Map 2.0 (no nuevo grafo/layout/impact engine), V02-019 Analytics Contract Layer (no nuevos KPIs/scores/cohortes), edición CMDB, nuevas integraciones, Intune real, telemetry, AI/ML, history inventada, revisión manual persistida, scanning OT y remediación.
@@ -113,4 +114,4 @@ La rama implementa actualmente:
 
 Technology scan versionado: `docs/product/technology-scan-v02-017.md`.
 
-La integración final continúa sujeta a CI verde del head/PR y merge manual.
+La implementación funcional quedó integrada en `main`; el cierre administrativo continúa con housekeeping post-merge y cierre del issue #89.
