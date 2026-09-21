@@ -1,12 +1,31 @@
 export const assetSections = ["summary", "inventory", "evidence", "relationships"] as const;
 export type AssetSection = (typeof assetSections)[number];
 
+export const technologyMapRelationshipTypes = ["all", "depends_on", "uses", "connected_to"] as const;
+export type TechnologyMapRelationshipType = (typeof technologyMapRelationshipTypes)[number];
+export const technologyMapPerspectives = ["all", "upstream", "downstream", "peer"] as const;
+export type TechnologyMapPerspective = (typeof technologyMapPerspectives)[number];
+
+export interface TechnologyMapState {
+  readonly depth: 1 | 2;
+  readonly type: TechnologyMapRelationshipType;
+  readonly perspective: TechnologyMapPerspective;
+  readonly selectedId: string | null;
+}
+
+export const defaultTechnologyMapState: TechnologyMapState = {
+  depth: 2,
+  type: "all",
+  perspective: "all",
+  selectedId: null,
+};
+
 export type AppRoute =
   | { readonly view: "dashboard" }
   | { readonly view: "assets" }
   | { readonly view: "health" }
   | { readonly view: "asset"; readonly assetId: string; readonly section: AssetSection }
-  | { readonly view: "relations"; readonly assetId: string }
+  | { readonly view: "relations"; readonly assetId: string; readonly mapState: TechnologyMapState }
   | { readonly view: "label"; readonly assetId: string }
   | { readonly view: "qr"; readonly locator: string };
 
@@ -32,6 +51,22 @@ function assetSection(value: string | null): AssetSection {
   return assetSections.includes(value as AssetSection) ? value as AssetSection : "summary";
 }
 
+function technologyMapState(query: string): TechnologyMapState {
+  const params = new URLSearchParams(query);
+  const depth = params.get("depth") === "1" ? 1 : 2;
+  const typeValue = params.get("type");
+  const perspectiveValue = params.get("perspective");
+  const selectedValue = params.get("selected");
+  const type = technologyMapRelationshipTypes.includes(typeValue as TechnologyMapRelationshipType)
+    ? typeValue as TechnologyMapRelationshipType
+    : "all";
+  const perspective = technologyMapPerspectives.includes(perspectiveValue as TechnologyMapPerspective)
+    ? perspectiveValue as TechnologyMapPerspective
+    : "all";
+  const selectedId = selectedValue ? decodeSegment(selectedValue) : null;
+  return { depth, type, perspective, selectedId };
+}
+
 export function routeFromHash(hash: string): AppRoute | null {
   if (dashboardHashes.has(hash)) return { view: "dashboard" };
   if (hash === "#health") return { view: "health" };
@@ -46,20 +81,21 @@ export function routeFromHash(hash: string): AppRoute | null {
   const assetPrefix = "#assets/";
   if (!hash.startsWith(assetPrefix)) return null;
   const remainder = hash.slice(assetPrefix.length);
+  const [pathPart = "", query = ""] = remainder.split("?", 2);
+
   const labelSuffix = "/label";
-  if (remainder.endsWith(labelSuffix)) {
-    const assetId = decodeSegment(remainder.slice(0, -labelSuffix.length));
+  if (pathPart.endsWith(labelSuffix)) {
+    const assetId = decodeSegment(pathPart.slice(0, -labelSuffix.length));
     return assetId ? { view: "label", assetId } : null;
   }
 
   const relationsSuffix = "/relations";
-  if (remainder.endsWith(relationsSuffix)) {
-    const assetId = decodeSegment(remainder.slice(0, -relationsSuffix.length));
-    return assetId ? { view: "relations", assetId } : null;
+  if (pathPart.endsWith(relationsSuffix)) {
+    const assetId = decodeSegment(pathPart.slice(0, -relationsSuffix.length));
+    return assetId ? { view: "relations", assetId, mapState: technologyMapState(query) } : null;
   }
 
-  const [assetPart, query = ""] = remainder.split("?", 2);
-  const assetId = decodeSegment(assetPart ?? "");
+  const assetId = decodeSegment(pathPart);
   if (!assetId) return null;
   const params = new URLSearchParams(query);
   return { view: "asset", assetId, section: assetSection(params.get("section")) };
@@ -77,8 +113,15 @@ export function labelHash(assetId: string): string {
   return `${assetHash(assetId)}/label`;
 }
 
-export function relationsHash(assetId: string): string {
-  return `${assetHash(assetId)}/relations`;
+export function relationsHash(assetId: string, state: TechnologyMapState = defaultTechnologyMapState): string {
+  const base = `${assetHash(assetId)}/relations`;
+  const params = new URLSearchParams();
+  if (state.depth !== defaultTechnologyMapState.depth) params.set("depth", String(state.depth));
+  if (state.type !== defaultTechnologyMapState.type) params.set("type", state.type);
+  if (state.perspective !== defaultTechnologyMapState.perspective) params.set("perspective", state.perspective);
+  if (state.selectedId && state.selectedId !== assetId) params.set("selected", state.selectedId);
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
 }
 
 /** Ruta interna que simula el resolver para la demo; NO es el payload del QR físico. */
