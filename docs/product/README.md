@@ -35,6 +35,18 @@ Documentos:
 
 V02-014 materializa la IA global, source context, preferencias visuales, responsive y motion accesible sin adelantar Overview/Explorer/Asset 360/Technology Map 2.0.
 
+## V02-015 — Technology Overview
+
+Baseline de implementación:
+
+`ccebc18d7440d338f59e0263cc38c5d42bd1afe4`
+
+Documento:
+
+- [Technology Overview](technology-overview-v2.md)
+
+V02-015 transforma la home histórica en una superficie de triage que responde **¿Qué requiere atención ahora y por qué?**, comparte arquitectura Demo/Live y evita adelantar el contrato analítico de V02-019.
+
 ## Principios
 
 1. Cada pantalla responde una pregunta operacional.
@@ -50,8 +62,8 @@ V02-014 materializa la IA global, source context, preferencias visuales, respons
 
 ## Handoff
 
-- V02-014 — Shell & Motion 2.0 — en implementación
-- V02-015 — Technology Overview
+- V02-014 — Shell & Motion 2.0 — integrado
+- V02-015 — Technology Overview — en implementación
 - V02-016 — Asset Explorer 2.0
 - V02-017 — Asset 360 2.0
 - V02-018 — Technology Map 2.0
