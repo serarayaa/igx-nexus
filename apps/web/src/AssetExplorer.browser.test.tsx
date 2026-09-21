@@ -64,13 +64,13 @@ it("opera facetas de fuente/taxonomía con teclado, counts y recuperación de fo
   await userEvent.keyboard("{Enter}");
   await userEvent.tab();
   expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Fuente" }));
+  expect(screen.getByRole("option", { name: /DEMO \(240\)/ })).toBeTruthy();
   filter("Fuente", "demo");
   filter("Estado taxonómico", "classified");
   filter("Revisión requerida", "no");
   filter("Criticidad", "critical");
   const expected = demoSnapshot.assets.filter(asset => asset.criticality === "critical").length;
   expect(screen.getByText(`${expected} de 240 activos`)).toBeTruthy();
-  expect(screen.getByRole("option", { name: /DEMO \(240\)/ })).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "Quitar filtro Criticidad: Crítica" }));
   expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Criticidad" }));
 });
