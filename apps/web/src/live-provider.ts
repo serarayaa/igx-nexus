@@ -196,6 +196,10 @@ function mapCanonicalAsset(asset: CanonicalAsset): Asset {
     dataMode: "live",
     sourceSystems,
     sourceObservedAt,
+    sourceReferences: Object.freeze(asset.sourceReferences.map(source => Object.freeze({
+      source: source.source,
+      observedAt: source.observedAt,
+    }))),
   });
 }
 
