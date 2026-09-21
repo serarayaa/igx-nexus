@@ -31,7 +31,7 @@ it("abre Asset 360 en Resumen con identidad estable, calidad separada y acciones
   const nav = screen.getByRole("navigation", { name: "Secciones de Asset 360" });
   expect(within(nav).getByRole("link", { name: "Resumen" }).getAttribute("aria-current")).toBe("page");
   expect(screen.getByRole("heading", { name: "Resumen", level: 2 })).toBeTruthy();
-  expect(screen.getByText("Dataset sintético / provider demo.")).toBeTruthy();
+  expect(screen.getByText("Dataset sintético / provider demo")).toBeTruthy();
 
   const quality = screen.getByRole("region", { name: "CMDB Health" });
   expect(await within(quality).findByText("Confiable")).toBeTruthy();
