@@ -26,7 +26,7 @@ it("abre Asset 360 en Resumen con identidad estable, calidad separada y acciones
   render(<App />);
   const heading = await assetHeading();
 
-  expect(screen.getByText("DEMO-0002")).toBeTruthy();
+  expect(screen.getByText(/Identidad NEXUS DEMO-0002/)).toBeTruthy();
   expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toBeTruthy();
   const nav = screen.getByRole("navigation", { name: "Secciones de Asset 360" });
   expect(within(nav).getByRole("link", { name: "Resumen" }).getAttribute("aria-current")).toBe("page");
@@ -243,7 +243,7 @@ it("fallo de relaciones no elimina la identidad y permite reintentar sólo esa e
   render(<NexusShell view="asset"><Asset360 assetId="DEMO-0002" section="relationships" relationshipProvider={relationships} /></NexusShell>);
   await assetHeading();
 
-  expect(screen.getByText("DEMO-0002")).toBeTruthy();
+  expect(screen.getByText(/Identidad NEXUS DEMO-0002/)).toBeTruthy();
   expect(await screen.findByText("No se pudieron cargar las relaciones")).toBeTruthy();
   expect(screen.queryByText("relationship secret")).toBeNull();
   await userEvent.click(screen.getByRole("button", { name: "Reintentar relaciones" }));
@@ -256,7 +256,7 @@ it("cancela carga al desmontar y descarta una respuesta obsoleta al cambiar de C
   let capturedSignal: AbortSignal | undefined;
   const pending: InventoryProvider = signal => {
     capturedSignal = signal;
-    return new Promise(() => undefined);
+    return new Promise<InventorySnapshot>(() => undefined);
   };
   const pendingView = render(<NexusShell view="asset"><Asset360 assetId="DEMO-0002" provider={pending} /></NexusShell>);
   await waitFor(() => expect(capturedSignal).toBeDefined());
