@@ -47,7 +47,7 @@ it("combina Domain, Class, Role y Lifecycle y permite quitar cada faceta", async
 });
 
 it("recupera búsqueda y filtros sin coincidencias", async () => {
-  mount(); await ready(); filter("Dominio", "OT"); filter("Tipo de fuente", "Phone");
+  mount(); await ready(); filter("Dominio", "OT"); filter("Tipo de inventario", "Phone");
   expect(screen.getByText("No hay activos que coincidan")).toBeTruthy();
   expect(screen.queryByRole("table")).toBeNull();
   await userEvent.click(screen.getByRole("button", { name: "Restablecer búsqueda y filtros" }));
@@ -184,9 +184,11 @@ it("mantiene Live honesto cuando la taxonomía usa compatibility fallback", asyn
   render(<NexusShell mode="live" view="assets"><AssetExplorer mode="live" provider={provider} /></NexusShell>);
   await screen.findByRole("table", { name: "Inventario de activos Live" });
   expect(screen.getByText(/1 activo usa una proyección escalar de compatibilidad/)).toBeTruthy();
-  expect(screen.getByText("Proyección de compatibilidad")).toBeTruthy();
+  const liveTable = screen.getByRole("table", { name: "Inventario de activos Live" });
+  expect(within(liveTable).getByText("Proyección de compatibilidad")).toBeTruthy();
   expect(screen.getByText("Sin cobertura del provider")).toBeTruthy();
   expect(screen.queryByRole("combobox", { name: "Contexto operacional" })).toBeNull();
+  await userEvent.click(screen.getByText("Más filtros", { selector: "summary" }));
   filter("Fuente", "glpi");
   filter("Estado taxonómico", "unclassified");
   expect(screen.getByText("1 de 1 activos")).toBeTruthy();
