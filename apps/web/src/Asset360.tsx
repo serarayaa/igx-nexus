@@ -319,7 +319,7 @@ function EvidencePanel({ asset, snapshot }: { asset: Asset; snapshot: InventoryS
         <Field label="Última observación del activo" value={displayDate(asset.lastSeen)} />
       </dl>
       {references.length
-        ? <div className="nexus-asset-source-table-wrap"><table className="nexus-asset-source-table">
+        ? <div className="nexus-asset-source-table-wrap" tabIndex={0} aria-label="Tabla desplazable de referencias de fuente"><table className="nexus-asset-source-table">
             <caption>Fuentes conocidas para {asset.name}</caption>
             <thead><tr><th scope="col">Fuente</th><th scope="col">Observado en fuente</th></tr></thead>
             <tbody>{references.map((reference, index) => <tr key={`${reference.source}-${reference.observedAt ?? "unknown"}-${index}`}><td>{reference.source}</td><td>{displayDate(reference.observedAt)}</td></tr>)}</tbody>
