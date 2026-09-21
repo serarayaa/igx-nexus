@@ -20,22 +20,22 @@ afterEach(async () => {
 });
 
 it("resuelve deep link, comparte scope por URL, selecciona nodos y permite reenfocar", async () => {
-  window.history.replaceState(null, "", "#assets/DEMO-0002/relations?depth=1&type=uses");
+  window.history.replaceState(null, "", "#assets/DEMO-0002/relations?depth=1&type=depends_on");
   render(<App />);
   await ready();
   expect(document.title).toContain("Technology Map DEMO-0002");
   expect(screen.getByText("1 relación visible")).toBeTruthy();
-  expect(screen.getByRole("combobox", { name: "Profundidad" }).getAttribute("value")).toBe("1");
-  expect(screen.getByRole("combobox", { name: "Tipo de relación" }).getAttribute("value")).toBe("uses");
+  expect((screen.getByRole("combobox", { name: "Profundidad" }) as HTMLSelectElement).value).toBe("1");
+  expect((screen.getByRole("combobox", { name: "Tipo de relación" }) as HTMLSelectElement).value).toBe("depends_on");
 
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Profundidad" }), "2");
-  await waitFor(() => expect(window.location.hash).toContain("type=uses"));
+  await waitFor(() => expect(window.location.hash).toContain("type=depends_on"));
   await waitFor(() => expect(window.location.hash).not.toContain("depth=1"));
 
   await userEvent.click(screen.getByRole("button", { name: "Switch Demo 0003" }));
   await waitFor(() => expect(window.location.hash).toContain("selected=DEMO-0003"));
   const selection = screen.getByRole("region", { name: "Switch Demo 0003" });
-  expect(within(selection).getByText("Servidor", { exact: false })).toBeTruthy();
+  expect(within(selection).getByText("Dispositivo de red", { exact: false })).toBeTruthy();
   expect(within(selection).getByRole("link", { name: "Abrir Asset 360" }).getAttribute("href")).toBe("#assets/DEMO-0003");
   await userEvent.click(within(selection).getByRole("button", { name: "Enfocar este CI" }));
   expect(await screen.findByText(/Scope centrado en Switch Demo 0003/)).toBeTruthy();
