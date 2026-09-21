@@ -9,6 +9,7 @@ import { CmdbHealth } from "./CmdbHealth";
 import { NexusShell } from "./NexusShell";
 import { demoProvider } from "./demo-provider";
 import { liveProvider } from "./live-provider";
+import { demoRelationshipInventoryProvider } from "./demo-relationship-provider";
 import type { InventoryProvider } from "./asset-model";
 import { assetSectionHash, routeFromHash, type AppRoute, type AssetSection } from "./navigation-model";
 
@@ -107,7 +108,13 @@ export function App() {
     : route.view === "assets"
       ? <AssetExplorer provider={inventory.provider} mode={inventory.mode} />
       : route.view === "asset"
-        ? <Asset360 assetId={route.assetId} section={route.section} provider={inventory.provider} />
+        ? <Asset360
+            assetId={route.assetId}
+            section={route.section}
+            mode={inventory.mode}
+            provider={inventory.provider}
+            {...(inventory.mode === "demo" ? { relationshipProvider: demoRelationshipInventoryProvider } : {})}
+          />
         : route.view === "relations"
           ? <RelationshipGraph assetId={route.assetId} />
         : route.view === "label"
