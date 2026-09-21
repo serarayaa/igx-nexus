@@ -1,8 +1,11 @@
+export const assetSections = ["summary", "inventory", "evidence", "relationships"] as const;
+export type AssetSection = (typeof assetSections)[number];
+
 export type AppRoute =
   | { readonly view: "dashboard" }
   | { readonly view: "assets" }
   | { readonly view: "health" }
-  | { readonly view: "asset"; readonly assetId: string }
+  | { readonly view: "asset"; readonly assetId: string; readonly section: AssetSection }
   | { readonly view: "relations"; readonly assetId: string }
   | { readonly view: "label"; readonly assetId: string }
   | { readonly view: "qr"; readonly locator: string };
@@ -23,6 +26,10 @@ function decodeSegment(value: string): string | null {
   } catch {
     return null;
   }
+}
+
+function assetSection(value: string | null): AssetSection {
+  return assetSections.includes(value as AssetSection) ? value as AssetSection : "summary";
 }
 
 export function routeFromHash(hash: string): AppRoute | null {
@@ -51,12 +58,19 @@ export function routeFromHash(hash: string): AppRoute | null {
     return assetId ? { view: "relations", assetId } : null;
   }
 
-  const assetId = decodeSegment(remainder);
-  return assetId ? { view: "asset", assetId } : null;
+  const [assetPart, query = ""] = remainder.split("?", 2);
+  const assetId = decodeSegment(assetPart ?? "");
+  if (!assetId) return null;
+  const params = new URLSearchParams(query);
+  return { view: "asset", assetId, section: assetSection(params.get("section")) };
 }
 
 export function assetHash(assetId: string): string {
   return `#assets/${encodeURIComponent(assetId)}`;
+}
+
+export function assetSectionHash(assetId: string, section: AssetSection): string {
+  return section === "summary" ? assetHash(assetId) : `${assetHash(assetId)}?section=${section}`;
 }
 
 export function labelHash(assetId: string): string {
