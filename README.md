@@ -79,11 +79,13 @@ La v0.2 responde:
 
 > **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-**V02-001 a V02-014 están integrados.**
+**V02-001 a V02-015 están integrados.**
 
 V02-014 — Shell & Motion 2.0 quedó incorporado mediante PR #80 en el merge `e650e288b47903d6811675aa265ac7f0141f51a7`; CI post-merge #537 verde. NEXUS ya materializa Product IA v2 en el shell real con navegación global y contextual separadas, Demo/Live como contexto de fuente, preferencias persistentes de theme/density, responsive móvil accesible y motion breve compatible con reduced motion.
 
-El trabajo actual es **V02-015 — Technology Overview** (issue #82).
+V02-015 — Technology Overview quedó incorporado mediante PR #83 en el merge `c30eb25fa581f45eafa61c8bf7dd9d23fd7ccfe9`; CI post-merge #573 verde. `#overview` es ahora la home operacional de triage para Demo y Live, con contexto/cobertura explícitos, señales de atención deterministas, summary facts defendibles y drill-downs a superficies existentes sin adelantar el contrato analítico de V02-019.
+
+El siguiente trabajo planificado es **V02-016 — Asset Explorer 2.0**.
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -263,7 +265,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-CI post-merge de V02-014: **#537 verde** sobre `e650e288b47903d6811675aa265ac7f0141f51a7`.
+CI post-merge de V02-015: **#573 verde** sobre `c30eb25fa581f45eafa61c8bf7dd9d23fd7ccfe9`.
 
 ## Flujo de desarrollo
 
