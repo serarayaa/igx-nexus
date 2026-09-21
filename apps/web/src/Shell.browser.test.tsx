@@ -24,7 +24,7 @@ it("separa navegación global de anchors contextuales en Demo", () => {
   render(<NexusShell view="dashboard" mode="demo"><h1>Contenido demo</h1></NexusShell>);
 
   expect(screen.getByText("Espacios de trabajo")).toBeTruthy();
-  expect(screen.getByRole("link", { name: "Panel principal" }).getAttribute("aria-current")).toBe("page");
+  expect(screen.getByRole("link", { name: "Overview" }).getAttribute("aria-current")).toBe("page");
   expect(screen.getByRole("link", { name: "Activos" })).toBeTruthy();
   expect(screen.getByRole("link", { name: "Calidad de datos" })).toBeTruthy();
   expect(screen.queryByText("En este panel")).toBeNull();
@@ -34,13 +34,13 @@ it("separa navegación global de anchors contextuales en Demo", () => {
   expect(screen.getByText("Dataset Demo")).toBeTruthy();
 });
 
-it("presenta Live como contexto de fuente sin sustituir superficies Demo", () => {
+it("presenta Live como contexto de fuente con Overview compartido y sin superficies Demo exclusivas", () => {
   render(<NexusShell view="assets" mode="live"><h1>Inventario Live</h1></NexusShell>);
 
   expect(document.querySelector(".nexus-shell-mode")?.textContent).toContain("LIVE LAB");
   expect(screen.getByText("Provider Live")).toBeTruthy();
   expect(screen.getByRole("link", { name: "Activos" }).getAttribute("aria-current")).toBe("page");
-  expect(screen.queryByRole("link", { name: "Panel principal" })).toBeNull();
+  expect(screen.getByRole("link", { name: "Overview" })).toBeTruthy();
   expect(screen.queryByRole("link", { name: "Calidad de datos" })).toBeNull();
   expect(screen.getByText(/nunca sustituye datos Live por Demo/i)).toBeTruthy();
 });
