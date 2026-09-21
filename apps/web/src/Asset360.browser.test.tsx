@@ -252,6 +252,30 @@ it("fallo de relaciones no elimina la identidad y permite reintentar sólo esa e
   expect(relationships).toHaveBeenCalledTimes(2);
 });
 
+it("diferencia endpoint relacional fuera de inventario y fecha desconocida sin fabricar navegación", async () => {
+  const base = demoRelationshipSnapshot.relationships.find(relationship => relationship.sourceId === "DEMO-0002" || relationship.targetId === "DEMO-0002")!;
+  const missingId = "DEMO-MISSING";
+  const relationshipProvider: RelationshipInventoryProvider = async () => ({
+    ...demoRelationshipSnapshot,
+    relationships: [{
+      ...base,
+      sourceId: "DEMO-0002",
+      targetId: missingId,
+      direction: "directed",
+      type: "depends_on",
+      observedAt: null,
+    }],
+  });
+
+  render(<NexusShell view="asset"><Asset360 assetId="DEMO-0002" section="relationships" relationshipProvider={relationshipProvider} /></NexusShell>);
+  await assetHeading();
+  const region = screen.getByRole("region", { name: "Relaciones" });
+  expect(await within(region).findByText(`CI no disponible ${missingId}`)).toBeTruthy();
+  expect(within(region).getByText("Endpoint fuera del inventario")).toBeTruthy();
+  expect(within(region).getByText("Sin fecha verificable")).toBeTruthy();
+  expect(within(region).queryByRole("link", { name: "Abrir CI relacionado" })).toBeNull();
+});
+
 it("cancela carga al desmontar y descarta una respuesta obsoleta al cambiar de CI", async () => {
   let capturedSignal: AbortSignal | undefined;
   const pending: InventoryProvider = signal => {
