@@ -7,6 +7,7 @@ import {
   lifecycleLabels,
   taxonomyStateLabels,
   technologyRoleLabel,
+  typeLabels,
   type Asset,
   type AssetDataMode,
   type InventoryProvider,
