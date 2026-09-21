@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Badge, Button, EmptyState, ErrorState, LoadingState, PageHeader, Pagination, Search, Toolbar } from "@igx-nexus/ui";
 import { demoProvider } from "./demo-provider";
 import type { AssetDataMode, InventoryProvider, InventorySnapshot } from "./asset-model";
-import { emptyFilters, explore, type ExplorerQuery } from "./explorer-model";
+import { emptyFilters, explore, facetOptions, hasFacetCoverage, type ExplorerQuery } from "./explorer-model";
 import { ExplorerFilters } from "./ExplorerFilters";
 import { AssetTable } from "./AssetTable";
 import "./explorer.css";
@@ -43,12 +43,18 @@ export function AssetExplorer({ provider = demoProvider, mode = "demo" }: { prov
   }
   const result = state.status === "ready" ? explore(state.snapshot, query) : null;
   const live = mode === "live";
+  const contextCovered = state.status === "ready" ? hasFacetCoverage(state.snapshot, "context") : false;
+  const compatibilityFallbackCount = state.status === "ready"
+    ? facetOptions(state.snapshot, query, "compatibilityFallback").find(option => option.value === "yes")?.count ?? 0
+    : 0;
 
   return <div className="nexus-explorer" id="assets">
     <PageHeader
       title="Explorador de activos"
-      eyebrow="INVENTARIO · INNERGEX CHILE"
-      description={live ? "Activos obtenidos mediante NEXUS API desde el provider Live configurado." : "Encuentra equipos, responsables y ubicaciones en un mismo lugar."}
+      eyebrow="ASSETS · TECHNOLOGY INTELLIGENCE"
+      description={live
+        ? "Investiga el inventario disponible en NEXUS API por identidad, clasificación, fuente y lifecycle."
+        : "Investiga el inventario sintético por identidad, clasificación, contexto, fuente y lifecycle."}
       meta={<Badge>{live ? "LIVE LAB · NEXUS API" : "Datos sintéticos · escenario de demostración"}</Badge>}
     />
     {state.status === "loading" && <LoadingState title="Cargando inventario de activos" description={live ? "Consultando NEXUS API en modo Live." : "Preparando el inventario de demostración."} />}
@@ -56,15 +62,52 @@ export function AssetExplorer({ provider = demoProvider, mode = "demo" }: { prov
     {state.status === "ready" && state.snapshot.assets.length === 0 && <EmptyState title="El inventario está vacío" description={live ? "NEXUS API no devolvió activos para el provider Live." : "No hay activos disponibles en este escenario."} action={<Button onPress={() => setAttempt(n => n + 1)}>Volver a cargar</Button>} />}
     {state.status === "ready" && state.snapshot.assets.length > 0 && result && <>
       <div ref={searchRegion}>
-        <Search label="Buscar activos" showLabel value={query.search} onChange={search => changeQuery({ search })} placeholder="Nombre, serial, responsable, sitio…" description={live ? "Busca también por hostname, etiqueta, modelo, fabricante o IP. Combina palabras para afinar los resultados." : "Busca también por hostname, etiqueta, modelo, fabricante o IP demo. Combina palabras para afinar los resultados."} />
+        <Search
+          label="Buscar activos"
+          showLabel
+          value={query.search}
+          onChange={search => changeQuery({ search })}
+          placeholder="Nombre, serial, clase, rol, fuente, sitio…"
+          description={live
+            ? "Busca por identidad, hostname, serial, etiqueta, fabricante/modelo, dominio, clase, rol, fuente o IP cuando exista cobertura."
+            : "Busca por identidad, hostname, serial, etiqueta, fabricante/modelo, dominio, clase, rol, fuente, contexto o IP demo."}
+        />
       </div>
-      <ExplorerFilters snapshot={state.snapshot} filters={query.filters}
+
+      <section className="nexus-explorer-scope" aria-labelledby="explorer-scope-heading">
+        <div>
+          <p className="nexus-overline">Scope</p>
+          <h2 id="explorer-scope-heading">Cobertura de investigación</h2>
+          <p>{live
+            ? "Las facetas reflejan únicamente metadata entregada por NEXUS API. La ausencia de una dimensión no se completa con datos Demo ni inferencias."
+            : "Las facetas canónicas provienen del snapshot Demo v0.2; los campos históricos continúan disponibles como compatibilidad."}</p>
+        </div>
+        <dl className="nexus-explorer-scope-facts">
+          <div><dt>Taxonomía</dt><dd>Domain · Class · Role</dd></div>
+          <div><dt>Contexto operacional</dt><dd>{contextCovered ? "Disponible" : "Sin cobertura del provider"}</dd></div>
+          <div><dt>Fuentes</dt><dd>{[...new Set(state.snapshot.assets.flatMap(asset => asset.sourceSystems ?? []))].length || "Sin cobertura"}</dd></div>
+        </dl>
+        {compatibilityFallbackCount > 0 && <p className="nexus-explorer-coverage-warning" role="note">
+          <strong>{compatibilityFallbackCount}</strong> {compatibilityFallbackCount === 1 ? "activo usa" : "activos usan"} una proyección escalar de compatibilidad taxonómica dentro del scope actual. Se muestran como proyección, no como clasificación resuelta.
+        </p>}
+      </section>
+
+      <ExplorerFilters
+        snapshot={state.snapshot}
+        query={query}
         onChange={(key, value) => changeQuery({ filters: { ...query.filters, [key]: value } })}
-        onClear={() => changeQuery({ filters: emptyFilters })} />
+        onClear={() => changeQuery({ filters: emptyFilters })}
+      />
       <Toolbar ariaLabel="Presentación del inventario" primary={<p ref={resultSummary} tabIndex={-1} className="nexus-explorer-results" role="status" aria-atomic="true">
         <strong>{result.total} de {state.snapshot.assets.length} activos</strong>{result.total > 0 && <span> · Mostrando {result.first}–{result.last}</span>}
       </p>} secondary={<label className="nexus-explorer-checkbox"><input type="checkbox" checked={showTechnical} onChange={e => setShowTechnical(e.target.checked)} />Mostrar identificación técnica</label>} />
-      {result.total === 0 ? <EmptyState title="No hay activos que coincidan" description="Prueba otra búsqueda o elimina filtros para ampliar el inventario." action={<Button onPress={clearAll}>Restablecer búsqueda y filtros</Button>} /> : <>
+      {result.total === 0 ? <EmptyState
+        title="No hay activos que coincidan"
+        description={live
+          ? "Prueba otra búsqueda o elimina filtros. El resultado sólo representa la cobertura disponible en NEXUS API."
+          : "Prueba otra búsqueda o elimina filtros para ampliar el inventario sintético."}
+        action={<Button onPress={clearAll}>Restablecer búsqueda y filtros</Button>}
+      /> : <>
         <p className="nexus-muted nexus-explorer-scroll-hint">Desplaza la tabla horizontalmente para consultar todas las columnas. Puedes ordenar desde sus encabezados.</p>
         <AssetTable rows={result.rows} asOf={state.snapshot.asOf} sort={query.sort} onSortChange={sort => changeQuery({ sort })} showTechnical={showTechnical} caption={live ? "Inventario de activos Live" : "Inventario de activos demo"} />
         <div className="nexus-explorer-pagination">
