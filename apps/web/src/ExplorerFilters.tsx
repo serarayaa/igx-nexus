@@ -34,7 +34,7 @@ export const filterLabels: Record<FilterKey, string> = {
   reviewRequired: "Revisión requerida",
   compatibilityFallback: "Proyección de compatibilidad",
   context: "Contexto operacional",
-  type: "Tipo de fuente",
+  type: "Tipo de inventario",
   location: "Sitio",
   manufacturer: "Fabricante",
   criticality: "Criticidad",
