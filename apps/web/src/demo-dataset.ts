@@ -8,7 +8,7 @@ import {
   type DemoHero as SharedDemoHero,
 } from "../../../packages/demo-data/index.mjs";
 import type { TechnologyAsset, TechnologyAttributeValue, TechnologyRelationship } from "@igx-nexus/types";
-import type { Asset, AssetType, InventorySnapshot, Lifecycle } from "./asset-model";
+import { summarizeTaxonomy, type Asset, type AssetType, type InventorySnapshot, type Lifecycle } from "./asset-model";
 import type { Relationship, RelationshipSnapshot } from "./relationship-model";
 
 export { DEMO_AS_OF, DEMO_DATASET_VERSION };
@@ -60,6 +60,7 @@ function legacyLifecycle(asset: TechnologyAsset): Lifecycle {
 }
 
 function projectAsset(asset: TechnologyAsset): Asset {
+  const taxonomy = summarizeTaxonomy(asset.taxonomy);
   return Object.freeze({
     id: asset.id,
     type: legacyType(asset),
@@ -77,6 +78,20 @@ function projectAsset(asset: TechnologyAsset): Asset {
     critical: booleanAttribute(asset, "demo.critical"),
     lastSeen: stringAttribute(asset, "demo.lastSeen"),
     warrantyEnds: stringAttribute(asset, "demo.warrantyEnds"),
+    dataMode: "demo",
+    criticality: asset.criticality,
+    assetClass: asset.assetClass,
+    role: asset.role,
+    taxonomyState: taxonomy.state,
+    taxonomyReviewRequired: taxonomy.reviewRequired,
+    taxonomyCompatibilityFallback: false,
+    operationalContexts: Object.freeze((asset.operationalContexts ?? []).map(context => Object.freeze({
+      id: context.id,
+      kind: context.kind,
+      displayName: context.displayName ?? null,
+    }))),
+    sourceSystems: Object.freeze([...new Set(asset.sourceReferences.map(source => source.source))]),
+    sourceObservedAt: asset.sourceReferences[0]?.observedAt ?? null,
   });
 }
 
@@ -129,3 +144,34 @@ export function createDemoDataset(): { readonly inventory: InventorySnapshot; re
 }
 
 export const demoDataset = createDemoDataset();
+
+/**
+ * Projection exacta de los campos históricos v0.1. Permite evolucionar el modelo Web
+ * con metadata canónica sin perder la regresión del catálogo legacy revisado.
+ */
+export function legacyDemoDatasetProjection(dataset = demoDataset) {
+  return {
+    inventory: {
+      asOf: dataset.inventory.asOf,
+      assets: dataset.inventory.assets.map(asset => ({
+        id: asset.id,
+        type: asset.type,
+        name: asset.name,
+        hostname: asset.hostname,
+        serial: asset.serial,
+        assetTag: asset.assetTag,
+        manufacturer: asset.manufacturer,
+        model: asset.model,
+        ipAddress: asset.ipAddress,
+        domain: asset.domain,
+        location: asset.location,
+        lifecycle: asset.lifecycle,
+        owner: asset.owner,
+        critical: asset.critical,
+        lastSeen: asset.lastSeen,
+        warrantyEnds: asset.warrantyEnds,
+      })),
+    },
+    relationships: dataset.relationships,
+  };
+}
