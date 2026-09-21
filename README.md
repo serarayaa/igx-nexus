@@ -153,7 +153,7 @@ V02-017 reorganiza `#assets/:id` por intención en **Resumen / Inventario / Evid
 
 La ficha muestra Taxonomy v2, criticidad canónica, compatibility fallback, Operational Context y referencias de fuente sólo cuando existen. CMDB Health permanece como calidad del registro, separado de freshness, lifecycle y futura salud técnica. Live no cae a QR, Health ni relaciones sintéticas de Demo.
 
-Ver [Asset 360 2.0](docs/product/asset-360-v2-plan.md).
+Ver [Asset 360 2.0](docs/product/asset-360-v2-plan.md) y [Technology Scan V02-017](docs/product/technology-scan-v02-017.md).
 
 ## Demo canónica
 
