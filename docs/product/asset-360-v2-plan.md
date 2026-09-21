@@ -1,6 +1,6 @@
 # V02-017 — Asset 360 2.0
 
-Estado: preparación; implementación y validación funcional pendientes. Issue canónico: [#89](https://github.com/serarayaa/igx-nexus/issues/89).
+Estado: **en implementación**; issue canónico: [#89](https://github.com/serarayaa/igx-nexus/issues/89).
 
 ## Objetivo
 Responder: **¿Qué es este CI, qué sabemos de él, de dónde lo sabemos y qué requiere atención?**
