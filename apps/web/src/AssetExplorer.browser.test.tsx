@@ -148,6 +148,50 @@ it("cancela, ignora respuestas obsoletas y aborta al desmontar", async () => {
   await act(async () => resolveOld(demoSnapshot));
 });
 
+
+it("mantiene Live honesto cuando la taxonomía usa compatibility fallback", async () => {
+  const provider: InventoryProvider = async () => ({
+    asOf: "2026-09-21T12:00:00.000Z",
+    assets: [{
+      id: "NEXUS-LIVE-1",
+      name: "Endpoint Live Lab",
+      type: "Computer",
+      domain: "IT",
+      lifecycle: "unknown",
+      critical: false,
+      criticality: "unknown",
+      owner: null,
+      location: "Live Lab",
+      lastSeen: null,
+      warrantyEnds: null,
+      hostname: "live-lab-01",
+      serial: "LIVE-SERIAL-1",
+      assetTag: null,
+      manufacturer: "Vendor",
+      model: "Model",
+      ipAddress: null,
+      dataMode: "live",
+      assetClass: "endpoint",
+      role: "user_endpoint",
+      taxonomyState: "unclassified",
+      taxonomyReviewRequired: true,
+      taxonomyCompatibilityFallback: true,
+      sourceSystems: ["glpi"],
+      sourceObservedAt: "2026-09-21T11:55:00.000Z",
+    }],
+  });
+
+  render(<NexusShell mode="live" view="assets"><AssetExplorer mode="live" provider={provider} /></NexusShell>);
+  await screen.findByRole("table", { name: "Inventario de activos Live" });
+  expect(screen.getByText(/1 activo usa una proyección escalar de compatibilidad/)).toBeTruthy();
+  expect(screen.getByText("Proyección de compatibilidad")).toBeTruthy();
+  expect(screen.getByText("Sin cobertura del provider")).toBeTruthy();
+  expect(screen.queryByRole("combobox", { name: "Contexto operacional" })).toBeNull();
+  filter("Fuente", "glpi");
+  filter("Estado taxonómico", "unclassified");
+  expect(screen.getByText("1 de 1 activos")).toBeTruthy();
+});
+
 it("pasa axe light/dark y comfortable/compact a 1440, 768 y 320 px con detalles", async () => {
   const { container } = mount(); await ready();
   await userEvent.click(screen.getByRole("checkbox", { name: "Mostrar identificación técnica" }));
