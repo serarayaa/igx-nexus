@@ -90,6 +90,21 @@ try {
   await page.setViewportSize({ width: 320, height: 1000 });
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "OT forced-colors reflow");
   await page.screenshot({ path: "qa-artifacts/dataset-ot-forced-colors-320.png" });
+
+  // V02-017: contextual Asset 360 sections remain deep-linkable and usable under constrained rendering.
+  for (const [section, heading] of [["inventory", "Inventario"], ["evidence", "Evidencia y fuentes"], ["relationships", "Relaciones"]]) {
+    await page.goto(`http://127.0.0.1:4173/#assets/DEMO-0013?section=${section}`);
+    await page.getByRole("heading", { name: heading, level: 2, exact: true }).waitFor();
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Asset 360 ${section} 320px reflow`);
+    checks.push(`Asset 360 ${section} deep-link + 320px reflow`);
+  }
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  const assetNav = page.getByRole("navigation", { name: "Secciones de Asset 360", exact: true });
+  await assetNav.getByRole("link", { name: "Evidencia y fuentes", exact: true }).focus();
+  assert(await page.evaluate(() => getComputedStyle(document.activeElement).outlineStyle !== "none"));
+  await page.screenshot({ path: "qa-artifacts/asset-360-forced-colors-320.png" });
+  checks.push("Asset 360 forced-colors + reduced-motion + keyboard focus");
+
   // Restore Health before checking its existing 200% text contract.
   await page.goto("http://127.0.0.1:4173/#health");
   await page.getByRole("heading", { name: "Score de registros CI" }).waitFor();
