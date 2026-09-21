@@ -400,12 +400,13 @@ function RelationshipPanel({
               <StatusBadge status={relationship.status === "degraded" ? "warning" : relationship.status === "active" ? "success" : "neutral"}>{relationship.status}</StatusBadge>
             </div>
             <dl className="nexus-asset-fields">
-              <Field label="Otro endpoint" value={otherAsset?.name ?? otherId ?? null} />
+              <Field label="Otro endpoint" value={otherAsset?.name ?? (otherId ? `CI no disponible ${otherId}` : null)} />
               <Field label="ID del endpoint" value={otherId ?? null} mono />
               <Field label="Observada" value={displayDate(relationship.observedAt)} />
               <Field label="Fuente" value={relationship.source} />
             </dl>
-            {otherId && <a className="nexus-asset-link" href={assetHash(otherId)}>Abrir CI relacionado</a>}
+            {!otherAsset && otherId && <Badge>Endpoint fuera del inventario</Badge>}
+            {otherAsset && otherId && <a className="nexus-asset-link" href={assetHash(otherId)}>Abrir CI relacionado</a>}
           </li>;
         })}
       </ul>
