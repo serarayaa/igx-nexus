@@ -75,21 +75,42 @@ Consulta: 2026-09-21. Patrones de producto, no copia visual.
 5. Estados, copy y regresiones Demo/Live.
 6. QA browser/visual, CI y PR para merge manual.
 
-## Aceptación y pruebas pendientes
-- [ ] Header no presenta fallback como clasificación confirmada; criticidad canónica coherente.
-- [ ] Cuatro áreas navegables, sin scroll acumulativo de todas las cards.
-- [ ] Fuentes múltiples conservan sus propias fechas; ausencia/conflicto/incertidumbre explícitos.
-- [ ] Calidad CMDB, Health técnico y lifecycle no comparten score ni conclusión.
-- [ ] Relaciones incidentes: dirección, endpoints ausentes, fecha null y error/cero evidencia diferenciados.
-- [ ] Demo/Live misma IA, sin datos ni QR/Health sintéticos en Live.
-- [ ] Deep links, refresh, Atrás/Adelante, teclado/foco y cambios rápidos de CI/provider cubiertos.
-- [ ] Loading/error/retry/empty/not-found/partial coverage cubiertos.
-- [ ] Tests unitarios de proyecciones y browser de flujos; axe por tema/densidad, 320 px, zoom, forced colors, reduced motion y revisión visual.
-- [ ] Legacy digest, contratos, API y pruebas requeridas por CI sin regresiones.
-- [ ] Documentación de implementación y technology scan actualizados según evidencia.
-- [ ] CI del PR verde; merge manual de Sergio; luego CI post-merge y housekeeping.
+## Aceptación y pruebas
+
+- [x] Header no presenta fallback como clasificación confirmada; criticidad canónica coherente.
+- [x] Cuatro áreas navegables, sin scroll acumulativo de todas las cards.
+- [x] Fuentes múltiples conservan sus propias fechas; ausencia/incertidumbre explícitas.
+- [x] Calidad CMDB, freshness, futura Health técnica y lifecycle no comparten score ni conclusión.
+- [x] Relaciones incidentes: dirección, endpoints ausentes, fecha null y error diferenciados.
+- [x] Demo/Live comparten IA sin QR, Health ni relaciones sintéticas en Live.
+- [x] Deep links, refresh, Atrás/Adelante, teclado/foco y cambios rápidos de CI cubiertos.
+- [x] Loading/error/retry/empty/not-found/partial coverage cubiertos.
+- [x] Tests unitarios/browser, axe por tema/densidad, 320 px, forced colors y reduced motion incorporados.
+- [x] Legacy digest, contratos y API permanecen sin cambios de dominio ni regresión deliberada.
+- [x] Documentación de implementación y technology scan actualizados según evidencia.
+- [ ] CI final del PR verde; merge manual de Sergio; luego CI post-merge y housekeeping.
 
 ## Fuera de alcance
 V02-018 Technology Map 2.0 (no nuevo grafo/layout/impact engine), V02-019 Analytics Contract Layer (no nuevos KPIs/scores/cohortes), edición CMDB, nuevas integraciones, Intune real, telemetry, AI/ML, history inventada, revisión manual persistida, scanning OT y remediación.
 
 No auto-merge. GLPI sigue como SoR y Jira como Service Desk. No versionar secretos, PII ni inventario corporativo real.
+
+
+## Estado de implementación
+
+La rama implementa actualmente:
+
+- navegación deep-linkable con enlaces nativos para las cuatro áreas;
+- foco contextual sin router adicional;
+- header estable con lifecycle, criticidad y estado taxonómico defendible;
+- Taxonomy v2 y Operational Context en Inventario;
+- references por fuente con fecha propia en Evidencia;
+- coverage explícita cuando provenance detallada no llega a la Web;
+- relaciones incidentes con dirección, estado, fecha, endpoint y navegación sólo cuando el CI existe;
+- error de relaciones aislado de la identidad del activo;
+- separación explícita entre CMDB Health, freshness de inventario, lifecycle y futura Device Health;
+- QA adicional para reflow/forced colors/reduced motion.
+
+Technology scan versionado: `docs/product/technology-scan-v02-017.md`.
+
+La integración final continúa sujeta a CI verde del head/PR y merge manual.
