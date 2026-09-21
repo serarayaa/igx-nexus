@@ -29,6 +29,11 @@ export interface AssetOperationalContext {
   readonly displayName: string | null;
 }
 
+export interface AssetSourceReference {
+  readonly source: string;
+  readonly observedAt: string | null;
+}
+
 /** Proyección mínima de inventario consumida por las métricas. */
 export interface AssetSummary {
   readonly id: string;
@@ -62,6 +67,7 @@ export interface Asset extends AssetSummary {
   readonly operationalContexts?: readonly AssetOperationalContext[];
   readonly sourceSystems?: readonly string[];
   readonly sourceObservedAt?: string | null;
+  readonly sourceReferences?: readonly AssetSourceReference[];
 }
 export interface InventorySnapshot<T extends AssetSummary = Asset> {
   readonly asOf: string;
