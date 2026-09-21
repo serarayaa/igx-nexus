@@ -70,10 +70,25 @@ describe("Live Web provider projection", () => {
         dataMode: "live",
         sourceSystems: ["glpi"],
         sourceObservedAt: "2026-09-15T15:59:00.000Z",
+        sourceReferences: [{ source: "glpi", observedAt: "2026-09-15T15:59:00.000Z" }],
       })],
     });
   });
 
+
+  it("preserves each source observation independently for Asset 360 evidence", () => {
+    const multisource = structuredClone(canonicalComputer);
+    multisource.assets[0]!.sourceReferences.push(
+      { source: "intune", externalId: "device-1", observedAt: "2026-09-15T15:57:00.000Z", authority: "observed" },
+    );
+    const asset = projectCanonicalSnapshot(multisource).assets[0]!;
+    expect(asset.sourceSystems).toEqual(["glpi", "intune"]);
+    expect(asset.sourceReferences).toEqual([
+      { source: "glpi", observedAt: "2026-09-15T15:59:00.000Z" },
+      { source: "intune", observedAt: "2026-09-15T15:57:00.000Z" },
+    ]);
+    expect(asset.sourceObservedAt).toBe("2026-09-15T15:59:00.000Z");
+  });
 
   it("keeps compatibility projection visibly unresolved instead of presenting it as classified", () => {
     const fallback = structuredClone(canonicalComputer);

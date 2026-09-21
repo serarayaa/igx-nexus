@@ -36,3 +36,50 @@
 @media (forced-colors: active) {
   .nexus-asset-section, .nexus-asset-summary { border-color: CanvasText; }
 }
+
+
+/* V02-017 — Asset 360 2.0 */
+.nexus-asset-local-nav { display: flex; flex-wrap: wrap; gap: var(--igx-spacing-2); padding-block: var(--igx-spacing-2); border-block: 1px solid var(--igx-semantic-color-border-subtle); }
+.nexus-asset-local-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: var(--igx-spacing-2) var(--igx-spacing-3); border-radius: var(--igx-semantic-shape-control); text-decoration: none; }
+.nexus-asset-local-nav a[aria-current="page"] { background: var(--igx-semantic-color-action-primary-background); color: var(--igx-semantic-color-action-primary-foreground); font-weight: var(--igx-font-weight-semibold); }
+.nexus-asset-panel { display: grid; gap: var(--igx-density-section-gap); min-width: 0; }
+.nexus-asset-panel-heading { display: flex; justify-content: space-between; gap: var(--igx-spacing-5); align-items: end; }
+.nexus-asset-panel-heading > * { min-width: 0; }
+.nexus-asset-panel-heading h2 { margin: 0; font-size: 1.5rem; }
+.nexus-asset-panel-heading > p { max-width: 42rem; margin: 0; color: var(--igx-semantic-color-text-secondary); font-size: .875rem; }
+.nexus-asset-overview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--igx-density-content-gap); align-items: start; }
+.nexus-asset-section h2, .nexus-asset-section h3, .nexus-asset-section h4 { margin: 0; line-height: 1.3; }
+.nexus-asset-section h3 { font-size: 1.0625rem; }
+.nexus-asset-section h4 { font-size: .875rem; }
+.nexus-asset-taxonomy-status { display: flex; flex-wrap: wrap; gap: var(--igx-spacing-2); align-items: center; }
+.nexus-asset-warning { padding: var(--igx-spacing-3) var(--igx-spacing-4); border-inline-start: 3px solid var(--igx-semantic-color-status-warning-solid); background: var(--igx-semantic-color-status-warning-surface); }
+.nexus-asset-context-list, .nexus-asset-attention-list { margin: 0; padding-inline-start: var(--igx-spacing-5); }
+.nexus-asset-context-list li { margin-block: var(--igx-spacing-2); }
+.nexus-asset-context-list li span { display: block; color: var(--igx-semantic-color-text-secondary); font-size: .8125rem; }
+.nexus-asset-source-table-wrap { overflow-x: auto; max-width: 100%; }
+.nexus-asset-source-table { width: 100%; min-width: 32rem; border-collapse: collapse; }
+.nexus-asset-source-table caption { text-align: start; padding-bottom: var(--igx-spacing-2); color: var(--igx-semantic-color-text-secondary); font-size: .8125rem; }
+.nexus-asset-source-table th, .nexus-asset-source-table td { text-align: start; padding: var(--igx-spacing-3); border-bottom: 1px solid var(--igx-semantic-color-border-subtle); }
+.nexus-asset-source-table th { font-size: .8125rem; color: var(--igx-semantic-color-text-secondary); }
+.nexus-asset-relationship-list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--igx-density-content-gap); }
+.nexus-asset-relationship-list > li { display: grid; gap: var(--igx-spacing-4); padding: var(--igx-spacing-4); border: 1px solid var(--igx-semantic-color-border-default); border-radius: var(--igx-semantic-shape-container); background: var(--igx-semantic-color-surface-base); }
+.nexus-asset-relationship-main { display: flex; justify-content: space-between; gap: var(--igx-spacing-4); align-items: flex-start; }
+.nexus-asset-relationship-main > div { display: grid; gap: var(--igx-spacing-1); min-width: 0; }
+.nexus-asset-relationship-main span { color: var(--igx-semantic-color-text-secondary); font-size: .8125rem; }
+.nexus-asset-panel [data-asset-section-heading] { scroll-margin-block: 7rem; }
+@media (max-width: 900px) {
+  .nexus-asset-overview-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .nexus-asset-panel-heading { align-items: flex-start; flex-direction: column; gap: var(--igx-spacing-2); }
+  .nexus-asset-local-nav { overflow-x: auto; flex-wrap: nowrap; }
+  .nexus-asset-local-nav a { flex: none; }
+}
+@media (max-width: 479px) {
+  .nexus-asset-relationship-main { flex-direction: column; }
+}
+@media (forced-colors: active) {
+  .nexus-asset-local-nav { border-color: CanvasText; }
+  .nexus-asset-local-nav a[aria-current="page"] { outline: 2px solid Highlight; }
+  .nexus-asset-warning, .nexus-asset-relationship-list > li, .nexus-asset-source-table th, .nexus-asset-source-table td { border-color: CanvasText; }
+}

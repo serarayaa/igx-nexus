@@ -188,3 +188,34 @@ Los tickets CMDB-009/010/011 se integraron posteriormente en la ficha; esta list
 ## Integración CMDB-011
 
 `AssetHealthSection` reutiliza el snapshot de la ficha y carga relaciones mediante un provider de inventario completo. Error/retry queda limitado a la sección; no oculta identidad/QR/relaciones ni mueve el foco de la ficha. Fechas imposibles se presentan como no verificables sin lanzar RangeError. El enlace «Ver CMDB Health global» abre `#health`.
+
+
+## Evolución V02-017 — Asset 360 2.0
+
+El documento anterior conserva el contexto histórico de CMDB-008. V02-017 reorganiza la experiencia sin reemplazar sus contratos base.
+
+La pregunta operacional actual es:
+
+> **¿Qué es este CI, qué sabemos de él, de dónde lo sabemos y qué requiere atención?**
+
+La ficha conserva `#assets/<id>` como Resumen y agrega secciones deep-linkable:
+
+```text
+#assets/<id>
+#assets/<id>?section=inventory
+#assets/<id>?section=evidence
+#assets/<id>?section=relationships
+```
+
+Principios de la evolución:
+
+- header/identidad NEXUS permanecen estables entre secciones;
+- Inventory expone Taxonomy v2 y Operational Context cuando existe;
+- compatibility fallback nunca se presenta como clasificación resuelta;
+- Evidence conserva fechas por referencia de fuente y declara cobertura parcial de provenance;
+- Relationships muestra claims incidentes y mantiene Technology Map como investigación especializada;
+- CMDB Health se presenta explícitamente como calidad de registro, no Device Health;
+- Live no cae a QR/Health/relaciones sintéticas;
+- History no se fabrica a partir de timestamps que no constituyen una historia real.
+
+El plan y las decisiones actuales viven en [Asset 360 2.0](product/asset-360-v2-plan.md).

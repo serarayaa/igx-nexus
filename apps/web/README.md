@@ -25,7 +25,10 @@ Abrir `http://127.0.0.1:3000`. El servidor se limita a loopback y falla si el pu
 /#overview                       Technology Overview
 /#health                         CMDB Health
 /#assets                         Asset Explorer
-/#assets/DEMO-0013               Asset 360 hero OT
+/#assets/DEMO-0013               Asset 360 · Resumen
+/#assets/DEMO-0013?section=inventory      Asset 360 · Inventario
+/#assets/DEMO-0013?section=evidence       Asset 360 · Evidencia y fuentes
+/#assets/DEMO-0013?section=relationships  Asset 360 · Relaciones
 /#assets/DEMO-0013/label         Diseñador de etiqueta
 /#assets/DEMO-0013/relations     Technology Map
 /#q/<demo-locator>               Simulador interno de resolución
@@ -66,6 +69,14 @@ V02-016 mantiene search/sort/pagination del Explorer histórico y agrega:
 - compatibility fallback visible y nunca presentado como clasificación resuelta.
 
 No existe DSL/AQL, saved filters persistentes ni backend search service en V02-016.
+
+## Asset 360 2.0
+
+V02-017 conserva `#assets/:id` y agrega contexto compartible mediante `?section=`. La ficha ya no apila todo el contenido en una grilla única: separa Resumen, Inventario, Evidencia y fuentes, y Relaciones.
+
+La proyección Web conserva de forma aditiva referencias de fuente con su propio `observedAt`. Demo y Live comparten IA, pero Live no recibe QR, CMDB Health sintético ni relaciones Demo. La UI declara compatibility fallback, coverage parcial y fechas desconocidas en vez de inferirlas.
+
+Technology Map continúa en `#assets/:id/relations`; no se duplica el grafo dentro de Asset 360.
 
 ## QR y etiquetas
 

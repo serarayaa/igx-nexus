@@ -37,14 +37,15 @@ export function HealthDetails({ health }: { health: AssetHealth }) {
     <a className="nexus-asset-link" href="#health">Ver CMDB Health global</a>
   </div>;
 }
-export function AssetHealthSection({ inventory, assetId, relationshipProvider = demoRelationshipInventoryProvider }: {
-  inventory: InventorySnapshot; assetId: string; relationshipProvider?: RelationshipInventoryProvider;
+export function AssetHealthSection({ inventory, assetId, relationshipProvider = demoRelationshipInventoryProvider, headingLevel = 2 }: {
+  inventory: InventorySnapshot; assetId: string; relationshipProvider?: RelationshipInventoryProvider; headingLevel?: 2 | 3;
 }) {
   const provider = useMemo<InventoryProvider>(() => async signal => { signal.throwIfAborted(); return inventory; }, [inventory]);
   const { state, retry } = useHealthReport(provider, relationshipProvider);
   const health = state.status === "ready" ? state.report.assets.find(row => row.asset.id === assetId) : null;
+  const Heading = headingLevel === 3 ? "h3" : "h2";
   return <section className="nexus-asset-section" aria-labelledby="asset-health-heading">
-    <h2 id="asset-health-heading">CMDB Health</h2>
+    <Heading id="asset-health-heading">CMDB Health</Heading>
     {state.status === "loading" && <p role="status">Calculando calidad del registro…</p>}
     {state.status === "error" && <ErrorState title="No se pudo calcular CMDB Health" description="La ficha sigue disponible. Vuelve a intentar la evaluación." action={<Button onPress={retry}>Reintentar Health</Button>} />}
     {health && <HealthDetails health={health} />}

@@ -87,7 +87,7 @@ V02-015 — Technology Overview quedó incorporado mediante PR #83 en el merge `
 
 V02-016 — Asset Explorer 2.0 quedó incorporado mediante PR #87 en el merge `68479fd9dd8c45be06a99b0042be83cfba9a2277`; CI post-merge #608 verde. `#assets` es ahora un workspace de investigación data-dense con facetas canónicas, counts contextuales, visibilidad de source/taxonomy coverage y tabla orientada a encontrar el CI correcto sin confundir compatibility fallback con clasificación resuelta.
 
-El siguiente trabajo planificado es **V02-017 — Asset 360 2.0**.
+El trabajo actual es **V02-017 — Asset 360 2.0** (issue #89).
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -146,6 +146,14 @@ Ver [Technology Overview](docs/product/technology-overview-v2.md).
 V02-016 evoluciona `#assets` como workspace de investigación data-dense: búsqueda libre, facetas canónicas, counts contextuales, visibilidad de source/taxonomy coverage y una tabla enfocada en encontrar el CI correcto sin confundir compatibility fallback con clasificación resuelta.
 
 Ver [Asset Explorer 2.0](docs/product/asset-explorer-v2.md) y [Technology Scan V02-016](docs/product/technology-scan-v02-016.md).
+
+## Asset 360 2.0
+
+V02-017 reorganiza `#assets/:id` por intención en **Resumen / Inventario / Evidencia y fuentes / Relaciones**. La identidad NEXUS y el header permanecen estables, mientras las secciones pueden compartirse con `?section=` sin introducir un router nuevo.
+
+La ficha muestra Taxonomy v2, criticidad canónica, compatibility fallback, Operational Context y referencias de fuente sólo cuando existen. CMDB Health permanece como calidad del registro, separado de freshness, lifecycle y futura salud técnica. Live no cae a QR, Health ni relaciones sintéticas de Demo.
+
+Ver [Asset 360 2.0](docs/product/asset-360-v2-plan.md) y [Technology Scan V02-017](docs/product/technology-scan-v02-017.md).
 
 ## Demo canónica
 

@@ -132,7 +132,8 @@ it("Asset 360 conserva ficha ante fallo de Health, reintenta y tolera fechas inv
   render(<NexusShell view="asset"><Asset360 assetId={specimen.id} provider={provider} relationshipProvider={relationProvider} /></NexusShell>);
   await screen.findByRole("heading",{name:specimen.name,level:1});
   expect(await screen.findByText("No se pudo calcular CMDB Health")).toBeTruthy();
-  expect(screen.getByRole("region",{name:"Identidad"})).toBeTruthy();
+  expect(screen.getByRole("heading",{name:specimen.name,level:1})).toBeTruthy();
+  expect(screen.getByRole("heading",{name:"Resumen",level:2})).toBeTruthy();
   await userEvent.click(screen.getByRole("button",{name:"Reintentar Health"}));
   const health=screen.getByRole("region",{name:"CMDB Health"});
   expect(await within(health).findByText("Observación inválida o futura")).toBeTruthy();

@@ -60,6 +60,19 @@ Documentos:
 
 V02-016 evoluciona `#assets` hacia un workspace data-dense y multisource con facetas canónicas, counts contextuales y coverage explícita, sin adelantar Asset 360 2.0 ni Analytics Contract Layer.
 
+## V02-017 — Asset 360 2.0
+
+Baseline de implementación:
+
+`229e1f57cf6a15c1d369af23a2bdc0db797b072f`
+
+Documentos:
+
+- [Asset 360 2.0 — plan y decisiones](asset-360-v2-plan.md)
+- [Technology Scan V02-017](technology-scan-v02-017.md)
+
+V02-017 reorganiza el detalle del CI por intención: **Resumen / Inventario / Evidencia y fuentes / Relaciones**. Mantiene Demo/Live con la misma IA, hace explícito taxonomy fallback y coverage, y separa calidad CMDB, freshness, lifecycle y futura salud técnica.
+
 ## Principios
 
 1. Cada pantalla responde una pregunta operacional.
@@ -78,7 +91,7 @@ V02-016 evoluciona `#assets` hacia un workspace data-dense y multisource con fac
 - V02-014 — Shell & Motion 2.0 — integrado
 - V02-015 — Technology Overview — integrado
 - V02-016 — Asset Explorer 2.0 — integrado
-- V02-017 — Asset 360 2.0 — siguiente trabajo
+- V02-017 — Asset 360 2.0 — en implementación
 - V02-018 — Technology Map 2.0
 - V02-019 — Analytics Contract Layer
 

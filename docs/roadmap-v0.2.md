@@ -51,7 +51,7 @@ Dirección conceptual posterior:
 | V02-014 | Shell & Motion 2.0 | P1 | ✅ Integrado — PR #80 / issue #79 / merge `e650e288`; CI #537 verde |
 | V02-015 | Technology Overview | P1 | ✅ Integrado — PR #83 / issue #82 / merge `c30eb25f`; CI #573 verde |
 | V02-016 | Asset Explorer 2.0 | P1 | ✅ Integrado — PR #87 / issue #85 / merge `68479fd9`; CI #608 verde |
-| V02-017 | Asset 360 2.0 | P1 | ⚪ Pendiente |
+| V02-017 | Asset 360 2.0 | P1 | 🟡 En implementación — issue #89 |
 | V02-018 | Technology Map 2.0 | P1 | ⚪ Pendiente |
 | V02-019 | Analytics Contract Layer | P0 | ⚪ Pendiente |
 | V02-020 | CMDB Quality 2.0 | P1 | ⚪ Pendiente |
@@ -285,9 +285,30 @@ Documentos:
 
 Siguiente trabajo: **V02-017 — Asset 360 2.0**.
 
-### V02-017 — Asset 360 2.0
+### V02-017 — Asset 360 2.0 — en implementación
 
-Vista central de identidad, inventory, evidence, relationships, lifecycle, CMDB Quality y Health sin mezclar conceptos.
+Issue #89.
+
+Pregunta central:
+
+> **¿Qué es este CI, qué sabemos de él, de dónde lo sabemos y qué requiere atención?**
+
+Dirección implementada en la rama de trabajo:
+
+- navegación contextual deep-linkable: Resumen / Inventario / Evidencia y fuentes / Relaciones;
+- header estable fuera del panel y clasificación defendible;
+- compatibility scalar projection visible como compatibilidad, no como clasificación confirmada;
+- criticidad canónica y Taxonomy v2 reutilizadas desde la proyección existente;
+- Operational Context sólo cuando existe cobertura;
+- referencias de fuente conservan su propia fecha de observación;
+- provenance por atributo/authority/confidence no se inventa cuando la Web no lo transporta;
+- calidad CMDB, freshness, lifecycle y futura salud técnica permanecen conceptualmente separadas;
+- relaciones incidentes se muestran semánticamente y Technology Map sigue como drill-down;
+- Live no recibe QR, Health sintético ni relaciones Demo;
+- History permanece fuera hasta existir historia temporal real;
+- sin router nuevo, analytics framework ni nuevas integraciones.
+
+Documento: `docs/product/asset-360-v2-plan.md`.
 
 ### V02-018 — Technology Map 2.0
 

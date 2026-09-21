@@ -9,8 +9,9 @@ import { CmdbHealth } from "./CmdbHealth";
 import { NexusShell } from "./NexusShell";
 import { demoProvider } from "./demo-provider";
 import { liveProvider } from "./live-provider";
+import { demoRelationshipInventoryProvider } from "./demo-relationship-provider";
 import type { InventoryProvider } from "./asset-model";
-import { routeFromHash, type AppRoute } from "./navigation-model";
+import { assetSectionHash, routeFromHash, type AppRoute, type AssetSection } from "./navigation-model";
 
 type InventoryMode = "demo" | "live";
 
@@ -26,9 +27,15 @@ const inventory = configuredInventoryProvider();
 function savedRoute(): AppRoute | null {
   const value: unknown = window.history.state?.nexusRoute;
   if (!value || typeof value !== "object" || !("view" in value)) return null;
-  const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown; locator?: unknown };
+  const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown; locator?: unknown; section?: unknown };
   if (route.view === "dashboard" || route.view === "assets" || route.view === "health") return { view: route.view };
-  if ((route.view === "asset" || route.view === "label" || route.view === "relations") && typeof route.assetId === "string" && route.assetId) {
+  if (route.view === "asset" && typeof route.assetId === "string" && route.assetId) {
+    const section: AssetSection = route.section === "inventory" || route.section === "evidence" || route.section === "relationships"
+      ? route.section
+      : "summary";
+    return { view: "asset", assetId: route.assetId, section };
+  }
+  if ((route.view === "label" || route.view === "relations") && typeof route.assetId === "string" && route.assetId) {
     return { view: route.view, assetId: route.assetId };
   }
   if (route.view === "qr" && typeof route.locator === "string" && route.locator) {
@@ -73,7 +80,7 @@ export function App() {
   useEffect(() => {
     if (inventory.mode !== "live") return;
     const expectedHash = route.view === "asset"
-      ? `#assets/${encodeURIComponent(route.assetId)}`
+      ? assetSectionHash(route.assetId, route.section)
       : route.view === "assets" ? "#assets" : "#overview";
     if (window.location.hash !== expectedHash) {
       window.history.replaceState({ ...window.history.state, nexusRoute: route }, "", expectedHash);
@@ -82,6 +89,8 @@ export function App() {
 
   useEffect(() => {
     document.title = `${routeTitle(route)} · IGX NEXUS`;
+    // Asset 360 gestiona su propio foco para distinguir cambios de CI y de sección contextual.
+    if (route.view === "asset") return;
     const frame = requestAnimationFrame(() => {
       const heading = document.querySelector<HTMLElement>("main h1");
       if (heading) {
@@ -101,7 +110,13 @@ export function App() {
     : route.view === "assets"
       ? <AssetExplorer provider={inventory.provider} mode={inventory.mode} />
       : route.view === "asset"
-        ? <Asset360 assetId={route.assetId} provider={inventory.provider} />
+        ? <Asset360
+            assetId={route.assetId}
+            section={route.section}
+            mode={inventory.mode}
+            provider={inventory.provider}
+            {...(inventory.mode === "demo" ? { relationshipProvider: demoRelationshipInventoryProvider } : {})}
+          />
         : route.view === "relations"
           ? <RelationshipGraph assetId={route.assetId} />
         : route.view === "label"
