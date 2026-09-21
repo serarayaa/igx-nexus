@@ -50,7 +50,7 @@ export function DemoQrResolver({ locator, provider = demoProvider }: { locator: 
   const asset = state.snapshot.assets.find((candidate) => candidate.id === assetId)!;
 
   return <div className="nexus-label-designer nexus-qr-resolver" ref={contentRef}>
-    <nav className="nexus-label-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#overview">Panel principal</a></li><li><a href="#assets">Activos</a></li><li aria-current="page">Resolver QR demo</li></ol></nav>
+    <nav className="nexus-label-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#overview">Overview</a></li><li><a href="#assets">Activos</a></li><li aria-current="page">Resolver QR demo</li></ol></nav>
     <PageHeader title="Resolver QR demo" eyebrow="CMDB-009 · SIMULADOR DE RESOLUCIÓN" description="Prueba interna del contrato locator → identidad NEXUS." meta={<div className="nexus-label-status"><StatusBadge status="success">Locator reconocido</StatusBadge><Badge>No productivo</Badge></div>} />
     <section className="nexus-label-contract" aria-labelledby="qr-resolution-heading">
       <div><h2 id="qr-resolution-heading">Resolución controlada</h2><p>El locator se resolvió contra fixtures sintéticos. Esta ruta hash no representa el endpoint productivo.</p></div>
