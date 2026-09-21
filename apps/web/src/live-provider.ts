@@ -155,11 +155,13 @@ function taxonomyState(asset: CanonicalAsset): TaxonomyClassificationState {
 }
 
 function taxonomyReviewRequired(asset: CanonicalAsset): boolean {
-  return [
+  const values = [
     attributeBoolean(asset, "nexus.taxonomy.domain.reviewRequired"),
     attributeBoolean(asset, "nexus.taxonomy.assetClass.reviewRequired"),
     attributeBoolean(asset, "nexus.taxonomy.role.reviewRequired"),
-  ].some(value => value === true);
+  ];
+  // Sólo declaramos "sin revisión" cuando las tres dimensiones lo dicen explícitamente.
+  return !values.every(value => value === false);
 }
 
 function mapCanonicalAsset(asset: CanonicalAsset): Asset {
