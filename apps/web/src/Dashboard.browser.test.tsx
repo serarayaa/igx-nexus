@@ -11,8 +11,11 @@ import "./dashboard.css";
 afterEach(async () => { cleanup(); await page.viewport(1440, 1000); });
 const ready = () => screen.findByRole("table", { name: "Próximos vencimientos de garantía" });
 
-it("filtra IT/OT y cambia tema y densidad con controles accesibles", async () => {
+it("prioriza atención, mantiene el alcance IT/OT y conserva preferencias del shell", async () => {
   render(<Dashboard />); await ready();
+  expect(screen.getByRole("heading", { name: "Technology Overview", level: 1 })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Requiere atención", level: 2 })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Estado resumido", level: 2 })).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "OT" }));
   expect(screen.getByRole("button", { name: "OT" }).getAttribute("aria-pressed")).toBe("true");
   expect(screen.getByText("41 activos en el alcance OT.")).toBeTruthy();
@@ -26,7 +29,7 @@ it("expone loading, error y recuperación sin filtrar mensajes internos", async 
   let reject!: (reason: Error) => void;
   const provider = vi.fn<DashboardProvider>().mockImplementationOnce(() => new Promise<DashboardSnapshot>((_, fail) => { reject = fail; })).mockResolvedValue(demoSnapshot);
   render(<Dashboard provider={provider} />);
-  expect(screen.getByText("Cargando resumen de activos")).toBeTruthy();
+  expect(screen.getByText("Cargando Technology Overview")).toBeTruthy();
   await waitFor(() => expect(provider).toHaveBeenCalledOnce());
   reject(new Error("detalle interno no publicable"));
   await screen.findByRole("alert");
@@ -35,13 +38,18 @@ it("expone loading, error y recuperación sin filtrar mensajes internos", async 
   await ready(); expect(provider).toHaveBeenCalledTimes(2);
 });
 
-it("muestra estado vacío y permite salir de un filtro sin resultados", async () => {
+it("distingue inventario vacío de un filtro sin resultados", async () => {
   render(<Dashboard provider={async () => ({ ...demoSnapshot, assets: demoSnapshot.assets.filter(a => a.domain === "IT") })} />);
   await ready(); await userEvent.click(screen.getByRole("button", { name: "OT" }));
   await screen.findByText("No hay activos para este alcance");
   expect(screen.queryByRole("table")).toBeNull();
   await userEvent.click(screen.getByRole("button", { name: "Ver todos los activos" }));
   await ready();
+
+  cleanup();
+  render(<Dashboard provider={async () => ({ ...demoSnapshot, assets: [] })} />);
+  await screen.findByText("El inventario está vacío");
+  expect(screen.getByRole("button", { name: "Volver a cargar" })).toBeTruthy();
 });
 
 it("cancela solicitudes anteriores e ignora respuestas fuera de orden", async () => {
@@ -53,20 +61,42 @@ it("cancela solicitudes anteriores e ignora respuestas fuera de orden", async ()
   view.rerender(<Dashboard provider={async () => demoSnapshot} />);
   await ready(); expect(oldSignal.aborted).toBe(true);
   resolveOld({ ...demoSnapshot, assets: [] });
-  await waitFor(() => expect(screen.queryByText("No hay activos para este alcance")).toBeNull());
+  await waitFor(() => expect(screen.queryByText("El inventario está vacío")).toBeNull());
 });
 
-it("expone un recorrido de demo sobre capacidades ya integradas", async () => {
+it("reemplaza el recorrido promocional por drill-downs operacionales existentes", async () => {
   render(<Dashboard />); await ready();
-  expect(screen.getAllByText("Recorrido de la demo")).toHaveLength(1);
-  expect(screen.getByRole("link", { name: "Explorar activos" }).getAttribute("href")).toBe("#assets");
-  expect(screen.getByRole("link", { name: "Asset 360° hero OT" }).getAttribute("href")).toBe("#assets/DEMO-0013");
-  expect(screen.getByRole("link", { name: "QR y etiquetado" }).getAttribute("href")).toBe("#assets/DEMO-0013/label");
-  expect(screen.getByRole("link", { name: "Technology Map" }).getAttribute("href")).toBe("#assets/DEMO-0013/relations");
-  expect(screen.getAllByRole("link", { name: "CMDB Health" }).some(link => link.getAttribute("href") === "#health")).toBe(true);
-  expect(screen.getByText("Locator opaco")).toBeTruthy();
-  expect(screen.getByText("Calidad explicable")).toBeTruthy();
-  expect(screen.queryByText("CMDB-009 · integrado")).toBeNull();
+  expect(screen.queryByText("Recorrido de la demo")).toBeNull();
+  expect(screen.getByRole("link", { name: /Explorar activos/ }).getAttribute("href")).toBe("#assets");
+  expect(screen.getByRole("link", { name: /Calidad de datos/ }).getAttribute("href")).toBe("#health");
+  expect(screen.queryByRole("link", { name: "Technology Map" })).toBeNull();
+  expect(screen.getByText(/No constituyen un risk score/)).toBeTruthy();
+});
+
+it("mantiene Overview Live honesto ante cobertura parcial y nunca muestra hallazgos Demo", async () => {
+  const liveSnapshot: DashboardSnapshot = {
+    asOf: "2026-09-21T12:00:00.000Z",
+    assets: [{
+      id: "NEXUS-LIVE-1",
+      type: "Computer",
+      domain: "IT",
+      lifecycle: "active",
+      critical: false,
+      owner: null,
+      location: null,
+      lastSeen: null,
+      warrantyEnds: null,
+    }],
+  };
+
+  render(<Dashboard mode="live" provider={async () => liveSnapshot} />);
+  await screen.findByText("Cobertura Live");
+  expect(screen.getByRole("heading", { name: "Technology Overview", level: 1 })).toBeTruthy();
+  expect(screen.getByText("Cobertura de freshness incompleta")).toBeTruthy();
+  expect(screen.queryByText("Datos básicos presentes")).toBeNull();
+  expect(screen.queryByRole("table", { name: "Próximos vencimientos de garantía" })).toBeNull();
+  expect(screen.queryByRole("link", { name: "Calidad de datos" })).toBeNull();
+  expect(screen.getAllByText(/no se infieren/i).length).toBeGreaterThan(0);
 });
 
 it("pasa axe en light/dark y no desborda el viewport móvil", async () => {
