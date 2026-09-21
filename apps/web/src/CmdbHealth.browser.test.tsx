@@ -26,7 +26,7 @@ it("Dashboard → Health → Asset 360 conserva historial, título y resumen ind
   window.history.replaceState(null, "", "#overview");
   render(<App />);
   const primaryNav = await screen.findByRole("navigation", { name: "Navegación principal" });
-  await userEvent.click(within(primaryNav).getByRole("link", { name: "Calidad de datos" }));
+  within(primaryNav).getByRole("link", { name: "Calidad de datos" }).click();
   await ready();
   expect(document.title).toBe("CMDB Health · IGX NEXUS");
   const sidebar = screen.getByRole("link", { name: "Calidad de datos" });
