@@ -147,8 +147,8 @@ it("pasa axe light/dark y comfortable/compact a 1440, 768 y 320 px con detalles"
   }
 }, 60000);
 
-it("navega Dashboard → Activos con teclado, conserva tema y funciona el skip link", async () => {
-  render(<App />); await screen.findByRole("heading", { name: "Panel principal", level: 1 });
+it("navega Overview → Activos con teclado, conserva tema y funciona el skip link", async () => {
+  render(<App />); await screen.findByRole("heading", { name: "Technology Overview", level: 1 });
   await userEvent.click(screen.getByRole("button", { name: "Activar tema oscuro" }));
   screen.getByRole("link", { name: "Activos" }).focus(); await userEvent.keyboard("{Enter}");
   await ready();
@@ -157,7 +157,7 @@ it("navega Dashboard → Activos con teclado, conserva tema y funciona el skip l
   screen.getByRole("link", { name: "Saltar al contenido principal" }).focus(); await userEvent.keyboard("{Enter}");
   expect(screen.getByRole("heading", { name: "Explorador de activos" })).toBeTruthy();
   expect(document.activeElement).toBe(screen.getByRole("main"));
-  await userEvent.click(screen.getByRole("link", { name: "Panel principal" }));
+  await userEvent.click(screen.getByRole("link", { name: "Overview" }));
   await screen.findByRole("table", { name: "Próximos vencimientos de garantía" });
   window.history.back();
   await ready();
@@ -170,8 +170,8 @@ it("abre un enlace directo y navega desde el drawer sin perder el foco", async (
   render(<App />); await ready();
   await userEvent.click(screen.getByRole("button", { name: "Abrir navegación" }));
   await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("button", { name: "Cerrar navegación" })));
-  await userEvent.click(screen.getByRole("link", { name: "Panel principal" }));
-  await screen.findByRole("heading", { name: "Panel principal", level: 1 });
-  await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Panel principal", level: 1 })));
+  await userEvent.click(screen.getByRole("link", { name: "Overview" }));
+  await screen.findByRole("heading", { name: "Technology Overview", level: 1 });
+  await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Technology Overview", level: 1 })));
   expect(screen.getByRole("main").hasAttribute("inert")).toBe(false);
 });
