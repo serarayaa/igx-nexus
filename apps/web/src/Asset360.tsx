@@ -154,6 +154,8 @@ function SummaryPanel({
       <p>Estado defendible del CI dentro de la cobertura disponible. No es un risk score.</p>
     </div>
 
+    <p className="nexus-muted">{isLive ? "Origen de la ficha: NEXUS API / provider Live." : "Origen de la ficha: Dataset sintético / provider demo."}</p>
+
     <div className="nexus-asset-overview-grid">
       <section className="nexus-asset-section" aria-labelledby="asset-attention-heading">
         <h3 id="asset-attention-heading">Requiere atención</h3>
@@ -200,6 +202,11 @@ function SummaryPanel({
         <p className="nexus-muted">NEXUS no reutiliza el score sintético de Demo ni lo presenta como Device Health.</p>
       </section>}
     </div>
+
+    {!isLive && <div className="nexus-asset-actions nexus-asset-summary-actions" aria-label="Acciones del activo">
+      <a className="nexus-asset-link" href={labelHash(asset.id)}>Diseñar etiqueta</a>
+      <a className="nexus-asset-link" href={relationsHash(asset.id)}>Abrir grafo de relaciones</a>
+    </div>}
   </section>;
 }
 
