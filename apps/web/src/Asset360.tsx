@@ -193,7 +193,7 @@ function SummaryPanel({
         <p className="nexus-muted">Esto describe freshness de inventario; Device Health/Endpoint Experience todavía no está disponible en Asset 360.</p>
       </section>
 
-      {!isLive && <AssetHealthSection inventory={snapshot} assetId={asset.id} {...(relationshipProvider ? { relationshipProvider } : {})} />}
+      {!isLive && <AssetHealthSection inventory={snapshot} assetId={asset.id} headingLevel={3} {...(relationshipProvider ? { relationshipProvider } : {})} />}
       {isLive && <section className="nexus-asset-section" aria-labelledby="asset-quality-coverage-heading">
         <h3 id="asset-quality-coverage-heading">Calidad del registro CMDB</h3>
         <div className="nexus-asset-status-row"><StatusBadge status="neutral">Sin evaluación en esta vista Live</StatusBadge></div>
@@ -224,7 +224,7 @@ function InventoryPanel({ asset, snapshot }: { asset: Asset; snapshot: Inventory
           <Field label="Hostname" value={asset.hostname} mono />
           <Field label="Serial" value={asset.serial} mono />
           <Field label="Asset tag" value={asset.assetTag} mono />
-          <Field label="Tipo de fuente" value={typeLabels[asset.type]} />
+          <Field label="Tipo de inventario" value={typeLabels[asset.type]} />
           <Field label="IP" value={asset.ipAddress} mono />
         </dl>
       </section>
