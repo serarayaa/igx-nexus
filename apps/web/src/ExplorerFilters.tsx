@@ -6,6 +6,7 @@ import {
   lifecycleLabels,
   taxonomyStateLabels,
   technologyRoleLabel,
+  typeLabels,
   type AssetCriticality,
   type AssetTaxonomyState,
   type AssetType,
