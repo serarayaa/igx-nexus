@@ -27,19 +27,27 @@ it("busca por serial, revela identidad técnica y limpia manteniendo el foco", a
   expect(document.activeElement).toBe(screen.getByRole("searchbox"));
 });
 
-it("combina filtros, muestra los activos y permite quitar cada filtro", async () => {
-  mount(); await ready(); filter("Dominio", "OT"); filter("Estado", "assigned");
-  const expected = demoSnapshot.assets.filter(a => a.domain === "OT" && a.lifecycle === "assigned").length;
+it("combina Domain, Class, Role y Lifecycle y permite quitar cada faceta", async () => {
+  mount(); await ready();
+  filter("Dominio", "OT");
+  filter("Clase", "operator_interface");
+  filter("Rol", "supervision");
+  filter("Lifecycle", "assigned");
+  const expected = demoSnapshot.assets.filter(asset =>
+    asset.domain === "OT" &&
+    asset.assetClass === "operator_interface" &&
+    asset.role === "supervision" &&
+    asset.lifecycle === "assigned").length;
   expect(screen.getByText(`${expected} de 240 activos`)).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "Quitar filtro Dominio: OT" }));
   expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Dominio" }));
-  expect((screen.getByRole("combobox", { name: "Estado" }) as HTMLSelectElement).value).toBe("assigned");
+  expect((screen.getByRole("combobox", { name: "Clase" }) as HTMLSelectElement).value).toBe("operator_interface");
   await userEvent.click(screen.getByRole("button", { name: "Limpiar filtros" }));
   expect(screen.getByText("240 de 240 activos")).toBeTruthy();
 });
 
 it("recupera búsqueda y filtros sin coincidencias", async () => {
-  mount(); await ready(); filter("Dominio", "OT"); filter("Tipo", "Phone");
+  mount(); await ready(); filter("Dominio", "OT"); filter("Tipo de fuente", "Phone");
   expect(screen.getByText("No hay activos que coincidan")).toBeTruthy();
   expect(screen.queryByRole("table")).toBeNull();
   await userEvent.click(screen.getByRole("button", { name: "Restablecer búsqueda y filtros" }));
@@ -49,21 +57,32 @@ it("recupera búsqueda y filtros sin coincidencias", async () => {
   await userEvent.click(screen.getByRole("button", { name: "Limpiar búsqueda" })); await ready();
 });
 
-it("opera filtros adicionales con teclado y recupera foco al quitar uno cerrado", async () => {
+it("opera facetas de fuente/taxonomía con teclado, counts y recuperación de foco", async () => {
   mount(); await ready();
   const disclosure = screen.getByText("Más filtros", { selector: "summary" });
-  disclosure.focus(); await userEvent.keyboard("{Enter}");
+  disclosure.focus();
+  await userEvent.keyboard("{Enter}");
   await userEvent.tab();
-  expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Fabricante" }));
-  await userEvent.keyboard("{Home}{ArrowDown}");
-  await userEvent.tab();
-  expect((screen.getByRole("combobox", { name: "Fabricante" }) as HTMLSelectElement).value).toBe("Fabricante Demo A");
-  filter("Criticidad", "yes"); filter("Frescura", "fresh");
-  const expected = demoSnapshot.assets.filter(a => a.manufacturer === "Fabricante Demo A" && a.critical && a.lastSeen && (Date.parse(demoSnapshot.asOf) - Date.parse(a.lastSeen)) / 86400000 <= 7).length;
+  expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Fuente" }));
+  filter("Fuente", "demo");
+  filter("Estado taxonómico", "classified");
+  filter("Revisión requerida", "no");
+  filter("Criticidad", "critical");
+  const expected = demoSnapshot.assets.filter(asset => asset.criticality === "critical").length;
   expect(screen.getByText(`${expected} de 240 activos`)).toBeTruthy();
-  await userEvent.click(screen.getByText("Más filtros · con filtros activos", { selector: "summary" }));
-  await userEvent.click(screen.getByRole("button", { name: "Quitar filtro Criticidad: Críticos" }));
+  expect(screen.getByRole("option", { name: /DEMO \(240\)/ })).toBeTruthy();
+  await userEvent.click(screen.getByRole("button", { name: "Quitar filtro Criticidad: Crítica" }));
   expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Criticidad" }));
+});
+
+
+it("expone cobertura canónica y permite buscar por clase, rol y fuente", async () => {
+  mount(); await ready();
+  expect(screen.getByRole("heading", { name: "Cobertura de investigación", level: 2 })).toBeTruthy();
+  expect(screen.getByText("Domain · Class · Role")).toBeTruthy();
+  await search("operator interface supervision demo");
+  const expected = demoSnapshot.assets.filter(asset => asset.assetClass === "operator_interface" && asset.role === "supervision").length;
+  expect(screen.getByText(`${expected} de 240 activos`)).toBeTruthy();
 });
 
 it("pagina, anuncia el rango y vuelve a la primera página al buscar, filtrar u ordenar", async () => {
