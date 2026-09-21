@@ -50,7 +50,7 @@ Dirección conceptual posterior:
 | V02-013 | Product IA & Visual Direction | P0 | ✅ Integrado — PR #76 / issue #75 / merge `fe4ff067`; CI #493 verde |
 | V02-014 | Shell & Motion 2.0 | P1 | ✅ Integrado — PR #80 / issue #79 / merge `e650e288`; CI #537 verde |
 | V02-015 | Technology Overview | P1 | ✅ Integrado — PR #83 / issue #82 / merge `c30eb25f`; CI #573 verde |
-| V02-016 | Asset Explorer 2.0 | P1 | 🟡 En implementación — issue #85 |
+| V02-016 | Asset Explorer 2.0 | P1 | ✅ Integrado — PR #87 / issue #85 / merge `68479fd9`; CI #608 verde |
 | V02-017 | Asset 360 2.0 | P1 | ⚪ Pendiente |
 | V02-018 | Technology Map 2.0 | P1 | ⚪ Pendiente |
 | V02-019 | Analytics Contract Layer | P0 | ⚪ Pendiente |
@@ -255,32 +255,35 @@ Documento: `docs/product/technology-overview-v2.md`.
 
 Siguiente trabajo: **V02-016 — Asset Explorer 2.0**.
 
-### V02-016 — Asset Explorer 2.0 — en implementación
+### V02-016 — Asset Explorer 2.0 ✅
 
-Issue #85.
+Integrado mediante PR #87, merge `68479fd9dd8c45be06a99b0042be83cfba9a2277`; CI post-merge #608 verde.
 
 Pregunta central:
 
 > **¿Qué tecnología existe, bajo qué clasificación/contexto/fuente, y cuál es el CI correcto para investigar?**
 
-Dirección:
+Resultado:
 
 - evolución del Explorer existente, sin rewrite;
 - facetas canónicas por Domain / Asset Class / Role / Lifecycle;
 - refinamiento por source, taxonomy state, review required, compatibility fallback y otras dimensiones con cobertura real;
-- facet counts contextuales;
+- facet counts contextuales que evitan opciones imposibles dentro del scope;
 - source/context multi-value por membership;
 - compatibility projection visible como tal, no como clasificación resuelta;
 - tabla data-dense con seis grupos conceptuales;
 - Demo conserva legacy compatibility digest mientras consume metadata canónica;
 - Live conserva class/role/source/taxonomy metadata ya servida por NEXUS API;
 - Operational Context no se inventa cuando el provider no lo expone;
-- sin AQL/DSL, data-grid nueva, router nuevo ni backend search service.
+- sin AQL/DSL, data-grid nueva, router nuevo ni backend search service;
+- WCAG 2.2 AA, browser tests, reflow, High Contrast y reduced motion pasan en CI.
 
 Documentos:
 
 - `docs/product/asset-explorer-v2.md`;
 - `docs/product/technology-scan-v02-016.md`.
+
+Siguiente trabajo: **V02-017 — Asset 360 2.0**.
 
 ### V02-017 — Asset 360 2.0
 
