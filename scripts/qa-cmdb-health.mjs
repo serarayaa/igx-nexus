@@ -45,7 +45,7 @@ try {
   }
   // CMDB-012: real catalog across every consumer, including longer OT names.
   const routes = [
-    ["overview", "Panel principal"], ["assets", "Explorador de activos"],
+    ["overview", "Technology Overview"], ["assets", "Explorador de activos"],
     ["assets/DEMO-0013", "Consola Demo Supervisión Norte"],
     ["assets/DEMO-0013/label", "Diseñar etiqueta"],
     ["assets/DEMO-0013/relations", "Grafo de Relaciones"],

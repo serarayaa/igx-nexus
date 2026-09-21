@@ -83,7 +83,7 @@ La v0.2 responde:
 
 V02-014 — Shell & Motion 2.0 quedó incorporado mediante PR #80 en el merge `e650e288b47903d6811675aa265ac7f0141f51a7`; CI post-merge #537 verde. NEXUS ya materializa Product IA v2 en el shell real con navegación global y contextual separadas, Demo/Live como contexto de fuente, preferencias persistentes de theme/density, responsive móvil accesible y motion breve compatible con reduced motion.
 
-El siguiente ticket planificado es **V02-015 — Technology Overview**.
+El trabajo actual es **V02-015 — Technology Overview** (issue #82).
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -128,6 +128,14 @@ V02-014 materializa Product IA v2 en la experiencia real de navegación:
 - sin dependencias nuevas ni reemplazo del router.
 
 Ver [Shell & Motion 2.0](docs/product/shell-motion-v2.md) y [Technology Scan V02-014](docs/product/technology-scan-v02-014.md).
+
+## Technology Overview
+
+V02-015 transforma `#overview` en una superficie de triage que responde **¿Qué requiere atención ahora y por qué?**. La vista prioriza contexto, cobertura, señales explicables, hechos resumidos y drill-downs existentes, sin inventar KPIs ni adelantar V02-019.
+
+Demo y Live comparten Overview. Live sólo presenta datos soportados por NEXUS API y comunica cobertura parcial sin fallback silencioso a Demo.
+
+Ver [Technology Overview](docs/product/technology-overview-v2.md).
 
 ## Demo canónica
 

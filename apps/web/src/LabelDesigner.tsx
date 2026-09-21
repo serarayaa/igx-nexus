@@ -68,7 +68,7 @@ export function LabelDesigner({ assetId, provider = demoProvider }: { assetId: s
 
   return <div className="nexus-label-designer" ref={contentRef}>
     <nav className="nexus-label-breadcrumb" aria-label="Breadcrumb">
-      <ol><li><a href="#overview">Panel principal</a></li><li><a href="#assets">Activos</a></li><li><a href={assetHash(asset.id)}>{asset.name}</a></li><li aria-current="page">Etiqueta</li></ol>
+      <ol><li><a href="#overview">Overview</a></li><li><a href="#assets">Activos</a></li><li><a href={assetHash(asset.id)}>{asset.name}</a></li><li aria-current="page">Etiqueta</li></ol>
     </nav>
 
     <PageHeader title="Diseñar etiqueta" eyebrow="CMDB-009 · QR & LABEL ENGINE" description={`${asset.name} · ${asset.id}`} meta={<div className="nexus-label-status"><StatusBadge status="info">SVG listo para impresión</StatusBadge><Badge>Modo demo · no productivo</Badge></div>} />

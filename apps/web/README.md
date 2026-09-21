@@ -1,8 +1,8 @@
-# IGX NEXUS Web — Demo v0.1 sobre contratos v0.2
+# IGX NEXUS Web — Technology Intelligence v0.2
 
 La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. La experiencia Demo conserva 240 activos sintéticos y 18 relaciones con corte fijo, pero desde V02-011 **la Web ya no es dueña del inventario sintético**.
 
-La fuente compartida vive en `packages/demo-data`. `src/demo-dataset.ts` es un adaptador de compatibilidad explícito que proyecta el snapshot canónico v0.2 al modelo de presentación histórico de la Web v0.1. Dashboard, Asset Explorer, Asset 360, QR/Label, Technology Map y CMDB Health siguen viendo exactamente los mismos IDs y escenarios funcionales.
+La fuente compartida Demo vive en `packages/demo-data`. `src/demo-dataset.ts` es un adaptador de compatibilidad explícito que proyecta el snapshot canónico v0.2 al modelo de presentación histórico. Technology Overview, Asset Explorer, Asset 360, QR/Label, Technology Map y CMDB Health mantienen los mismos IDs y escenarios funcionales.
 
 La Demo local no requiere GLPI, credenciales, Docker ni NEXUS API. El modo Live, en cambio, consume NEXUS API y nunca habla directamente con GLPI.
 
@@ -22,7 +22,7 @@ Abrir `http://127.0.0.1:3000`. El servidor se limita a loopback y falla si el pu
 ## Navegación
 
 ```text
-/#overview                       Panel principal
+/#overview                       Technology Overview
 /#health                         CMDB Health
 /#assets                         Asset Explorer
 /#assets/DEMO-0013               Asset 360 hero OT
@@ -45,7 +45,7 @@ El adaptador existe para evitar mezclar V02-011 con el rediseño de Product Desi
 
 ### Live
 
-La Web Live consume NEXUS API mediante su provider dedicado. La Web nunca debe conectarse directamente a GLPI, MariaDB, Graph con secretos ni dispositivos OT.
+La Web Live consume NEXUS API mediante su provider dedicado. Technology Overview y Asset Explorer comparten ese provider; Asset 360 mantiene su vertical Live acotado. La Web nunca debe conectarse directamente a GLPI, MariaDB, Graph con secretos ni dispositivos OT.
 
 Los providers asíncronos reciben `AbortSignal`. Demo y Live comparten el lenguaje canónico detrás de sus fronteras, pero no existe fallback silencioso Live → Demo.
 
@@ -86,7 +86,7 @@ npm exec --workspace @igx-nexus/web -- vitest run --project=model
 
 - la Demo contiene datos exclusivamente sintéticos;
 - el adaptador Web v0.1 todavía usa su modelo de presentación histórico;
-- sólo existe un vertical Live acotado; no toda la experiencia Demo está disponible como Live;
+- la cobertura Live sigue siendo parcial: Overview e inventario sólo muestran hechos soportados por NEXUS API y no simulan capacidades Demo ausentes;
 - sin Intune/Entra/Defender/SNMP reales en la experiencia Web actual;
 - sin autenticación productiva de usuario final;
 - sin endpoint productivo `/q/:locator`;

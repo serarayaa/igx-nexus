@@ -19,7 +19,7 @@ type NexusView = "dashboard" | "health" | "assets" | "asset" | "relations" | "la
 type NexusDataMode = "demo" | "live";
 
 const viewLabels: Record<NexusView, string> = {
-  dashboard: "Panel principal",
+  dashboard: "Technology Overview",
   health: "Calidad de datos",
   assets: "Activos",
   asset: "Asset 360",
@@ -102,7 +102,7 @@ export function NexusShell({ children, view = "dashboard", mode = "demo" }: { ch
       footer={<div className="nexus-source-context"><div><Badge>{modeLabel}</Badge><strong>{live ? "Provider Live" : "Dataset Demo"}</strong></div><p>{modeDescription}</p>{live && <p>El shell muestra sólo superficies con cobertura Live útil implementada; nunca sustituye datos Live por Demo.</p>}</div>}
     >
       <p className="nexus-nav-heading">Espacios de trabajo</p>
-      {!live && <a className="nexus-nav-link" href="#overview" aria-current={view === "dashboard" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><LayoutDashboard aria-hidden="true" />Panel principal</a>}
+      <a className="nexus-nav-link" href="#overview" aria-current={view === "dashboard" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><LayoutDashboard aria-hidden="true" />Overview</a>
       <a className="nexus-nav-link" href="#assets" aria-current={assetsCurrent ? "page" : undefined} onClick={() => setNavigationOpen(false)}><Boxes aria-hidden="true" />Activos</a>
       {!live && <a className="nexus-nav-link" href="#health" aria-current={view === "health" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><ShieldCheck aria-hidden="true" />Calidad de datos</a>}
     </AppSidebar>}>

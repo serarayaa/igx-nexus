@@ -146,7 +146,7 @@ export function Asset360({ assetId, provider = demoProvider, relationshipProvide
   return <div className="nexus-asset-360" ref={contentRef}>
     <nav className="nexus-breadcrumb" aria-label="Breadcrumb">
       <ol>
-        <li><a href="#overview">Panel principal</a></li>
+        <li><a href="#overview">Overview</a></li>
         <li><a href="#assets">Activos</a></li>
         <li aria-current="page">{asset.name}</li>
       </ol>

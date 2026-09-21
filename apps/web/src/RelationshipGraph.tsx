@@ -165,7 +165,7 @@ export function RelationshipGraph({ assetId, inventoryProvider = demoProvider, r
   const selectedAsset = graph.assets.get(selectedId);
   const selectedRelationships = graph.relationships.filter((relationship) => relationship.sourceId === selectedId || relationship.targetId === selectedId);
   return <div className="nexus-relationship-page" ref={contentRef}>
-    <nav className="nexus-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#overview">Panel principal</a></li><li><a href="#assets">Activos</a></li><li><a href={assetHash(assetId)}>{focusAsset.name}</a></li><li aria-current="page">Relaciones</li></ol></nav>
+    <nav className="nexus-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="#overview">Overview</a></li><li><a href="#assets">Activos</a></li><li><a href={assetHash(assetId)}>{focusAsset.name}</a></li><li aria-current="page">Relaciones</li></ol></nav>
     <PageHeader title="Grafo de Relaciones" eyebrow="THE TECHNOLOGY MAP · CMDB-010" description={`Mapa centrado en ${focusAsset.name} (${focusAsset.id}).`} meta={<div className="nexus-asset-header-status"><Badge>Datos sintéticos</Badge><StatusBadge status="info">{visibleCountLabel(graph.relationships.length)}</StatusBadge></div>} />
 
     <section className="nexus-relationship-filters" aria-labelledby="relationship-filters-heading">

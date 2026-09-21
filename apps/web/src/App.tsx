@@ -39,13 +39,12 @@ function savedRoute(): AppRoute | null {
 
 function normalizeRouteForMode(route: AppRoute | null, mode: InventoryMode): AppRoute {
   if (mode === "demo") return route ?? { view: "dashboard" };
-  if (route?.view === "asset") return route;
-  if (route?.view === "assets") return route;
-  return { view: "assets" };
+  if (route?.view === "dashboard" || route?.view === "asset" || route?.view === "assets") return route;
+  return { view: "dashboard" };
 }
 
 function routeTitle(route: AppRoute): string {
-  if (route.view === "dashboard") return "Panel principal";
+  if (route.view === "dashboard") return "Technology Overview";
   if (route.view === "health") return "CMDB Health";
   if (route.view === "assets") return "Activos";
   if (route.view === "asset") return `Asset ${route.assetId}`;
@@ -73,7 +72,9 @@ export function App() {
 
   useEffect(() => {
     if (inventory.mode !== "live") return;
-    const expectedHash = route.view === "asset" ? `#assets/${encodeURIComponent(route.assetId)}` : "#assets";
+    const expectedHash = route.view === "asset"
+      ? `#assets/${encodeURIComponent(route.assetId)}`
+      : route.view === "assets" ? "#assets" : "#overview";
     if (window.location.hash !== expectedHash) {
       window.history.replaceState({ ...window.history.state, nexusRoute: route }, "", expectedHash);
     }
@@ -94,7 +95,7 @@ export function App() {
   }, [route]);
 
   const content = route.view === "dashboard"
-    ? <DashboardContent />
+    ? <DashboardContent provider={inventory.provider} mode={inventory.mode} />
     : route.view === "health"
       ? <CmdbHealth />
     : route.view === "assets"

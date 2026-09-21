@@ -49,7 +49,7 @@ Dirección conceptual posterior:
 | V02-012 | Relationship Evidence v2 | P1 | ✅ Integrado — PR #73 / issue #72 / merge `e174700c`; CI #481 verde |
 | V02-013 | Product IA & Visual Direction | P0 | ✅ Integrado — PR #76 / issue #75 / merge `fe4ff067`; CI #493 verde |
 | V02-014 | Shell & Motion 2.0 | P1 | ✅ Integrado — PR #80 / issue #79 / merge `e650e288`; CI #537 verde |
-| V02-015 | Technology Overview | P1 | ⚪ Pendiente |
+| V02-015 | Technology Overview | P1 | 🟡 En implementación — issue #82 |
 | V02-016 | Asset Explorer 2.0 | P1 | ⚪ Pendiente |
 | V02-017 | Asset 360 2.0 | P1 | ⚪ Pendiente |
 | V02-018 | Technology Map 2.0 | P1 | ⚪ Pendiente |
@@ -232,9 +232,24 @@ Documentos:
 
 Siguiente trabajo: **V02-015 — Technology Overview**.
 
-### V02-015 — Technology Overview
+### V02-015 — Technology Overview — en implementación
 
-Pregunta central: **¿Qué requiere atención ahora?**
+Issue #82.
+
+Pregunta central: **¿Qué requiere atención ahora y por qué?**
+
+Dirección implementada en la rama de trabajo:
+
+- `#overview` deja el dashboard promocional y adopta triage operacional;
+- contexto/alcance/cobertura explícitos;
+- lista de atención determinista y explicable;
+- summary facts con denominadores visibles;
+- Demo y Live comparten Overview sin fallback;
+- Live no trata campos fuera de cobertura como defectos;
+- sin librería de charts, router nuevo ni analytics framework;
+- V02-019 conserva ownership de contratos métricos.
+
+Documento: `docs/product/technology-overview-v2.md`.
 
 ### V02-016 — Asset Explorer 2.0
 
