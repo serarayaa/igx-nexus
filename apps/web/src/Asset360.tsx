@@ -154,7 +154,7 @@ function SummaryPanel({
       <p>Estado defendible del CI dentro de la cobertura disponible. No es un risk score.</p>
     </div>
 
-    <p className="nexus-muted">{isLive ? "Origen de la ficha: NEXUS API / provider Live." : "Origen de la ficha: Dataset sintético / provider demo."}</p>
+    <p className="nexus-muted">Origen de la ficha: <span>{isLive ? "NEXUS API / provider Live" : "Dataset sintético / provider demo"}</span>.</p>
 
     <div className="nexus-asset-overview-grid">
       <section className="nexus-asset-section" aria-labelledby="asset-attention-heading">
