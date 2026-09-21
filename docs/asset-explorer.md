@@ -1,9 +1,11 @@
-# Asset Explorer — CMDB-007
+# Asset Explorer — CMDB-007 (baseline histórico)
+
+> **Nota:** este documento conserva el baseline de CMDB-007/v0.1. La especificación vigente de Explorer 2.0 vive en [Asset Explorer 2.0](product/asset-explorer-v2.md). Las facetas/columnas descritas más abajo son evidencia histórica y no el contrato final de V02-016.
 
 ## Uso en la demo
 
 Desde la raíz: `npm ci`, `npm run dev` y abrir `http://127.0.0.1:3000/#assets`.
-También se accede desde **Panel principal → Activos**. La página identifica los
+También se accede desde **Overview → Activos**. La página identifica los
 datos como sintéticos y muestra la fecha de corte de la demostración.
 
 1. Buscar un nombre, hostname, serial, etiqueta, responsable, modelo, fabricante,
