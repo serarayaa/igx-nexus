@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assetHash, demoQrHash, labelHash, relationsHash, routeFromHash } from "./navigation-model";
+import { assetHash, assetSectionHash, demoQrHash, labelHash, relationsHash, routeFromHash } from "./navigation-model";
 
 describe("routeFromHash", () => {
   it("reconoce las rutas del Dashboard", () => {
@@ -10,8 +10,12 @@ describe("routeFromHash", () => {
     expect(routeFromHash("#assets")).toEqual({ view: "assets" });
   });
 
-  it("reconoce deep links de Asset 360 y diseñador de etiquetas", () => {
-    expect(routeFromHash("#assets/DEMO-0002")).toEqual({ view: "asset", assetId: "DEMO-0002" });
+  it("reconoce deep links de Asset 360, sus secciones y acciones", () => {
+    expect(routeFromHash("#assets/DEMO-0002")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "summary" });
+    expect(routeFromHash("#assets/DEMO-0002?section=inventory")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "inventory" });
+    expect(routeFromHash("#assets/DEMO-0002?section=evidence")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "evidence" });
+    expect(routeFromHash("#assets/DEMO-0002?section=relationships")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "relationships" });
+    expect(routeFromHash("#assets/DEMO-0002?section=invalid")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "summary" });
     expect(routeFromHash("#assets/DEMO-0002/label")).toEqual({ view: "label", assetId: "DEMO-0002" });
     expect(routeFromHash("#assets/DEMO-0002/relations")).toEqual({ view: "relations", assetId: "DEMO-0002" });
   });
@@ -21,7 +25,7 @@ describe("routeFromHash", () => {
   });
 
   it("decodifica identificadores codificados en URL", () => {
-    expect(routeFromHash("#assets/DEMO%200002")).toEqual({ view: "asset", assetId: "DEMO 0002" });
+    expect(routeFromHash("#assets/DEMO%200002")).toEqual({ view: "asset", assetId: "DEMO 0002", section: "summary" });
     expect(routeFromHash("#assets/DEMO%200002/label")).toEqual({ view: "label", assetId: "DEMO 0002" });
   });
 
@@ -42,6 +46,8 @@ describe("route builders", () => {
   it("genera rutas estables y codificadas", () => {
     expect(assetHash("DEMO-0002")).toBe("#assets/DEMO-0002");
     expect(assetHash("DEMO 0002")).toBe("#assets/DEMO%200002");
+    expect(assetSectionHash("DEMO 0002", "summary")).toBe("#assets/DEMO%200002");
+    expect(assetSectionHash("DEMO 0002", "inventory")).toBe("#assets/DEMO%200002?section=inventory");
     expect(labelHash("DEMO 0002")).toBe("#assets/DEMO%200002/label");
     expect(relationsHash("DEMO 0002")).toBe("#assets/DEMO%200002/relations");
     expect(demoQrHash("demo locator")).toBe("#q/demo%20locator");
