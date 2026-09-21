@@ -12,11 +12,11 @@ afterEach(async () => {
   await page.viewport(1440, 1000);
 });
 
-it("recorre Dashboard → Explorer → Asset 360 → QR → Graph → Health conservando identidad y preferencias", async () => {
+it("recorre Overview → Explorer → Asset 360 → QR → Graph → Health conservando identidad y preferencias", async () => {
   window.history.replaceState(null, "", "#overview");
   render(<App />);
 
-  const dashboardHeading = await screen.findByRole("heading", { name: "Panel principal", level: 1 });
+  const dashboardHeading = await screen.findByRole("heading", { name: "Technology Overview", level: 1 });
   await waitFor(() => expect(document.activeElement).toBe(dashboardHeading));
   await userEvent.click(screen.getByRole("button", { name: "Activar tema oscuro" }));
   await userEvent.click(screen.getByRole("button", { name: "Activar densidad compacta" }));
