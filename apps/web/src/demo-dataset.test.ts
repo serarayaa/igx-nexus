@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { createDemoDataset, demoDataset, demoHeroes, DEMO_AS_OF } from "./demo-dataset";
+import { createDemoDataset, demoDataset, demoHeroes, DEMO_AS_OF, legacyDemoDatasetProjection } from "./demo-dataset";
 import { demoProvider, demoSnapshot } from "./demo-provider";
 import { demoRelationshipInventoryProvider, demoRelationshipProvider } from "./demo-relationship-provider";
 import { buildCmdbHealth, validHealthDate } from "./health-engine";
@@ -95,6 +95,18 @@ describe("synthetic boundary", () => {
   });
 });
 
+
+it("projects canonical taxonomy, source and operational context without reauthoring the Demo catalog", () => {
+  expect(assets.every(asset => asset.assetClass && asset.role && asset.taxonomyState === "classified")).toBe(true);
+  expect(assets.every(asset => asset.taxonomyReviewRequired === false && asset.taxonomyCompatibilityFallback === false)).toBe(true);
+  expect(assets.every(asset => asset.sourceSystems?.includes("demo"))).toBe(true);
+  expect(assets.find(asset => asset.id === "DEMO-0001")?.operationalContexts).toEqual([]);
+  expect(assets.find(asset => asset.id === "DEMO-0013")?.operationalContexts?.[0]).toEqual(expect.objectContaining({
+    kind: "site",
+    displayName: "Planta Demo Norte",
+  }));
+});
+
 describe("cross-view scenarios", () => {
   it("shares immutable snapshots through all provider entry points", async () => {
     const signal = new AbortController().signal;
@@ -157,9 +169,9 @@ describe("cross-view scenarios", () => {
   });
 });
 
-// Deliberate dataset contract. Review semantic changes before updating these expectations.
-it("locks the reviewed catalog content and distribution", () => {
-  expect(createHash("sha256").update(JSON.stringify(demoDataset)).digest("hex")).toBe("290589c730513eec3c04c7db008bc4ff95d03eb7b142aab7c991f89117d087f1");
+// Deliberate legacy projection contract. Additive v0.2 metadata must not rewrite the reviewed v0.1 fields.
+it("locks the reviewed legacy catalog content and distribution", () => {
+  expect(createHash("sha256").update(JSON.stringify(legacyDemoDatasetProjection())).digest("hex")).toBe("290589c730513eec3c04c7db008bc4ff95d03eb7b142aab7c991f89117d087f1");
   const dashboard = summarize(demoSnapshot, "all");
   expect(Object.fromEntries(dashboard.countBy("type").map(r => [r.label, r.value]))).toEqual({ Computer: 100, Monitor: 49, NetworkEquipment: 37, Phone: 31, Printer: 23 });
   expect(Object.fromEntries(dashboard.countBy("domain").map(r => [r.label, r.value]))).toEqual({ IT: 199, OT: 41 });

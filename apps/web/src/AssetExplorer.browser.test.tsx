@@ -27,43 +27,67 @@ it("busca por serial, revela identidad técnica y limpia manteniendo el foco", a
   expect(document.activeElement).toBe(screen.getByRole("searchbox"));
 });
 
-it("combina filtros, muestra los activos y permite quitar cada filtro", async () => {
-  mount(); await ready(); filter("Dominio", "OT"); filter("Estado", "assigned");
-  const expected = demoSnapshot.assets.filter(a => a.domain === "OT" && a.lifecycle === "assigned").length;
+it("combina Domain, Class, Role y Lifecycle y permite quitar cada faceta", async () => {
+  mount(); await ready();
+  filter("Dominio", "OT");
+  filter("Clase", "operator_interface");
+  filter("Rol", "supervision");
+  filter("Lifecycle", "assigned");
+  const expected = demoSnapshot.assets.filter(asset =>
+    asset.domain === "OT" &&
+    asset.assetClass === "operator_interface" &&
+    asset.role === "supervision" &&
+    asset.lifecycle === "assigned").length;
   expect(screen.getByText(`${expected} de 240 activos`)).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "Quitar filtro Dominio: OT" }));
   expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Dominio" }));
-  expect((screen.getByRole("combobox", { name: "Estado" }) as HTMLSelectElement).value).toBe("assigned");
+  expect((screen.getByRole("combobox", { name: "Clase" }) as HTMLSelectElement).value).toBe("operator_interface");
   await userEvent.click(screen.getByRole("button", { name: "Limpiar filtros" }));
   expect(screen.getByText("240 de 240 activos")).toBeTruthy();
 });
 
-it("recupera búsqueda y filtros sin coincidencias", async () => {
-  mount(); await ready(); filter("Dominio", "OT"); filter("Tipo", "Phone");
+it("evita combinaciones de facetas imposibles y recupera una búsqueda sin coincidencias", async () => {
+  mount(); await ready();
+  filter("Dominio", "OT");
+  await userEvent.click(screen.getByText("Más filtros", { selector: "summary" }));
+  expect(screen.queryByRole("option", { name: /Teléfonos/ })).toBeNull();
+
+  await search("imposible-sin-coincidencias");
   expect(screen.getByText("No hay activos que coincidan")).toBeTruthy();
   expect(screen.queryByRole("table")).toBeNull();
-  await userEvent.click(screen.getByRole("button", { name: "Restablecer búsqueda y filtros" }));
-  await ready(); expect(document.activeElement).toBe(screen.getByRole("searchbox"));
-  await search("imposible-sin-coincidencias");
   expect(screen.getByText("0 de 240 activos")).toBeTruthy();
-  await userEvent.click(screen.getByRole("button", { name: "Limpiar búsqueda" })); await ready();
+
+  await userEvent.click(screen.getByRole("button", { name: "Restablecer búsqueda y filtros" }));
+  await ready();
+  expect(document.activeElement).toBe(screen.getByRole("searchbox"));
 });
 
-it("opera filtros adicionales con teclado y recupera foco al quitar uno cerrado", async () => {
+it("opera facetas de fuente/taxonomía con teclado, counts y recuperación de foco", async () => {
   mount(); await ready();
   const disclosure = screen.getByText("Más filtros", { selector: "summary" });
-  disclosure.focus(); await userEvent.keyboard("{Enter}");
+  disclosure.focus();
+  await userEvent.keyboard("{Enter}");
   await userEvent.tab();
-  expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Fabricante" }));
-  await userEvent.keyboard("{Home}{ArrowDown}");
-  await userEvent.tab();
-  expect((screen.getByRole("combobox", { name: "Fabricante" }) as HTMLSelectElement).value).toBe("Fabricante Demo A");
-  filter("Criticidad", "yes"); filter("Frescura", "fresh");
-  const expected = demoSnapshot.assets.filter(a => a.manufacturer === "Fabricante Demo A" && a.critical && a.lastSeen && (Date.parse(demoSnapshot.asOf) - Date.parse(a.lastSeen)) / 86400000 <= 7).length;
+  expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Fuente" }));
+  expect(screen.getByRole("option", { name: /DEMO \(240\)/ })).toBeTruthy();
+  filter("Fuente", "demo");
+  filter("Estado taxonómico", "classified");
+  filter("Revisión requerida", "no");
+  filter("Criticidad", "critical");
+  const expected = demoSnapshot.assets.filter(asset => asset.criticality === "critical").length;
   expect(screen.getByText(`${expected} de 240 activos`)).toBeTruthy();
-  await userEvent.click(screen.getByText("Más filtros · con filtros activos", { selector: "summary" }));
-  await userEvent.click(screen.getByRole("button", { name: "Quitar filtro Criticidad: Críticos" }));
+  await userEvent.click(screen.getByRole("button", { name: "Quitar filtro Criticidad: Crítica" }));
   expect(document.activeElement).toBe(screen.getByRole("combobox", { name: "Criticidad" }));
+});
+
+
+it("expone cobertura canónica y permite buscar por clase, rol y fuente", async () => {
+  mount(); await ready();
+  expect(screen.getByRole("heading", { name: "Cobertura de investigación", level: 2 })).toBeTruthy();
+  expect(screen.getByText("Domain · Class · Role")).toBeTruthy();
+  await search("operator interface supervision demo");
+  const expected = demoSnapshot.assets.filter(asset => asset.assetClass === "operator_interface" && asset.role === "supervision").length;
+  expect(screen.getByText(`${expected} de 240 activos`)).toBeTruthy();
 });
 
 it("pagina, anuncia el rango y vuelve a la primera página al buscar, filtrar u ordenar", async () => {
@@ -127,6 +151,52 @@ it("cancela, ignora respuestas obsoletas y aborta al desmontar", async () => {
   await waitFor(() => expect(signal.aborted).toBe(false));
   view.unmount(); expect(signal.aborted).toBe(true);
   await act(async () => resolveOld(demoSnapshot));
+});
+
+
+it("mantiene Live honesto cuando la taxonomía usa compatibility fallback", async () => {
+  const provider: InventoryProvider = async () => ({
+    asOf: "2026-09-21T12:00:00.000Z",
+    assets: [{
+      id: "NEXUS-LIVE-1",
+      name: "Endpoint Live Lab",
+      type: "Computer",
+      domain: "IT",
+      lifecycle: "unknown",
+      critical: false,
+      criticality: "unknown",
+      owner: null,
+      location: "Live Lab",
+      lastSeen: null,
+      warrantyEnds: null,
+      hostname: "live-lab-01",
+      serial: "LIVE-SERIAL-1",
+      assetTag: null,
+      manufacturer: "Vendor",
+      model: "Model",
+      ipAddress: null,
+      dataMode: "live",
+      assetClass: "endpoint",
+      role: "user_endpoint",
+      taxonomyState: "unclassified",
+      taxonomyReviewRequired: true,
+      taxonomyCompatibilityFallback: true,
+      sourceSystems: ["glpi"],
+      sourceObservedAt: "2026-09-21T11:55:00.000Z",
+    }],
+  });
+
+  render(<NexusShell mode="live" view="assets"><AssetExplorer mode="live" provider={provider} /></NexusShell>);
+  await screen.findByRole("table", { name: "Inventario de activos Live" });
+  expect(screen.getByRole("note").textContent).toMatch(/1 activo usa una proyección escalar de compatibilidad/);
+  const liveTable = screen.getByRole("table", { name: "Inventario de activos Live" });
+  expect(within(liveTable).getByText("Proyección de compatibilidad")).toBeTruthy();
+  expect(screen.getByText("Sin cobertura del provider")).toBeTruthy();
+  expect(screen.queryByRole("combobox", { name: "Contexto operacional" })).toBeNull();
+  await userEvent.click(screen.getByText("Más filtros", { selector: "summary" }));
+  filter("Fuente", "glpi");
+  filter("Estado taxonómico", "unclassified");
+  expect(screen.getByText("1 de 1 activos")).toBeTruthy();
 });
 
 it("pasa axe light/dark y comfortable/compact a 1440, 768 y 320 px con detalles", async () => {

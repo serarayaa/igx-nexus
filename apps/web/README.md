@@ -2,7 +2,7 @@
 
 La SPA Web utiliza React + TypeScript + Vite y consume `@igx-nexus/ui`. La experiencia Demo conserva 240 activos sintéticos y 18 relaciones con corte fijo, pero desde V02-011 **la Web ya no es dueña del inventario sintético**.
 
-La fuente compartida Demo vive en `packages/demo-data`. `src/demo-dataset.ts` es un adaptador de compatibilidad explícito que proyecta el snapshot canónico v0.2 al modelo de presentación histórico. Technology Overview, Asset Explorer, Asset 360, QR/Label, Technology Map y CMDB Health mantienen los mismos IDs y escenarios funcionales.
+La fuente compartida Demo vive en `packages/demo-data`. `src/demo-dataset.ts` conserva la proyección histórica y añade metadata canónica para Explorer 2.0 sin reautorizar el catálogo. `legacyDemoDatasetProjection()` mantiene la regresión exacta de campos v0.1. Technology Overview, Asset Explorer, Asset 360, QR/Label, Technology Map y CMDB Health mantienen los mismos IDs y escenarios funcionales.
 
 La Demo local no requiere GLPI, credenciales, Docker ni NEXUS API. El modo Live, en cambio, consume NEXUS API y nunca habla directamente con GLPI.
 
@@ -50,6 +50,22 @@ La Web Live consume NEXUS API mediante su provider dedicado. Technology Overview
 Los providers asíncronos reciben `AbortSignal`. Demo y Live comparten el lenguaje canónico detrás de sus fronteras, pero no existe fallback silencioso Live → Demo.
 
 El locator demo es determinista sólo para tests y demostración. No debe utilizarse como generador productivo.
+
+## Asset Explorer 2.0
+
+`#assets` es el workspace de investigación de inventario.
+
+V02-016 mantiene search/sort/pagination del Explorer histórico y agrega:
+
+- facetas Domain / Asset Class / Role / Lifecycle;
+- source, taxonomy state, review required y compatibility fallback;
+- Operational Context sólo cuando el provider entrega cobertura;
+- facet counts calculados con búsqueda + otras facetas activas;
+- valores multi-source/context por membership;
+- tabla data-dense de identidad, clasificación, lifecycle/criticidad, source/freshness, owner/site y fabricante/modelo;
+- compatibility fallback visible y nunca presentado como clasificación resuelta.
+
+No existe DSL/AQL, saved filters persistentes ni backend search service en V02-016.
 
 ## QR y etiquetas
 

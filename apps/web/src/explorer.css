@@ -29,3 +29,30 @@
   .nexus-select-field select { background: Canvas; color: CanvasText; border-color: ButtonText; }
   .nexus-explorer-checkbox input { accent-color: auto; }
 }
+
+/* V02-016 — Asset Explorer 2.0 */
+.nexus-explorer .nexus-overline { margin: 0 0 var(--igx-spacing-1); color: var(--igx-semantic-color-text-secondary); font-size: .6875rem; font-weight: var(--igx-font-weight-semibold); letter-spacing: .08em; text-transform: uppercase; }
+.nexus-explorer-scope { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(24rem, 1fr); gap: var(--igx-density-content-gap) var(--igx-density-section-gap); align-items: start; padding: var(--igx-spacing-4) var(--igx-spacing-5); border-block: 1px solid var(--igx-semantic-color-border-subtle); }
+.nexus-explorer-scope h2 { margin: 0 0 var(--igx-spacing-2); font-size: 1.125rem; }
+.nexus-explorer-scope > div > p:last-child { color: var(--igx-semantic-color-text-secondary); font-size: .875rem; }
+.nexus-explorer-scope-facts { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--igx-spacing-4); }
+.nexus-explorer-scope-facts dt { color: var(--igx-semantic-color-text-secondary); font-size: .75rem; }
+.nexus-explorer-scope-facts dd { margin: var(--igx-spacing-1) 0 0; font-size: .875rem; font-weight: var(--igx-font-weight-semibold); overflow-wrap: anywhere; }
+.nexus-explorer-coverage-warning { grid-column: 1 / -1; padding: var(--igx-spacing-3) var(--igx-spacing-4); border-inline-start: 3px solid var(--igx-semantic-color-status-warning-solid); background: var(--igx-semantic-color-status-warning-surface); color: var(--igx-semantic-color-text-primary); font-size: .875rem; }
+.nexus-asset-table table { min-width: 78rem; }
+.nexus-asset-classification { min-width: 14rem; }
+.nexus-asset-classification-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--igx-spacing-2); }
+.nexus-asset-source-list { display: flex; flex-wrap: wrap; gap: var(--igx-spacing-1); }
+@media (max-width: 1023px) {
+  .nexus-explorer-scope { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .nexus-explorer-scope-facts { grid-template-columns: minmax(0, 1fr); gap: var(--igx-spacing-3); }
+}
+@media (max-width: 479px) {
+  .nexus-explorer-scope { padding-inline: var(--igx-spacing-3); }
+}
+@media (forced-colors: active) {
+  .nexus-explorer-scope { border-color: CanvasText; }
+  .nexus-explorer-coverage-warning { border-color: CanvasText; background: Canvas; color: CanvasText; }
+}

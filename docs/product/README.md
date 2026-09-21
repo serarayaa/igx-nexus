@@ -47,6 +47,19 @@ Documento:
 
 V02-015 transforma la home histórica en una superficie de triage que responde **¿Qué requiere atención ahora y por qué?**, comparte arquitectura Demo/Live y evita adelantar el contrato analítico de V02-019.
 
+## V02-016 — Asset Explorer 2.0
+
+Baseline de implementación:
+
+`7d36a23e4e3773338955e038a2567b9f5d4526b3`
+
+Documentos:
+
+- [Asset Explorer 2.0](asset-explorer-v2.md)
+- [Technology Scan V02-016](technology-scan-v02-016.md)
+
+V02-016 evoluciona `#assets` hacia un workspace data-dense y multisource con facetas canónicas, counts contextuales y coverage explícita, sin adelantar Asset 360 2.0 ni Analytics Contract Layer.
+
 ## Principios
 
 1. Cada pantalla responde una pregunta operacional.
@@ -64,7 +77,7 @@ V02-015 transforma la home histórica en una superficie de triage que responde *
 
 - V02-014 — Shell & Motion 2.0 — integrado
 - V02-015 — Technology Overview — integrado
-- V02-016 — Asset Explorer 2.0 — siguiente trabajo
+- V02-016 — Asset Explorer 2.0 — en implementación
 - V02-017 — Asset 360 2.0
 - V02-018 — Technology Map 2.0
 - V02-019 — Analytics Contract Layer
