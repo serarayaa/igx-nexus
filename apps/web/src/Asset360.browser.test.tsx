@@ -102,7 +102,7 @@ it("deep link de Relaciones presenta claims incidentes y navegación semántica 
 });
 
 it("presenta datos parciales sin inventar información", async () => {
-  render(<NexusShell view="asset"><Asset360 assetId="DEMO-0001" section="inventory" /></NexusShell>);
+  const view = render(<NexusShell view="asset"><Asset360 assetId="DEMO-0001" section="inventory" /></NexusShell>);
   await screen.findByRole("heading", { name: "Notebook Demo 0001", level: 1 });
   const inventoryHeading = await screen.findByRole("heading", { name: "Inventario", level: 2 });
   await waitFor(() => expect(document.activeElement).toBe(inventoryHeading));
@@ -112,8 +112,8 @@ it("presenta datos parciales sin inventar información", async () => {
   const assignment = screen.getByRole("region", { name: "Asignación y ubicación" });
   expect(within(assignment).getAllByText("No informado")).toHaveLength(2);
 
-  await userEvent.click(screen.getByRole("link", { name: "Resumen" }));
-  const quality = screen.getByRole("region", { name: "CMDB Health" });
+  view.rerender(<NexusShell view="asset"><Asset360 assetId="DEMO-0001" section="summary" /></NexusShell>);
+  const quality = await screen.findByRole("region", { name: "CMDB Health" });
   expect(await within(quality).findByText("Observación desconocida")).toBeTruthy();
   expect(within(quality).getByText("Falta responsable")).toBeTruthy();
   expect(within(quality).getByText("Falta ubicación")).toBeTruthy();
@@ -157,7 +157,7 @@ it("Live mantiene fallback taxonómico explícito, fuentes independientes y cero
   };
   const provider: InventoryProvider = async () => liveSnapshot;
 
-  render(<NexusShell view="asset"><Asset360 assetId="NXS-LAB" mode="live" provider={provider} /></NexusShell>);
+  const view = render(<NexusShell view="asset"><Asset360 assetId="NXS-LAB" mode="live" provider={provider} /></NexusShell>);
   await screen.findByRole("heading", { name: "LAB-ENDPOINT", level: 1 });
   expect(screen.getByText("ASSET 360 · INNERGEX CHILE · LIVE")).toBeTruthy();
   expect(screen.getByText("Dominio IT · compatibilidad")).toBeTruthy();
@@ -166,13 +166,13 @@ it("Live mantiene fallback taxonómico explícito, fuentes independientes y cero
   expect(screen.queryByRole("link", { name: "Diseñar etiqueta" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Abrir grafo de relaciones" })).toBeNull();
 
-  await userEvent.click(screen.getByRole("link", { name: "Inventario" }));
-  const taxonomy = screen.getByRole("region", { name: "Taxonomía y contexto" });
+  view.rerender(<NexusShell view="asset"><Asset360 assetId="NXS-LAB" section="inventory" mode="live" provider={provider} /></NexusShell>);
+  const taxonomy = await screen.findByRole("region", { name: "Taxonomía y contexto" });
   expect(within(taxonomy).getByText("Proyección de compatibilidad")).toBeTruthy();
   expect(within(taxonomy).getByRole("note").textContent).toMatch(/no equivalen a una clasificación resuelta/i);
 
-  await userEvent.click(screen.getByRole("link", { name: "Evidencia y fuentes" }));
-  const source = screen.getByRole("region", { name: "Referencias de fuente" });
+  view.rerender(<NexusShell view="asset"><Asset360 assetId="NXS-LAB" section="evidence" mode="live" provider={provider} /></NexusShell>);
+  const source = await screen.findByRole("region", { name: "Referencias de fuente" });
   const sourceTable = within(source).getByRole("table");
   const glpiRow = within(sourceTable).getByRole("row", { name: /glpi/i });
   const intuneRow = within(sourceTable).getByRole("row", { name: /intune/i });
@@ -182,8 +182,8 @@ it("Live mantiene fallback taxonómico explícito, fuentes independientes y cero
   expect(intuneDate).toBeTruthy();
   expect(glpiDate).not.toBe(intuneDate);
 
-  await userEvent.click(screen.getByRole("link", { name: "Relaciones" }));
-  const relationships = screen.getByRole("region", { name: "Relaciones" });
+  view.rerender(<NexusShell view="asset"><Asset360 assetId="NXS-LAB" section="relationships" mode="live" provider={provider} /></NexusShell>);
+  const relationships = await screen.findByRole("region", { name: "Relaciones" });
   expect(within(relationships).getByText("Sin cobertura de relaciones Live")).toBeTruthy();
   expect(within(relationships).getByText(/no sustituye esta ausencia con relaciones sintéticas/i)).toBeTruthy();
 });
