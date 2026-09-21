@@ -100,6 +100,7 @@ it("projects canonical taxonomy, source and operational context without reauthor
   expect(assets.every(asset => asset.assetClass && asset.role && asset.taxonomyState === "classified")).toBe(true);
   expect(assets.every(asset => asset.taxonomyReviewRequired === false && asset.taxonomyCompatibilityFallback === false)).toBe(true);
   expect(assets.every(asset => asset.sourceSystems?.includes("demo"))).toBe(true);
+  expect(assets.every(asset => asset.sourceReferences?.some(reference => reference.source === "demo" && reference.observedAt))).toBe(true);
   expect(assets.find(asset => asset.id === "DEMO-0001")?.operationalContexts).toEqual([]);
   expect(assets.find(asset => asset.id === "DEMO-0013")?.operationalContexts?.[0]).toEqual(expect.objectContaining({
     kind: "site",
