@@ -89,6 +89,8 @@ export function App() {
 
   useEffect(() => {
     document.title = `${routeTitle(route)} · IGX NEXUS`;
+    // Asset 360 gestiona su propio foco para distinguir cambios de CI y de sección contextual.
+    if (route.view === "asset") return;
     const frame = requestAnimationFrame(() => {
       const heading = document.querySelector<HTMLElement>("main h1");
       if (heading) {
