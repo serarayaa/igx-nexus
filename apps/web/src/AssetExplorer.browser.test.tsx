@@ -47,7 +47,10 @@ it("combina Domain, Class, Role y Lifecycle y permite quitar cada faceta", async
 });
 
 it("recupera búsqueda y filtros sin coincidencias", async () => {
-  mount(); await ready(); filter("Dominio", "OT"); filter("Tipo de inventario", "Phone");
+  mount(); await ready();
+  filter("Dominio", "OT");
+  await userEvent.click(screen.getByText("Más filtros", { selector: "summary" }));
+  filter("Tipo de inventario", "Phone");
   expect(screen.getByText("No hay activos que coincidan")).toBeTruthy();
   expect(screen.queryByRole("table")).toBeNull();
   await userEvent.click(screen.getByRole("button", { name: "Restablecer búsqueda y filtros" }));
