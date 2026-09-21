@@ -1,12 +1,16 @@
 # Asset Explorer 2.0 — V02-016
 
-Estado: **en implementación / issue #85**.
+Estado: **integrado mediante V02-016 / PR #87**.
 
-Baseline:
+Baseline de implementación:
 
 `main = 7d36a23e4e3773338955e038a2567b9f5d4526b3`
 
-CI post-housekeeping V02-015: **#575 verde**.
+Integrado en `main`:
+
+`68479fd9dd8c45be06a99b0042be83cfba9a2277`
+
+CI post-merge V02-016: **#608 verde**.
 
 ## Pregunta operacional
 
