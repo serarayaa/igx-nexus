@@ -97,10 +97,11 @@ describe("Live Web provider projection", () => {
 
   it("treats missing taxonomy review metadata as unresolved and review-required", () => {
     const incomplete = structuredClone(canonicalComputer);
-    delete incomplete.assets[0]!.attributes["nexus.taxonomy.domain.state"];
-    delete incomplete.assets[0]!.attributes["nexus.taxonomy.domain.reviewRequired"];
-    delete incomplete.assets[0]!.attributes["nexus.taxonomy.assetClass.reviewRequired"];
-    delete incomplete.assets[0]!.attributes["nexus.taxonomy.role.reviewRequired"];
+    const attributes = incomplete.assets[0]!.attributes as Record<string, unknown>;
+    delete attributes["nexus.taxonomy.domain.state"];
+    delete attributes["nexus.taxonomy.domain.reviewRequired"];
+    delete attributes["nexus.taxonomy.assetClass.reviewRequired"];
+    delete attributes["nexus.taxonomy.role.reviewRequired"];
 
     const asset = projectCanonicalSnapshot(incomplete).assets[0]!;
     expect(asset.taxonomyState).toBe("unknown");
