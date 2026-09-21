@@ -1,12 +1,16 @@
 # Technology Overview — V02-015
 
-Estado: **implementación en V02-015 / issue #82**.
+Estado: **integrado mediante V02-015 / PR #83**.
 
-Baseline:
+Baseline de implementación:
 
 `main = ccebc18d7440d338f59e0263cc38c5d42bd1afe4`
 
-CI post-housekeeping V02-014: **#539 verde**.
+Integrado en `main`:
+
+`c30eb25fa581f45eafa61c8bf7dd9d23fd7ccfe9`
+
+CI post-merge V02-015: **#573 verde**.
 
 ## Pregunta operacional
 
