@@ -1,5 +1,14 @@
-import { Badge, DataTable, StatusBadge, type DataTableColumn, type DataTableSort } from "@igx-nexus/ui";
-import { lifecycleLabels, typeLabels, type Asset } from "./asset-model";
+import { Badge, DataTable, StatusBadge, type DataTableColumn, type DataTableSort, type StatusBadgeStatus } from "@igx-nexus/ui";
+import {
+  assetClassLabel,
+  criticalityLabels,
+  lifecycleLabels,
+  taxonomyStateLabels,
+  technologyRoleLabel,
+  type Asset,
+  type AssetCriticality,
+  type AssetTaxonomyState,
+} from "./asset-model";
 import { freshnessLabels, freshnessOf } from "./explorer-model";
 import { assetHash } from "./navigation-model";
 
@@ -15,7 +24,28 @@ const stateTones = {
   maintenance: "warning",
   disposed: "neutral",
   unknown: "neutral",
-} as const;
+} as const satisfies Record<Asset["lifecycle"], StatusBadgeStatus>;
+
+const criticalityTones = {
+  low: "neutral",
+  medium: "info",
+  high: "warning",
+  critical: "critical",
+  unknown: "neutral",
+} as const satisfies Record<AssetCriticality, StatusBadgeStatus>;
+
+const taxonomyTones = {
+  classified: "success",
+  unknown: "neutral",
+  unclassified: "warning",
+  conflict: "critical",
+} as const satisfies Record<AssetTaxonomyState, StatusBadgeStatus>;
+
+function sourceLabel(source: string): string {
+  return source.startsWith("custom:")
+    ? source.slice("custom:".length)
+    : source.toLocaleUpperCase("es-CL");
+}
 
 export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical, caption = "Inventario de activos demo" }: {
   rows: readonly Asset[];
@@ -26,25 +56,93 @@ export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical, capt
   caption?: string;
 }) {
   const columns: readonly DataTableColumn<Asset>[] = [
-    { id: "name", header: "Activo", isRowHeader: true, isSortable: true, cell: a => <div className="nexus-asset-identity">
-      <strong><a className="nexus-asset-link" href={assetHash(a.id)}>{a.name}</a></strong><span className="nexus-id nexus-muted">{a.id}</span>
-      {a.critical && <span className="nexus-muted">Criticidad: crítico</span>}
-      {showTechnical && <dl className="nexus-asset-technical">
-        <div><dt>Hostname</dt><dd>{a.hostname ?? "Sin hostname"}</dd></div>
-        <div><dt>Serial</dt><dd>{a.serial ?? "Sin serial"}</dd></div>
-        <div><dt>Etiqueta</dt><dd>{a.assetTag ?? "Sin etiqueta"}</dd></div>
-        <div><dt>IP</dt><dd>{a.ipAddress ?? "Sin IP"}</dd></div>
-      </dl>}
-    </div> },
-    { id: "type", header: "Tipo / dominio", isSortable: true, cell: a => <div className="nexus-asset-cell"><span>{typeLabels[a.type]}</span><Badge>{a.domain}</Badge></div> },
-    { id: "owner", header: "Responsable", isSortable: true, cell: a => a.owner ?? "Sin responsable" },
-    { id: "location", header: "Sitio", isSortable: true, cell: a => a.location ?? "Sin ubicación" },
-    { id: "manufacturer", header: "Fabricante / modelo", isSortable: true, cell: a => <div className="nexus-asset-cell"><span>{a.manufacturer ?? "Sin fabricante"}</span><span className="nexus-muted">{a.model ?? "Sin modelo"}</span></div> },
-    { id: "lifecycle", header: "Estado", isSortable: true, cell: a => <StatusBadge status={stateTones[a.lifecycle]}>{lifecycleLabels[a.lifecycle]}</StatusBadge> },
-    { id: "lastSeen", header: "Última observación", isSortable: true, cell: a => {
-      const freshness = freshnessOf(a, asOf);
-      return <div className="nexus-asset-cell">{freshness !== "unknown" && a.lastSeen && <time dateTime={a.lastSeen}>{dateFormat.format(new Date(a.lastSeen))}</time>}<span className="nexus-muted">{freshnessLabels[freshness]}</span></div>;
-    } },
+    {
+      id: "name",
+      header: "Activo",
+      isRowHeader: true,
+      isSortable: true,
+      cell: asset => <div className="nexus-asset-identity">
+        <strong><a className="nexus-asset-link" href={assetHash(asset.id)}>{asset.name}</a></strong>
+        <span className="nexus-id nexus-muted">{asset.id}</span>
+        {showTechnical && <dl className="nexus-asset-technical">
+          <div><dt>Hostname</dt><dd>{asset.hostname ?? "Sin hostname"}</dd></div>
+          <div><dt>Serial</dt><dd>{asset.serial ?? "Sin serial"}</dd></div>
+          <div><dt>Etiqueta</dt><dd>{asset.assetTag ?? "Sin etiqueta"}</dd></div>
+          <div><dt>IP</dt><dd>{asset.ipAddress ?? "Sin IP"}</dd></div>
+        </dl>}
+      </div>,
+    },
+    {
+      id: "assetClass",
+      header: "Clasificación",
+      isSortable: true,
+      cell: asset => {
+        const state = asset.taxonomyState ?? "unknown";
+        const contexts = asset.operationalContexts ?? [];
+        return <div className="nexus-asset-cell nexus-asset-classification">
+          <div className="nexus-asset-classification-head"><Badge>{asset.domain}</Badge><strong>{assetClassLabel(asset.assetClass)}</strong></div>
+          <span>{technologyRoleLabel(asset.role)}</span>
+          {asset.taxonomyCompatibilityFallback
+            ? <StatusBadge status="warning">Proyección de compatibilidad</StatusBadge>
+            : <StatusBadge status={taxonomyTones[state]}>{taxonomyStateLabels[state]}{asset.taxonomyReviewRequired ? " · revisar" : ""}</StatusBadge>}
+          {contexts.length > 0 && <span className="nexus-muted">Contexto: {contexts.map(context => context.displayName || context.id).join(", ")}</span>}
+        </div>;
+      },
+    },
+    {
+      id: "lifecycle",
+      header: "Lifecycle / criticidad",
+      isSortable: true,
+      cell: asset => {
+        const criticality = asset.criticality ?? (asset.critical ? "critical" : "medium");
+        return <div className="nexus-asset-cell">
+          <StatusBadge status={stateTones[asset.lifecycle]}>{lifecycleLabels[asset.lifecycle]}</StatusBadge>
+          <StatusBadge status={criticalityTones[criticality]}>Criticidad {criticalityLabels[criticality].toLocaleLowerCase("es-CL")}</StatusBadge>
+        </div>;
+      },
+    },
+    {
+      id: "source",
+      header: "Fuente / freshness",
+      isSortable: true,
+      cell: asset => {
+        const freshness = freshnessOf(asset, asOf);
+        return <div className="nexus-asset-cell">
+          <div className="nexus-asset-source-list">
+            {(asset.sourceSystems?.length ? asset.sourceSystems : ["Sin fuente"]).map(source => <Badge key={source}>{sourceLabel(source)}</Badge>)}
+          </div>
+          {freshness !== "unknown" && asset.lastSeen && <time dateTime={asset.lastSeen}>{dateFormat.format(new Date(asset.lastSeen))}</time>}
+          <span className="nexus-muted">{freshnessLabels[freshness]}</span>
+        </div>;
+      },
+    },
+    {
+      id: "owner",
+      header: "Responsable / sitio",
+      isSortable: true,
+      cell: asset => <div className="nexus-asset-cell">
+        <span>{asset.owner ?? "Sin responsable"}</span>
+        <span className="nexus-muted">{asset.location ?? "Sin ubicación"}</span>
+      </div>,
+    },
+    {
+      id: "manufacturer",
+      header: "Fabricante / modelo",
+      isSortable: true,
+      cell: asset => <div className="nexus-asset-cell">
+        <span>{asset.manufacturer ?? "Sin fabricante"}</span>
+        <span className="nexus-muted">{asset.model ?? "Sin modelo"}</span>
+      </div>,
+    },
   ];
-  return <DataTable className="nexus-asset-table" caption={caption} columns={columns} rows={rows} getRowKey={a => a.id} sort={sort} onSortChange={onSortChange} />;
+
+  return <DataTable
+    className="nexus-asset-table"
+    caption={caption}
+    columns={columns}
+    rows={rows}
+    getRowKey={asset => asset.id}
+    sort={sort}
+    onSortChange={onSortChange}
+  />;
 }
