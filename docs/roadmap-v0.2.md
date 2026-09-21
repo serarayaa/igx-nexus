@@ -49,7 +49,7 @@ Dirección conceptual posterior:
 | V02-012 | Relationship Evidence v2 | P1 | ✅ Integrado — PR #73 / issue #72 / merge `e174700c`; CI #481 verde |
 | V02-013 | Product IA & Visual Direction | P0 | ✅ Integrado — PR #76 / issue #75 / merge `fe4ff067`; CI #493 verde |
 | V02-014 | Shell & Motion 2.0 | P1 | ✅ Integrado — PR #80 / issue #79 / merge `e650e288`; CI #537 verde |
-| V02-015 | Technology Overview | P1 | 🟡 En implementación — issue #82 |
+| V02-015 | Technology Overview | P1 | ✅ Integrado — PR #83 / issue #82 / merge `c30eb25f`; CI #573 verde |
 | V02-016 | Asset Explorer 2.0 | P1 | ⚪ Pendiente |
 | V02-017 | Asset 360 2.0 | P1 | ⚪ Pendiente |
 | V02-018 | Technology Map 2.0 | P1 | ⚪ Pendiente |
@@ -230,26 +230,30 @@ Documentos:
 - `docs/product/shell-motion-v2.md`;
 - `docs/product/technology-scan-v02-014.md`.
 
-Siguiente trabajo: **V02-015 — Technology Overview**.
+### V02-015 — Technology Overview ✅
 
-### V02-015 — Technology Overview — en implementación
-
-Issue #82.
+Integrado mediante PR #83, merge `c30eb25fa581f45eafa61c8bf7dd9d23fd7ccfe9`; CI post-merge #573 verde.
 
 Pregunta central: **¿Qué requiere atención ahora y por qué?**
 
-Dirección implementada en la rama de trabajo:
+Resultado:
 
 - `#overview` deja el dashboard promocional y adopta triage operacional;
-- contexto/alcance/cobertura explícitos;
-- lista de atención determinista y explicable;
-- summary facts con denominadores visibles;
-- Demo y Live comparten Overview sin fallback;
-- Live no trata campos fuera de cobertura como defectos;
-- sin librería de charts, router nuevo ni analytics framework;
-- V02-019 conserva ownership de contratos métricos.
+- contexto, alcance y cobertura quedan explícitos;
+- lista de atención determinista y explicable, sin convertir señales en un risk score;
+- summary facts con denominadores visibles y semántica acotada;
+- Demo y Live comparten Overview sin fallback silencioso;
+- Live sólo presenta hechos soportados por NEXUS API y comunica cobertura parcial;
+- estados loading/error/empty/no-attention/partial coverage quedan diferenciados;
+- drill-downs conducen a Assets y Data Quality cuando la superficie existe y es defendible;
+- se preservan routing hash, providers, contratos canónicos, dataset Demo y Shell 2.0;
+- no se agregan librerías de charts, router nuevo ni analytics framework;
+- V02-019 conserva ownership de contratos métricos;
+- WCAG 2.2 AA, axe light/dark, 320 CSS px, reflow, High Contrast y reduced motion pasan en CI.
 
 Documento: `docs/product/technology-overview-v2.md`.
+
+Siguiente trabajo: **V02-016 — Asset Explorer 2.0**.
 
 ### V02-016 — Asset Explorer 2.0
 
