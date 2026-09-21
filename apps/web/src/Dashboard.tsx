@@ -146,28 +146,23 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
         <dl className="nexus-overview-summary">
           <div>
             <dt><Boxes aria-hidden="true" />Inventario</dt>
-            <dd>{numberFormat.format(result.assets.length)}</dd>
-            <p>{result.active.length} vigentes dentro del alcance seleccionado.</p>
+            <dd><strong>{numberFormat.format(result.assets.length)}</strong><span>{result.active.length} vigentes dentro del alcance seleccionado.</span></dd>
           </div>
           <div>
             <dt><Clock3 aria-hidden="true" />Freshness</dt>
-            <dd>{percentage(overview.freshnessFresh, result.active.length)}</dd>
-            <p>{overview.freshnessFresh} recientes · {overview.freshnessStale} antiguas · {overview.freshnessUnknown} sin fecha utilizable.</p>
+            <dd><strong>{percentage(overview.freshnessFresh, result.active.length)}</strong><span>{overview.freshnessFresh} recientes · {overview.freshnessStale} antiguas · {overview.freshnessUnknown} sin fecha utilizable.</span></dd>
           </div>
           {!live && <div>
             <dt><ShieldCheck aria-hidden="true" />Datos básicos presentes</dt>
-            <dd>{percentage(result.complete, result.active.length)}</dd>
-            <p>{result.complete} de {result.active.length} vigentes con responsable y ubicación.</p>
+            <dd><strong>{percentage(result.complete, result.active.length)}</strong><span>{result.complete} de {result.active.length} vigentes con responsable y ubicación.</span></dd>
           </div>}
           {!live && <div>
             <dt><CalendarClock aria-hidden="true" />Garantía</dt>
-            <dd>{result.due.length}</dd>
-            <p>{result.due.length} vencen en 90 días · {result.expired} vencidas · {result.unknownWarranty} sin fecha válida.</p>
+            <dd><strong>{result.due.length}</strong><span>{result.due.length} vencen en 90 días · {result.expired} vencidas · {result.unknownWarranty} sin fecha válida.</span></dd>
           </div>}
           {live && <div>
             <dt><ShieldCheck aria-hidden="true" />Cobertura Live</dt>
-            <dd>Parcial</dd>
-            <p>Responsable, garantía, Data Quality y Device Health no se infieren cuando el provider no entrega evidencia suficiente.</p>
+            <dd><strong>Parcial</strong><span>Responsable, garantía, Data Quality y Device Health no se infieren cuando el provider no entrega evidencia suficiente.</span></dd>
           </div>}
         </dl>
       </section>
