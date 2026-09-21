@@ -52,7 +52,7 @@ Dirección conceptual posterior:
 | V02-015 | Technology Overview | P1 | ✅ Integrado — PR #83 / issue #82 / merge `c30eb25f`; CI #573 verde |
 | V02-016 | Asset Explorer 2.0 | P1 | ✅ Integrado — PR #87 / issue #85 / merge `68479fd9`; CI #608 verde |
 | V02-017 | Asset 360 2.0 | P1 | ✅ Integrado — PR #90 / issue #89 / merge `4cc6e7b2`; CI #651 verde |
-| V02-018 | Technology Map 2.0 | P1 | ⚪ Pendiente |
+| V02-018 | Technology Map 2.0 | P1 | 🟡 En implementación — issue #92 |
 | V02-019 | Analytics Contract Layer | P0 | ⚪ Pendiente |
 | V02-020 | CMDB Quality 2.0 | P1 | ⚪ Pendiente |
 | V02-021 | Lifecycle & Investment | P1 | ⚪ Pendiente |
@@ -316,9 +316,33 @@ Documentos:
 
 Siguiente trabajo: **V02-018 — Technology Map 2.0**.
 
-### V02-018 — Technology Map 2.0
+### V02-018 — Technology Map 2.0 — en implementación
 
-Workspace de investigación e impacto con alternativa semántica accesible.
+Issue #92.
+
+Pregunta central:
+
+> **¿Cómo está conectado este CI dentro de un alcance concreto, qué significan esas relaciones y qué puedo investigar sin confundir conectividad con impacto demostrado?**
+
+Dirección implementada en la rama:
+
+- focus CI como home node estable;
+- scope explícito por profundidad, tipo y perspectiva;
+- state esencial compartible por URL sin router nuevo;
+- contexto del CI seleccionado con taxonomy/lifecycle/criticality/source/freshness ya disponibles;
+- alternativa semántica equivalente al mapa visual;
+- relaciones con source/observedAt/status/dirección explícitos;
+- lenguaje evita presentar downstream como impacto causal;
+- Demo usa fixtures canónicos; Live comparte IA sin fallback a Demo cuando no existe provider relacional;
+- endpoints no resueltos y fechas desconocidas permanecen explícitos;
+- sin graph analytics, impact score, edición, discovery ni nueva graph library.
+
+Documentos:
+
+- `docs/product/technology-map-v2-plan.md`;
+- `docs/product/technology-scan-v02-018.md`.
+
+V02-019 conserva ownership de métricas y analytics.
 
 ## Epic 5 — Technology Analytics
 
