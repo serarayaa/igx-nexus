@@ -46,18 +46,20 @@ it("combina Domain, Class, Role y Lifecycle y permite quitar cada faceta", async
   expect(screen.getByText("240 de 240 activos")).toBeTruthy();
 });
 
-it("recupera búsqueda y filtros sin coincidencias", async () => {
+it("evita combinaciones de facetas imposibles y recupera una búsqueda sin coincidencias", async () => {
   mount(); await ready();
   filter("Dominio", "OT");
   await userEvent.click(screen.getByText("Más filtros", { selector: "summary" }));
-  filter("Tipo de inventario", "Phone");
+  expect(screen.queryByRole("option", { name: /Teléfonos/ })).toBeNull();
+
+  await search("imposible-sin-coincidencias");
   expect(screen.getByText("No hay activos que coincidan")).toBeTruthy();
   expect(screen.queryByRole("table")).toBeNull();
-  await userEvent.click(screen.getByRole("button", { name: "Restablecer búsqueda y filtros" }));
-  await ready(); expect(document.activeElement).toBe(screen.getByRole("searchbox"));
-  await search("imposible-sin-coincidencias");
   expect(screen.getByText("0 de 240 activos")).toBeTruthy();
-  await userEvent.click(screen.getByRole("button", { name: "Limpiar búsqueda" })); await ready();
+
+  await userEvent.click(screen.getByRole("button", { name: "Restablecer búsqueda y filtros" }));
+  await ready();
+  expect(document.activeElement).toBe(screen.getByRole("searchbox"));
 });
 
 it("opera facetas de fuente/taxonomía con teclado, counts y recuperación de foco", async () => {
@@ -186,7 +188,7 @@ it("mantiene Live honesto cuando la taxonomía usa compatibility fallback", asyn
 
   render(<NexusShell mode="live" view="assets"><AssetExplorer mode="live" provider={provider} /></NexusShell>);
   await screen.findByRole("table", { name: "Inventario de activos Live" });
-  expect(screen.getByText(/1 activo usa una proyección escalar de compatibilidad/)).toBeTruthy();
+  expect(screen.getByRole("note").textContent).toMatch(/1 activo usa una proyección escalar de compatibilidad/);
   const liveTable = screen.getByRole("table", { name: "Inventario de activos Live" });
   expect(within(liveTable).getByText("Proyección de compatibilidad")).toBeTruthy();
   expect(screen.getByText("Sin cobertura del provider")).toBeTruthy();
