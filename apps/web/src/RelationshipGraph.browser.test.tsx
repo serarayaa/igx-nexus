@@ -64,7 +64,7 @@ it("mantiene identidad cuando falla la cobertura relacional y permite retry", as
   render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" relationshipProvider={provider} /></NexusShell>);
   await ready();
   expect(await screen.findByText("No se pudo cargar la cobertura relacional")).toBeTruthy();
-  expect(screen.getByText("Desktop Demo 0002")).toBeTruthy();
+  expect(screen.getByRole("link", { name: "Desktop Demo 0002" })).toBeTruthy();
   expect(screen.queryByText("secreto")).toBeNull();
   await userEvent.click(screen.getByRole("button", { name: "Reintentar relaciones" }));
   expect(await screen.findByText("5 relaciones visibles")).toBeTruthy();
