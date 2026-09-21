@@ -20,7 +20,7 @@ it("recorre Overview → Explorer → Asset 360 → QR → Graph → Health cons
   await waitFor(() => expect(document.activeElement).toBe(dashboardHeading));
   await userEvent.click(screen.getByRole("button", { name: "Activar tema oscuro" }));
   await userEvent.click(screen.getByRole("button", { name: "Activar densidad compacta" }));
-  await userEvent.click(screen.getByRole("link", { name: "Explorar activos" }));
+  await userEvent.click(screen.getByRole("link", { name: /Explorar activos/ }));
 
   const explorerHeading = await screen.findByRole("heading", { name: "Explorador de activos", level: 1 });
   await waitFor(() => expect(document.activeElement).toBe(explorerHeading));
