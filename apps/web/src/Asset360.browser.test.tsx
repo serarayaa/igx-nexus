@@ -39,7 +39,7 @@ it("abre Asset 360 en Resumen con identidad estable, calidad separada y acciones
   expect(screen.getByRole("region", { name: "Señal técnica" })).toBeTruthy();
 
   expect(screen.getByRole("link", { name: "Diseñar etiqueta" }).getAttribute("href")).toBe("#assets/DEMO-0002/label");
-  expect(screen.getByRole("link", { name: "Abrir grafo de relaciones" }).getAttribute("href")).toBe("#assets/DEMO-0002/relations");
+  expect(screen.getByRole("link", { name: "Abrir Technology Map" }).getAttribute("href")).toBe("#assets/DEMO-0002/relations");
   await waitFor(() => expect(document.activeElement).toBe(heading));
 });
 
@@ -164,7 +164,7 @@ it("Live mantiene fallback taxonómico explícito, fuentes independientes y cero
   expect(screen.getByText("Taxonomía por revisar")).toBeTruthy();
   expect(screen.queryByRole("region", { name: "CMDB Health" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Diseñar etiqueta" })).toBeNull();
-  expect(screen.queryByRole("link", { name: "Abrir grafo de relaciones" })).toBeNull();
+  expect(screen.getByRole("link", { name: "Abrir Technology Map" }).getAttribute("href")).toBe("#assets/NXS-LAB/relations");
 
   view.rerender(<NexusShell view="asset"><Asset360 assetId="NXS-LAB" section="inventory" mode="live" provider={provider} /></NexusShell>);
   const taxonomy = await screen.findByRole("region", { name: "Taxonomía y contexto" });
@@ -186,6 +186,7 @@ it("Live mantiene fallback taxonómico explícito, fuentes independientes y cero
   const relationships = await screen.findByRole("region", { name: "Relaciones" });
   expect(within(relationships).getByText("Sin cobertura de relaciones Live")).toBeTruthy();
   expect(within(relationships).getByText(/no sustituye esta ausencia con relaciones sintéticas/i)).toBeTruthy();
+  expect(within(relationships).getByRole("link", { name: "Abrir Technology Map" }).getAttribute("href")).toBe("#assets/NXS-LAB/relations");
 });
 
 it("Atrás/Adelante restaura sección contextual sin recargar el CI", async () => {
