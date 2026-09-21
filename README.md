@@ -79,11 +79,11 @@ La v0.2 responde:
 
 > **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-**V02-001 a V02-013 están integrados.**
+**V02-001 a V02-014 están integrados.**
 
-V02-013 — Product IA & Visual Direction quedó incorporado mediante PR #76 en el merge `fe4ff067b60f89645635bd3711e74abb593e3725`; CI post-merge #493 verde. NEXUS ya cuenta con una arquitectura de información estable entre Demo y Live, una dirección visual v2, una matriz de propósito por pantalla y ADR-0023 como decisión normativa de producto.
+V02-014 — Shell & Motion 2.0 quedó incorporado mediante PR #80 en el merge `e650e288b47903d6811675aa265ac7f0141f51a7`; CI post-merge #537 verde. NEXUS ya materializa Product IA v2 en el shell real con navegación global y contextual separadas, Demo/Live como contexto de fuente, preferencias persistentes de theme/density, responsive móvil accesible y motion breve compatible con reduced motion.
 
-El siguiente ticket planificado es **V02-014 — Shell & Motion 2.0**.
+El siguiente ticket planificado es **V02-015 — Technology Overview**.
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -112,6 +112,22 @@ V02-013 establece como baseline:
 - WCAG 2.2 AA forma parte del contrato de producto.
 
 Ver [Product IA v2](docs/product/product-ia-v2.md), [Visual Direction v2](docs/product/visual-direction-v2.md), [Screen Purpose Matrix](docs/product/screen-purpose-matrix.md) y [ADR-0023](docs/architecture/adr-0023-product-information-architecture-v2.md).
+
+## Shell & Motion 2.0
+
+V02-014 materializa Product IA v2 en la experiencia real de navegación:
+
+- navegación global separada de anchors contextuales del contenido;
+- Demo y Live visibles como contexto de fuente, no como productos distintos;
+- header contextual por view/workspace;
+- preferencias `light | dark` y `comfortable | compact` con persistencia segura;
+- fallback inicial de tema a `prefers-color-scheme` cuando no existe elección guardada;
+- drawer móvil con focus trap, Escape, restauración de foco, `inert` y bloqueo de scroll;
+- responsive usable a 320 CSS px;
+- motion espacial breve y localizado, compatible con `prefers-reduced-motion`;
+- sin dependencias nuevas ni reemplazo del router.
+
+Ver [Shell & Motion 2.0](docs/product/shell-motion-v2.md) y [Technology Scan V02-014](docs/product/technology-scan-v02-014.md).
 
 ## Demo canónica
 
@@ -201,7 +217,7 @@ GET /openapi.json
 
 Ver [README de NEXUS API](services/api/README.md).
 
-## Demo Web v0.1
+## Web NEXUS — Demo/Live
 
 Con Node indicado en `.nvmrc`:
 
@@ -224,7 +240,7 @@ Rutas principales:
 /#q/<demo-locator>
 ```
 
-La Web Demo no necesita GLPI, credenciales ni Docker.
+En modo Demo, la Web no necesita GLPI, credenciales ni Docker. En modo Live Lab, la Web consume exclusivamente NEXUS API y no habla directamente con GLPI.
 
 ## Validación
 
@@ -239,7 +255,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-CI post-merge de V02-013: **#493 verde**.
+CI post-merge de V02-014: **#537 verde** sobre `e650e288b47903d6811675aa265ac7f0141f51a7`.
 
 ## Flujo de desarrollo
 
