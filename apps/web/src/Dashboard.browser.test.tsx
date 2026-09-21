@@ -68,7 +68,7 @@ it("reemplaza el recorrido promocional por drill-downs operacionales existentes"
   render(<Dashboard />); await ready();
   expect(screen.queryByText("Recorrido de la demo")).toBeNull();
   expect(screen.getByRole("link", { name: /Explorar activos/ }).getAttribute("href")).toBe("#assets");
-  expect(screen.getByRole("link", { name: /Calidad de datos/ }).getAttribute("href")).toBe("#health");
+  expect(screen.getByRole("link", { name: "Calidad de datos", exact: true }).getAttribute("href")).toBe("#health");
   expect(screen.queryByRole("link", { name: "Technology Map" })).toBeNull();
   expect(screen.getByText(/No constituyen un risk score/)).toBeTruthy();
 });
