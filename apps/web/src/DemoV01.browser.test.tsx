@@ -63,7 +63,7 @@ it("recorre Overview → Explorer → Asset 360 → QR → Graph → Health cons
   const visual = screen.getByLabelText("Mapa visual de relaciones");
   await userEvent.click(within(visual).getByRole("button", { name: "Switch Demo Celda Norte" }));
   const selection = screen.getByRole("region", { name: "Switch Demo Celda Norte" });
-  expect(within(selection).getByRole("link", { name: "Enfocar este CI" })).toBeTruthy();
+  expect(within(selection).getByRole("button", { name: "Enfocar este CI" })).toBeTruthy();
 
   await userEvent.click(screen.getByRole("link", { name: "Calidad de datos" }));
   const healthHeading = await screen.findByRole("heading", { name: "CMDB Health", level: 1 });
