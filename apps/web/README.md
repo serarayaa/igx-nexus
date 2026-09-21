@@ -76,7 +76,7 @@ V02-017 conserva `#assets/:id` y agrega contexto compartible mediante `?section=
 
 La proyección Web conserva de forma aditiva referencias de fuente con su propio `observedAt`. Demo y Live comparten IA, pero Live no recibe QR, CMDB Health sintético ni relaciones Demo. La UI declara compatibility fallback, coverage parcial y fechas desconocidas en vez de inferirlas.
 
-Technology Map continúa en `#assets/:id/relations`; no se duplica el grafo dentro de Asset 360.
+Technology Map continúa en `#assets/:id/relations`; no se duplica el grafo dentro de Asset 360. V02-018 añade scope explícito, state compartible por URL, contexto canónico del CI seleccionado y semántica de relaciones sin presentar orientación como causalidad. En Live, la ruta permanece disponible pero declara coverage no disponible cuando no existe provider relacional, sin fallback a Demo.
 
 ## QR y etiquetas
 
