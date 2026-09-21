@@ -85,7 +85,7 @@ V02-014 — Shell & Motion 2.0 quedó incorporado mediante PR #80 en el merge `e
 
 V02-015 — Technology Overview quedó incorporado mediante PR #83 en el merge `c30eb25fa581f45eafa61c8bf7dd9d23fd7ccfe9`; CI post-merge #573 verde. `#overview` es ahora la home operacional de triage para Demo y Live, con contexto/cobertura explícitos, señales de atención deterministas, summary facts defendibles y drill-downs a superficies existentes sin adelantar el contrato analítico de V02-019.
 
-El siguiente trabajo planificado es **V02-016 — Asset Explorer 2.0**.
+El trabajo actual es **V02-016 — Asset Explorer 2.0** (issue #85).
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -138,6 +138,12 @@ V02-015 transforma `#overview` en una superficie de triage que responde **¿Qué
 Demo y Live comparten Overview. Live sólo presenta datos soportados por NEXUS API y comunica cobertura parcial sin fallback silencioso a Demo.
 
 Ver [Technology Overview](docs/product/technology-overview-v2.md).
+
+## Asset Explorer 2.0
+
+V02-016 evoluciona `#assets` como workspace de investigación data-dense: búsqueda libre, facetas canónicas, counts contextuales, visibilidad de source/taxonomy coverage y una tabla enfocada en encontrar el CI correcto sin confundir compatibility fallback con clasificación resuelta.
+
+Ver [Asset Explorer 2.0](docs/product/asset-explorer-v2.md) y [Technology Scan V02-016](docs/product/technology-scan-v02-016.md).
 
 ## Demo canónica
 
