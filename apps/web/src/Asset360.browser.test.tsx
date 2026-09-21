@@ -151,7 +151,7 @@ it("Live mantiene fallback taxonómico explícito, fuentes independientes y cero
       sourceObservedAt: "2026-09-15T15:59:00.000Z",
       sourceReferences: [
         { source: "glpi", observedAt: "2026-09-15T15:59:00.000Z" },
-        { source: "intune", observedAt: "2026-09-15T15:57:00.000Z" },
+        { source: "intune", observedAt: "2026-09-14T15:57:00.000Z" },
       ],
     }],
   };
@@ -173,8 +173,14 @@ it("Live mantiene fallback taxonómico explícito, fuentes independientes y cero
 
   await userEvent.click(screen.getByRole("link", { name: "Evidencia y fuentes" }));
   const source = screen.getByRole("region", { name: "Referencias de fuente" });
-  expect(within(source).getByText("glpi")).toBeTruthy();
-  expect(within(source).getByText("intune")).toBeTruthy();
+  const sourceTable = within(source).getByRole("table");
+  const glpiRow = within(sourceTable).getByRole("row", { name: /glpi/i });
+  const intuneRow = within(sourceTable).getByRole("row", { name: /intune/i });
+  const glpiDate = within(glpiRow).getAllByRole("cell")[1]?.textContent;
+  const intuneDate = within(intuneRow).getAllByRole("cell")[1]?.textContent;
+  expect(glpiDate).toBeTruthy();
+  expect(intuneDate).toBeTruthy();
+  expect(glpiDate).not.toBe(intuneDate);
 
   await userEvent.click(screen.getByRole("link", { name: "Relaciones" }));
   const relationships = screen.getByRole("region", { name: "Relaciones" });
