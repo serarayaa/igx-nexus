@@ -25,7 +25,7 @@ afterEach(async () => { cleanup(); window.history.replaceState(null, "", window.
 it("Dashboard → Health → Asset 360 conserva historial, título y resumen individual", async () => {
   window.history.replaceState(null, "", "#overview");
   render(<App />);
-  await userEvent.click(await screen.findByRole("link", { name: "Calidad de datos" }));
+  await userEvent.click(await screen.findByRole("link", { name: "Calidad de datos", exact: true }));
   await ready();
   expect(document.title).toBe("CMDB Health · IGX NEXUS");
   const sidebar = screen.getByRole("link", { name: "Calidad de datos" });
