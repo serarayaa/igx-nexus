@@ -48,7 +48,7 @@ try {
     ["overview", "Technology Overview"], ["assets", "Explorador de activos"],
     ["assets/DEMO-0013", "Consola Demo Supervisión Norte"],
     ["assets/DEMO-0013/label", "Diseñar etiqueta"],
-    ["assets/DEMO-0013/relations", "Grafo de Relaciones"],
+    ["assets/DEMO-0013/relations", "Technology Map"],
     ["assets/DEMO-0020", "Estación Demo Por revisar"],
   ];
   for (const width of [1440, 768, 390, 320]) {
@@ -80,6 +80,11 @@ try {
   await page.screenshot({ path: "qa-artifacts/health-forced-colors.png" });
   checks.push("forced-colors + reduced-motion + keyboard focus");
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("http://127.0.0.1:4173/#assets/DEMO-0013/relations?depth=1&type=connected_to");
+  await page.getByRole("heading", { name: "Technology Map", level: 1, exact: true }).waitFor();
+  assert.equal(await page.getByRole("combobox", { name: "Profundidad" }).inputValue(), "1");
+  assert.equal(await page.getByRole("combobox", { name: "Tipo de relación" }).inputValue(), "connected_to");
+  checks.push("Technology Map shareable scope state");
   await page.goto("http://127.0.0.1:4173/#assets/DEMO-0013/relations");
   const otNode = page.getByRole("button", { name: "Switch Demo Celda Norte", exact: true });
   await otNode.focus();
