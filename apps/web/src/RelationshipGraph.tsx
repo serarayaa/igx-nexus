@@ -362,7 +362,7 @@ export function RelationshipGraph({
           focusId={assetId}
           graphAssets={graph.assets}
           relationships={graph.relationships}
-          onFocus={(id) => { window.location.hash = relationsHash(id, { ...defaultTechnologyMapState, depth: localMapState.depth }).slice(1); }}
+          onFocus={(id) => { window.location.hash = relationsHash(id, { ...localMapState, selectedId: null }).slice(1); }}
         />
 
         {graph.unresolvedIds.length > 0 && <aside className="nexus-relationship-warning" role="status"><strong>Referencias fuera del inventario disponible</strong><p>{graph.unresolvedIds.length} CI referenciado no existe en el snapshot actual. Se conserva como endpoint relacional sin crear un Asset 360 falso.</p></aside>}
