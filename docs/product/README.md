@@ -77,8 +77,8 @@ V02-016 evoluciona `#assets` hacia un workspace data-dense y multisource con fac
 
 - V02-014 — Shell & Motion 2.0 — integrado
 - V02-015 — Technology Overview — integrado
-- V02-016 — Asset Explorer 2.0 — en implementación
-- V02-017 — Asset 360 2.0
+- V02-016 — Asset Explorer 2.0 — integrado
+- V02-017 — Asset 360 2.0 — siguiente trabajo
 - V02-018 — Technology Map 2.0
 - V02-019 — Analytics Contract Layer
 
