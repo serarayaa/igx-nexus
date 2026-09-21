@@ -1,3 +1,11 @@
+import {
+  knownTechnologyRoles,
+  taxonomyClassificationStates,
+  technologyAssetClasses,
+  type TaxonomyClassificationState,
+  type TechnologyAssetClass,
+  type TechnologyRole,
+} from "@igx-nexus/types";
 import type {
   Asset,
   AssetCriticality,
@@ -21,6 +29,8 @@ interface CanonicalAsset {
   readonly id: string;
   readonly displayName: string;
   readonly domain: Domain;
+  readonly assetClass: TechnologyAssetClass;
+  readonly role: TechnologyRole;
   readonly lifecycle: Lifecycle;
   readonly criticality: AssetCriticality;
   readonly identifiers: readonly CanonicalIdentifier[];
@@ -80,6 +90,12 @@ function parseCanonicalAsset(value: unknown): CanonicalAsset {
   if (!isRecord(value)) throw new Error("Invalid canonical asset");
   const domain = requiredString(value.domain, "asset.domain");
   if (domain !== "IT" && domain !== "OT") throw new Error("Unsupported canonical domain");
+  const assetClass = requiredString(value.assetClass, "asset.assetClass") as TechnologyAssetClass;
+  if (!technologyAssetClasses.includes(assetClass)) throw new Error("Unsupported canonical asset class");
+  const role = requiredString(value.role, "asset.role") as TechnologyRole;
+  if (!knownTechnologyRoles.includes(role as (typeof knownTechnologyRoles)[number]) && !role.startsWith("custom:")) {
+    throw new Error("Unsupported canonical role");
+  }
   const lifecycle = requiredString(value.lifecycle, "asset.lifecycle") as Lifecycle;
   if (!canonicalLifecycles.has(lifecycle)) throw new Error("Unsupported canonical lifecycle");
   const criticality = requiredString(value.criticality, "asset.criticality") as AssetCriticality;
@@ -90,6 +106,8 @@ function parseCanonicalAsset(value: unknown): CanonicalAsset {
     id: requiredString(value.id, "asset.id"),
     displayName: requiredString(value.displayName, "asset.displayName"),
     domain,
+    assetClass,
+    role,
     lifecycle,
     criticality,
     identifiers: parseIdentifiers(value.identifiers),
@@ -117,6 +135,33 @@ function attributeString(asset: CanonicalAsset, key: string): string | null {
   return typeof value === "string" && value.trim() ? value : null;
 }
 
+function attributeBoolean(asset: CanonicalAsset, key: string): boolean | null {
+  const value = asset.attributes[key];
+  return typeof value === "boolean" ? value : null;
+}
+
+function taxonomyState(asset: CanonicalAsset): TaxonomyClassificationState {
+  const states = [
+    attributeString(asset, "nexus.taxonomy.domain.state"),
+    attributeString(asset, "nexus.taxonomy.assetClass.state"),
+    attributeString(asset, "nexus.taxonomy.role.state"),
+  ].filter((value): value is TaxonomyClassificationState =>
+    value !== null && taxonomyClassificationStates.includes(value as TaxonomyClassificationState));
+
+  if (states.includes("conflict")) return "conflict";
+  if (states.includes("unclassified")) return "unclassified";
+  if (states.includes("unknown")) return "unknown";
+  return states.length === 3 && states.every(state => state === "classified") ? "classified" : "unknown";
+}
+
+function taxonomyReviewRequired(asset: CanonicalAsset): boolean {
+  return [
+    attributeBoolean(asset, "nexus.taxonomy.domain.reviewRequired"),
+    attributeBoolean(asset, "nexus.taxonomy.assetClass.reviewRequired"),
+    attributeBoolean(asset, "nexus.taxonomy.role.reviewRequired"),
+  ].some(value => value === true);
+}
+
 function mapCanonicalAsset(asset: CanonicalAsset): Asset {
   const itemType = attributeString(asset, "glpi.itemType");
   if (itemType !== "Computer") throw new Error("Live Asset 360 currently supports only GLPI Computer assets");
@@ -131,6 +176,11 @@ function mapCanonicalAsset(asset: CanonicalAsset): Asset {
     lifecycle: asset.lifecycle,
     critical: asset.criticality === "high" || asset.criticality === "critical",
     criticality: asset.criticality,
+    assetClass: asset.assetClass,
+    role: asset.role,
+    taxonomyState: taxonomyState(asset),
+    taxonomyReviewRequired: taxonomyReviewRequired(asset),
+    taxonomyCompatibilityFallback: attributeBoolean(asset, "nexus.taxonomy.compatibilityProjection") === true,
     owner: null,
     location: attributeString(asset, "glpi.location.name"),
     lastSeen: attributeString(asset, "glpi.lastInventoryUpdate"),
