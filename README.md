@@ -177,7 +177,7 @@ Métricas de referencia iniciales:
 
 - `nexus.inventory.assets.count`;
 - `nexus.taxonomy.resolved.ratio`;
-- `nexus.sources.reference_presence.ratio`;
+- `nexus.sources.instance_identity.ratio`;
 - `nexus.lifecycle.known.ratio`.
 
 V02-019 no migra silenciosamente el score histórico de CMDB Health ni introduce un analytics service, TSDB, warehouse o semantic engine externo.
