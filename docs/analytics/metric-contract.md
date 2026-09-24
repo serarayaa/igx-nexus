@@ -156,28 +156,23 @@ Tras AUD-DATA-002, `SourceReference.sourceInstanceId` forma parte de la identida
 La dimensión analítica conserva esta diferencia:
 
 ```text
-glpi@glpi-primary
-glpi@glpi-secondary
+["glpi","glpi-primary"]
+["glpi","glpi-secondary"]
+["intune",null]              # evidencia legacy sin instancia
 ```
 
-Una referencia histórica sin `sourceInstanceId` conserva sólo su source system y no se inventa una instancia.
+La codificación es una tupla JSON producida por `metricSourceDimensionKey()`, no una concatenación con separadores. Así `source` y `sourceInstanceId` no pueden colisionar aunque contengan caracteres como `@`, `:` o `|`. Una referencia histórica sin `sourceInstanceId` conserva `null`; no se inventa una instancia.
 
 ### Operational Context
 
 Los valores usan:
 
 ```text
-<kind>:<id>
+["site","SCL-01"]
+["security_zone","OT-DMZ"]
 ```
 
-Ejemplo:
-
-```text
-site:SCL-01
-security_zone:OT-DMZ
-```
-
-No usa displayName como identidad.
+La clave la produce `metricOperationalContextDimensionKey()` como tupla JSON collision-safe. No usa `displayName` como identidad.
 
 ## 8. Dimensiones gobernadas
 
