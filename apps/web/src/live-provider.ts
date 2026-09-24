@@ -1,130 +1,14 @@
 import {
-  knownTechnologyRoles,
+  parseTechnologySnapshot,
+  TechnologyContractError,
+  isIsoTimestamp,
   taxonomyClassificationStates,
-  technologyAssetClasses,
   type TaxonomyClassificationState,
-  type TechnologyAssetClass,
-  type TechnologyRole,
+  type TechnologyAsset,
 } from "@igx-nexus/types";
-import type {
-  Asset,
-  AssetCriticality,
-  Domain,
-  InventoryProvider,
-  InventorySnapshot,
-  Lifecycle,
-} from "./asset-model";
+import { summarizeTaxonomy, type Asset, type InventoryProvider, type InventorySnapshot } from "./asset-model";
 
-interface CanonicalIdentifier {
-  readonly kind: string;
-  readonly value: string;
-}
-
-interface CanonicalSourceReference {
-  readonly source: string;
-  readonly observedAt: string;
-}
-
-interface CanonicalAsset {
-  readonly id: string;
-  readonly displayName: string;
-  readonly domain: Domain;
-  readonly assetClass: TechnologyAssetClass;
-  readonly role: TechnologyRole;
-  readonly lifecycle: Lifecycle;
-  readonly criticality: AssetCriticality;
-  readonly identifiers: readonly CanonicalIdentifier[];
-  readonly sourceReferences: readonly CanonicalSourceReference[];
-  readonly attributes: Readonly<Record<string, unknown>>;
-}
-
-interface CanonicalSnapshot {
-  readonly asOf: string;
-  readonly assets: readonly CanonicalAsset[];
-}
-
-const canonicalLifecycles = new Set<Lifecycle>([
-  "planned",
-  "in_stock",
-  "active",
-  "maintenance",
-  "repair",
-  "retired",
-  "disposed",
-  "unknown",
-]);
-const canonicalCriticalities = new Set<AssetCriticality>(["low", "medium", "high", "critical", "unknown"]);
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function requiredString(value: unknown, field: string): string {
-  if (typeof value !== "string" || !value.trim()) throw new Error(`Invalid canonical field: ${field}`);
-  return value;
-}
-
-function parseIdentifiers(value: unknown): readonly CanonicalIdentifier[] {
-  if (!Array.isArray(value)) throw new Error("Invalid canonical identifiers");
-  return value.map((item) => {
-    if (!isRecord(item)) throw new Error("Invalid canonical identifier");
-    return Object.freeze({
-      kind: requiredString(item.kind, "identifier.kind"),
-      value: requiredString(item.value, "identifier.value"),
-    });
-  });
-}
-
-function parseSources(value: unknown): readonly CanonicalSourceReference[] {
-  if (!Array.isArray(value) || value.length === 0) throw new Error("Canonical asset requires sourceReferences");
-  return value.map((item) => {
-    if (!isRecord(item)) throw new Error("Invalid canonical source reference");
-    return Object.freeze({
-      source: requiredString(item.source, "source.source"),
-      observedAt: requiredString(item.observedAt, "source.observedAt"),
-    });
-  });
-}
-
-function parseCanonicalAsset(value: unknown): CanonicalAsset {
-  if (!isRecord(value)) throw new Error("Invalid canonical asset");
-  const domain = requiredString(value.domain, "asset.domain");
-  if (domain !== "IT" && domain !== "OT") throw new Error("Unsupported canonical domain");
-  const assetClass = requiredString(value.assetClass, "asset.assetClass") as TechnologyAssetClass;
-  if (!technologyAssetClasses.includes(assetClass)) throw new Error("Unsupported canonical asset class");
-  const role = requiredString(value.role, "asset.role") as TechnologyRole;
-  if (!knownTechnologyRoles.includes(role as (typeof knownTechnologyRoles)[number]) && !role.startsWith("custom:")) {
-    throw new Error("Unsupported canonical role");
-  }
-  const lifecycle = requiredString(value.lifecycle, "asset.lifecycle") as Lifecycle;
-  if (!canonicalLifecycles.has(lifecycle)) throw new Error("Unsupported canonical lifecycle");
-  const criticality = requiredString(value.criticality, "asset.criticality") as AssetCriticality;
-  if (!canonicalCriticalities.has(criticality)) throw new Error("Unsupported canonical criticality");
-  if (!isRecord(value.attributes)) throw new Error("Invalid canonical attributes");
-
-  return Object.freeze({
-    id: requiredString(value.id, "asset.id"),
-    displayName: requiredString(value.displayName, "asset.displayName"),
-    domain,
-    assetClass,
-    role,
-    lifecycle,
-    criticality,
-    identifiers: parseIdentifiers(value.identifiers),
-    sourceReferences: parseSources(value.sourceReferences),
-    attributes: value.attributes,
-  });
-}
-
-function parseCanonicalSnapshot(value: unknown): CanonicalSnapshot {
-  if (!isRecord(value)) throw new Error("Invalid canonical snapshot");
-  const asOf = requiredString(value.asOf, "snapshot.asOf");
-  if (!Array.isArray(value.assets)) throw new Error("Invalid canonical assets collection");
-  return Object.freeze({
-    asOf,
-    assets: Object.freeze(value.assets.map(parseCanonicalAsset)),
-  });
-}
+type CanonicalAsset = TechnologyAsset;
 
 function identifier(asset: CanonicalAsset, kind: string): string | null {
   return asset.identifiers.find((candidate) => candidate.kind === kind)?.value ?? null;
@@ -170,6 +54,12 @@ function mapCanonicalAsset(asset: CanonicalAsset): Asset {
   const sourceSystems = Object.freeze([...new Set(asset.sourceReferences.map((source) => source.source))]);
   const sourceObservedAt = asset.sourceReferences[0]?.observedAt ?? null;
 
+  const assessment = asset.taxonomy ? summarizeTaxonomy(asset.taxonomy) : null;
+  const lastInventory = asset.attributes["glpi.lastInventoryUpdate"];
+  if (lastInventory !== undefined && lastInventory !== null &&
+      (typeof lastInventory !== "string" || !isIsoTimestamp(lastInventory))) {
+    throw new TechnologyContractError("asset.attributes.glpi.lastInventoryUpdate", "timestamp.invalid");
+  }
   return Object.freeze({
     id: asset.id,
     name: asset.displayName,
@@ -180,9 +70,14 @@ function mapCanonicalAsset(asset: CanonicalAsset): Asset {
     criticality: asset.criticality,
     assetClass: asset.assetClass,
     role: asset.role,
-    taxonomyState: taxonomyState(asset),
-    taxonomyReviewRequired: taxonomyReviewRequired(asset),
-    taxonomyCompatibilityFallback: attributeBoolean(asset, "nexus.taxonomy.compatibilityProjection") === true,
+    taxonomyState: assessment?.state ?? taxonomyState(asset),
+    taxonomyReviewRequired: assessment?.reviewRequired ?? taxonomyReviewRequired(asset),
+    // Historical attribute summaries apply only when the canonical assessment is absent.
+    // An unresolved canonical assessment remains visibly unresolved.
+    taxonomyCompatibilityFallback: assessment ? assessment.state !== "classified" : attributeBoolean(asset, "nexus.taxonomy.compatibilityProjection") === true,
+    ...(asset.taxonomy ? { taxonomy: asset.taxonomy } : {}),
+    ...(asset.operationalContexts ? { operationalContexts: Object.freeze(asset.operationalContexts.map(context =>
+      Object.freeze({ ...context, displayName: context.displayName ?? null }))) } : {}),
     owner: null,
     location: attributeString(asset, "glpi.location.name"),
     lastSeen: attributeString(asset, "glpi.lastInventoryUpdate"),
@@ -197,16 +92,16 @@ function mapCanonicalAsset(asset: CanonicalAsset): Asset {
     sourceSystems,
     sourceObservedAt,
     sourceReferences: Object.freeze(asset.sourceReferences.map(source => Object.freeze({
-      source: source.source,
-      observedAt: source.observedAt,
+      ...source,
     }))),
   });
 }
 
 export function projectCanonicalSnapshot(value: unknown): InventorySnapshot {
-  const snapshot = parseCanonicalSnapshot(value);
+  const snapshot = parseTechnologySnapshot(value);
   return Object.freeze({
     asOf: snapshot.asOf,
+    canonical: snapshot,
     assets: Object.freeze(snapshot.assets.map(mapCanonicalAsset)),
   });
 }
@@ -220,5 +115,12 @@ export const liveProvider: InventoryProvider = async (signal) => {
     signal,
   });
   if (!response.ok) throw new Error(`NEXUS API snapshot request failed with HTTP ${response.status}`);
-  return projectCanonicalSnapshot(await response.json());
+  try {
+    return projectCanonicalSnapshot(await response.json());
+  } catch (error) {
+    if (error instanceof TechnologyContractError) {
+      console.warn("NEXUS technology contract rejected", { code: error.code, path: error.path });
+    }
+    throw error; // Existing ErrorState/retry handles the rejected provider promise.
+  }
 };

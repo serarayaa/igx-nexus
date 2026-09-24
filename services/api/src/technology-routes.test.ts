@@ -4,6 +4,7 @@ import { buildApp } from "./app.js";
 import { loadConfig } from "./config.js";
 import {
   ProviderUnavailableError,
+  demoTechnologyProvider,
   type TechnologyProvider,
 } from "./provider.js";
 import type { AuthenticationProvider } from "./security.js";
@@ -48,6 +49,7 @@ describe("Technology snapshot route", () => {
       schemaVersion: string;
       assets: readonly { id: string }[];
     }>();
+    expect(body).toEqual(await demoTechnologyProvider.getSnapshot());
     expect(body.schemaVersion).toBe("0.2");
     expect(body.assets).toHaveLength(240);
     expect(body.assets[0]?.id).toBe("DEMO-0001");

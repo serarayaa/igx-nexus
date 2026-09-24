@@ -81,6 +81,12 @@ live
 
 `NEXUS_PROVIDER_MODE` se resuelve durante composición. En production debe declararse explícitamente.
 
+### Integridad del contrato HTTP
+
+El snapshot se serializa con el schema explícito compartido de `@igx-nexus/types` y se valida antes de publicarse. Conserva `taxonomy`, `operationalContexts` y el resto de campos canónicos; no abre objetos mediante `additionalProperties: true`. Web acepta la versión declarada por `technologySchemaVersion`, valida timestamps antes del render y conserva el contrato completo junto a su proyección. Los snapshots históricos sin evaluación taxonómica opcional mantienen un fallback explícito que no sobrescribe evaluaciones presentes.
+
+Ver [AUD-API-001: corrección y pruebas de round-trip](../../docs/audits/remediation-01-contract-integrity.md).
+
 ### Demo
 
 Desde V02-011, Demo consume `packages/demo-data` como fuente compartida y devuelve el universo sintético completo.
