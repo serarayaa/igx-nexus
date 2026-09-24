@@ -115,12 +115,14 @@ function fixtureAssets(): readonly TechnologyAsset[] {
       sourceReferences: [glpiSecondary],
       operationalContexts: [],
     }),
-    asset("A-HISTORICAL", {
-      taxonomy: undefined,
-      lifecycle: "active",
-      sourceReferences: [intune],
-      operationalContexts: undefined,
-    }),
+    (() => {
+      const historical = asset("A-HISTORICAL", {
+        lifecycle: "active",
+        sourceReferences: [intune],
+      });
+      const { taxonomy: _taxonomy, operationalContexts: _operationalContexts, ...withoutOptionalEvidence } = historical;
+      return withoutOptionalEvidence;
+    })(),
   ];
 }
 
@@ -174,7 +176,7 @@ describe("analytics contract", () => {
 
   it("measures missing source references as a negative value rather than hiding them from coverage", () => {
     const assets = [...fixtureAssets()];
-    assets[3] = asset("A-NO-SOURCE", { taxonomy: undefined, sourceReferences: [] });
+    assets[3] = asset("A-NO-SOURCE", { sourceReferences: [] });
     const result = ok("nexus.sources.reference_presence.ratio", snapshot(assets));
     expect(result.value).toBeCloseTo(3 / 4);
     expect(result.coverage.state).toBe("known");
