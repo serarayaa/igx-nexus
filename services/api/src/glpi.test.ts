@@ -111,6 +111,23 @@ describe("GLPI record parsing and canonical mapping", () => {
     expect(asset.attributes["nexus.taxonomy.compatibilityProjection"]).toBe(false);
   });
 
+  it("namespaces canonical identity by stable GLPI source instance", () => {
+    const mapWithInstance = mapGlpiComputerToTechnologyAsset as unknown as (
+      record: ReturnType<typeof parseGlpiComputerRecord>,
+      observedAt: string,
+      sourceInstanceId: string,
+    ) => ReturnType<typeof mapGlpiComputerToTechnologyAsset>;
+    const record = parseGlpiComputerRecord(computer({ id: 123 }));
+    const chile = mapWithInstance(record, OBSERVED_AT, "glpi-chile");
+    const canada = mapWithInstance(record, OBSERVED_AT, "glpi-canada");
+
+    expect(chile.id).not.toBe(canada.id);
+    expect(chile.sourceReferences[0]).toMatchObject({ sourceInstanceId: "glpi-chile" });
+    expect(canada.sourceReferences[0]).toMatchObject({ sourceInstanceId: "glpi-canada" });
+    expect(chile.provenance[0]?.evidence?.[0]?.reference).toContain("glpi-chile");
+    expect(canada.provenance[0]?.evidence?.[0]?.reference).toContain("glpi-canada");
+  });
+
   it("keeps canonical identity stable for the same GLPI source record", () => {
     const first = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord(computer()), OBSERVED_AT);
     const second = mapGlpiComputerToTechnologyAsset(
