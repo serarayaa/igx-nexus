@@ -7,6 +7,7 @@ import {
 } from "./glpi-runtime.js";
 
 const liveEnvironment = Object.freeze({
+  NEXUS_GLPI_INSTANCE_ID: "glpi-primary",
   NEXUS_GLPI_BASE_URL: "https://glpi.example",
   NEXUS_GLPI_OAUTH_CLIENT_ID: "nexus-client",
   NEXUS_GLPI_SERVICE_USERNAME: "svc-nexus",
@@ -46,6 +47,11 @@ describe("GLPI live runtime composition", () => {
     expect(() => createRuntimeTechnologyProvider(config, { environment: liveEnvironment })).toThrow(
       "NEXUS_GLPI_OAUTH_CLIENT_SECRET is required",
     );
+  });
+
+  it("requires a stable logical GLPI instance id in live mode", () => {
+    const { NEXUS_GLPI_INSTANCE_ID: _instance, ...withoutInstance } = liveEnvironment;
+    expect(() => loadGlpiLiveRuntimeConfig(withoutInstance, "test")).toThrow("NEXUS_GLPI_INSTANCE_ID is required");
   });
 
   it("never allows insecure GLPI HTTP in production", () => {
