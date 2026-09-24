@@ -47,6 +47,8 @@ La política general favorece **no fusionar** cuando la evidencia no es suficien
 - `hostname` es insuficiente por sí solo.
 - una referencia lógica exacta al mismo registro fuente constituye evidencia fuerte.
 
+La clasificación anterior describe la fuerza potencial del **tipo** de identificador. Desde AUD-DATA-001, la reconciliación aplica además un gate de calidad al **valor**: placeholders conocidos y valores degenerados se conservan en el activo como evidencia observada, pero se excluyen de supporting y contradicting identity evidence. Esto evita tanto falsos matches como falsos conflictos sin descartar el dato de origen.
+
 Un hostname idéntico nunca produce auto-merge en ausencia de otra evidencia fuerte.
 
 ### 3. Decisiones explícitas y auditables
@@ -176,6 +178,7 @@ Los tests utilizan únicamente fixtures sintéticos. No se reutiliza inventario 
 
 - V02-009 no persiste aún un historial durable de decisiones; el `CanonicalProjectionResult` define el artefacto que una capa futura deberá almacenar.
 - La lista de identificadores fuertes es conservadora y deberá revisarse por tipo de activo al crecer IT/OT; no se asume que toda señal tiene igual confiabilidad en todas las taxonomías.
+- La lista de placeholders es deliberadamente conservadora y versionada con las reglas de reconciliación; ampliarla requiere casos reproducibles para no descartar identificadores reales por heurística excesiva.
 - La política de fuentes prepara Intune, Windows, Defender y Dell conceptualmente sin integrar esos sistemas.
 - El adapter GLPI conserva la asignación inicial de identidad implementada en V02-005 por compatibilidad; una futura capa de persistencia podrá formalizar la creación de nuevos IDs canónicos sin re-keyear activos existentes.
 - No existe todavía UI de revisión manual ni API pública de reconciliación.
