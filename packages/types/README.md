@@ -137,7 +137,7 @@ Métricas de referencia iniciales:
 
 - `nexus.inventory.assets.count`;
 - `nexus.taxonomy.resolved.ratio`;
-- `nexus.sources.reference_presence.ratio`;
+- `nexus.sources.instance_identity.ratio`;
 - `nexus.lifecycle.known.ratio`.
 
 El score histórico de CMDB Health permanece fuera de esta migración; V02-020 es dueño de su evolución.
