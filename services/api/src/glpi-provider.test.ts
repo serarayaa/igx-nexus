@@ -22,7 +22,7 @@ describe("GLPI Live TechnologyProvider readiness", () => {
         return [];
       },
     };
-    const provider = createGlpiLiveTechnologyProvider({ transport });
+    const provider = createGlpiLiveTechnologyProvider({ transport, sourceInstanceId: SOURCE_INSTANCE_ID });
 
     await expect(provider.checkAvailability?.()).resolves.toBe("ready");
     await expect(provider.checkAvailability?.()).resolves.toBe("ready");
