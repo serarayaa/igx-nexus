@@ -39,6 +39,7 @@ export interface GlpiFetchTransportOptions {
 
 export interface GlpiTechnologyProviderOptions {
   readonly transport: GlpiApiTransport;
+  readonly sourceInstanceId: string;
   readonly pageSize?: number;
   readonly maxRecords?: number;
   readonly now?: () => Date;
@@ -113,6 +114,17 @@ const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
 const DEFAULT_PAGE_SIZE = 100;
 const DEFAULT_MAX_RECORDS = 10_000;
 const COMPUTER_COLLECTION_PATH = "Assets/Computer";
+const GLPI_SOURCE_INSTANCE_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
+
+function normalizeGlpiSourceInstanceId(value: string): string {
+  const normalized = value.trim();
+  if (!GLPI_SOURCE_INSTANCE_ID.test(normalized)) {
+    throw new GlpiConfigurationError(
+      "GLPI sourceInstanceId must be a stable non-secret id using letters, numbers, dot, underscore or hyphen",
+    );
+  }
+  return normalized;
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -293,8 +305,11 @@ export function createGlpiFetchTransport(options: GlpiFetchTransportOptions): Gl
   });
 }
 
-function canonicalAssetId(sourceScope: string, externalId: string): string {
-  const digest = createHash("sha256").update(`glpi\u0000${sourceScope}\u0000${externalId}`).digest("hex").slice(0, 32);
+function canonicalAssetId(sourceInstanceId: string, sourceScope: string, externalId: string): string {
+  const digest = createHash("sha256")
+    .update(`glpi\u0000${sourceInstanceId}\u0000${sourceScope}\u0000${externalId}`)
+    .digest("hex")
+    .slice(0, 32);
   return `NXS-${digest.toUpperCase()}`;
 }
 
@@ -345,9 +360,12 @@ function taxonomyProjectionMethod(
 export function mapGlpiComputerToTechnologyAsset(
   record: GlpiComputerRecord,
   observedAt: string,
+  sourceInstanceId: string,
 ): TechnologyAsset {
+  const normalizedSourceInstanceId = normalizeGlpiSourceInstanceId(sourceInstanceId);
   const source: SourceReference = Object.freeze({
     source: "glpi",
+    sourceInstanceId: normalizedSourceInstanceId,
     externalId: String(record.id),
     entityType: "Computer",
     sourceScope: COMPUTER_COLLECTION_PATH,
@@ -356,7 +374,7 @@ export function mapGlpiComputerToTechnologyAsset(
   });
   const evidence: EvidenceReference = Object.freeze({
     kind: "api_response",
-    reference: `glpi:${DEFAULT_GLPI_API_VERSION}:${COMPUTER_COLLECTION_PATH}/${record.id}`,
+    reference: `glpi:${normalizedSourceInstanceId}:${DEFAULT_GLPI_API_VERSION}:${COMPUTER_COLLECTION_PATH}/${record.id}`,
     label: "GLPI Computer record",
     observedAt,
   });
@@ -421,7 +439,7 @@ export function mapGlpiComputerToTechnologyAsset(
   ];
 
   return Object.freeze({
-    id: canonicalAssetId(COMPUTER_COLLECTION_PATH, String(record.id)),
+    id: canonicalAssetId(normalizedSourceInstanceId, COMPUTER_COLLECTION_PATH, String(record.id)),
     displayName,
     domain: projection.domain,
     assetClass: projection.assetClass,
@@ -485,6 +503,7 @@ const glpiDescriptor: TechnologyProviderDescriptor = Object.freeze({
 });
 
 export function createGlpiTechnologyProvider(options: GlpiTechnologyProviderOptions): TechnologyProvider {
+  const sourceInstanceId = normalizeGlpiSourceInstanceId(options.sourceInstanceId);
   const pageSize = validateBoundedInteger(options.pageSize ?? DEFAULT_PAGE_SIZE, "GLPI pageSize", 1, 1_000);
   const maxRecords = validateBoundedInteger(options.maxRecords ?? DEFAULT_MAX_RECORDS, "GLPI maxRecords", 1, 100_000);
   const now = options.now ?? (() => new Date());
@@ -497,7 +516,7 @@ export function createGlpiTechnologyProvider(options: GlpiTechnologyProviderOpti
       const snapshot: TechnologySnapshot = Object.freeze({
         schemaVersion: technologySchemaVersion,
         asOf,
-        assets: Object.freeze(records.map((record) => mapGlpiComputerToTechnologyAsset(record, asOf))),
+        assets: Object.freeze(records.map((record) => mapGlpiComputerToTechnologyAsset(record, asOf, sourceInstanceId))),
         relationships: Object.freeze([]),
         observations: Object.freeze([]),
       });
