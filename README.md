@@ -79,7 +79,7 @@ La v0.2 responde:
 
 > **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-**V02-001 a V02-017 están integrados.**
+**V02-001 a V02-018 están integrados.**
 
 V02-014 — Shell & Motion 2.0 quedó incorporado mediante PR #80 en el merge `e650e288b47903d6811675aa265ac7f0141f51a7`; CI post-merge #537 verde. NEXUS ya materializa Product IA v2 en el shell real con navegación global y contextual separadas, Demo/Live como contexto de fuente, preferencias persistentes de theme/density, responsive móvil accesible y motion breve compatible con reduced motion.
 
@@ -89,7 +89,9 @@ V02-016 — Asset Explorer 2.0 quedó incorporado mediante PR #87 en el merge `6
 
 V02-017 — Asset 360 2.0 quedó incorporado mediante PR #90 en el merge `4cc6e7b25b8e4d1bde56fc7a735be6e81261fcd8`; CI post-merge #651 verde. Asset 360 organiza el detalle del CI por intención, hace explícita Taxonomy v2 y la cobertura de evidencia, preserva Demo/Live sin mezclar fuentes y mantiene separados CMDB Quality, freshness, lifecycle y futura Device Health.
 
-El trabajo actual es **V02-018 — Technology Map 2.0** (issue #92).
+V02-018 — Technology Map 2.0 quedó incorporado mediante PR #93 en el merge `19ff461d747ce39375c430f6ba59e0382d3976df`. `#assets/:id/relations` funciona como workspace focus/scope-first, conserva estado esencial en URL, mantiene equivalencia semántica accesible y separa estrictamente Demo/Live sin inventar relaciones ni impacto causal.
+
+El siguiente trabajo es **V02-019 — Analytics Contract Layer**.
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -291,7 +293,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-CI post-merge de V02-017: **#651 verde** sobre `4cc6e7b25b8e4d1bde56fc7a735be6e81261fcd8`.
+Baseline actual de `main`: **CI #680 verde** sobre `4d219b2363774f438ae37970acde69bad3dfa0db`, que incorpora V02-018 y AUD-API-001.
 
 ## Flujo de desarrollo
 
