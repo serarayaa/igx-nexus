@@ -185,7 +185,7 @@ No todas las métricas admiten todas las dimensiones.
 
 Ejemplos deliberados:
 
-- `nexus.sources.reference_presence.ratio` no admite `source`, porque filtrar por una fuente antes de preguntar si existe una fuente vuelve la métrica tautológica;
+- `nexus.sources.instance_identity.ratio` no admite `source`, porque filtrar por una fuente antes de preguntar si existe una fuente vuelve la métrica tautológica;
 - `nexus.lifecycle.known.ratio` no admite `lifecycle`;
 - `nexus.taxonomy.resolved.ratio` no admite `taxonomyState`.
 
@@ -214,13 +214,17 @@ Pregunta:
 - denominator: assets con assessment presente;
 - coverage: assets con assessment / población elegible.
 
-### nexus.sources.reference_presence.ratio
+### nexus.sources.instance_identity.ratio
 
 Pregunta:
 
-> ¿Qué proporción de activos posee al menos una SourceReference?
+> ¿Qué proporción de activos identifica explícitamente la instancia lógica de todas sus fuentes?
 
-La ausencia observable de referencias es un resultado negativo, no missing evidence.
+- numerator: activos donde todas las SourceReference declaran `sourceInstanceId`;
+- denominator: activos elegibles dentro del scope;
+- measurement coverage: conocida para toda la población evaluada.
+
+`SourceReference` ya es obligatoria en un `TechnologyAsset` canónico válido, por lo que medir sólo su presencia sería tautológico. En cambio, `sourceInstanceId` sigue siendo opcional para evidencia histórica de schema 0.2 y su cobertura es relevante tras AUD-DATA-002. Una referencia legacy sin instancia reduce el value, pero no la measurement coverage porque la ausencia es observable.
 
 ### nexus.lifecycle.known.ratio
 
