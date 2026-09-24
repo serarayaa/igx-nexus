@@ -29,6 +29,7 @@ describe("GLPI live runtime composition", () => {
       NEXUS_GLPI_PAGE_SIZE: "50",
       NEXUS_GLPI_MAX_RECORDS: "5000",
     }, "test")).toEqual({
+      sourceInstanceId: "glpi-primary",
       baseUrl: "https://glpi.example",
       oauthClientId: "nexus-client",
       serviceUsername: "svc-nexus",
