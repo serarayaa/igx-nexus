@@ -30,7 +30,7 @@ import {
   type TechnologyTaxonomyAssessment,
 } from "@igx-nexus/types";
 
-export const reconciliationRuleVersion = "v02-009.1" as const;
+export const reconciliationRuleVersion = "v02-009.2" as const;
 
 const STRONG_IDENTIFIER_KINDS = new Set<AssetIdentifierKind>([
   "serial_number",
@@ -44,6 +44,19 @@ const AUXILIARY_IDENTIFIER_KINDS = new Set<AssetIdentifierKind>([
 ]);
 const VOLATILE_IDENTIFIER_KINDS = new Set<AssetIdentifierKind>(["ip_address"]);
 const INSUFFICIENT_IDENTIFIER_KINDS = new Set<AssetIdentifierKind>(["hostname"]);
+
+const PLACEHOLDER_IDENTIFIER_FINGERPRINTS = new Set([
+  "unknown",
+  "none",
+  "null",
+  "notavailable",
+  "notapplicable",
+  "notspecified",
+  "unspecified",
+  "defaultstring",
+  "tobefilledbyoem",
+  "systemserialnumber",
+]);
 
 const AUTHORITY_RANK: Readonly<Record<AuthorityLevel, number>> = Object.freeze({
   authoritative: 0,
@@ -152,9 +165,33 @@ function normalizeIdentifierValue(value: string): string {
   return value.trim().toLocaleLowerCase("en-US");
 }
 
+function placeholderFingerprint(value: string): string {
+  return normalizeIdentifierValue(value).replace(/[^a-z0-9]+/g, "");
+}
+
+function isDegenerateZeroIdentifier(kind: AssetIdentifierKind, value: string): boolean {
+  const compact = normalizeIdentifierValue(value).replace(/[\s:._{}-]+/g, "");
+  if (!/^0+$/.test(compact)) return false;
+  if (kind === "hardware_uuid" || kind === "bios_uuid") return compact.length === 32;
+  if (kind === "imei") return compact.length === 15 || compact.length === 16;
+  if (kind === "mac_address") return compact.length === 12;
+  if (kind === "serial_number" || kind === "asset_tag" || kind.startsWith("custom:")) {
+    return compact.length >= 6;
+  }
+  return false;
+}
+
+function isIdentifierUsableForIdentity(kind: AssetIdentifierKind, value: string): boolean {
+  const normalized = normalizeIdentifierValue(value);
+  const separatedNaPlaceholder = /^n[\s./_-]+a$/.test(normalized);
+  if (separatedNaPlaceholder || PLACEHOLDER_IDENTIFIER_FINGERPRINTS.has(placeholderFingerprint(value))) return false;
+  return !isDegenerateZeroIdentifier(kind, value);
+}
+
 function identifierObservations(asset: TechnologyAsset): Map<AssetIdentifierKind, readonly IdentifierObservation[]> {
   const grouped = new Map<AssetIdentifierKind, IdentifierObservation[]>();
   asset.identifiers.forEach((identifier) => {
+    if (!isIdentifierUsableForIdentity(identifier.kind, identifier.value)) return;
     const entry: IdentifierObservation = Object.freeze({
       kind: identifier.kind,
       normalizedValue: normalizeIdentifierValue(identifier.value),

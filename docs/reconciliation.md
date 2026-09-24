@@ -48,13 +48,15 @@ La clasificación V02-009 es explícita y conservadora:
 
 | Clasificación | Identificadores | Comportamiento |
 | --- | --- | --- |
-| Fuerte | `serial_number`, `hardware_uuid`, `bios_uuid`, `imei` | Un match exacto puede sostener auto-match si no existe contradicción fuerte. |
-| Auxiliar | `asset_tag`, `mac_address`, `custom:*` | Sirve para candidate discovery, pero por sí solo requiere revisión manual. |
+| Fuerte potencial | `serial_number`, `hardware_uuid`, `bios_uuid`, `imei` | Un valor utilizable puede sostener auto-match si no existe contradicción fuerte. |
+| Auxiliar | `asset_tag`, `mac_address`, `custom:*` | Un valor utilizable sirve para candidate discovery, pero por sí solo requiere revisión manual. |
 | Volátil | `ip_address` | Nunca auto-fusiona; sólo aporta contexto/candidato. |
 | Insuficiente por sí solo | `hostname` | Nunca auto-fusiona; igualdad exacta requiere evidencia adicional. |
 | Referencia fuente exacta | mismo `SourceReference` lógico | Se considera evidencia fuerte de que dos representaciones refieren al mismo registro upstream. |
 
-Los valores se comparan de manera exacta después de normalizar espacios y casing. No se utiliza similitud fonética, distancia Levenshtein, IA ni heurísticas probabilísticas.
+La fuerza del tipo y la calidad del valor se evalúan por separado. Placeholders conocidos y valores degenerados —por ejemplo `To Be Filled By O.E.M.`, `unknown`, `N/A`, `default string`, secuencias all-zero y UUID all-zero— se conservan como evidencia observada en el activo, pero no participan como supporting ni contradicting evidence durante el matching.
+
+Los valores utilizables se comparan de manera exacta después de normalizar espacios y casing. La detección de placeholders puede normalizar puntuación únicamente para reconocer equivalentes conocidos; no se usa esa normalización para afirmar que dos identificadores reales diferentes son iguales. No se utiliza similitud fonética, distancia Levenshtein, IA ni heurísticas probabilísticas.
 
 ## Reglas de identidad
 
@@ -67,6 +69,10 @@ Para un par incoming/candidate:
 - sin evidencia comparable → no se descubre candidato y la ejecución termina `not_matched`;
 - más de un candidato con match fuerte → `ambiguous`;
 - más de un candidato débil plausible → `ambiguous`.
+
+Un identificador no utilizable para identidad no descubre candidatos, no crea matches y tampoco genera contradicciones fuertes. Esto evita que un placeholder compartido fusione activos distintos o que un placeholder adicional convierta un match real en `conflict`.
+
+La semántica endurecida por AUD-DATA-001 corresponde a `reconciliationRuleVersion = v02-009.2`.
 
 ### Caso deliberadamente prohibido
 
