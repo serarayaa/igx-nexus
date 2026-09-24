@@ -77,6 +77,7 @@ Un secret manager corporativo podrá implementar la misma frontera en v0.3.
 La composición Live utiliza:
 
 ```text
+NEXUS_GLPI_INSTANCE_ID=glpi-primary
 NEXUS_GLPI_BASE_URL
 NEXUS_GLPI_OAUTH_CLIENT_ID
 NEXUS_GLPI_SERVICE_USERNAME
