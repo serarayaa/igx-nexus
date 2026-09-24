@@ -102,6 +102,9 @@ export function validateSourceReference(reference: SourceReference, path = "sour
   if (!isKnownOrCustom(reference.source, knownSourceSystems)) {
     issues.push(issue("source.system_invalid", `${path}.source`, "source must be known or use custom:<name>"));
   }
+  if (reference.sourceInstanceId !== undefined && !reference.sourceInstanceId.trim()) {
+    issues.push(issue("source.instance_id_empty", `${path}.sourceInstanceId`, "sourceInstanceId cannot be empty when provided"));
+  }
   if (!reference.externalId.trim()) {
     issues.push(issue("source.external_id_required", `${path}.externalId`, "externalId is required"));
   }
