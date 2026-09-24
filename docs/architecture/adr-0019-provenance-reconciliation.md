@@ -45,9 +45,11 @@ La política general favorece **no fusionar** cuando la evidencia no es suficien
 - `asset_tag`, `mac_address` y `custom:*` son auxiliares y requieren corroboración para auto-match.
 - `ip_address` es volátil.
 - `hostname` es insuficiente por sí solo.
-- una referencia lógica exacta al mismo registro fuente constituye evidencia fuerte.
+- una referencia lógica exacta al mismo registro fuente constituye evidencia fuerte sólo cuando incluye `sourceInstanceId`; referencias legacy sin instancia quedan como evidencia insuficiente.
 
 La clasificación anterior describe la fuerza potencial del **tipo** de identificador. Desde AUD-DATA-001, la reconciliación aplica además un gate de calidad al **valor**: placeholders conocidos y valores degenerados se conservan en el activo como evidencia observada, pero se excluyen de supporting y contradicting identity evidence. Esto evita tanto falsos matches como falsos conflictos sin descartar el dato de origen.
+
+La identidad lógica de una referencia fuente se define por `source + sourceInstanceId + sourceScope + entityType + externalId`. `sourceInstanceId` es opcional en el contrato 0.2 para poder leer evidencia histórica, pero los providers Live deben emitirlo. Dos instalaciones distintas que reutilicen el mismo ID local no pueden compartir `sourceReferenceKey`.
 
 Un hostname idéntico nunca produce auto-merge en ausencia de otra evidencia fuerte.
 
