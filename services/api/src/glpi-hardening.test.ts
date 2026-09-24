@@ -10,6 +10,7 @@ import {
 } from "./glpi.js";
 
 const OBSERVED_AT = "2026-09-15T12:00:00.000Z";
+const SOURCE_INSTANCE_ID = "glpi-test";
 
 describe("GLPI adapter hardening", () => {
   it("normalizes failures from the token provider instead of leaking its message", async () => {
@@ -47,6 +48,7 @@ describe("GLPI adapter hardening", () => {
 
     const provider = createGlpiTechnologyProvider({
       transport,
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       pageSize: 100,
       maxRecords: 10,
       now: () => new Date(OBSERVED_AT),
@@ -70,7 +72,7 @@ describe("GLPI adapter hardening", () => {
         return [{ id: 1 }, { id: 2 }, { id: 3 }];
       },
     };
-    const provider = createGlpiTechnologyProvider({ transport, pageSize: 2, maxRecords: 10 });
+    const provider = createGlpiTechnologyProvider({ transport, sourceInstanceId: SOURCE_INSTANCE_ID, pageSize: 2, maxRecords: 10 });
     await expect(provider.getSnapshot()).rejects.toBeInstanceOf(GlpiPaginationError);
   });
 
@@ -78,6 +80,7 @@ describe("GLPI adapter hardening", () => {
     const asset = mapGlpiComputerToTechnologyAsset(
       parseGlpiComputerRecord({ id: 9, name: "CONTROL-PC" }),
       OBSERVED_AT,
+      SOURCE_INSTANCE_ID,
     );
 
     expect(asset.taxonomy?.domain.state).toBe("unknown");
