@@ -29,7 +29,7 @@ function source(source: SourceReference["source"], externalId: string, sourceIns
 const glpiPrimary = source("glpi", "Computer/1", "glpi-primary");
 const glpiSecondary = source("glpi", "Computer/1", "glpi-secondary");
 const demo = source("demo", "DEMO-0002", "demo-v0.2");
-const intune = source("intune", "managedDevice/4", "tenant-lab");
+const intune = source("intune", "managedDevice/4");
 
 const classified = <T extends string>(value: T) => ({
   state: "classified" as const,
@@ -174,11 +174,11 @@ describe("analytics contract", () => {
     expect(result.coverage.state).toBe("known");
   });
 
-  it("measures missing source references as a negative value rather than hiding them from coverage", () => {
-    const assets = [...fixtureAssets()];
-    assets[3] = asset("A-NO-SOURCE", { sourceReferences: [] });
-    const result = ok("nexus.sources.reference_presence.ratio", snapshot(assets));
+  it("measures legacy source references without instance identity as a negative value, not missing measurement evidence", () => {
+    const result = ok("nexus.sources.instance_identity.ratio");
     expect(result.value).toBeCloseTo(3 / 4);
+    expect(result.numerator).toBe(3);
+    expect(result.denominator).toBe(4);
     expect(result.coverage.state).toBe("known");
     expect(result.population.unknown).toBe(0);
   });
@@ -206,8 +206,8 @@ describe("analytics contract", () => {
   });
 
   it("rejects dimensions whose segmentation would make a metric tautological", () => {
-    const evaluation = evaluateReferenceMetric("nexus.sources.reference_presence.ratio", snapshot(), {
-      filters: [{ dimension: "source", values: ["glpi@glpi-primary"] }],
+    const evaluation = evaluateReferenceMetric("nexus.lifecycle.known.ratio", snapshot(), {
+      filters: [{ dimension: "lifecycle", values: ["active"] }],
     });
     expect(evaluation.status).toBe("invalid_scope");
     if (evaluation.status === "invalid_scope") {
