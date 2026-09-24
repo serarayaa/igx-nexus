@@ -3,7 +3,7 @@ import { technologySchemaVersion, technologyTaxonomyVersion, type TechnologySnap
 /** Full wire fixture: optional fields are deliberate regression coverage, not production data. */
 export function canonicalSnapshotFixture(): TechnologySnapshot {
   const at = "2026-09-23T12:00:00.000Z";
-  const source = { source: "glpi", externalId: "123", entityType: "Computer", sourceScope: "Assets/Computer", observedAt: at, authority: "authoritative" } as const;
+  const source = { source: "glpi", sourceInstanceId: "glpi-primary", externalId: "123", entityType: "Computer", sourceScope: "Assets/Computer", observedAt: at, authority: "authoritative" } as const;
   const evidence = [{ kind: "api_response", reference: "fixture:computer/123", label: "Synthetic evidence", observedAt: at }] as const;
   const provenance = [{ fieldPath: "displayName", source, observedAt: at, ingestedAt: at, authority: "authoritative", derivation: "observed", confidence: 1, evidence }] as const;
   return {
