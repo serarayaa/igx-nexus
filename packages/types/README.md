@@ -16,6 +16,7 @@ La regla principal es que el dominio de NEXUS no pertenece a GLPI, Intune, Entra
 - **Authority is not derivation.** `authority` expresa confianza/gobernanza de la fuente; `derivation` distingue `observed`, `normalized`, `inferred` y `manual`.
 - **Unresolved evidence is visible.** Referencias aún no reconciliadas pueden generar warnings en vez de ser descartadas.
 - **Snapshots are versioned.** `TechnologySnapshot.schemaVersion` permite detectar contratos incompatibles.
+- **Metric value is not metric coverage.** V02-019 separa el resultado analítico de la cobertura de evidencia, con numerador, denominador y población explícitos.
 
 ## Estructura
 
@@ -23,9 +24,11 @@ La regla principal es que el dominio de NEXUS no pertenece a GLPI, Intune, Entra
 - `src/validation.ts`: validadores puros e invariantes runtime.
 - `src/reconciliation.ts`: decisiones de matching, evidencia evaluada, claims por atributo, conflictos y canonical projection.
 - `src/taxonomy.ts`: Taxonomy v2 y sus invariantes.
+- `src/analytics.ts`: definiciones métricas, scope/dimensiones, coverage y evaluador puro sobre `TechnologySnapshot`.
 - `src/model.test.ts`: identidad, observaciones, relaciones y snapshots.
 - `src/reconciliation.test.ts`: contratos de reconciliación.
 - `src/taxonomy.test.ts`: contratos Taxonomy v2.
+- `src/analytics.test.ts`: invariantes de métricas, denominadores, coverage, unknown y scopes.
 
 ## Provenance & Reconciliation
 
@@ -103,6 +106,43 @@ Los validators además detectan:
 Para un edge bidireccional, invertir source/target no crea otra relación canónica. Si varias fuentes respaldan el mismo edge, la dirección futura es combinar evidence sobre el claim, no duplicar el edge.
 
 Ver `docs/architecture/adr-0022-relationship-evidence-v2.md`.
+
+## Analytics Contract Layer
+
+V02-019 incorpora métricas como contrato semántico reutilizable, no como widgets ni como un backend analítico nuevo.
+
+Cada `MetricDefinition` declara:
+
+- identidad/version estable;
+- tipo de valor y unidad;
+- población;
+- semántica de numerador y denominador;
+- base temporal;
+- evidencia requerida;
+- dimensiones permitidas.
+
+Cada `MetricResult` conserva por separado:
+
+- `value`;
+- `numerator` / `denominator`;
+- población snapshot/scoped/eligible/excluded/unknown;
+- `coverage.state`, ratio y razón;
+- `asOf` y scope normalizado.
+
+Las métricas ratio usan unidad base `1` y valores entre 0 y 1. La UI puede presentarlas como porcentaje sin alterar el contrato.
+
+Dimensiones Taxonomy (`domain`, `assetClass`, `role`) sólo exponen decisiones `classified`. Los scalars de compatibility projection nunca se convierten en clasificación analítica. La dimensión `source` conserva `sourceInstanceId` cuando existe (por ejemplo `glpi@glpi-primary`) para no colapsar instalaciones distintas tras AUD-DATA-002.
+
+Métricas de referencia iniciales:
+
+- `nexus.inventory.assets.count`;
+- `nexus.taxonomy.resolved.ratio`;
+- `nexus.sources.reference_presence.ratio`;
+- `nexus.lifecycle.known.ratio`.
+
+El score histórico de CMDB Health permanece fuera de esta migración; V02-020 es dueño de su evolución.
+
+Ver `docs/analytics/metric-contract.md` y ADR-0024.
 
 ## Compatibilidad de runtime
 
