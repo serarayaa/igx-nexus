@@ -14,6 +14,7 @@ import {
 } from "./glpi.js";
 
 const OBSERVED_AT = "2026-09-15T12:00:00.000Z";
+const SOURCE_INSTANCE_ID = "glpi-test";
 
 function computer(overrides: Record<string, unknown> = {}) {
   return {
@@ -53,7 +54,7 @@ describe("GLPI record parsing and canonical mapping", () => {
   });
 
   it("keeps generic Notebook hardware taxonomically unclassified while preserving the legacy scalar bridge", () => {
-    const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord(computer()), OBSERVED_AT);
+    const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord(computer()), OBSERVED_AT, SOURCE_INSTANCE_ID);
 
     expect(asset.id).toMatch(/^NXS-[A-F0-9]{32}$/);
     expect(asset.displayName).toBe("ITSTGO42");
@@ -75,7 +76,7 @@ describe("GLPI record parsing and canonical mapping", () => {
       expect.objectContaining({ kind: "hardware_uuid", value: "9d566efc-7600-4ad9-9937-2ea8a03514ea" }),
     ]);
     expect(asset.sourceReferences).toEqual([
-      expect.objectContaining({ source: "glpi", externalId: "42", entityType: "Computer", authority: "authoritative" }),
+      expect.objectContaining({ source: "glpi", sourceInstanceId: SOURCE_INSTANCE_ID, externalId: "42", entityType: "Computer", authority: "authoritative" }),
     ]);
     expect(asset.attributes).toMatchObject({
       "glpi.itemType": "Computer",
@@ -91,7 +92,7 @@ describe("GLPI record parsing and canonical mapping", () => {
       "nexus.taxonomy.assetClass.ruleId": "glpi.computer.type.generic-hardware",
       "nexus.taxonomy.compatibilityProjection": true,
     });
-    expect(asset.provenance[0]?.evidence?.[0]?.reference).toBe("glpi:v2.3:Assets/Computer/42");
+    expect(asset.provenance[0]?.evidence?.[0]?.reference).toBe(`glpi:${SOURCE_INSTANCE_ID}:v2.3:Assets/Computer/42`);
     expect(asset.provenance.find((entry) => entry.fieldPath === "assetClass")?.derivation).toBe("inferred");
   });
 
@@ -99,6 +100,7 @@ describe("GLPI record parsing and canonical mapping", () => {
     const asset = mapGlpiComputerToTechnologyAsset(
       parseGlpiComputerRecord(computer({ type: { id: 19, name: "HMI" } })),
       OBSERVED_AT,
+      SOURCE_INSTANCE_ID,
     );
     expect(asset.domain).toBe("OT");
     expect(asset.assetClass).toBe("operator_interface");
@@ -112,14 +114,9 @@ describe("GLPI record parsing and canonical mapping", () => {
   });
 
   it("namespaces canonical identity by stable GLPI source instance", () => {
-    const mapWithInstance = mapGlpiComputerToTechnologyAsset as unknown as (
-      record: ReturnType<typeof parseGlpiComputerRecord>,
-      observedAt: string,
-      sourceInstanceId: string,
-    ) => ReturnType<typeof mapGlpiComputerToTechnologyAsset>;
     const record = parseGlpiComputerRecord(computer({ id: 123 }));
-    const chile = mapWithInstance(record, OBSERVED_AT, "glpi-chile");
-    const canada = mapWithInstance(record, OBSERVED_AT, "glpi-canada");
+    const chile = mapGlpiComputerToTechnologyAsset(record, OBSERVED_AT, "glpi-chile");
+    const canada = mapGlpiComputerToTechnologyAsset(record, OBSERVED_AT, "glpi-canada");
 
     expect(chile.id).not.toBe(canada.id);
     expect(chile.sourceReferences[0]).toMatchObject({ sourceInstanceId: "glpi-chile" });
@@ -129,16 +126,17 @@ describe("GLPI record parsing and canonical mapping", () => {
   });
 
   it("keeps canonical identity stable for the same GLPI source record", () => {
-    const first = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord(computer()), OBSERVED_AT);
+    const first = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord(computer()), OBSERVED_AT, SOURCE_INSTANCE_ID);
     const second = mapGlpiComputerToTechnologyAsset(
       parseGlpiComputerRecord(computer({ name: "renamed", serial: "SER-CHANGED" })),
       "2026-09-16T12:00:00.000Z",
+      SOURCE_INSTANCE_ID,
     );
     expect(second.id).toBe(first.id);
   });
 
   it("keeps missing ComputerType taxonomically unknown while preserving the legacy scalar bridge", () => {
-    const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord({ id: 8 }), OBSERVED_AT);
+    const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord({ id: 8 }), OBSERVED_AT, SOURCE_INSTANCE_ID);
     expect(asset.displayName).toBe("GLPI Computer 8");
     expect(asset.domain).toBe("IT");
     expect(asset.assetClass).toBe("endpoint");
@@ -165,6 +163,7 @@ describe("GLPI record parsing and canonical mapping", () => {
     const asset = mapGlpiComputerToTechnologyAsset(
       parseGlpiComputerRecord(computer({ type: { id: 91, name: "Plant Special PC" } })),
       OBSERVED_AT,
+      SOURCE_INSTANCE_ID,
     );
     expect(asset.taxonomy?.domain).toMatchObject({ state: "unclassified", reviewRequired: true });
     expect(asset.taxonomy?.assetClass.state).toBe("unclassified");
@@ -264,6 +263,7 @@ describe("GLPI TechnologyProvider", () => {
 
     const provider = createGlpiTechnologyProvider({
       transport,
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       pageSize: 2,
       maxRecords: 10,
       now: () => new Date(OBSERVED_AT),
@@ -298,7 +298,7 @@ describe("GLPI TechnologyProvider", () => {
         return Number(query.start ?? 0) === 0 ? [{ id: 77, name: "UNKNOWN-TYPE" }] : [];
       },
     };
-    const provider = createGlpiTechnologyProvider({ transport, pageSize: 1, maxRecords: 10, now: () => new Date(OBSERVED_AT) });
+    const provider = createGlpiTechnologyProvider({ transport, sourceInstanceId: SOURCE_INSTANCE_ID, pageSize: 1, maxRecords: 10, now: () => new Date(OBSERVED_AT) });
     const snapshot = await provider.getSnapshot();
     expect(snapshot.assets[0]?.taxonomy?.domain.state).toBe("unknown");
     expect(snapshot.assets[0]?.attributes["nexus.taxonomy.compatibilityProjection"]).toBe(true);
@@ -312,7 +312,7 @@ describe("GLPI TechnologyProvider", () => {
           : [computer({ id: 2 })];
       },
     };
-    const provider = createGlpiTechnologyProvider({ transport, pageSize: 2, maxRecords: 10 });
+    const provider = createGlpiTechnologyProvider({ transport, sourceInstanceId: SOURCE_INSTANCE_ID, pageSize: 2, maxRecords: 10 });
     await expect(provider.getSnapshot()).rejects.toBeInstanceOf(GlpiPaginationError);
   });
 
@@ -331,7 +331,7 @@ describe("GLPI TechnologyProvider", () => {
         return [];
       },
     };
-    const provider = createGlpiTechnologyProvider({ transport, pageSize: 2, maxRecords: 2 });
+    const provider = createGlpiTechnologyProvider({ transport, sourceInstanceId: SOURCE_INSTANCE_ID, pageSize: 2, maxRecords: 2 });
     await expect(provider.getSnapshot()).rejects.toBeInstanceOf(GlpiPaginationError);
   });
 });
