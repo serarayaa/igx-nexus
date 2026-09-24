@@ -48,7 +48,7 @@ Principios:
 
 - `nexus.inventory.assets.count`;
 - `nexus.taxonomy.resolved.ratio`;
-- `nexus.sources.reference_presence.ratio`;
+- `nexus.sources.instance_identity.ratio` — cobertura de namespace lógico de fuentes tras AUD-DATA-002;
 - `nexus.lifecycle.known.ratio`.
 
 Estas métricas prueban el contrato; no constituyen todavía CMDB Quality 2.0, Lifecycle & Investment ni IT/OT Intelligence.
