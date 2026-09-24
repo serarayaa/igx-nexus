@@ -21,14 +21,9 @@ describe("supported canonical HTTP boundary", () => {
   });
   it("preserves sourceInstanceId across canonical HTTP parsing and Web projection", () => {
     const input = canonicalSnapshotFixture();
-    const withInstance = structuredClone(input) as unknown as Record<string, unknown>;
-    const assets = withInstance.assets as Array<Record<string, unknown>>;
-    const sourceReferences = assets[0]!.sourceReferences as Array<Record<string, unknown>>;
-    sourceReferences[0]!.sourceInstanceId = "glpi-primary";
-
-    const parsed = parseTechnologySnapshot(withInstance);
-    expect((parsed.assets[0]!.sourceReferences[0] as unknown as Record<string, unknown>).sourceInstanceId).toBe("glpi-primary");
-    expect((projectCanonicalSnapshot(withInstance).assets[0]!.sourceReferences[0] as unknown as Record<string, unknown>).sourceInstanceId).toBe("glpi-primary");
+    const parsed = parseTechnologySnapshot(input);
+    expect(parsed.assets[0]?.sourceReferences[0]?.sourceInstanceId).toBe("glpi-primary");
+    expect(projectCanonicalSnapshot(input).assets[0]?.sourceReferences?.[0]?.sourceInstanceId).toBe("glpi-primary");
   });
 
   it.each([99, "99", undefined, null, ""])("rejects unsupported version %s", value => {
