@@ -30,7 +30,7 @@ import {
   type TechnologyTaxonomyAssessment,
 } from "@igx-nexus/types";
 
-export const reconciliationRuleVersion = "v02-009.2" as const;
+export const reconciliationRuleVersion = "v02-009.3" as const;
 
 const STRONG_IDENTIFIER_KINDS = new Set<AssetIdentifierKind>([
   "serial_number",
@@ -266,17 +266,20 @@ function collectPairEvidence(left: TechnologyAsset, right: TechnologyAsset): rea
 
   leftSources.forEach((leftSource) => {
     const rightSource = rightSourcesByKey.get(sourceReferenceKey(leftSource));
-    if (rightSource !== undefined) {
-      evidence.push(makeEvidence(
-        "source_reference.exact",
-        "strong",
-        "supporting",
-        "exact source reference match",
-        undefined,
-        leftSource,
-        rightSource,
-      ));
-    }
+    if (rightSource === undefined) return;
+
+    const qualified = leftSource.sourceInstanceId !== undefined && rightSource.sourceInstanceId !== undefined;
+    evidence.push(makeEvidence(
+      qualified ? "source_reference.exact" : "source_reference.legacy_unqualified",
+      qualified ? "strong" : "insufficient",
+      qualified ? "supporting" : "insufficient",
+      qualified
+        ? "exact source reference match within the same source instance"
+        : "legacy source reference match lacks source instance identity",
+      undefined,
+      leftSource,
+      rightSource,
+    ));
   });
 
   const leftIdentifiers = identifierObservations(left);
