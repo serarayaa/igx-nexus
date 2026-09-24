@@ -57,7 +57,7 @@ it("filters actual degraded records and drills down to actionable causes", async
 it("keeps the OT graph legible and accessible in both themes and all demo widths", async () => {
   window.history.replaceState(null, "", "#assets/DEMO-0013/relations");
   const { container } = render(<App />);
-  await screen.findByRole("heading", { name: "Grafo de Relaciones", level: 1 });
+  await screen.findByRole("heading", { name: "Technology Map", level: 1 });
   expect(screen.getByText("5 relaciones visibles")).toBeTruthy();
   for (const width of [1440, 768, 390, 320]) {
     await page.viewport(width, 1000);

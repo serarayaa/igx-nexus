@@ -89,7 +89,7 @@ V02-016 — Asset Explorer 2.0 quedó incorporado mediante PR #87 en el merge `6
 
 V02-017 — Asset 360 2.0 quedó incorporado mediante PR #90 en el merge `4cc6e7b25b8e4d1bde56fc7a735be6e81261fcd8`; CI post-merge #651 verde. Asset 360 organiza el detalle del CI por intención, hace explícita Taxonomy v2 y la cobertura de evidencia, preserva Demo/Live sin mezclar fuentes y mantiene separados CMDB Quality, freshness, lifecycle y futura Device Health.
 
-El siguiente trabajo planificado es **V02-018 — Technology Map 2.0**.
+El trabajo actual es **V02-018 — Technology Map 2.0** (issue #92).
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -156,6 +156,14 @@ V02-017 reorganiza `#assets/:id` por intención en **Resumen / Inventario / Evid
 La ficha muestra Taxonomy v2, criticidad canónica, compatibility fallback, Operational Context y referencias de fuente sólo cuando existen. CMDB Health permanece como calidad del registro, separado de freshness, lifecycle y futura salud técnica. Live no cae a QR, Health ni relaciones sintéticas de Demo.
 
 Ver [Asset 360 2.0](docs/product/asset-360-v2-plan.md) y [Technology Scan V02-017](docs/product/technology-scan-v02-017.md).
+
+## Technology Map 2.0
+
+V02-018 evoluciona `#assets/:id/relations` como workspace focus/scope-first. Profundidad, tipo, perspectiva y selección pueden conservarse en la URL sin router nuevo; el mapa muestra contexto canónico del CI seleccionado y mantiene una vista semántica equivalente.
+
+Demo usa las relaciones sintéticas canónicas. Live comparte la misma arquitectura de producto, pero cuando no existe un provider relacional defendible muestra cobertura no disponible y no utiliza fixtures Demo como fallback. La orientación de una relación no se presenta como causalidad, blast radius ni impact score.
+
+Ver [Technology Map 2.0](docs/product/technology-map-v2-plan.md) y [Technology Scan V02-018](docs/product/technology-scan-v02-018.md).
 
 ## Demo canónica
 

@@ -11,7 +11,7 @@ import type { RelationshipProvider } from "./relationship-model";
 import "@igx-nexus/ui/styles.css";
 import "./dashboard.css";
 
-const ready = () => screen.findByRole("heading", { name: "Grafo de Relaciones", level: 1 });
+const ready = () => screen.findByRole("heading", { name: "Technology Map", level: 1 });
 
 afterEach(async () => {
   cleanup();
@@ -19,65 +19,103 @@ afterEach(async () => {
   await page.viewport(1440, 1000);
 });
 
-it("resuelve el deep link, selecciona nodos y navega en ambas direcciones", async () => {
-  window.history.replaceState(null, "", "#assets/DEMO-0002/relations");
+it("resuelve deep link, comparte scope por URL, selecciona nodos y permite reenfocar", async () => {
+  window.history.replaceState(null, "", "#assets/DEMO-0002/relations?depth=1&type=depends_on");
   render(<App />);
   await ready();
-  expect(document.title).toContain("Relaciones DEMO-0002");
-  expect(screen.getByText("5 relaciones visibles")).toBeTruthy();
-  const visual = screen.getByLabelText("Mapa visual de relaciones");
-  await userEvent.click(within(visual).getByRole("button", { name: "Switch Demo 0003" }));
+  expect(document.title).toContain("Technology Map DEMO-0002");
+  expect(screen.getByText("1 relación visible")).toBeTruthy();
+  expect((screen.getByRole("combobox", { name: "Profundidad" }) as HTMLSelectElement).value).toBe("1");
+  expect((screen.getByRole("combobox", { name: "Tipo de relación" }) as HTMLSelectElement).value).toBe("depends_on");
+
+  await userEvent.selectOptions(screen.getByRole("combobox", { name: "Profundidad" }), "2");
+  await waitFor(() => expect(window.location.hash).toContain("type=depends_on"));
+  await waitFor(() => expect(window.location.hash).not.toContain("depth=1"));
+
+  await userEvent.click(screen.getByRole("button", { name: "Switch Demo 0003" }));
+  await waitFor(() => expect(window.location.hash).toContain("selected=DEMO-0003"));
   const selection = screen.getByRole("region", { name: "Switch Demo 0003" });
-  expect(within(selection).getByText("4 relaciones visibles para el nodo seleccionado.")).toBeTruthy();
+  expect(within(selection).getByText("Dispositivo de red", { exact: false })).toBeTruthy();
   expect(within(selection).getByRole("link", { name: "Abrir Asset 360" }).getAttribute("href")).toBe("#assets/DEMO-0003");
-  await userEvent.click(within(selection).getByRole("link", { name: "Enfocar este CI" }));
-  expect(await screen.findByText(/Mapa centrado en Switch Demo 0003/)).toBeTruthy();
-  await userEvent.click(screen.getByRole("link", { name: "Switch Demo 0003" }));
-  expect(await screen.findByRole("heading", { name: "Switch Demo 0003", level: 1 })).toBeTruthy();
-  await userEvent.click(screen.getByRole("link", { name: "Abrir grafo de relaciones" }));
-  await ready();
+  await userEvent.click(within(selection).getByRole("button", { name: "Enfocar este CI" }));
+  expect(await screen.findByText(/Scope centrado en Switch Demo 0003/)).toBeTruthy();
 });
 
-it("ofrece lista semántica equivalente y filtros de valor", async () => {
+it("ofrece vista semántica equivalente y filtros sin lenguaje causal", async () => {
   render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" /></NexusShell>);
   await ready();
-  const accessible = screen.getByRole("region", { name: "Relaciones en formato accesible" });
-  expect(within(accessible).getByText("Dependencia upstream")).toBeTruthy();
+  const accessible = screen.getByRole("region", { name: "Relaciones en formato semántico" });
+  expect(within(accessible).getByText("Dependencias upstream")).toBeTruthy();
   expect(within(accessible).getByText("Relaciones de segundo nivel")).toBeTruthy();
+  expect(screen.getByText(/no demuestra causalidad ni blast radius/i)).toBeTruthy();
+
   await userEvent.selectOptions(screen.getByRole("combobox", { name: "Tipo de relación" }), "uses");
-  expect(screen.getByText("1 relación visible")).toBeTruthy();
+  expect(await screen.findByText("1 relación visible")).toBeTruthy();
   expect(within(accessible).getByText("Desktop Demo 0002", { exact: false })).toBeTruthy();
-  await userEvent.selectOptions(screen.getByRole("combobox", { name: "Dirección" }), "downstream");
+
+  await userEvent.selectOptions(screen.getByRole("combobox", { name: "Perspectiva" }), "downstream");
   expect(await screen.findByText("Sin relaciones para estos filtros")).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "Restablecer filtros" }));
   expect(await screen.findByText("5 relaciones visibles")).toBeTruthy();
 });
 
-it("maneja error, retry, activo inexistente, inventario vacío y activo sin relaciones", async () => {
+it("mantiene identidad cuando falla la cobertura relacional y permite retry", async () => {
   const provider = vi.fn<RelationshipProvider>().mockRejectedValueOnce(new Error("secreto")).mockResolvedValueOnce(demoRelationshipSnapshot);
-  const view = render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" relationshipProvider={provider} /></NexusShell>);
-  expect(await screen.findByText("No se pudo cargar el mapa")).toBeTruthy();
-  expect(screen.queryByText("secreto")).toBeNull();
-  await userEvent.click(screen.getByRole("button", { name: "Reintentar" }));
+  render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" relationshipProvider={provider} /></NexusShell>);
   await ready();
+  expect(await screen.findByText("No se pudo cargar la cobertura relacional")).toBeTruthy();
+  expect(screen.getByRole("link", { name: "Desktop Demo 0002" })).toBeTruthy();
+  expect(screen.queryByText("secreto")).toBeNull();
+  await userEvent.click(screen.getByRole("button", { name: "Reintentar relaciones" }));
+  expect(await screen.findByText("5 relaciones visibles")).toBeTruthy();
   expect(provider).toHaveBeenCalledTimes(2);
-
-  view.rerender(<NexusShell view="relations"><RelationshipGraph assetId="NO-EXISTE" /></NexusShell>);
-  expect(await screen.findByText("Activo no encontrado")).toBeTruthy();
-  view.rerender(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" inventoryProvider={async () => ({ ...demoSnapshot, assets: [] })} /></NexusShell>);
-  expect(await screen.findByText("Activo no encontrado")).toBeTruthy();
-  view.rerender(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" relationshipProvider={async () => ({ ...demoRelationshipSnapshot, relationships: [] })} /></NexusShell>);
-  expect(await screen.findByText("Activo sin relaciones")).toBeTruthy();
 });
 
-it("comunica referencias incompletas y no crea enlaces falsos", async () => {
-  const incomplete: RelationshipProvider = async () => ({ ...demoRelationshipSnapshot, relationships: [{ ...demoRelationshipSnapshot.relationships[0]!, id: "MISSING", targetId: "DEMO-MISSING" }] });
+it("maneja activo inexistente, inventario vacío y ausencia real de relaciones", async () => {
+  const view = render(<NexusShell view="relations"><RelationshipGraph assetId="NO-EXISTE" /></NexusShell>);
+  expect(await screen.findByText("Activo no encontrado")).toBeTruthy();
+
+  view.rerender(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" inventoryProvider={async () => ({ ...demoSnapshot, assets: [] })} /></NexusShell>);
+  expect(await screen.findByText("Activo no encontrado")).toBeTruthy();
+
+  view.rerender(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" relationshipProvider={async () => ({ ...demoRelationshipSnapshot, relationships: [] })} /></NexusShell>);
+  await ready();
+  expect(await screen.findByText("Sin relaciones registradas")).toBeTruthy();
+});
+
+it("Live comparte la IA sin caer a fixtures Demo", async () => {
+  render(<NexusShell view="relations" mode="live"><RelationshipGraph assetId="DEMO-0002" mode="live" inventoryProvider={async () => demoSnapshot} /></NexusShell>);
+  await ready();
+  expect(screen.getByText("Relaciones no disponibles en este provider")).toBeTruthy();
+  expect(screen.getByText(/No se usan fixtures Demo como fallback/)).toBeTruthy();
+  expect(screen.queryByLabelText("Mapa visual de relaciones")).toBeNull();
+});
+
+it("comunica endpoints incompletos y no crea enlaces falsos", async () => {
+  const incomplete: RelationshipProvider = async () => ({
+    ...demoRelationshipSnapshot,
+    relationships: [{ ...demoRelationshipSnapshot.relationships[0]!, id: "MISSING", targetId: "DEMO-MISSING" }],
+  });
   render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" relationshipProvider={incomplete} /></NexusShell>);
   await ready();
-  expect(screen.getByText("Relaciones incompletas")).toBeTruthy();
-  const list = screen.getByRole("region", { name: "Relaciones en formato accesible" });
+  expect(screen.getByText("Referencias fuera del inventario disponible")).toBeTruthy();
+  const list = screen.getByRole("region", { name: "Relaciones en formato semántico" });
   expect(within(list).getByText("DEMO-MISSING")).toBeTruthy();
   expect(within(list).queryByRole("link", { name: /CI no disponible/ })).toBeNull();
+  await userEvent.click(screen.getByRole("button", { name: /CI no disponible DEMO-MISSING/ }));
+  expect(screen.getByRole("region", { name: "CI no disponible" })).toBeTruthy();
+});
+
+it("expone fuente y fecha desconocida sin inventar freshness relacional", async () => {
+  const unknownDate: RelationshipProvider = async () => ({
+    ...demoRelationshipSnapshot,
+    relationships: [{ ...demoRelationshipSnapshot.relationships[0]!, observedAt: null }],
+  });
+  render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" relationshipProvider={unknownDate} /></NexusShell>);
+  await ready();
+  const list = screen.getByRole("region", { name: "Relaciones en formato semántico" });
+  expect(within(list).getByText("Fuente: demo")).toBeTruthy();
+  expect(within(list).getByText("Observada: Sin fecha verificable")).toBeTruthy();
 });
 
 it("pasa axe y evita overflow en desktop, tablet y móvil con ambos temas", async () => {
@@ -95,10 +133,10 @@ it("pasa axe y evita overflow en desktop, tablet y móvil con ambos temas", asyn
   }
 }, 60000);
 
-it("permite recorrer y activar nodos con teclado", async () => {
+it("permite recorrer y activar nodos con teclado sin perder foco", async () => {
   render(<NexusShell view="relations"><RelationshipGraph assetId="DEMO-0002" /></NexusShell>);
   await ready();
-  await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Grafo de Relaciones", level: 1 })));
+  await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Technology Map", level: 1 })));
   const node = screen.getByRole("button", { name: "Switch Demo 0003" });
   node.focus();
   await userEvent.keyboard("{Enter}");

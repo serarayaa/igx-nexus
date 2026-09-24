@@ -73,6 +73,19 @@ Documentos:
 
 V02-017 reorganiza el detalle del CI por intención: **Resumen / Inventario / Evidencia y fuentes / Relaciones**. Mantiene Demo/Live con la misma IA, hace explícito taxonomy fallback y coverage, y separa calidad CMDB, freshness, lifecycle y futura salud técnica.
 
+## V02-018 — Technology Map 2.0
+
+Baseline de implementación:
+
+`eae384cf6fb7853b3bbcf29ba80a0b41072d42d6`
+
+Documentos:
+
+- [Technology Map 2.0 — plan y decisiones](technology-map-v2-plan.md)
+- [Technology Scan V02-018](technology-scan-v02-018.md)
+
+V02-018 evoluciona el grafo histórico hacia un workspace focus/scope-first con estado compartible por URL, contexto del CI seleccionado, cobertura Demo/Live explícita y lenguaje que no confunde relaciones registradas con causalidad o blast radius.
+
 ## Principios
 
 1. Cada pantalla responde una pregunta operacional.
@@ -92,7 +105,7 @@ V02-017 reorganiza el detalle del CI por intención: **Resumen / Inventario / Ev
 - V02-015 — Technology Overview — integrado
 - V02-016 — Asset Explorer 2.0 — integrado
 - V02-017 — Asset 360 2.0 — integrado
-- V02-018 — Technology Map 2.0 — siguiente trabajo
+- V02-018 — Technology Map 2.0 — en implementación
 - V02-019 — Analytics Contract Layer
 
 ADR-0023 permanece como baseline normativo de Product IA. Cada ticket de implementación debe mantener sus límites de scope y preservar los principios de producto ya aceptados.

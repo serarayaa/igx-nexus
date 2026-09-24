@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assetHash, assetSectionHash, demoQrHash, labelHash, relationsHash, routeFromHash } from "./navigation-model";
+import { assetHash, assetSectionHash, defaultTechnologyMapState, demoQrHash, labelHash, relationsHash, routeFromHash } from "./navigation-model";
 
 describe("routeFromHash", () => {
   it("reconoce las rutas del Dashboard", () => {
@@ -17,7 +17,9 @@ describe("routeFromHash", () => {
     expect(routeFromHash("#assets/DEMO-0002?section=relationships")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "relationships" });
     expect(routeFromHash("#assets/DEMO-0002?section=invalid")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "summary" });
     expect(routeFromHash("#assets/DEMO-0002/label")).toEqual({ view: "label", assetId: "DEMO-0002" });
-    expect(routeFromHash("#assets/DEMO-0002/relations")).toEqual({ view: "relations", assetId: "DEMO-0002" });
+    expect(routeFromHash("#assets/DEMO-0002/relations")).toEqual({ view: "relations", assetId: "DEMO-0002", mapState: defaultTechnologyMapState });
+    expect(routeFromHash("#assets/DEMO-0002/relations?depth=1&type=uses&perspective=upstream&selected=DEMO-0005")).toEqual({ view: "relations", assetId: "DEMO-0002", mapState: { depth: 1, type: "uses", perspective: "upstream", selectedId: "DEMO-0005" } });
+    expect(routeFromHash("#assets/DEMO-0002/relations?depth=9&type=nope&perspective=nope")).toEqual({ view: "relations", assetId: "DEMO-0002", mapState: defaultTechnologyMapState });
   });
 
   it("reconoce el simulador interno de resolución QR", () => {
@@ -50,6 +52,7 @@ describe("route builders", () => {
     expect(assetSectionHash("DEMO 0002", "inventory")).toBe("#assets/DEMO%200002?section=inventory");
     expect(labelHash("DEMO 0002")).toBe("#assets/DEMO%200002/label");
     expect(relationsHash("DEMO 0002")).toBe("#assets/DEMO%200002/relations");
+    expect(relationsHash("DEMO 0002", { depth: 1, type: "uses", perspective: "downstream", selectedId: "DEMO 0005" })).toBe("#assets/DEMO%200002/relations?depth=1&type=uses&perspective=downstream&selected=DEMO+0005");
     expect(demoQrHash("demo locator")).toBe("#q/demo%20locator");
   });
 });

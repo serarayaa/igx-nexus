@@ -204,10 +204,10 @@ function SummaryPanel({
       </section>}
     </div>
 
-    {!isLive && <div className="nexus-asset-actions nexus-asset-summary-actions" aria-label="Acciones del activo">
-      <a className="nexus-asset-link" href={labelHash(asset.id)}>Diseñar etiqueta</a>
-      <a className="nexus-asset-link" href={relationsHash(asset.id)}>Abrir grafo de relaciones</a>
-    </div>}
+    <div className="nexus-asset-actions nexus-asset-summary-actions" aria-label="Acciones del activo">
+      {!isLive && <a className="nexus-asset-link" href={labelHash(asset.id)}>Diseñar etiqueta</a>}
+      <a className="nexus-asset-link" href={relationsHash(asset.id)}>Abrir Technology Map</a>
+    </div>
   </section>;
 }
 
@@ -411,8 +411,8 @@ function RelationshipPanel({
           </li>;
         })}
       </ul>
-      <div className="nexus-asset-actions"><a className="nexus-asset-link" href={relationsHash(asset.id)}>Abrir Technology Map</a></div>
     </>}
+    <div className="nexus-asset-actions"><a className="nexus-asset-link" href={relationsHash(asset.id)}>Abrir Technology Map</a></div>
   </section>;
 }
 

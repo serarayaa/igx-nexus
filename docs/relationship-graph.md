@@ -1,77 +1,135 @@
-# Grafo de Relaciones — CMDB-010
+# Technology Map — relaciones entre CI
 
-CMDB-010 incorpora la primera versión funcional de **The Technology Map**. La vista responde cómo se relacionan los CI sin afirmar que existe discovery productivo: todo el escenario es sintético y reproducible.
+La primera versión nació en CMDB-010. V02-018 la evoluciona a **Technology Map 2.0** sin reescribir el modelo ni introducir una librería gráfica nueva.
 
-## Ruta e integración
+La pregunta operacional es:
+
+> **¿Cómo está conectado este CI dentro de un alcance concreto, qué significan esas relaciones y qué puedo investigar sin confundir conectividad con impacto demostrado?**
+
+## Ruta y state
+
+Ruta base:
 
 ```text
 /#assets/<asset-id>/relations
 ```
 
-Asset 360 ofrece el enlace “Abrir grafo de relaciones”. El mapa mantiene un CI enfocado, permite seleccionar nodos, abrir su Asset 360 o reenfocar el mapa mediante rutas generadas por `navigation-model.ts`.
+State opcional compartible:
+
+```text
+/#assets/<asset-id>/relations?depth=1&type=uses&perspective=upstream&selected=<asset-id>
+```
+
+El hash conserva focus CI y puede codificar profundidad, tipo, perspectiva y selección. Refresh y Atrás/Adelante restauran el estado esencial sin router nuevo.
 
 ## Arquitectura
 
 | Capa | Responsabilidad |
 |---|---|
-| `relationship-model.ts` | Contratos, taxonomía, validación, direccionalidad, filtros, vecindario y layout puro |
-| `demo-relationship-provider.ts` | Provider asíncrono del catálogo compartido `demo-dataset.ts` |
-| `RelationshipGraph.tsx` | Estados, filtros, mapa, selección, navegación y representación accesible |
-| `relationship-graph.css` | Presentación responsive, temas y forced-colors |
+| `relationship-model.ts` | semántica, validación, dirección, filtros, vecindario y layout puro |
+| `demo-relationship-provider.ts` | provider de relaciones canónicas Demo |
+| `navigation-model.ts` | parse/build del state compartible |
+| `RelationshipGraph.tsx` | focus/scope, coverage, selección, navegación y representación semántica |
+| `relationship-graph.css` | jerarquía visual, responsive y forced colors |
 
-El provider recibe `RelationshipQuery` y `AbortSignal`. La futura NEXUS API puede reemplazarlo sin entregar coordenadas ni estructuras propias de una librería gráfica.
+## Scope
 
-## Modelo
+Technology Map no renderiza el universo completo.
 
-Cada relación declara:
+El workspace declara:
 
-- identidad propia;
-- `sourceId` y `targetId` NEXUS;
+- focus CI;
+- profundidad 1/2;
 - tipo;
-- dirección explícita;
-- estado;
-- procedencia demo;
-- fecha de observación opcional.
+- perspectiva;
+- CIs visibles;
+- relaciones visibles;
+- modo Demo/Live;
+- coverage relacional.
 
-Tipos iniciales:
+El focus CI no desaparece al filtrar.
+
+## Semántica
+
+Tipos actuales:
 
 | Tipo | Dirección | Lectura |
 |---|---|---|
 | `depends_on` | dirigida | el origen depende del destino |
 | `uses` | dirigida | el origen usa el destino |
-| `connected_to` | bidireccional | ambos extremos están conectados |
+| `connected_to` | bidireccional | conexión entre pares |
 
-Desde un CI enfocado, una relación dirigida saliente representa **upstream** (“de qué depende”) y una entrante representa **downstream** (“qué podría verse afectado”). Una relación bidireccional es una conexión entre pares. CMDB-010 no calcula impacto empresarial ni criticidad propagada.
+Desde el focus:
 
-## Dataset demo
+- **upstream**: relaciones salientes dirigidas;
+- **downstream**: relaciones entrantes dirigidas;
+- **peer**: relaciones bidireccionales.
 
-CMDB-012 consolida 18 relaciones en tres componentes de hasta siete nodos, sobre el inventario compartido de 240 CI. Se conserva el grupo de oficina y se añaden un escenario OT y otro de puestos. Ver [catálogo, semántica y casos hero](demo-dataset.md). No representa nombres, topología, ubicaciones ni direccionamiento corporativo.
+La orientación no demuestra causalidad, riesgo, blast radius ni indisponibilidad.
 
-El provider devuelve hasta dos niveles. La UI permite reducir a un nivel y filtrar por tipo o perspectiva. Las referencias incompletas permanecen visibles como “CI no disponible” y no generan links falsos.
+## Contexto seleccionado
 
-## Visualización y accesibilidad
+El panel contextual muestra sólo datos ya disponibles:
 
-- Layout radial determinista, sin simulación física ni animación permanente. Las líneas se recortan matemáticamente contra un rectángulo conceptual por nodo, de modo que las flechas quedan visibles cerca del borde sin usar mediciones del DOM.
-- Flechas para dirección y flechas dobles para relaciones simétricas.
-- Patrones de línea, texto y leyenda; el significado no depende sólo del color.
-- Nodos HTML accionables con foco visible y selección mediante teclado.
-- Lista semántica permanente con endpoints, verbo, tipo, dirección y estado.
-- En móvil se oculta el plano visual y se prioriza la lista equivalente.
-- Light/dark, densidad, `forced-colors` y `prefers-reduced-motion` reutilizan el baseline IGX.
+- ID NEXUS;
+- Domain;
+- Asset Class;
+- Role;
+- lifecycle;
+- criticality;
+- taxonomy state/review/fallback;
+- sources;
+- última observación;
+- relaciones visibles del CI.
 
-## Estados
+Si un endpoint relacional no existe en el inventario, se muestra como referencia no resuelta y no se crea navegación falsa.
 
-La vista contempla loading, error con retry, activo inexistente, activo sin relaciones, filtros sin resultados, referencias incompletas y datos válidos. Las respuestas obsoletas se descartan mediante cancelación con `AbortSignal`.
+## Evidence y coverage
 
-## Seguridad y evolución
+La Web presenta lo que su proyección realmente transporta:
 
-CMDB-010 no ejecuta discovery. Las fuentes futuras deben ingresar por NEXUS API y providers normalizados. Todo descubrimiento debe estar autorizado; se priorizan APIs e inventarios aprobados. SNMP requerirá configuración segura. En OT/ICS deben preferirse fuentes pasivas/read-only y coordinación previa con Infraestructura y Ciberseguridad, sin asumir active scanning.
+- relationship type;
+- direction;
+- status;
+- source;
+- `observedAt`.
 
-## Límites v0.1
+`observedAt=null` se muestra como fecha desconocida. No se sustituye por el corte del snapshot.
 
-- sin edición o persistencia de relaciones;
-- sin integraciones reales;
-- sin zoom/pan, innecesarios para el vecindario pequeño;
-- sin cálculo avanzado de impacto;
-- Health se evalúa en su vista global y Asset 360, sin convertir el grafo en monitor operacional;
-- sin Service Desk ni tickets, gestionados en Jira.
+La UI no inventa authority, confidence o provenance por atributo/relación si no llegan a la proyección.
+
+## Demo / Live
+
+Demo consume las relaciones sintéticas canónicas de `packages/demo-data`.
+
+Live comparte la misma arquitectura de producto, pero si NEXUS API todavía no entrega un provider relacional defendible, Technology Map muestra cobertura no disponible y **no cae a fixtures Demo**.
+
+## Accesibilidad
+
+- nodos HTML accionables con teclado;
+- foco visible;
+- línea + texto + leyenda, sin depender sólo de color;
+- alternativa semántica permanente;
+- mapa visual ocultable en pantallas pequeñas sin pérdida de información esencial;
+- 320 CSS px;
+- light/dark;
+- comfortable/compact;
+- forced colors;
+- reduced motion.
+
+## Límites
+
+V02-018 no implementa:
+
+- graph analytics;
+- centrality;
+- blast radius;
+- impact/risk score;
+- edición de relaciones;
+- Service Mapping;
+- discovery;
+- active OT scanning;
+- nuevas integraciones;
+- analytics de V02-019.
+
+Ver [plan de V02-018](product/technology-map-v2-plan.md) y [Technology Scan](product/technology-scan-v02-018.md).

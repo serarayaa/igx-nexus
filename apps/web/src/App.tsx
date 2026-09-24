@@ -9,9 +9,9 @@ import { CmdbHealth } from "./CmdbHealth";
 import { NexusShell } from "./NexusShell";
 import { demoProvider } from "./demo-provider";
 import { liveProvider } from "./live-provider";
-import { demoRelationshipInventoryProvider } from "./demo-relationship-provider";
+import { demoRelationshipInventoryProvider, demoRelationshipProvider } from "./demo-relationship-provider";
 import type { InventoryProvider } from "./asset-model";
-import { assetSectionHash, routeFromHash, type AppRoute, type AssetSection } from "./navigation-model";
+import { assetSectionHash, defaultTechnologyMapState, relationsHash, routeFromHash, type AppRoute, type AssetSection, type TechnologyMapState } from "./navigation-model";
 
 type InventoryMode = "demo" | "live";
 
@@ -27,7 +27,7 @@ const inventory = configuredInventoryProvider();
 function savedRoute(): AppRoute | null {
   const value: unknown = window.history.state?.nexusRoute;
   if (!value || typeof value !== "object" || !("view" in value)) return null;
-  const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown; locator?: unknown; section?: unknown };
+  const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown; locator?: unknown; section?: unknown; mapState?: unknown };
   if (route.view === "dashboard" || route.view === "assets" || route.view === "health") return { view: route.view };
   if (route.view === "asset" && typeof route.assetId === "string" && route.assetId) {
     const section: AssetSection = route.section === "inventory" || route.section === "evidence" || route.section === "relationships"
@@ -35,8 +35,20 @@ function savedRoute(): AppRoute | null {
       : "summary";
     return { view: "asset", assetId: route.assetId, section };
   }
-  if ((route.view === "label" || route.view === "relations") && typeof route.assetId === "string" && route.assetId) {
-    return { view: route.view, assetId: route.assetId };
+  if (route.view === "relations" && typeof route.assetId === "string" && route.assetId) {
+    const candidate = route.mapState as Partial<TechnologyMapState> | undefined;
+    const mapState: TechnologyMapState = candidate && (candidate.depth === 1 || candidate.depth === 2)
+      ? {
+          depth: candidate.depth,
+          type: candidate.type === "depends_on" || candidate.type === "uses" || candidate.type === "connected_to" ? candidate.type : "all",
+          perspective: candidate.perspective === "upstream" || candidate.perspective === "downstream" || candidate.perspective === "peer" ? candidate.perspective : "all",
+          selectedId: typeof candidate.selectedId === "string" && candidate.selectedId ? candidate.selectedId : null,
+        }
+      : defaultTechnologyMapState;
+    return { view: "relations", assetId: route.assetId, mapState };
+  }
+  if (route.view === "label" && typeof route.assetId === "string" && route.assetId) {
+    return { view: "label", assetId: route.assetId };
   }
   if (route.view === "qr" && typeof route.locator === "string" && route.locator) {
     return { view: "qr", locator: route.locator };
@@ -46,7 +58,7 @@ function savedRoute(): AppRoute | null {
 
 function normalizeRouteForMode(route: AppRoute | null, mode: InventoryMode): AppRoute {
   if (mode === "demo") return route ?? { view: "dashboard" };
-  if (route?.view === "dashboard" || route?.view === "asset" || route?.view === "assets") return route;
+  if (route?.view === "dashboard" || route?.view === "asset" || route?.view === "assets" || route?.view === "relations") return route;
   return { view: "dashboard" };
 }
 
@@ -56,7 +68,7 @@ function routeTitle(route: AppRoute): string {
   if (route.view === "assets") return "Activos";
   if (route.view === "asset") return `Asset ${route.assetId}`;
   if (route.view === "label") return `Etiqueta ${route.assetId}`;
-  if (route.view === "relations") return `Relaciones ${route.assetId}`;
+  if (route.view === "relations") return `Technology Map ${route.assetId}`;
   return "Resolver QR demo";
 }
 
@@ -81,7 +93,9 @@ export function App() {
     if (inventory.mode !== "live") return;
     const expectedHash = route.view === "asset"
       ? assetSectionHash(route.assetId, route.section)
-      : route.view === "assets" ? "#assets" : "#overview";
+      : route.view === "relations"
+        ? relationsHash(route.assetId, route.mapState)
+        : route.view === "assets" ? "#assets" : "#overview";
     if (window.location.hash !== expectedHash) {
       window.history.replaceState({ ...window.history.state, nexusRoute: route }, "", expectedHash);
     }
@@ -89,8 +103,8 @@ export function App() {
 
   useEffect(() => {
     document.title = `${routeTitle(route)} · IGX NEXUS`;
-    // Asset 360 gestiona su propio foco para distinguir cambios de CI y de sección contextual.
-    if (route.view === "asset") return;
+    // Asset 360 y Technology Map gestionan su foco para distinguir cambios de contexto sin saltos al ajustar filtros.
+    if (route.view === "asset" || route.view === "relations") return;
     const frame = requestAnimationFrame(() => {
       const heading = document.querySelector<HTMLElement>("main h1");
       if (heading) {
@@ -118,7 +132,13 @@ export function App() {
             {...(inventory.mode === "demo" ? { relationshipProvider: demoRelationshipInventoryProvider } : {})}
           />
         : route.view === "relations"
-          ? <RelationshipGraph assetId={route.assetId} />
+          ? <RelationshipGraph
+              assetId={route.assetId}
+              mode={inventory.mode}
+              mapState={route.mapState}
+              inventoryProvider={inventory.provider}
+              {...(inventory.mode === "demo" ? { relationshipProvider: demoRelationshipProvider } : {})}
+            />
         : route.view === "label"
           ? <LabelDesigner assetId={route.assetId} />
           : <DemoQrResolver locator={route.locator} />;
