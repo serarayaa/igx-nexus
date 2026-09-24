@@ -168,6 +168,8 @@ export type AuthorityLevel = (typeof authorityLevels)[number];
 
 export interface SourceReference {
   readonly source: SourceSystem;
+  /** Stable logical identity of the upstream installation/tenant; optional for historical 0.2 evidence. */
+  readonly sourceInstanceId?: string;
   readonly externalId: string;
   readonly entityType?: string;
   readonly sourceScope?: string;
@@ -333,6 +335,7 @@ export interface TechnologySnapshot {
 export function sourceReferenceKey(reference: SourceReference): string {
   return JSON.stringify([
     reference.source,
+    reference.sourceInstanceId ?? "",
     reference.sourceScope ?? "",
     reference.entityType ?? "",
     reference.externalId,
