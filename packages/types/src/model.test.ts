@@ -141,6 +141,22 @@ describe("canonical technology model", () => {
     expect(sourceReferenceKey(glpi)).toBe(sourceReferenceKey(duplicate));
   });
 
+  it("namespaces source references by logical source instance", () => {
+    const chile = { ...glpi, sourceInstanceId: "glpi-chile" } as SourceReference;
+    const canada = { ...glpi, sourceInstanceId: "glpi-canada" } as SourceReference;
+    expect(sourceReferenceKey(chile)).not.toBe(sourceReferenceKey(canada));
+  });
+
+  it("rejects an explicitly empty source instance id", () => {
+    const invalid = { ...glpi, sourceInstanceId: "   " } as SourceReference;
+    const issues = validateTechnologyAsset(itAsset({
+      sourceReferences: [invalid, intune],
+      identifiers: [],
+      provenance: [],
+    }));
+    expect(issues.some((entry) => entry.code === "source.instance_id_empty")).toBe(true);
+  });
+
   it("does not treat hostname or serial as canonical identity", () => {
     const asset = itAsset({
       identifiers: [
