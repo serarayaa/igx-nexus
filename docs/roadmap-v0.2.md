@@ -52,7 +52,7 @@ Dirección conceptual posterior:
 | V02-015 | Technology Overview | P1 | ✅ Integrado — PR #83 / issue #82 / merge `c30eb25f`; CI #573 verde |
 | V02-016 | Asset Explorer 2.0 | P1 | ✅ Integrado — PR #87 / issue #85 / merge `68479fd9`; CI #608 verde |
 | V02-017 | Asset 360 2.0 | P1 | ✅ Integrado — PR #90 / issue #89 / merge `4cc6e7b2`; CI #651 verde |
-| V02-018 | Technology Map 2.0 | P1 | 🟡 En implementación — issue #92 |
+| V02-018 | Technology Map 2.0 | P1 | ✅ Integrado — PR #93 / issue #92 / merge `19ff461d` |
 | V02-019 | Analytics Contract Layer | P0 | ⚪ Pendiente |
 | V02-020 | CMDB Quality 2.0 | P1 | ⚪ Pendiente |
 | V02-021 | Lifecycle & Investment | P1 | ⚪ Pendiente |
@@ -316,15 +316,15 @@ Documentos:
 
 Siguiente trabajo: **V02-018 — Technology Map 2.0**.
 
-### V02-018 — Technology Map 2.0 — en implementación
+### V02-018 — Technology Map 2.0 ✅
 
-Issue #92.
+Integrado mediante PR #93, merge `19ff461d747ce39375c430f6ba59e0382d3976df`; issue #92 cerrado como completed.
 
 Pregunta central:
 
 > **¿Cómo está conectado este CI dentro de un alcance concreto, qué significan esas relaciones y qué puedo investigar sin confundir conectividad con impacto demostrado?**
 
-Dirección implementada en la rama:
+Resultado:
 
 - focus CI como home node estable;
 - scope explícito por profundidad, tipo y perspectiva;
@@ -343,6 +343,8 @@ Documentos:
 - `docs/product/technology-scan-v02-018.md`.
 
 V02-019 conserva ownership de métricas y analytics.
+
+Siguiente trabajo: **V02-019 — Analytics Contract Layer**.
 
 ## Epic 5 — Technology Analytics
 
