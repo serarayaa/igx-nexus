@@ -46,6 +46,7 @@ describe("Live Web provider projection", () => {
     const snapshot = projectCanonicalSnapshot(canonicalComputer);
     expect(snapshot).toEqual({
       asOf: "2026-09-15T16:00:00.000Z",
+      canonical: canonicalComputer,
       assets: [expect.objectContaining({
         id: "NXS-TEST",
         name: "LAB-ENDPOINT",
@@ -70,7 +71,7 @@ describe("Live Web provider projection", () => {
         dataMode: "live",
         sourceSystems: ["glpi"],
         sourceObservedAt: "2026-09-15T15:59:00.000Z",
-        sourceReferences: [{ source: "glpi", observedAt: "2026-09-15T15:59:00.000Z" }],
+        sourceReferences: canonicalComputer.assets[0]!.sourceReferences,
       })],
     });
   });
@@ -83,10 +84,7 @@ describe("Live Web provider projection", () => {
     );
     const asset = projectCanonicalSnapshot(multisource).assets[0]!;
     expect(asset.sourceSystems).toEqual(["glpi", "intune"]);
-    expect(asset.sourceReferences).toEqual([
-      { source: "glpi", observedAt: "2026-09-15T15:59:00.000Z" },
-      { source: "intune", observedAt: "2026-09-15T15:57:00.000Z" },
-    ]);
+    expect(asset.sourceReferences).toEqual(multisource.assets[0]!.sourceReferences);
     expect(asset.sourceObservedAt).toBe("2026-09-15T15:59:00.000Z");
   });
 

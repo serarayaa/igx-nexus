@@ -1,5 +1,7 @@
 import type {
   OperationalContextKind,
+  SourceReference,
+  TechnologySnapshot,
   TaxonomyClassificationState,
   TechnologyAssetClass,
   TechnologyRole,
@@ -26,10 +28,11 @@ export type AssetTaxonomyState = TaxonomyClassificationState;
 export interface AssetOperationalContext {
   readonly id: string;
   readonly kind: OperationalContextKind;
+  readonly source?: SourceReference;
   readonly displayName: string | null;
 }
 
-export interface AssetSourceReference {
+export interface AssetSourceReference extends Partial<Pick<SourceReference, "externalId" | "entityType" | "sourceScope" | "authority">> {
   readonly source: string;
   readonly observedAt: string | null;
 }
@@ -61,6 +64,7 @@ export interface Asset extends AssetSummary {
   readonly criticality?: AssetCriticality;
   readonly assetClass?: TechnologyAssetClass;
   readonly role?: TechnologyRole;
+  readonly taxonomy?: TechnologyTaxonomyAssessment;
   readonly taxonomyState?: AssetTaxonomyState;
   readonly taxonomyReviewRequired?: boolean;
   readonly taxonomyCompatibilityFallback?: boolean;
@@ -70,6 +74,8 @@ export interface Asset extends AssetSummary {
   readonly sourceReferences?: readonly AssetSourceReference[];
 }
 export interface InventorySnapshot<T extends AssetSummary = Asset> {
+  /** Validated Live contract retained intact alongside the presentation projection. */
+  readonly canonical?: TechnologySnapshot;
   readonly asOf: string;
   readonly assets: readonly T[];
 }
