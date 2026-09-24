@@ -161,15 +161,15 @@ export const referenceMetricDefinitions = [
     allowedDimensions: without("taxonomyState"),
   },
   {
-    id: "nexus.sources.reference_presence.ratio",
+    id: "nexus.sources.instance_identity.ratio",
     version: 1,
-    label: "Presencia de referencia de fuente",
-    description: "Proporción de activos con al menos una SourceReference canónica.",
+    label: "Identidad de instancia de fuente",
+    description: "Proporción de activos cuyas SourceReference identifican explícitamente la instancia lógica de origen.",
     category: "sources",
     valueKind: "ratio",
     unit: "1",
-    populationDescription: "Activos dentro del scope.",
-    numeratorDescription: "Activos con una o más referencias de fuente.",
+    populationDescription: "Activos dentro del scope; cada activo canónico válido posee al menos una SourceReference.",
+    numeratorDescription: "Activos donde todas las SourceReference declaran sourceInstanceId.",
     denominatorDescription: "Activos elegibles dentro del scope.",
     timeBasis: "snapshot",
     requiredEvidence: ["source_reference"],
@@ -339,9 +339,12 @@ function computeMetric(id: ReferenceMetricId, assets: readonly TechnologyAsset[]
         known: known.length,
       };
     }
-    case "nexus.sources.reference_presence.ratio":
+    case "nexus.sources.instance_identity.ratio":
       return {
-        numerator: assets.filter((asset) => asset.sourceReferences.length > 0).length,
+        numerator: assets.filter((asset) =>
+          asset.sourceReferences.length > 0
+          && asset.sourceReferences.every((reference) => Boolean(reference.sourceInstanceId?.trim())),
+        ).length,
         denominator: assets.length,
         known: assets.length,
       };
