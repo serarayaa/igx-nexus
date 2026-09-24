@@ -191,6 +191,88 @@ describe("V02-009 identity matching", () => {
     expect(reconcileAssetIdentity(incoming, [anchor], NOW).kind).toBe("matched");
   });
 
+  it.each([
+    "To Be Filled By O.E.M.",
+    " to be filled by oem ",
+    "000000",
+    "unknown",
+    "N/A",
+    "default string",
+  ])("does not use placeholder serial %j as identity evidence", (placeholder) => {
+    const anchor = makeAsset({
+      id: "NXS-SYNTH-A",
+      sourceSystem: "glpi",
+      sourceId: "a",
+      identifiers: [serial(placeholder)],
+    });
+    const incoming = makeAsset({
+      id: "NXS-SYNTH-B",
+      sourceSystem: "intune",
+      sourceId: "b",
+      identifiers: [serial(placeholder)],
+    });
+    const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
+    expect(decision.kind).toBe("not_matched");
+    expect(decision.candidateAssetIds).toEqual([]);
+  });
+
+  it("does not use an all-zero hardware UUID as identity evidence", () => {
+    const zeroUuid = "00000000-0000-0000-0000-000000000000";
+    const anchor = makeAsset({
+      id: "NXS-SYNTH-A",
+      sourceSystem: "glpi",
+      sourceId: "a",
+      identifiers: [uuid(zeroUuid)],
+    });
+    const incoming = makeAsset({
+      id: "NXS-SYNTH-B",
+      sourceSystem: "intune",
+      sourceId: "b",
+      identifiers: [uuid(zeroUuid)],
+    });
+    const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
+    expect(decision.kind).toBe("not_matched");
+    expect(decision.candidateAssetIds).toEqual([]);
+  });
+
+  it("does not let a placeholder create a strong contradiction beside a real serial match", () => {
+    const placeholder = "000000";
+    const anchor = makeAsset({
+      id: "NXS-SYNTH-A",
+      sourceSystem: "glpi",
+      sourceId: "a",
+      identifiers: [serial("SYNTH-SERIAL-SHARED"), serial(placeholder)],
+    });
+    const incoming = makeAsset({
+      id: "NXS-SYNTH-B",
+      sourceSystem: "intune",
+      sourceId: "b",
+      identifiers: [serial("SYNTH-SERIAL-SHARED")],
+    });
+    const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
+    expect(decision.kind).toBe("matched");
+    expect(decision.evaluations[0]?.evidence.some((entry) => entry.outcome === "contradicting")).toBe(false);
+  });
+
+  it("preserves ignored placeholder identifiers in the canonical projection", () => {
+    const placeholder = "To Be Filled By O.E.M.";
+    const anchor = makeAsset({
+      id: "NXS-SYNTH-A",
+      sourceSystem: "glpi",
+      sourceId: "a",
+      identifiers: [serial("SYNTH-SERIAL-SHARED"), serial(placeholder)],
+    });
+    const incoming = makeAsset({
+      id: "NXS-SYNTH-B",
+      sourceSystem: "intune",
+      sourceId: "b",
+      identifiers: [serial("SYNTH-SERIAL-SHARED")],
+    });
+    const run = reconcileTechnologyAsset(incoming, [anchor], NOW);
+    expect(run.decision.kind).toBe("matched");
+    expect(run.projection?.asset.identifiers.some((identifier) => identifier.value === placeholder)).toBe(true);
+  });
+
   it("keeps compatible auxiliary identifiers in manual review", () => {
     const identifiers: readonly IdentifierSpec[] = [
       { kind: "asset_tag", value: "SYNTH-TAG-001" },
