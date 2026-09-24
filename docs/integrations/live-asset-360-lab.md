@@ -35,7 +35,8 @@ Variables no secretas de ejemplo:
 ```bash
 export NEXUS_API_ENV=development
 export NEXUS_PROVIDER_MODE=live
-export NEXUS_GLPI_BASE_URL="http://127.0.0.1:8080/"
+export NEXUS_GLPI_INSTANCE_ID=glpi-primary
+NEXUS_GLPI_BASE_URL="http://127.0.0.1:8080/"
 export NEXUS_GLPI_SERVICE_USERNAME="svc-nexus-api"
 export NEXUS_GLPI_ALLOW_INSECURE_HTTP=true
 ```
