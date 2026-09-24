@@ -131,7 +131,7 @@ Cada `MetricResult` conserva por separado:
 
 Las métricas ratio usan unidad base `1` y valores entre 0 y 1. La UI puede presentarlas como porcentaje sin alterar el contrato.
 
-Dimensiones Taxonomy (`domain`, `assetClass`, `role`) sólo exponen decisiones `classified`. Los scalars de compatibility projection nunca se convierten en clasificación analítica. La dimensión `source` conserva `sourceInstanceId` cuando existe (por ejemplo `glpi@glpi-primary`) para no colapsar instalaciones distintas tras AUD-DATA-002.
+Dimensiones Taxonomy (`domain`, `assetClass`, `role`) sólo exponen decisiones `classified`. Los scalars de compatibility projection nunca se convierten en clasificación analítica. La dimensión `source` conserva `sourceInstanceId` mediante `metricSourceDimensionKey()`, una tupla JSON collision-safe (por ejemplo `["glpi","glpi-primary"]`) para no colapsar instalaciones distintas tras AUD-DATA-002. Operational Context usa el mismo principio con `metricOperationalContextDimensionKey()`.
 
 Métricas de referencia iniciales:
 
