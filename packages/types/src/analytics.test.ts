@@ -161,6 +161,7 @@ describe("analytics contract", () => {
     expect(result.denominator).toBe(3);
     expect(result.value).toBeCloseTo(2 / 3);
     expect(result.population.unknown).toBe(1);
+    expect(result.population.excluded).toBe(0);
     expect(result.coverage.state).toBe("partial");
     expect(result.coverage.ratio).toBeCloseTo(3 / 4);
   });
@@ -188,7 +189,9 @@ describe("analytics contract", () => {
       filters: [{ dimension: "domain", values: ["IT"] }],
     });
     expect(result.value).toBe(1);
+    expect(result.population.snapshot).toBe(4);
     expect(result.population.scoped).toBe(1);
+    expect(result.population.excluded).toBe(0);
   });
 
   it("preserves source instance identity in analytical source dimensions", () => {
