@@ -47,7 +47,6 @@ const INSUFFICIENT_IDENTIFIER_KINDS = new Set<AssetIdentifierKind>(["hostname"])
 
 const PLACEHOLDER_IDENTIFIER_FINGERPRINTS = new Set([
   "unknown",
-  "na",
   "none",
   "null",
   "notavailable",
@@ -183,7 +182,9 @@ function isDegenerateZeroIdentifier(kind: AssetIdentifierKind, value: string): b
 }
 
 function isIdentifierUsableForIdentity(kind: AssetIdentifierKind, value: string): boolean {
-  if (PLACEHOLDER_IDENTIFIER_FINGERPRINTS.has(placeholderFingerprint(value))) return false;
+  const normalized = normalizeIdentifierValue(value);
+  const separatedNaPlaceholder = /^n[\s./_-]+a$/.test(normalized);
+  if (separatedNaPlaceholder || PLACEHOLDER_IDENTIFIER_FINGERPRINTS.has(placeholderFingerprint(value))) return false;
   return !isDegenerateZeroIdentifier(kind, value);
 }
 
