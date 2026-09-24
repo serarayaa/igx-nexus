@@ -1,4 +1,5 @@
 import {
+  type OperationalContextReference,
   type SourceReference,
   type TaxonomyClassificationState,
   type TechnologyAsset,
@@ -213,14 +214,20 @@ function aggregateTaxonomyState(asset: TechnologyAsset): TaxonomyClassificationS
   return "classified";
 }
 
-function sourceDimensionValue(reference: SourceReference): string {
-  return reference.sourceInstanceId
-    ? `${reference.source}@${reference.sourceInstanceId}`
-    : reference.source;
+export function metricSourceDimensionKey(
+  reference: Pick<SourceReference, "source" | "sourceInstanceId">,
+): string {
+  return JSON.stringify([reference.source, reference.sourceInstanceId ?? null]);
+}
+
+export function metricOperationalContextDimensionKey(
+  context: Pick<OperationalContextReference, "kind" | "id">,
+): string {
+  return JSON.stringify([context.kind, context.id]);
 }
 
 function unique(values: readonly string[]): readonly string[] {
-  return [...new Set(values)].sort((left, right) => left.localeCompare(right, "en"));
+  return [...new Set(values)].sort((left, right) => left < right ? -1 : left > right ? 1 : 0);
 }
 
 /**
@@ -242,9 +249,9 @@ export function metricDimensionValues(asset: TechnologyAsset, dimension: MetricD
       return state ? [state] : [];
     }
     case "source":
-      return unique(asset.sourceReferences.map(sourceDimensionValue));
+      return unique(asset.sourceReferences.map(metricSourceDimensionKey));
     case "operationalContext":
-      return unique((asset.operationalContexts ?? []).map((context) => `${context.kind}:${context.id}`));
+      return unique((asset.operationalContexts ?? []).map(metricOperationalContextDimensionKey));
   }
 }
 
