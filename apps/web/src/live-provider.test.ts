@@ -18,7 +18,7 @@ const canonicalComputer = {
         { kind: "asset_tag", value: "TAG-TEST" },
       ],
       sourceReferences: [
-        { source: "glpi", externalId: "1", observedAt: "2026-09-15T15:59:00.000Z", authority: "authoritative" },
+        { source: "glpi", sourceInstanceId: "glpi-primary", externalId: "1", observedAt: "2026-09-15T15:59:00.000Z", authority: "authoritative" },
       ],
       attributes: {
         "glpi.itemType": "Computer",
