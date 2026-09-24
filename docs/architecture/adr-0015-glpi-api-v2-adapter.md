@@ -102,6 +102,8 @@ source=glpi
 
 `sourceInstanceId` representa la instalación lógica estable y no una URL, hostname, IP, versión ni service account. Por eso cambiar `NEXUS_GLPI_BASE_URL` sin cambiar de instalación lógica no debe re-keyear activos.
 
+**Migración AUD-DATA-002:** los IDs GLPI derivados antes de esta corrección no contenían identidad de instancia. La primera adopción del nuevo namespace produce un re-key deliberado de esos IDs derivados. Se acepta en v0.2 antes de disponer de persistencia durable de reconciliación/aliases productivos; no se conserva el algoritmo inseguro para una instancia “principal” ni se crean correspondencias automáticas que perpetúen la colisión.
+
 Cada asset conserva:
 
 - `SourceReference.source = glpi`;
