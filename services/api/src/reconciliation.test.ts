@@ -217,6 +217,40 @@ describe("V02-009 identity matching", () => {
     expect(decision.candidateAssetIds).toEqual([]);
   });
 
+  it("does not over-normalize a potentially real short serial as an N/A placeholder", () => {
+    const anchor = makeAsset({
+      id: "NXS-SYNTH-A",
+      sourceSystem: "glpi",
+      sourceId: "a",
+      identifiers: [serial("NA")],
+    });
+    const incoming = makeAsset({
+      id: "NXS-SYNTH-B",
+      sourceSystem: "intune",
+      sourceId: "b",
+      identifiers: [serial("NA")],
+    });
+    expect(reconcileAssetIdentity(incoming, [anchor], NOW).kind).toBe("matched");
+  });
+
+  it("does not use a placeholder as a strong contradiction against a real serial", () => {
+    const anchor = makeAsset({
+      id: "NXS-SYNTH-A",
+      sourceSystem: "glpi",
+      sourceId: "a",
+      identifiers: [serial("000000")],
+    });
+    const incoming = makeAsset({
+      id: "NXS-SYNTH-B",
+      sourceSystem: "intune",
+      sourceId: "b",
+      identifiers: [serial("SYNTH-SERIAL-REAL")],
+    });
+    const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
+    expect(decision.kind).toBe("not_matched");
+    expect(decision.candidateAssetIds).toEqual([]);
+  });
+
   it("does not use an all-zero hardware UUID as identity evidence", () => {
     const zeroUuid = "00000000-0000-0000-0000-000000000000";
     const anchor = makeAsset({
