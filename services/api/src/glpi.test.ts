@@ -248,6 +248,14 @@ describe("GLPI read-only fetch transport", () => {
 });
 
 describe("GLPI TechnologyProvider", () => {
+  it("rejects endpoint-shaped values as GLPI source instance identity", () => {
+    const transport: GlpiApiTransport = { async get() { return []; } };
+    expect(() => createGlpiTechnologyProvider({
+      transport,
+      sourceInstanceId: "https://glpi.example",
+    })).toThrow(GlpiConfigurationError);
+  });
+
   it("paginates with start/limit until an empty page and emits a valid live snapshot", async () => {
     const queries: GlpiQuery[] = [];
     const transport: GlpiApiTransport = {
