@@ -171,7 +171,7 @@ function placeholderFingerprint(value: string): string {
 }
 
 function isDegenerateZeroIdentifier(kind: AssetIdentifierKind, value: string): boolean {
-  const compact = normalizeIdentifierValue(value).replace(/[\\s:._{}-]+/g, "");
+  const compact = normalizeIdentifierValue(value).replace(/[\s:._{}-]+/g, "");
   if (!/^0+$/.test(compact)) return false;
   if (kind === "hardware_uuid" || kind === "bios_uuid") return compact.length === 32;
   if (kind === "imei") return compact.length === 15 || compact.length === 16;
