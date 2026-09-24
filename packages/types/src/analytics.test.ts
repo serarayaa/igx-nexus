@@ -213,7 +213,7 @@ describe("analytics contract", () => {
     if (evaluation.status === "invalid_scope") {
       expect(evaluation.issues).toContainEqual(expect.objectContaining({
         code: "dimension_not_allowed",
-        dimension: "source",
+        dimension: "lifecycle",
       }));
     }
   });
