@@ -138,6 +138,8 @@ TechnologyProvider
 
 `live` nunca cae automáticamente a Demo. Configuración/secrets incompletos fallan cerrados.
 
+Cada instancia GLPI Live debe declarar un `NEXUS_GLPI_INSTANCE_ID` estable (por ejemplo `glpi-primary`). Ese identificador namespacifica `SourceReference` y la asignación inicial del canonical ID. Cambios de DNS, IP o `NEXUS_GLPI_BASE_URL` no deben re-keyear los activos de la misma instalación lógica.
+
 ## Readiness dinámica
 
 El provider GLPI realiza un probe read-only mínimo:
@@ -376,7 +378,8 @@ security:admin
 
 | Variable | Default | Descripción |
 | --- | --- | --- |
-| `NEXUS_GLPI_BASE_URL` | — | raíz GLPI |
+| `NEXUS_GLPI_INSTANCE_ID` | — | identidad lógica estable/no secreta de la instalación GLPI |
+| `NEXUS_GLPI_BASE_URL` | — | raíz GLPI; no forma parte de la identidad canónica |
 | `NEXUS_GLPI_OAUTH_CLIENT_ID` | — | OAuth Client ID |
 | `NEXUS_GLPI_SERVICE_USERNAME` | — | usuario técnico |
 | `NEXUS_GLPI_REQUEST_TIMEOUT_MS` | `10000` | timeout OAuth/API |
