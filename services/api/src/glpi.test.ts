@@ -318,7 +318,7 @@ describe("GLPI TechnologyProvider", () => {
 
   it("fails closed when GLPI returns an object instead of the documented collection array", async () => {
     const transport: GlpiApiTransport = { async get() { return { data: [computer()] }; } };
-    const provider = createGlpiTechnologyProvider({ transport });
+    const provider = createGlpiTechnologyProvider({ transport, sourceInstanceId: SOURCE_INSTANCE_ID });
     await expect(provider.getSnapshot()).rejects.toBeInstanceOf(GlpiPayloadError);
   });
 
