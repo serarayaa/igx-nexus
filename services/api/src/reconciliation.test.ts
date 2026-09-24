@@ -139,6 +139,7 @@ describe("V02-009 identity matching", () => {
     const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
     expect(decision.kind).toBe("matched");
     expect(decision.matchedAssetId).toBe(anchor.id);
+    expect(decision.ruleVersion).toBe("v02-009.2");
   });
 
   it("does not match equal hostname when strong identity is different", () => {
