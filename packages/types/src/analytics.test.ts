@@ -3,6 +3,8 @@ import {
   emptyMetricScope,
   evaluateReferenceMetric,
   metricDimensionValues,
+  metricOperationalContextDimensionKey,
+  metricSourceDimensionKey,
   referenceMetricDefinitions,
   type MetricScope,
 } from "./analytics.js";
@@ -194,18 +196,29 @@ describe("analytics contract", () => {
     expect(result.population.excluded).toBe(0);
   });
 
-  it("preserves source instance identity in analytical source dimensions", () => {
-    expect(metricDimensionValues(fixtureAssets()[0]!, "source")).toEqual(["glpi@glpi-primary"]);
-    expect(metricDimensionValues(fixtureAssets()[2]!, "source")).toEqual(["glpi@glpi-secondary"]);
+  it("preserves source instance identity with collision-safe analytical keys", () => {
+    const primaryKey = metricSourceDimensionKey(glpiPrimary);
+    const secondaryKey = metricSourceDimensionKey(glpiSecondary);
+    expect(primaryKey).not.toBe(secondaryKey);
+    expect(metricDimensionValues(fixtureAssets()[0]!, "source")).toEqual([primaryKey]);
+    expect(metricDimensionValues(fixtureAssets()[2]!, "source")).toEqual([secondaryKey]);
 
     const primary = ok("nexus.inventory.assets.count", snapshot(), {
-      filters: [{ dimension: "source", values: ["glpi@glpi-primary"] }],
+      filters: [{ dimension: "source", values: [primaryKey] }],
     });
     const secondary = ok("nexus.inventory.assets.count", snapshot(), {
-      filters: [{ dimension: "source", values: ["glpi@glpi-secondary"] }],
+      filters: [{ dimension: "source", values: [secondaryKey] }],
     });
     expect(primary.value).toBe(1);
     expect(secondary.value).toBe(1);
+
+    expect(metricSourceDimensionKey({ source: "custom:a@b", sourceInstanceId: "c" }))
+      .not.toBe(metricSourceDimensionKey({ source: "custom:a", sourceInstanceId: "b@c" }));
+  });
+
+  it("encodes operational context identity without delimiter collisions", () => {
+    expect(metricOperationalContextDimensionKey({ kind: "custom:a:b", id: "c" }))
+      .not.toBe(metricOperationalContextDimensionKey({ kind: "custom:a", id: "b:c" }));
   });
 
   it("rejects dimensions whose segmentation would make a metric tautological", () => {
@@ -243,7 +256,11 @@ describe("analytics contract", () => {
     const before = JSON.stringify(data);
     const result = ok("nexus.inventory.assets.count", data, {
       filters: [
-        { dimension: "source", values: ["glpi@glpi-secondary", "glpi@glpi-primary", "glpi@glpi-primary"] },
+        { dimension: "source", values: [
+          metricSourceDimensionKey(glpiSecondary),
+          metricSourceDimensionKey(glpiPrimary),
+          metricSourceDimensionKey(glpiPrimary),
+        ] },
         { dimension: "lifecycle", values: ["maintenance", "active"] },
       ],
     });
@@ -251,7 +268,10 @@ describe("analytics contract", () => {
     expect(result.scope).toEqual({
       filters: [
         { dimension: "lifecycle", values: ["active", "maintenance"] },
-        { dimension: "source", values: ["glpi@glpi-primary", "glpi@glpi-secondary"] },
+        { dimension: "source", values: [
+          metricSourceDimensionKey(glpiPrimary),
+          metricSourceDimensionKey(glpiSecondary),
+        ].sort() },
       ],
     });
     expect(JSON.stringify(data)).toBe(before);
