@@ -32,7 +32,7 @@ export interface AssetOperationalContext {
   readonly displayName: string | null;
 }
 
-export interface AssetSourceReference extends Partial<Pick<SourceReference, "externalId" | "entityType" | "sourceScope" | "authority">> {
+export interface AssetSourceReference extends Partial<Pick<SourceReference, "sourceInstanceId" | "externalId" | "entityType" | "sourceScope" | "authority">> {
   readonly source: string;
   readonly observedAt: string | null;
 }

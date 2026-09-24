@@ -6,6 +6,7 @@ import { createGlpiLiveTechnologyProvider } from "./glpi-provider.js";
 import type { GlpiApiTransport } from "./glpi.js";
 
 let app: FastifyInstance | undefined;
+const SOURCE_INSTANCE_ID = "glpi-test";
 
 afterEach(async () => {
   if (app) await app.close();
@@ -21,7 +22,7 @@ describe("GLPI Live TechnologyProvider readiness", () => {
         return [];
       },
     };
-    const provider = createGlpiLiveTechnologyProvider({ transport });
+    const provider = createGlpiLiveTechnologyProvider({ transport, sourceInstanceId: SOURCE_INSTANCE_ID });
 
     await expect(provider.checkAvailability?.()).resolves.toBe("ready");
     await expect(provider.checkAvailability?.()).resolves.toBe("ready");
@@ -33,6 +34,7 @@ describe("GLPI Live TechnologyProvider readiness", () => {
     let release: (() => void) | undefined;
     const gate = new Promise<void>((resolve) => { release = resolve; });
     const provider = createGlpiLiveTechnologyProvider({
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       transport: {
         async get() {
           calls += 1;
@@ -53,15 +55,19 @@ describe("GLPI Live TechnologyProvider readiness", () => {
 
   it("fails readiness closed when connectivity/auth or payload validation fails", async () => {
     const throwing = createGlpiLiveTechnologyProvider({
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       transport: { async get() { throw new Error("upstream detail that must not escape readiness"); } },
     });
     const wrongShape = createGlpiLiveTechnologyProvider({
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       transport: { async get() { return { data: [] }; } },
     });
     const invalidRecord = createGlpiLiveTechnologyProvider({
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       transport: { async get() { return [{ name: "missing-id" }]; } },
     });
     const oversizedProbe = createGlpiLiveTechnologyProvider({
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       transport: { async get() { return [{ id: 1 }, { id: 2 }]; } },
     });
 
@@ -73,6 +79,7 @@ describe("GLPI Live TechnologyProvider readiness", () => {
 
   it("makes /ready reflect GLPI runtime availability without taking /health down", async () => {
     const provider = createGlpiLiveTechnologyProvider({
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       transport: { async get() { throw new Error("GLPI unavailable"); } },
     });
     app = await buildApp({
@@ -95,6 +102,7 @@ describe("GLPI Live TechnologyProvider readiness", () => {
 
   it("returns /ready 200 when the GLPI probe is valid", async () => {
     const provider = createGlpiLiveTechnologyProvider({
+      sourceInstanceId: SOURCE_INSTANCE_ID,
       transport: { async get() { return []; } },
     });
     app = await buildApp({

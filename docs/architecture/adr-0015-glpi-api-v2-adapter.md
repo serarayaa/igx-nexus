@@ -89,19 +89,25 @@ Campos observados de GLPI se conservan bajo atributos namespaced `glpi.*`.
 
 El ID de GLPI nunca se convierte directamente en identidad pública NEXUS.
 
-V02-005 deriva una identidad NEXUS determinista a partir de:
+V02-005 derivaba inicialmente una identidad NEXUS determinista desde `source + sourceScope + externalId`. AUD-DATA-002 demostró que ese namespace no distingue instalaciones independientes con IDs locales reutilizables.
+
+Desde la remediación AUD-DATA-002, la identidad inicial GLPI se deriva de:
 
 ```text
-source=glpi + sourceScope=Assets/Computer + externalId
+source=glpi
++ sourceInstanceId
++ sourceScope=Assets/Computer
++ externalId
 ```
 
-mediante un hash namespaced. Esto mantiene estabilidad para el mismo registro GLPI sin exponer su ID como identidad canónica.
+`sourceInstanceId` representa la instalación lógica estable y no una URL, hostname, IP, versión ni service account. Por eso cambiar `NEXUS_GLPI_BASE_URL` sin cambiar de instalación lógica no debe re-keyear activos.
 
-La reconciliación con otras fuentes y la eventual política definitiva de identidad corresponden a V02-009.
+**Migración AUD-DATA-002:** los IDs GLPI derivados antes de esta corrección no contenían identidad de instancia. La primera adopción del nuevo namespace produce un re-key deliberado de esos IDs derivados. Se acepta en v0.2 antes de disponer de persistencia durable de reconciliación/aliases productivos; no se conserva el algoritmo inseguro para una instancia “principal” ni se crean correspondencias automáticas que perpetúen la colisión.
 
 Cada asset conserva:
 
 - `SourceReference.source = glpi`;
+- `sourceInstanceId` estable y explícito;
 - `externalId` opaco;
 - `entityType = Computer`;
 - `sourceScope = Assets/Computer`;
@@ -171,7 +177,7 @@ Una falla del probe devuelve 503 en `/ready` y no propaga detalles del upstream 
 - lifecycle/criticality/taxonomía específica permanecen desconocidos por diseño;
 - sólo existe cache corto para readiness; no existe todavía cache general de respuestas, retry/backoff ni circuit breaker;
 - el snapshot completo es una lectura paginada en memoria, suficiente para el laboratorio inicial pero no una decisión definitiva de escala;
-- la identidad derivada por fuente será revisada al implementar reconciliación multisource;
+- la asignación inicial derivada por fuente depende de un `sourceInstanceId` estable; cambiarlo representa una migración de namespace y debe tratarse explícitamente;
 - la obtención/renovación del token todavía debe ser resuelta por V02-006.
 
 ## Fuera de alcance

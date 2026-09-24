@@ -34,7 +34,7 @@ const nullableTimestamp = { anyOf: [timestamp, { type: "null" }] } as const;
 const values = (entries: readonly string[]): ContractSchema => ({ type: "string", enum: entries });
 const array = (items: ContractSchema): ContractSchema => ({ type: "array", items });
 const source = objectSchema<SourceReference>({
-  source: text, externalId: text, entityType: text, sourceScope: text,
+  source: text, sourceInstanceId: text, externalId: text, entityType: text, sourceScope: text,
   observedAt: timestamp, authority: values(authorityLevels),
 }, ["source", "externalId", "observedAt", "authority"]);
 const evidence = objectSchema<EvidenceReference>({

@@ -19,6 +19,13 @@ describe("supported canonical HTTP boundary", () => {
     expect(parseTechnologySnapshot(input)).toEqual(input);
     expect(projectCanonicalSnapshot(input).canonical).toEqual(input);
   });
+  it("preserves sourceInstanceId across canonical HTTP parsing and Web projection", () => {
+    const input = canonicalSnapshotFixture();
+    const parsed = parseTechnologySnapshot(input);
+    expect(parsed.assets[0]?.sourceReferences[0]?.sourceInstanceId).toBe("glpi-primary");
+    expect(projectCanonicalSnapshot(input).assets[0]?.sourceReferences?.[0]?.sourceInstanceId).toBe("glpi-primary");
+  });
+
   it.each([99, "99", undefined, null, ""])("rejects unsupported version %s", value => {
     expect(() => projectCanonicalSnapshot(changed("schemaVersion", value))).toThrow(TechnologyContractError);
   });

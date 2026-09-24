@@ -9,6 +9,7 @@ import { createGlpiFetchTransport, GlpiConfigurationError } from "./glpi.js";
 import type { TechnologyProvider } from "./provider.js";
 
 export interface GlpiLiveRuntimeConfig {
+  readonly sourceInstanceId: string;
   readonly baseUrl: string;
   readonly oauthClientId: string;
   readonly serviceUsername: string;
@@ -79,6 +80,7 @@ export function loadGlpiLiveRuntimeConfig(
   }
 
   return Object.freeze({
+    sourceInstanceId: requireValue(environment, "NEXUS_GLPI_INSTANCE_ID"),
     baseUrl: requireValue(environment, "NEXUS_GLPI_BASE_URL"),
     oauthClientId: requireValue(environment, "NEXUS_GLPI_OAUTH_CLIENT_ID"),
     serviceUsername: requireValue(environment, "NEXUS_GLPI_SERVICE_USERNAME"),
@@ -147,6 +149,7 @@ export function createRuntimeTechnologyProvider(
 
   return createGlpiLiveTechnologyProvider({
     transport,
+    sourceInstanceId: glpiConfig.sourceInstanceId,
     pageSize: glpiConfig.pageSize,
     maxRecords: glpiConfig.maxRecords,
   });

@@ -18,7 +18,7 @@ const canonicalComputer = {
         { kind: "asset_tag", value: "TAG-TEST" },
       ],
       sourceReferences: [
-        { source: "glpi", externalId: "1", observedAt: "2026-09-15T15:59:00.000Z", authority: "authoritative" },
+        { source: "glpi", sourceInstanceId: "glpi-primary", externalId: "1", observedAt: "2026-09-15T15:59:00.000Z", authority: "authoritative" },
       ],
       attributes: {
         "glpi.itemType": "Computer",
@@ -80,7 +80,7 @@ describe("Live Web provider projection", () => {
   it("preserves each source observation independently for Asset 360 evidence", () => {
     const multisource = structuredClone(canonicalComputer);
     multisource.assets[0]!.sourceReferences.push(
-      { source: "intune", externalId: "device-1", observedAt: "2026-09-15T15:57:00.000Z", authority: "observed" },
+      { source: "intune", sourceInstanceId: "intune-test", externalId: "device-1", observedAt: "2026-09-15T15:57:00.000Z", authority: "observed" },
     );
     const asset = projectCanonicalSnapshot(multisource).assets[0]!;
     expect(asset.sourceSystems).toEqual(["glpi", "intune"]);

@@ -25,6 +25,7 @@ interface AssetOptions {
   readonly id: string;
   readonly sourceSystem: SourceSystem;
   readonly sourceId: string;
+  readonly sourceInstanceId?: string;
   readonly identifiers?: readonly IdentifierSpec[];
   readonly attributes?: Readonly<Record<string, TechnologyAttributeValue>>;
   readonly observedAt?: string;
@@ -39,9 +40,10 @@ function syntheticSource(options: AssetOptions): SourceReference {
     externalId: `synthetic/${options.sourceId}`,
     entityType: "SyntheticAsset",
     sourceScope: "v02-009-tests",
+    ...(options.sourceInstanceId === undefined ? {} : { sourceInstanceId: options.sourceInstanceId }),
     observedAt: options.observedAt ?? EARLIER,
     authority: options.sourceAuthority ?? "trusted",
-  });
+  }) as SourceReference;
 }
 
 function provenanceFor(
@@ -139,7 +141,7 @@ describe("V02-009 identity matching", () => {
     const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
     expect(decision.kind).toBe("matched");
     expect(decision.matchedAssetId).toBe(anchor.id);
-    expect(decision.ruleVersion).toBe("v02-009.2");
+    expect(decision.ruleVersion).toBe("v02-009.3");
   });
 
   it("does not match equal hostname when strong identity is different", () => {
@@ -380,12 +382,56 @@ describe("V02-009 identity matching", () => {
     }
   });
 
-  it("treats an exact source reference as strong evidence", () => {
-    const anchor = makeAsset({ id: "NXS-SYNTH-A", sourceSystem: "glpi", sourceId: "same-source-record", identifiers: [] });
-    const incoming = makeAsset({ id: "NXS-SYNTH-B", sourceSystem: "glpi", sourceId: "same-source-record", identifiers: [] });
+  it("treats an exact qualified source reference as strong evidence", () => {
+    const anchor = makeAsset({
+      id: "NXS-SYNTH-A",
+      sourceSystem: "glpi",
+      sourceId: "same-source-record",
+      sourceInstanceId: "glpi-primary",
+      identifiers: [],
+    });
+    const incoming = makeAsset({
+      id: "NXS-SYNTH-B",
+      sourceSystem: "glpi",
+      sourceId: "same-source-record",
+      sourceInstanceId: "glpi-primary",
+      identifiers: [],
+    });
     const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
     expect(decision.kind).toBe("matched");
     expect(decision.evaluations[0]?.evidence[0]?.ruleId).toBe("source_reference.exact");
+  });
+
+  it("does not match identical local ids from different source instances", () => {
+    const anchor = makeAsset({
+      id: "NXS-SYNTH-A",
+      sourceSystem: "glpi",
+      sourceId: "same-source-record",
+      sourceInstanceId: "glpi-chile",
+      identifiers: [],
+    });
+    const incoming = makeAsset({
+      id: "NXS-SYNTH-B",
+      sourceSystem: "glpi",
+      sourceId: "same-source-record",
+      sourceInstanceId: "glpi-canada",
+      identifiers: [],
+    });
+    const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
+    expect(decision.kind).toBe("not_matched");
+    expect(decision.candidateAssetIds).toEqual([]);
+  });
+
+  it("requires review for an exact legacy source reference without instance identity", () => {
+    const anchor = makeAsset({ id: "NXS-SYNTH-A", sourceSystem: "glpi", sourceId: "legacy-record", identifiers: [] });
+    const incoming = makeAsset({ id: "NXS-SYNTH-B", sourceSystem: "glpi", sourceId: "legacy-record", identifiers: [] });
+    const decision = reconcileAssetIdentity(incoming, [anchor], NOW);
+    expect(decision.kind).toBe("manual_review_required");
+    expect(decision.evaluations[0]?.evidence[0]).toMatchObject({
+      ruleId: "source_reference.legacy_unqualified",
+      strength: "insufficient",
+      outcome: "insufficient",
+    });
   });
 
   it("treats IP-only evidence as insufficient for automatic matching", () => {

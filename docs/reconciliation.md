@@ -52,7 +52,7 @@ La clasificación V02-009 es explícita y conservadora:
 | Auxiliar | `asset_tag`, `mac_address`, `custom:*` | Un valor utilizable sirve para candidate discovery, pero por sí solo requiere revisión manual. |
 | Volátil | `ip_address` | Nunca auto-fusiona; sólo aporta contexto/candidato. |
 | Insuficiente por sí solo | `hostname` | Nunca auto-fusiona; igualdad exacta requiere evidencia adicional. |
-| Referencia fuente exacta | mismo `SourceReference` lógico | Se considera evidencia fuerte de que dos representaciones refieren al mismo registro upstream. |
+| Referencia fuente exacta calificada | mismo `source + sourceInstanceId + sourceScope + entityType + externalId` | Evidencia fuerte sólo cuando la instancia fuente está explícitamente identificada. |
 
 La fuerza del tipo y la calidad del valor se evalúan por separado. Placeholders conocidos y valores degenerados —por ejemplo `To Be Filled By O.E.M.`, `unknown`, `N/A`, `default string`, secuencias all-zero y UUID all-zero— se conservan como evidencia observada en el activo, pero no participan como supporting ni contradicting evidence durante el matching.
 
@@ -72,7 +72,7 @@ Para un par incoming/candidate:
 
 Un identificador no utilizable para identidad no descubre candidatos, no crea matches y tampoco genera contradicciones fuertes. Esto evita que un placeholder compartido fusione activos distintos o que un placeholder adicional convierta un match real en `conflict`.
 
-La semántica endurecida por AUD-DATA-001 corresponde a `reconciliationRuleVersion = v02-009.2`.
+AUD-DATA-001 introdujo el gate de calidad de identificadores en `v02-009.2`. AUD-DATA-002 eleva la semántica a `v02-009.3`: `sourceInstanceId` forma parte de la identidad lógica de la referencia. Dos referencias legacy idénticas pero sin instancia producen señal insuficiente/manual review; nunca auto-match sólo por esa coincidencia.
 
 ### Caso deliberadamente prohibido
 
@@ -270,7 +270,9 @@ La matriz automatizada cubre, entre otros:
 - dos candidatos fuertes y dos candidatos débiles;
 - falta de identificadores;
 - duplicate source references;
-- exact source-reference matching;
+- exact qualified source-reference matching;
+- legacy source-reference sin instance identity → revisión manual;
+- mismo local ID en instancias distintas → no match;
 - IP como señal volátil;
 - orden de entrada determinista;
 - claims iguales/diferentes multisource;

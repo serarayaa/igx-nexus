@@ -117,6 +117,7 @@ El `Client ID` puede formar parte de configuración no secreta. El `Client Secre
 
 ```text
 NEXUS_PROVIDER_MODE=live
+NEXUS_GLPI_INSTANCE_ID=glpi-primary
 NEXUS_GLPI_BASE_URL=https://glpi.example/
 NEXUS_GLPI_OAUTH_CLIENT_ID=<client-id>
 NEXUS_GLPI_SERVICE_USERNAME=svc-nexus-api
