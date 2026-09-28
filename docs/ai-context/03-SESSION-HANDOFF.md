@@ -13,7 +13,7 @@
 
 ## Estado actual
 
-El bootstrap de contexto modular para agentes de IA fue completado e integrado mediante PR #100.
+V02-020 consolidó CMDB Quality sobre evidencia canónica sin convertirla en Device Health ni redefinir silenciosamente el score histórico.
 
 La capa `docs/ai-context/` está compuesta por:
 
@@ -65,17 +65,17 @@ Los findings históricos no deben asumirse como deuda activa sin verificar el es
 
 ## Próxima acción
 
-Iniciar **V02-020 — CMDB Quality 2.0**.
+Iniciar **V02-021 — Lifecycle & Investment**.
 
 Antes de implementar:
 
 1. verificar `main` limpio y actualizado;
-2. crear una branch dedicada al ticket;
-3. consultar `../roadmap-v0.2.md`;
-4. cargar solamente ADR, contratos y documentación relacionados con CMDB Quality;
-5. verificar el comportamiento actual antes de diseñar cambios.
+2. consultar `../roadmap-v0.2.md`;
+3. crear issue y branch cuando el alcance esté suficientemente definido;
+4. cargar solamente ADR, contratos y documentación relacionados con lifecycle/investment;
+5. definir semántica temporal y coverage antes de diseñar UI.
 
-No adelantar V02-021 ni tickets posteriores salvo dependencia demostrada.
+No adelantar V02-022 ni tickets posteriores salvo dependencia demostrada.
 
 ## Regla para futuras sesiones
 
