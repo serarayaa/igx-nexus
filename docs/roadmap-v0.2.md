@@ -53,8 +53,8 @@ Dirección conceptual posterior:
 | V02-016 | Asset Explorer 2.0 | P1 | ✅ Integrado — PR #87 / issue #85 / merge `68479fd9`; CI #608 verde |
 | V02-017 | Asset 360 2.0 | P1 | ✅ Integrado — PR #90 / issue #89 / merge `4cc6e7b2`; CI #651 verde |
 | V02-018 | Technology Map 2.0 | P1 | ✅ Integrado — PR #93 / issue #92 / merge `19ff461d` |
-| V02-019 | Analytics Contract Layer | P0 | 🟡 En implementación — issue #96 |
-| V02-020 | CMDB Quality 2.0 | P1 | ⚪ Pendiente |
+| V02-019 | Analytics Contract Layer | P0 | ✅ Integrado — PR #99 / issue #96 |
+| V02-020 | CMDB Quality 2.0 | P1 | 🟡 En implementación — issue #102 |
 | V02-021 | Lifecycle & Investment | P1 | ⚪ Pendiente |
 | V02-022 | IT / OT Intelligence | P1 | ⚪ Pendiente |
 | V02-023 | Intune Analytics Feasibility Spike | P0 | ⚪ Pendiente |
@@ -348,9 +348,9 @@ Siguiente trabajo: **V02-019 — Analytics Contract Layer**.
 
 ## Epic 5 — Technology Analytics
 
-### V02-019 — Analytics Contract Layer — en implementación
+### V02-019 — Analytics Contract Layer ✅
 
-Issue #96.
+Integrado mediante PR #99 / issue #96.
 
 Pregunta central:
 
@@ -377,11 +377,28 @@ Documentos:
 
 - `docs/analytics/metric-contract.md`;
 - `docs/product/technology-scan-v02-019.md`;
-- ADR-0024 Analytics Contract Layer — propuesto.
+- ADR-0024 Analytics Contract Layer — Accepted.
 
-### V02-020 — CMDB Quality 2.0
+### V02-020 — CMDB Quality 2.0 — en implementación
 
-Incorporar provenance/source coverage/conflicts sin confundir CMDB Quality con Device Health.
+Issue #102.
+
+Pregunta central:
+
+> **¿Qué tan defendible es la calidad del registro cuando además de campos y relaciones consideramos la evidencia canónica que explica de dónde provienen los datos?**
+
+Dirección:
+
+- conservar el score histórico de CMDB Health sin inventar nuevos pesos corporativos;
+- reutilizar `nexus.sources.instance_identity.ratio`;
+- incorporar provenance de seis campos canónicos gobernados;
+- distinguir conflicto Taxonomy v2 explícito de assessment ausente;
+- exponer findings por CI sin confundir gaps de evidencia con Device Health;
+- mantener `AttributeConflict` como unavailable mientras no viaje en `TechnologySnapshot`;
+- preservar Demo/Live bajo el mismo contrato canónico, sin fallback silencioso;
+- no introducir telemetría endpoint, remediation automática ni inferencia de conflictos.
+
+ADR-0025 CMDB Quality 2.0 — propuesto.
 
 ### V02-021 — Lifecycle & Investment
 
