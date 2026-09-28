@@ -1,6 +1,6 @@
 # CMDB Health
 
-Baseline histórico: CMDB-011 integrado mediante PR #29. Evolución **V02-020 — CMDB Quality 2.0** integrada mediante PR #103 / issue #102.
+Baseline histórico: CMDB-011 integrado mediante PR #29. Evolución **V02-020 — CMDB Quality 2.0** en implementación mediante PR #103 / issue #102.
 
 ## V02-020 — CMDB Quality 2.0
 
