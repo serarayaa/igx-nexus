@@ -46,7 +46,7 @@ Integrado:
 
 Último desarrollo funcional integrado:
 
-**V02-021 — Lifecycle & Investment**
+**V02-020 — CMDB Quality 2.0**
 
 Resultado relevante de V02-020:
 
@@ -85,6 +85,8 @@ Las principales superficies y capacidades disponibles incluyen:
 - infraestructura Demo / Live;
 - modelo canónico con provenance y relationship evidence;
 - Analytics Contract Layer.
+
+CMDB Quality y Device Operational Health permanecen conceptualmente separados.
 
 Las pantallas deben responder preguntas operacionales concretas y evitar métricas o inferencias sin contrato semántico defendible.
 
@@ -188,4 +190,4 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-020 — CMDB Quality 2.0**
+**V02-021 — Lifecycle & Investment**
