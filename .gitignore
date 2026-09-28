@@ -70,3 +70,6 @@ apps/web/src/__screenshots__/
 
 # Evidencia temporal del QA browser
 qa-artifacts/
+
+# Obsidian local workspace
+.obsidian/
