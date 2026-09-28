@@ -60,6 +60,7 @@ function canonicalQualityFindings(asset: TechnologyAsset): readonly HealthFindin
     findings.push({
       code: "source_instance_missing",
       dimension: "consistency",
+      scope: "canonical_evidence",
       severity: "warning",
     });
   }
@@ -69,6 +70,7 @@ function canonicalQualityFindings(asset: TechnologyAsset): readonly HealthFindin
     findings.push({
       code: "provenance_incomplete",
       dimension: "consistency",
+      scope: "canonical_evidence",
       severity: "warning",
       paths: provenance.missing,
     });
@@ -80,6 +82,7 @@ function canonicalQualityFindings(asset: TechnologyAsset): readonly HealthFindin
     findings.push({
       code: "taxonomy_conflict",
       dimension: "consistency",
+      scope: "canonical_evidence",
       severity: "warning",
       paths,
     });
@@ -262,6 +265,6 @@ export const emptyHealthFilters: HealthFilters = { state: "", dimension: "", typ
 export function filterHealth(rows: readonly AssetHealth[], filters: HealthFilters): AssetHealth[] {
   return prioritizeHealth(rows.filter(row => (!filters.state || row.state === filters.state)
     && (!filters.type || row.asset.type === filters.type)
-    && (!filters.dimension || row.findings.some(f => f.dimension === filters.dimension))
+    && (!filters.dimension || row.findings.some(f => f.scope !== "canonical_evidence" && f.dimension === filters.dimension))
     && (!filters.cause || row.findings.some(f => f.code === filters.cause))));
 }
