@@ -13,6 +13,9 @@ import { useHealthReport } from "./use-health-report";
 import "./cmdb-health.css";
 
 const PAGE_SIZE = 20;
+const ratioLabel = (value: number | null) => value === null ? "No disponible" : `${Math.floor(Math.min(1, value) * 100)} %`;
+const metricCoverageLabel = (ratio: number | null) => ratio === null ? "No disponible" : `${Math.floor(Math.min(1, ratio) * 100)} %`;
+
 export function CmdbHealth({ inventoryProvider = demoProvider, relationshipProvider = demoRelationshipInventoryProvider }: {
   inventoryProvider?: InventoryProvider; relationshipProvider?: RelationshipInventoryProvider;
 }) {
@@ -39,7 +42,7 @@ export function CmdbHealth({ inventoryProvider = demoProvider, relationshipProvi
   const report = state.status === "ready" ? state.report : null;
   const summary = report?.summary;
   return <div className="nexus-health-page" ref={contentRef}>
-    <PageHeader title="CMDB Health" eyebrow="CALIDAD DEL REGISTRO · CMDB-011" description="Entiende qué información es confiable, qué falta y qué deberías revisar." meta={<Badge>Datos sintéticos · sin telemetría operacional</Badge>} />
+    <PageHeader title="CMDB Health" eyebrow="CALIDAD DEL REGISTRO · V02-020" description="Entiende qué información es confiable, qué falta y qué evidencia respalda el registro." meta={<Badge>Sin telemetría operacional</Badge>} />
     {state.status === "loading" && <LoadingState title="Calculando CMDB Health" description="Evaluando inventario y relaciones del mismo corte." />}
     {state.status === "error" && <ErrorState title="No se pudo calcular CMDB Health" description="Vuelve a intentar cargar los datos para la evaluación." action={<Button onPress={retry}>Reintentar</Button>} />}
     {report && summary && <>
@@ -48,6 +51,18 @@ export function CmdbHealth({ inventoryProvider = demoProvider, relationshipProvi
         <section className="nexus-health-overview" aria-labelledby="health-overview-heading">
           <div><h2 id="health-overview-heading">Score de registros CI</h2><strong className="nexus-health-score">{scoreLabel(summary.score)}</strong><StatusBadge status={healthTones[summary.state]}>{healthLabels[summary.state]}</StatusBadge><p>Calidad de datos; no mide hardware, disponibilidad ni criticidad.</p></div>
           <div><h2>Cobertura de evidencia</h2><strong className="nexus-health-score">{coverageLabel(summary.coverage)}</strong><p>Proporción ponderada de comprobaciones aplicables con evidencia. No es una probabilidad de confianza.</p><p>{summary.evaluated} de {summary.total} CI evaluados · {coverageLabel(100 * summary.evaluated / summary.total)}</p></div>
+        </section>
+        <section className="nexus-health-panel" aria-labelledby="health-evidence-heading">
+          <h2 id="health-evidence-heading">Evidencia canónica</h2>
+          {report.canonicalQuality ? <>
+            <p>Estas métricas complementan el score histórico de CMDB Health con denominadores y coverage propios. V02-020 no les asigna un peso corporativo inventado dentro del score.</p>
+            <dl className="nexus-health-dimensions">
+              <div><dt>Identidad de instancia de fuentes</dt><dd>{ratioLabel(report.canonicalQuality.sourceInstanceIdentity.value)} · Coverage de medición: {metricCoverageLabel(report.canonicalQuality.sourceInstanceIdentity.coverage.ratio)}</dd></div>
+              <div><dt>Provenance de campos canónicos gobernados</dt><dd>{ratioLabel(report.canonicalQuality.provenanceCoreFields.value)} · Coverage de medición: {metricCoverageLabel(report.canonicalQuality.provenanceCoreFields.coverage.ratio)}</dd></div>
+              <div><dt>Conflictos Taxonomy v2</dt><dd>{ratioLabel(report.canonicalQuality.taxonomyConflicts.value)} · Coverage de assessment: {metricCoverageLabel(report.canonicalQuality.taxonomyConflicts.coverage.ratio)}</dd></div>
+            </dl>
+            <p className="nexus-muted">Conflictos de reconciliación por atributo: no disponibles en TechnologySnapshot schema 0.2. No se reconstruyen ni se infieren desde la UI.</p>
+          </> : <p>Este snapshot no expone evidencia canónica para estas métricas. Se muestra como no disponible; no se interpreta como un error del CI.</p>}
         </section>
         <section className="nexus-health-panel" aria-labelledby="health-distribution-heading"><h2 id="health-distribution-heading">Distribución de registros</h2>
           <ul className="nexus-health-distribution">{healthStates.map(value => <li key={value}><Button variant="secondary" onPress={() => { setFilters({ ...emptyHealthFilters, state: value }); setPage(1); focusResults(); }} aria-label={`Ver ${healthLabels[value]}: ${summary.distribution[value]} CI`}><StatusBadge status={healthTones[value]}>{healthLabels[value]}</StatusBadge><strong>{summary.distribution[value]}</strong></Button></li>)}</ul>
