@@ -42,28 +42,24 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-020**
+**V02-001 .. V02-019**
 
 Último desarrollo funcional integrado:
 
-**V02-020 — CMDB Quality 2.0**
+**V02-019 — Analytics Contract Layer**
 
-Resultado relevante de V02-020:
+Resultado relevante de V02-019:
 
-- CMDB Health conserva su score histórico y sus cinco dimensiones sin inventar nuevos pesos corporativos;
-- evidencia canónica se presenta mediante métricas separadas con value, denominador y measurement coverage explícitos;
-- source instance identity reutiliza el contrato analítico existente;
-- provenance gobierna `displayName`, `domain`, `assetClass`, `role`, `lifecycle` y `criticality`;
-- conflictos Taxonomy v2 sólo se presentan cuando existe estado `conflict` explícito;
-- ausencia de assessment reduce coverage y no se interpreta como ausencia de conflicto;
-- Demo y Live conservan `InventorySnapshot.canonical` bajo el mismo contrato;
-- Demo usa `sourceInstanceId=demo-v0.2`;
-- `AttributeConflict` permanece no disponible mientras no sea transportado por `TechnologySnapshot`;
-- ADR-0025 aceptado.
+- contratos analíticos tipados y reutilizables;
+- definición explícita de métricas, dimensiones y cobertura;
+- semántica analítica separada de la presentación;
+- soporte para evolución posterior de superficies de inteligencia sin inventar métricas en UI;
+- ADR-0024 aceptado;
+- documentación canónica en `../analytics/metric-contract.md`.
 
 Siguiente desarrollo funcional planificado:
 
-**V02-021 — Lifecycle & Investment**
+**V02-020 — CMDB Quality 2.0**
 
 El detalle completo permanece definido en:
 
@@ -81,12 +77,10 @@ Las principales superficies y capacidades disponibles incluyen:
 - Asset Explorer;
 - Asset 360;
 - Technology Map;
-- CMDB Quality 2.0 / CMDB Health;
+- Data Quality / CMDB Health existente;
 - infraestructura Demo / Live;
 - modelo canónico con provenance y relationship evidence;
 - Analytics Contract Layer.
-
-CMDB Quality y Device Operational Health permanecen conceptualmente separados.
 
 Las pantallas deben responder preguntas operacionales concretas y evitar métricas o inferencias sin contrato semántico defendible.
 
@@ -104,7 +98,7 @@ Los ADR canónicos viven en:
 
 La arquitectura actual incluye decisiones hasta:
 
-**ADR-0025 — CMDB Quality 2.0**
+**ADR-0024 — Analytics Contract Layer**
 
 Los ADR antiguos pueden ser supersedidos por decisiones posteriores.
 
@@ -132,8 +126,6 @@ Una señal débil como hostname o IP no debe fusionar CIs automáticamente.
 
 Una métrica o agregación tampoco debe adquirir semántica únicamente porque pueda calcularse técnicamente.
 
-Un conflicto sólo se presenta como tal cuando el contrato transporta evidencia explícita suficiente.
-
 ---
 
 ## Demo / Live
@@ -143,7 +135,6 @@ Un conflicto sólo se presenta como tal cuando el contrato transporta evidencia 
 - dataset canónico versionado;
 - útil para producto, tests y escenarios reproducibles;
 - puede representar escenarios sintéticos explícitos;
-- mantiene `sourceInstanceId=demo-v0.2`;
 - no debe introducir comportamiento ficticio dentro de Live.
 
 ### Live
@@ -190,4 +181,4 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-021 — Lifecycle & Investment**
+**V02-020 — CMDB Quality 2.0**
