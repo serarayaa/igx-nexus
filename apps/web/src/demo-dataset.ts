@@ -142,7 +142,7 @@ export function createDemoDataset(): { readonly inventory: InventorySnapshot; re
   const assets = canonical.assets.map(projectAsset);
   const relationships = canonical.relationships.map(projectRelationship);
   return Object.freeze({
-    inventory: Object.freeze({ asOf: DEMO_AS_OF, assets: Object.freeze(assets) }),
+    inventory: Object.freeze({ asOf: DEMO_AS_OF, canonical, assets: Object.freeze(assets) }),
     relationships: Object.freeze({ asOf: DEMO_AS_OF, relationships: Object.freeze(relationships) }),
   });
 }
