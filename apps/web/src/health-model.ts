@@ -22,6 +22,8 @@ export type HealthFindingCode = typeof findingCodes[number];
 export interface HealthFinding {
   readonly code: HealthFindingCode;
   readonly dimension: HealthDimension;
+  /** canonical_evidence findings explain review needs but do not participate in the historical weighted score. */
+  readonly scope?: "score" | "canonical_evidence";
   readonly severity: HealthSeverity;
   readonly field?: keyof Asset;
   readonly relationshipId?: string;
