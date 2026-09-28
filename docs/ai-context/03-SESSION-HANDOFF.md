@@ -9,7 +9,6 @@
 - Stable branch: `main`
 - Stable baseline: `b4dd799`
 - Working branch: `docs/ai-context-bootstrap`
-- Working HEAD after sync: `dc2c5b9`
 - Active PR: `#100 — docs(ai): add modular context bootstrap`
 
 ## Trabajo actual
