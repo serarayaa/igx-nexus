@@ -93,8 +93,7 @@ function projectAsset(asset: TechnologyAsset): Asset {
     sourceSystems: Object.freeze([...new Set(asset.sourceReferences.map(source => source.source))]),
     sourceObservedAt: asset.sourceReferences[0]?.observedAt ?? null,
     sourceReferences: Object.freeze(asset.sourceReferences.map(source => Object.freeze({
-      source: source.source,
-      observedAt: source.observedAt ?? null,
+      ...source,
     }))),
   });
 }
