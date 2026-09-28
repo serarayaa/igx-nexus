@@ -1,6 +1,6 @@
 # ADR-0024 — Analytics Contract Layer
 
-Estado: **Propuesto en V02-019 / issue #96**. Se considera aceptado únicamente tras merge manual del PR de V02-019 a `main`.
+Estado: **Aceptado tras V02-019 / PR #99 / issue #96**.
 
 ## Contexto
 
