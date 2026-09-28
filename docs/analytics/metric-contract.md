@@ -1,6 +1,6 @@
 # IGX NEXUS — Analytics Metric Contract
 
-Estado: **V02-019 integrado mediante PR #99 / issue #96; extensión V02-020 en implementación mediante PR #103 / issue #102**.
+Estado: **V02-019 integrado mediante PR #99 / issue #96; extensión V02-020 integrada mediante PR #103 / issue #102**.
 
 ## 1. Propósito
 

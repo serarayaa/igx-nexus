@@ -41,6 +41,6 @@ Principios fundamentales:
 - [ADR-0022 — Relationship Evidence v2](adr-0022-relationship-evidence-v2.md) — aceptado tras V02-012 (PR #73; housekeeping #74).
 - [ADR-0023 — Product Information Architecture v2](adr-0023-product-information-architecture-v2.md) — aceptado tras V02-013 (PR #76 / issue #75; CI post-merge #493).
 - [ADR-0024 — Analytics Contract Layer](adr-0024-analytics-contract-layer.md) — aceptado tras V02-019 (PR #99 / issue #96).
-- [ADR-0025 — CMDB Quality 2.0](adr-0025-cmdb-quality-v2.md) — propuesto en V02-020 (PR #103 / issue #102).
+- [ADR-0025 — CMDB Quality 2.0](adr-0025-cmdb-quality-v2.md) — aceptado tras V02-020 (PR #103 / issue #102).
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
