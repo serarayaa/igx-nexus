@@ -113,6 +113,9 @@ describe("cross-view scenarios", () => {
     const signal = new AbortController().signal;
     expect(await demoProvider(signal)).toBe(demoDataset.inventory);
     expect(await demoRelationshipInventoryProvider(signal)).toBe(demoDataset.relationships);
+    expect(demoDataset.inventory.canonical).toBeDefined();
+    expect(demoDataset.inventory.canonical?.assets).toHaveLength(240);
+    expect(demoDataset.inventory.canonical?.asOf).toBe(DEMO_AS_OF);
     expect(Object.isFrozen(assets)).toBe(true); expect(Object.isFrozen(assets[0])).toBe(true);
     expect(Object.isFrozen(relations)).toBe(true); expect(Object.isFrozen(relations[0])).toBe(true);
   });
