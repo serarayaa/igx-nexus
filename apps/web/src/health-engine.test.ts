@@ -172,8 +172,11 @@ describe("CMDB Quality 2.0: evidencia canónica", () => {
     expect(row.findings).toContainEqual(expect.objectContaining({ code: "source_instance_missing", severity: "warning" }));
     expect(row.findings).toContainEqual(expect.objectContaining({
       code: "provenance_incomplete",
+      scope: "canonical_evidence",
       paths: ["domain", "assetClass", "role", "lifecycle", "criticality"],
     }));
+    expect(filterHealth(evaluated.assets, { ...emptyHealthFilters, dimension: "consistency" })).toHaveLength(0);
+    expect(filterHealth(evaluated.assets, { ...emptyHealthFilters, cause: "provenance_incomplete" })).toHaveLength(1);
     expect(evaluated.canonicalQuality?.sourceInstanceIdentity.value).toBe(0);
     expect(evaluated.canonicalQuality?.sourceInstanceIdentity.coverage.state).toBe("known");
     expect(evaluated.canonicalQuality?.provenanceCoreFields.value).toBeCloseTo(1 / 6);
