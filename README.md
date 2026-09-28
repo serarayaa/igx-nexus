@@ -91,7 +91,7 @@ V02-017 — Asset 360 2.0 quedó incorporado mediante PR #90 en el merge `4cc6e7
 
 V02-018 — Technology Map 2.0 quedó incorporado mediante PR #93 en el merge `19ff461d747ce39375c430f6ba59e0382d3976df`. `#assets/:id/relations` funciona como workspace focus/scope-first, conserva estado esencial en URL, mantiene equivalencia semántica accesible y separa estrictamente Demo/Live sin inventar relaciones ni impacto causal.
 
-El siguiente trabajo es **V02-019 — Analytics Contract Layer**.
+El trabajo actual es **V02-019 — Analytics Contract Layer** (issue #96).
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -167,6 +167,23 @@ Demo usa las relaciones sintéticas canónicas. Live comparte la misma arquitect
 
 Ver [Technology Map 2.0](docs/product/technology-map-v2-plan.md) y [Technology Scan V02-018](docs/product/technology-scan-v02-018.md).
 
+## Analytics Contract Layer
+
+V02-019 define métricas como contratos explicables sobre el `TechnologySnapshot` canónico. Cada resultado separa valor, numerador/denominador, población, scope y coverage; `unknown` no se convierte en cero y una población vacía no produce porcentajes engañosos.
+
+Las dimensiones Taxonomy sólo usan assessments resueltos. La dimensión de fuente conserva `sourceInstanceId` cuando existe, por lo que dos instalaciones GLPI no se colapsan en una misma identidad analítica.
+
+Métricas de referencia iniciales:
+
+- `nexus.inventory.assets.count`;
+- `nexus.taxonomy.resolved.ratio`;
+- `nexus.sources.instance_identity.ratio`;
+- `nexus.lifecycle.known.ratio`.
+
+V02-019 no migra silenciosamente el score histórico de CMDB Health ni introduce un analytics service, TSDB, warehouse o semantic engine externo.
+
+Ver [Analytics Metric Contract](docs/analytics/metric-contract.md), [Technology Scan V02-019](docs/product/technology-scan-v02-019.md) y [ADR-0024](docs/architecture/adr-0024-analytics-contract-layer.md).
+
 ## Demo canónica
 
 La Demo mantiene:
@@ -202,7 +219,8 @@ Ver [Dataset de Demo](docs/demo-dataset.md), [ADR-0021](docs/architecture/adr-00
 - lifecycle y criticality;
 - `TechnologyTaxonomyAssessment`;
 - `OperationalContextReference`;
-- reconciliación multisource.
+- reconciliación multisource;
+- contratos métricos, scope y measurement coverage de V02-019.
 
 Taxonomy v2 mantiene `domain` cerrado a `IT | OT`. `unknown`, `unclassified` y `conflict` son estados del assessment, no domains.
 
@@ -221,6 +239,7 @@ Ver:
 - [ADR-0021 — Demo Dataset canónico v0.2](docs/architecture/adr-0021-canonical-demo-dataset-v02.md)
 - [ADR-0022 — Relationship Evidence v2](docs/architecture/adr-0022-relationship-evidence-v2.md)
 - [ADR-0023 — Product Information Architecture v2](docs/architecture/adr-0023-product-information-architecture-v2.md)
+- [ADR-0024 — Analytics Contract Layer](docs/architecture/adr-0024-analytics-contract-layer.md)
 
 ## NEXUS API v0.2
 
@@ -293,7 +312,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-Baseline actual de `main`: **CI #680 verde** sobre `4d219b2363774f438ae37970acde69bad3dfa0db`, que incorpora V02-018 y AUD-API-001.
+Baseline efectivo de V02-019: `main @ 4c721b3587095d9c29001a3b9e5f33a97bc3e599`, luego de incorporar las remediaciones de auditoría vigentes, incluida AUD-DATA-002.
 
 ## Flujo de desarrollo
 
