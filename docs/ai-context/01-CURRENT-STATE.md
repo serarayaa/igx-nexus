@@ -7,7 +7,6 @@
 
 - Repository: `serarayaa/igx-nexus`
 - Branch estable: `main`
-- Baseline de esta actualización: `b4dd799`
 - Release en desarrollo: **v0.2 — Technology Intelligence**
 - v0.1: **cerrada — 13/13 tickets**
 
