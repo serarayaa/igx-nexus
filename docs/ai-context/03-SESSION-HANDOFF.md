@@ -9,7 +9,7 @@
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
 - Último desarrollo funcional integrado: **V02-020 — CMDB Quality 2.0**
-- Próximo desarrollo funcional: **V02-020 — CMDB Quality 2.0**
+- Próximo desarrollo funcional: **V02-021 — Lifecycle & Investment**
 
 ## Estado actual
 
@@ -45,15 +45,15 @@ No recorrer todo el repositorio ni toda la documentación salvo necesidad real.
 
 v0.2 tiene integrado:
 
-**V02-001 .. V02-019**
+**V02-001 .. V02-020**
 
 Último desarrollo funcional integrado:
 
-**V02-019 — Analytics Contract Layer**
+**V02-020 — CMDB Quality 2.0**
 
 Siguiente desarrollo funcional:
 
-**V02-020 — CMDB Quality 2.0**
+**V02-021 — Lifecycle & Investment**
 
 Las remediaciones de auditoría relevantes integradas incluyen:
 
