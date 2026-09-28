@@ -1,6 +1,6 @@
 # ADR-0025 — CMDB Quality 2.0
 
-Estado: **Aceptado tras V02-020 / PR #103 / issue #102**.
+Estado: **Propuesto en V02-020 / PR #103 / issue #102**. Se considera aceptado únicamente tras merge manual a `main`.
 
 ## Contexto
 
