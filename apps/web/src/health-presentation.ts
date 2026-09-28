@@ -35,6 +35,9 @@ export const findingCatalog: Record<HealthFindingCode, { title: string; action: 
   warranty_unknown: { title: "Garantía sin fecha verificable", action: "Confirmar si existe una fecha de garantía. Reduce cobertura, no el score." },
   warranty_invalid: { title: "Fecha de garantía inválida", action: "Verificar el calendario de la fecha registrada. Una garantía vencida es un dato válido." },
   lifecycle_invalid: { title: "Lifecycle no reconocido", action: "Normalizar el estado a uno de los valores admitidos por el modelo." },
+  source_instance_missing: { title: "Fuente sin identidad de instancia", action: "Completar sourceInstanceId en la referencia de origen; no agrupar instalaciones distintas por nombre de sistema." },
+  provenance_incomplete: { title: "Provenance canónico incompleto", action: "Completar provenance para los campos canónicos indicados con una fuente y observación defendibles." },
+  taxonomy_conflict: { title: "Conflicto Taxonomy v2", action: "Revisar las decisiones taxonómicas en conflicto y resolverlas con evidencia; no inferir una clasificación desde la UI." },
 };
 export function findingTitle(finding: HealthFinding): string {
   if (finding.code === "field_missing" && finding.field) return `Falta ${fieldLabels[finding.field]?.toLocaleLowerCase("es-CL") ?? finding.field}`;
