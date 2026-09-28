@@ -114,3 +114,4 @@ Antes de continuar, verificar:
 git status
 git branch --show-current
 git rev-parse --short HEAD
+```
