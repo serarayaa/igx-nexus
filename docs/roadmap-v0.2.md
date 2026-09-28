@@ -54,7 +54,7 @@ Dirección conceptual posterior:
 | V02-017 | Asset 360 2.0 | P1 | ✅ Integrado — PR #90 / issue #89 / merge `4cc6e7b2`; CI #651 verde |
 | V02-018 | Technology Map 2.0 | P1 | ✅ Integrado — PR #93 / issue #92 / merge `19ff461d` |
 | V02-019 | Analytics Contract Layer | P0 | ✅ Integrado — PR #99 / issue #96 |
-| V02-020 | CMDB Quality 2.0 | P1 | ✅ Integrado — PR #103 / issue #102 |
+| V02-020 | CMDB Quality 2.0 | P1 | 🟡 En implementación — PR #103 / issue #102 |
 | V02-021 | Lifecycle & Investment | P1 | ⚪ Pendiente |
 | V02-022 | IT / OT Intelligence | P1 | ⚪ Pendiente |
 | V02-023 | Intune Analytics Feasibility Spike | P0 | ⚪ Pendiente |
