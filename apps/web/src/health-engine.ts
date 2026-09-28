@@ -1,8 +1,16 @@
+import {
+  cmdbQualityProvenanceCoverage,
+  evaluateReferenceMetric,
+  technologyAssetTaxonomyHasConflict,
+  type ReferenceMetricId,
+  type TechnologyAsset,
+  type TechnologySnapshot,
+} from "@igx-nexus/types";
 import { ageInDays, lifecycleLabels, type Asset, type AssetType, type InventorySnapshot } from "./asset-model";
 import { freshnessOf } from "./explorer-model";
 import { validateRelationship, type Relationship, type RelationshipSnapshot } from "./relationship-model";
 import { healthDimensions, healthPolicy, healthState, healthWeights,
-  type AssetHealth, type CheckStatus, type CmdbHealthReport, type DimensionHealth, type HealthCheck,
+  type AssetHealth, type CanonicalQualitySummary, type CheckStatus, type CmdbHealthReport, type DimensionHealth, type HealthCheck,
   type HealthDimension, type HealthFinding, type HealthFindingCode, type HealthSeverity, type HealthSummary, type HealthTotals,
 } from "./health-model";
 
@@ -12,6 +20,75 @@ const hostnameRequired: Readonly<Record<AssetType, boolean>> = {
 const present = (value: string | null) => Boolean(value?.trim());
 const canonical = (value: string) => value.trim().toUpperCase();
 const ratio = (value: number, total: number) => total ? value / total : 0;
+
+function canonicalMetric(id: ReferenceMetricId, snapshot: TechnologySnapshot) {
+  const evaluation = evaluateReferenceMetric(id, snapshot);
+  if (evaluation.status !== "ok") throw new RangeError(`invalid canonical quality metric scope for ${id}`);
+  return evaluation.result;
+}
+
+function canonicalScope(inventory: InventorySnapshot): TechnologySnapshot | null {
+  const snapshot = inventory.canonical;
+  if (!snapshot) return null;
+  if (!validHealthDate(snapshot.asOf) || Date.parse(snapshot.asOf) !== Date.parse(inventory.asOf)) {
+    throw new RangeError("incompatible canonical snapshot cut");
+  }
+  const requested = new Set(inventory.assets.map((asset) => asset.id));
+  const available = new Set(snapshot.assets.map((asset) => asset.id));
+  for (const id of requested) {
+    if (!available.has(id)) throw new RangeError("canonical snapshot does not cover projected inventory");
+  }
+  return {
+    ...snapshot,
+    assets: snapshot.assets.filter((asset) => requested.has(asset.id)),
+  };
+}
+
+function canonicalQualitySummary(snapshot: TechnologySnapshot | null): CanonicalQualitySummary | null {
+  if (!snapshot) return null;
+  return {
+    sourceInstanceIdentity: canonicalMetric("nexus.sources.instance_identity.ratio", snapshot),
+    provenanceCoreFields: canonicalMetric("nexus.quality.provenance.core_fields.ratio", snapshot),
+    taxonomyConflicts: canonicalMetric("nexus.quality.taxonomy.conflict.ratio", snapshot),
+    reconciliationAttributeConflicts: "unavailable",
+  };
+}
+
+function canonicalQualityFindings(asset: TechnologyAsset): readonly HealthFinding[] {
+  const findings: HealthFinding[] = [];
+  if (asset.sourceReferences.some((reference) => !reference.sourceInstanceId?.trim())) {
+    findings.push({
+      code: "source_instance_missing",
+      dimension: "consistency",
+      scope: "canonical_evidence",
+      severity: "warning",
+    });
+  }
+
+  const provenance = cmdbQualityProvenanceCoverage(asset);
+  if (provenance.missing.length > 0) {
+    findings.push({
+      code: "provenance_incomplete",
+      dimension: "consistency",
+      scope: "canonical_evidence",
+      severity: "warning",
+      paths: provenance.missing,
+    });
+  }
+
+  if (technologyAssetTaxonomyHasConflict(asset) && asset.taxonomy) {
+    const paths = (["domain", "assetClass", "role"] as const)
+      .filter((field) => asset.taxonomy?.[field].state === "conflict");
+    findings.push({
+      code: "taxonomy_conflict",
+      dimension: "consistency",
+      scope: "canonical_evidence",
+      severity: "warning",
+      paths,
+    });
+  }
+  return findings;
+}
 
 /** ISO calendar dates or timestamps with explicit timezone; reject normalized impossible dates. */
 export function validHealthDate(value: string): boolean {
@@ -125,6 +202,8 @@ export function summarizeHealth(rows: readonly AssetHealth[]): HealthSummary {
 export function buildCmdbHealth(inventory: InventorySnapshot, relationships: RelationshipSnapshot | null): CmdbHealthReport {
   if (!validHealthDate(inventory.asOf)) throw new RangeError("invalid inventory cut");
   if (relationships && (!validHealthDate(relationships.asOf) || Date.parse(relationships.asOf) !== Date.parse(inventory.asOf))) throw new RangeError("incompatible snapshot cuts");
+  const canonicalSnapshot = canonicalScope(inventory);
+  const canonicalById = new Map(canonicalSnapshot?.assets.map((asset) => [asset.id, asset] as const) ?? []);
   const ids = counts(inventory.assets.map(a => a.id));
   const tags = counts(inventory.assets.map(a => a.assetTag), canonical);
   const relationIds = counts(relationships?.relationships.map(r => r.id) ?? []);
@@ -160,9 +239,20 @@ export function buildCmdbHealth(inventory: InventorySnapshot, relationships: Rel
     }
     checks.push(...(relationships === null ? [check("snapshot", "relationships", "unknown", "relationships_unknown", {}, "info")]
       : byEndpoint.get(asset.id) ?? [check("no-relations", "relationships", "not_applicable")]));
-    return evaluate(asset, checks);
+    const evaluated = evaluate(asset, checks);
+    const canonicalAsset = canonicalById.get(asset.id);
+    return canonicalAsset
+      ? { ...evaluated, findings: [...evaluated.findings, ...canonicalQualityFindings(canonicalAsset)] }
+      : evaluated;
   });
-  return { asOf: inventory.asOf, assets, relationshipFindings, orphanRelationships, summary: summarizeHealth(assets) };
+  return {
+    asOf: inventory.asOf,
+    canonicalQuality: canonicalQualitySummary(canonicalSnapshot),
+    assets,
+    relationshipFindings,
+    orphanRelationships,
+    summary: summarizeHealth(assets),
+  };
 }
 const severityOrder = { critical: 2, warning: 1, info: 0 } as const;
 export function prioritizeHealth(rows: readonly AssetHealth[]): AssetHealth[] {
@@ -175,6 +265,6 @@ export const emptyHealthFilters: HealthFilters = { state: "", dimension: "", typ
 export function filterHealth(rows: readonly AssetHealth[], filters: HealthFilters): AssetHealth[] {
   return prioritizeHealth(rows.filter(row => (!filters.state || row.state === filters.state)
     && (!filters.type || row.asset.type === filters.type)
-    && (!filters.dimension || row.findings.some(f => f.dimension === filters.dimension))
+    && (!filters.dimension || row.findings.some(f => f.scope !== "canonical_evidence" && f.dimension === filters.dimension))
     && (!filters.cause || row.findings.some(f => f.code === filters.cause))));
 }

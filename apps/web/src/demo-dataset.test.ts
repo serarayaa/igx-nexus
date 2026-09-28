@@ -100,7 +100,10 @@ it("projects canonical taxonomy, source and operational context without reauthor
   expect(assets.every(asset => asset.assetClass && asset.role && asset.taxonomyState === "classified")).toBe(true);
   expect(assets.every(asset => asset.taxonomyReviewRequired === false && asset.taxonomyCompatibilityFallback === false)).toBe(true);
   expect(assets.every(asset => asset.sourceSystems?.includes("demo"))).toBe(true);
-  expect(assets.every(asset => asset.sourceReferences?.some(reference => reference.source === "demo" && reference.observedAt))).toBe(true);
+  expect(assets.every(asset => asset.sourceReferences?.some(reference =>
+    reference.source === "demo"
+    && reference.sourceInstanceId === "demo-v0.2"
+    && reference.observedAt))).toBe(true);
   expect(assets.find(asset => asset.id === "DEMO-0001")?.operationalContexts).toEqual([]);
   expect(assets.find(asset => asset.id === "DEMO-0013")?.operationalContexts?.[0]).toEqual(expect.objectContaining({
     kind: "site",
@@ -113,6 +116,9 @@ describe("cross-view scenarios", () => {
     const signal = new AbortController().signal;
     expect(await demoProvider(signal)).toBe(demoDataset.inventory);
     expect(await demoRelationshipInventoryProvider(signal)).toBe(demoDataset.relationships);
+    expect(demoDataset.inventory.canonical).toBeDefined();
+    expect(demoDataset.inventory.canonical?.assets).toHaveLength(240);
+    expect(demoDataset.inventory.canonical?.asOf).toBe(DEMO_AS_OF);
     expect(Object.isFrozen(assets)).toBe(true); expect(Object.isFrozen(assets[0])).toBe(true);
     expect(Object.isFrozen(relations)).toBe(true); expect(Object.isFrozen(relations[0])).toBe(true);
   });

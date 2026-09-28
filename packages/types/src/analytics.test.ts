@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  cmdbQualityProvenanceCoverage,
   emptyMetricScope,
   evaluateReferenceMetric,
   metricDimensionValues,
@@ -184,6 +185,68 @@ describe("analytics contract", () => {
     expect(result.denominator).toBe(4);
     expect(result.coverage.state).toBe("known");
     expect(result.population.unknown).toBe(0);
+  });
+
+  it("measures governed provenance fields without confusing missing provenance with unavailable measurement", () => {
+    const full = asset("A-PROVENANCE", {
+      provenance: ["displayName", "domain", "assetClass", "role", "lifecycle", "criticality"].map((fieldPath) => ({
+        fieldPath,
+        source: glpiPrimary,
+        observedAt: at,
+        authority: "trusted" as const,
+      })),
+    });
+    const partial = asset("A-PARTIAL", {
+      provenance: [{
+        fieldPath: "displayName",
+        source: glpiPrimary,
+        observedAt: at,
+        authority: "trusted",
+      }],
+    });
+    expect(cmdbQualityProvenanceCoverage(partial)).toEqual({
+      covered: 1,
+      total: 6,
+      ratio: 1 / 6,
+      missing: ["domain", "assetClass", "role", "lifecycle", "criticality"],
+    });
+    const result = ok("nexus.quality.provenance.core_fields.ratio", snapshot([full, partial]));
+    expect(result.numerator).toBe(7);
+    expect(result.denominator).toBe(12);
+    expect(result.value).toBeCloseTo(7 / 12);
+    expect(result.coverage.state).toBe("known");
+    expect(result.coverage.ratio).toBe(1);
+  });
+
+  it("separates explicit taxonomy conflict from missing taxonomy evidence", () => {
+    const conflicting = asset("A-CONFLICT", {
+      taxonomy: {
+        taxonomyVersion: technologyTaxonomyVersion,
+        domain: {
+          state: "conflict",
+          value: "IT",
+          method: "normalized",
+          reviewRequired: true,
+          ruleId: "test.conflict",
+          reasonCode: "test.conflict",
+        },
+        assetClass: classified("endpoint"),
+        role: classified("user_endpoint"),
+      },
+    });
+    const historical = asset("A-NO-TAXONOMY");
+    const { taxonomy: _taxonomy, ...withoutTaxonomy } = historical;
+    const result = ok("nexus.quality.taxonomy.conflict.ratio", snapshot([
+      conflicting,
+      asset("A-CLEAR"),
+      withoutTaxonomy,
+    ]));
+    expect(result.numerator).toBe(1);
+    expect(result.denominator).toBe(2);
+    expect(result.value).toBe(0.5);
+    expect(result.coverage.state).toBe("partial");
+    expect(result.coverage.ratio).toBeCloseTo(2 / 3);
+    expect(result.population.unknown).toBe(1);
   });
 
   it("does not use compatibility scalar taxonomy as an analytical domain", () => {

@@ -62,6 +62,21 @@ it("deep link, causas, filtros AND, paginación y restablecer funcionan", async 
   await waitFor(() => expect(document.activeElement).toBe(screen.getByRole("heading", { name: "Localizar registros y revisar causas" })));
 });
 
+it("muestra evidencia canónica con métricas separadas y fallback unavailable honesto", async () => {
+  render(shell()); await ready();
+  const evidence = screen.getByRole("region", { name: "Evidencia canónica" });
+  expect(within(evidence).getByText("Identidad de instancia de fuentes")).toBeTruthy();
+  expect(within(evidence).getByText("Provenance de campos canónicos gobernados")).toBeTruthy();
+  expect(within(evidence).getByText("Conflictos Taxonomy v2")).toBeTruthy();
+  expect(within(evidence).getByText(/no disponibles en TechnologySnapshot schema 0.2/i)).toBeTruthy();
+  cleanup();
+
+  const legacyProvider: InventoryProvider = async () => ({ asOf: demoSnapshot.asOf, assets: [specimen] });
+  render(shell({ inventoryProvider: legacyProvider, relationshipProvider: noRelationships })); await ready();
+  expect(screen.getByText(/no expone evidencia canónica/i)).toBeTruthy();
+  expect(screen.getByText(/no se interpreta como un error del CI/i)).toBeTruthy();
+});
+
 it("loading, fallo seguro y retry de relaciones", async () => {
   const provider = vi.fn<RelationshipInventoryProvider>().mockRejectedValueOnce(new Error("TOKEN INTERNO")).mockResolvedValueOnce(demoRelationshipSnapshot);
   render(shell({ relationshipProvider: provider }));

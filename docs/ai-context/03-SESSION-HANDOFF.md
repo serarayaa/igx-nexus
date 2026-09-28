@@ -9,11 +9,11 @@
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
 - Último desarrollo funcional integrado: **V02-019 — Analytics Contract Layer**
-- Próximo desarrollo funcional: **V02-020 — CMDB Quality 2.0**
+- Trabajo activo: **V02-020 — CMDB Quality 2.0 / PR #103 / issue #102**
 
 ## Estado actual
 
-El bootstrap de contexto modular para agentes de IA fue completado e integrado mediante PR #100.
+V02-020 está en implementación mediante PR #103. El diseño conserva CMDB Quality separado de Device Health y mantiene el score histórico mientras añade métricas canónicas de evidencia.
 
 La capa `docs/ai-context/` está compuesta por:
 
@@ -51,7 +51,7 @@ v0.2 tiene integrado:
 
 **V02-019 — Analytics Contract Layer**
 
-Siguiente desarrollo funcional:
+Trabajo activo:
 
 **V02-020 — CMDB Quality 2.0**
 
@@ -65,17 +65,17 @@ Los findings históricos no deben asumirse como deuda activa sin verificar el es
 
 ## Próxima acción
 
-Iniciar **V02-020 — CMDB Quality 2.0**.
+Finalizar y validar **V02-020 — CMDB Quality 2.0** en PR #103.
 
 Antes de implementar:
 
 1. verificar `main` limpio y actualizado;
-2. crear una branch dedicada al ticket;
-3. consultar `../roadmap-v0.2.md`;
-4. cargar solamente ADR, contratos y documentación relacionados con CMDB Quality;
-5. verificar el comportamiento actual antes de diseñar cambios.
+2. revisar CI y diff de PR #103;
+3. validar métricas, findings y UX de evidencia canónica;
+4. corregir cualquier regresión antes del merge manual;
+5. después del merge, actualizar el handoff hacia V02-021.
 
-No adelantar V02-021 ni tickets posteriores salvo dependencia demostrada.
+No adelantar V02-021 ni tickets posteriores hasta integrar V02-020.
 
 ## Regla para futuras sesiones
 

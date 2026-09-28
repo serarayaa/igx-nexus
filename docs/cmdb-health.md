@@ -1,6 +1,60 @@
-# CMDB-011 — CMDB Health
+# CMDB Health
 
-Estado: integrado en `main` mediante PR #29, commit `d7ed1494afb6b56661bf5bdf387c2943976ce5cb`. Issue #28 cerrado como completed. CI post-merge #118 verde.
+Baseline histórico: CMDB-011 integrado mediante PR #29. Evolución **V02-020 — CMDB Quality 2.0** en implementación mediante PR #103 / issue #102.
+
+## V02-020 — CMDB Quality 2.0
+
+V02-020 incorpora evidencia canónica sin redefinir silenciosamente el score histórico.
+
+### Señales canónicas
+
+La superficie agrega tres métricas contractuales separadas del score ponderado:
+
+1. **Identidad de instancia de fuentes** — reutiliza `nexus.sources.instance_identity.ratio`. Como `SourceReference` es obligatoria en un asset canónico válido, medir sólo su presencia sería tautológico; se mide si todas las referencias declaran `sourceInstanceId`.
+2. **Provenance de campos canónicos gobernados** — `nexus.quality.provenance.core_fields.ratio`. Evalúa seis field paths obligatorios: `displayName`, `domain`, `assetClass`, `role`, `lifecycle` y `criticality`.
+3. **Conflictos Taxonomy v2** — `nexus.quality.taxonomy.conflict.ratio`. Sólo un estado `conflict` explícito cuenta como conflicto. Un assessment ausente reduce measurement coverage y nunca se interpreta como ausencia de conflicto.
+
+Estas métricas conservan la distinción de V02-019:
+
+`value ≠ measurement coverage`
+
+Por ejemplo, provenance ausente para un field path reduce el value porque esa ausencia es observable en el asset canónico; no convierte automáticamente la medición en unavailable.
+
+### Score histórico
+
+Las cinco dimensiones y sus pesos de CMDB-011 permanecen sin cambios en V02-020:
+
+- completitud 25 %;
+- frescura 25 %;
+- identidad 25 %;
+- relaciones 15 %;
+- consistencia 10 %.
+
+Source/provenance coverage no recibe un peso nuevo dentro del score. Hacerlo exigiría inventar una política corporativa de ponderación que no existe. En cambio, los gaps aparecen como findings explicables y como métricas con numerator, denominator y coverage propios.
+
+Taxonomy `conflict`, provenance incompleto y source instance ausente generan señales de revisión por CI, pero no alteran por sí mismos el score histórico.
+
+### Conflictos de reconciliación
+
+`AttributeConflict` existe en el resultado interno de reconciliation, pero schema 0.2 no lo transporta dentro de `TechnologySnapshot`.
+
+Por tanto:
+
+- la UI muestra esa capacidad como **no disponible**;
+- no reconstruye conflictos comparando valores;
+- no infiere conflictos desde hostname, serial, vendor u otras señales;
+- un futuro contrato explícito deberá transportar esa evidencia antes de incorporarla.
+
+### Demo / Live
+
+Demo y Live comparten el mismo contrato:
+
+- `InventorySnapshot.canonical` conserva el `TechnologySnapshot` usado para las métricas;
+- Demo declara una identidad lógica estable `sourceInstanceId=demo-v0.2`;
+- Live utiliza exclusivamente el snapshot validado recibido desde NEXUS API;
+- no existe fallback Live → Demo.
+
+La calidad CMDB sigue separada de Device Operational Health. CPU, RAM, batería, SMART, disponibilidad, uptime y telemetría endpoint permanecen fuera de V02-020.
 
 ## Qué responde
 

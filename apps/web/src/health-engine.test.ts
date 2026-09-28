@@ -125,6 +125,117 @@ describe("Integridad de relaciones", () => {
   });
 });
 
+describe("CMDB Quality 2.0: evidencia canónica", () => {
+  it("expone source/provenance coverage y conflictos con semántica separada del score histórico", () => {
+    const rowBefore = buildCmdbHealth(
+      { ...demoSnapshot, assets: [demoSnapshot.assets[1]!] },
+      { ...demoRelationshipSnapshot, relationships: [] },
+    );
+    expect(rowBefore.canonicalQuality).not.toBeNull();
+    expect(rowBefore.canonicalQuality?.sourceInstanceIdentity.value).toBe(1);
+    expect(rowBefore.canonicalQuality?.provenanceCoreFields.value).toBe(1);
+    expect(rowBefore.canonicalQuality?.taxonomyConflicts.value).toBe(0);
+    expect(rowBefore.canonicalQuality?.taxonomyConflicts.coverage.state).toBe("known");
+    expect(rowBefore.canonicalQuality?.reconciliationAttributeConflicts).toBe("unavailable");
+  });
+
+  it("snapshot sin contrato canónico deja quality evidence no disponible sin convertirlo en error", () => {
+    const legacy = buildCmdbHealth(snapshot([asset]), relations());
+    expect(legacy.canonicalQuality).toBeNull();
+    expect(legacy.assets[0]!.findings.some(f => f.code === "provenance_incomplete")).toBe(false);
+    expect(legacy.assets[0]!.findings.some(f => f.code === "source_instance_missing")).toBe(false);
+  });
+
+  it("provenance parcial y sourceInstance ausente son señales explícitas pero no alteran el score legado", () => {
+    const canonical = demoSnapshot.canonical!;
+    const projected = demoSnapshot.assets[1]!;
+    const original = canonical.assets.find(value => value.id === projected.id)!;
+    const sourceReferences = original.sourceReferences.map(reference => {
+      const { sourceInstanceId: _sourceInstanceId, ...legacy } = reference;
+      return legacy;
+    });
+    const changed = {
+      ...original,
+      sourceReferences,
+      provenance: original.provenance.filter(record => record.fieldPath === "displayName")
+        .map(record => ({ ...record, source: sourceReferences[0]! })),
+    };
+    const inventory: InventorySnapshot = {
+      asOf,
+      assets: [projected],
+      canonical: { ...canonical, assets: [changed] },
+    };
+    const baseline = buildCmdbHealth({ ...demoSnapshot, assets: [projected] }, relations()).assets[0]!;
+    const evaluated = buildCmdbHealth(inventory, relations());
+    const row = evaluated.assets[0]!;
+    expect(row.score).toBe(baseline.score);
+    expect(row.findings).toContainEqual(expect.objectContaining({ code: "source_instance_missing", severity: "warning" }));
+    expect(row.findings).toContainEqual(expect.objectContaining({
+      code: "provenance_incomplete",
+      scope: "canonical_evidence",
+      paths: ["domain", "assetClass", "role", "lifecycle", "criticality"],
+    }));
+    expect(filterHealth(evaluated.assets, { ...emptyHealthFilters, dimension: "consistency" })).toHaveLength(0);
+    expect(filterHealth(evaluated.assets, { ...emptyHealthFilters, cause: "provenance_incomplete" })).toHaveLength(1);
+    expect(evaluated.canonicalQuality?.sourceInstanceIdentity.value).toBe(0);
+    expect(evaluated.canonicalQuality?.sourceInstanceIdentity.coverage.state).toBe("known");
+    expect(evaluated.canonicalQuality?.provenanceCoreFields.value).toBeCloseTo(1 / 6);
+    expect(evaluated.canonicalQuality?.provenanceCoreFields.coverage.state).toBe("known");
+  });
+
+  it("taxonomy conflict real se distingue de assessment ausente y no se infiere", () => {
+    const canonical = demoSnapshot.canonical!;
+    const projected = demoSnapshot.assets[1]!;
+    const original = canonical.assets.find(value => value.id === projected.id)!;
+    const conflicted = {
+      ...original,
+      taxonomy: {
+        ...original.taxonomy!,
+        domain: {
+          state: "conflict" as const,
+          value: "IT" as const,
+          method: "manual" as const,
+          reviewRequired: true as const,
+          ruleId: "test.quality.conflict",
+          reasonCode: "test.quality.conflict",
+        },
+      },
+    };
+    const conflictedInventory: InventorySnapshot = {
+      asOf,
+      assets: [projected],
+      canonical: { ...canonical, assets: [conflicted] },
+    };
+    const conflictedReport = buildCmdbHealth(conflictedInventory, relations());
+    expect(conflictedReport.canonicalQuality?.taxonomyConflicts.value).toBe(1);
+    expect(conflictedReport.canonicalQuality?.taxonomyConflicts.coverage.state).toBe("known");
+    expect(conflictedReport.assets[0]!.findings).toContainEqual(expect.objectContaining({
+      code: "taxonomy_conflict",
+      paths: ["domain"],
+    }));
+
+    const { taxonomy: _taxonomy, ...withoutTaxonomy } = original;
+    const partialInventory: InventorySnapshot = {
+      asOf,
+      assets: [projected],
+      canonical: { ...canonical, assets: [withoutTaxonomy] },
+    };
+    const partial = buildCmdbHealth(partialInventory, relations());
+    expect(partial.canonicalQuality?.taxonomyConflicts.value).toBeNull();
+    expect(partial.canonicalQuality?.taxonomyConflicts.coverage.state).toBe("unavailable");
+    expect(partial.assets[0]!.findings.some(f => f.code === "taxonomy_conflict")).toBe(false);
+  });
+
+  it("rechaza una proyección cuyo snapshot canónico no cubre el CI solicitado", () => {
+    const canonical = demoSnapshot.canonical!;
+    expect(() => buildCmdbHealth({
+      asOf,
+      assets: [asset],
+      canonical: { ...canonical, assets: [] },
+    }, relations())).toThrow("canonical snapshot does not cover projected inventory");
+  });
+});
+
 describe("Matemática, agregación y determinismo", () => {
   it("pesos centralizados suman 100", () => { expect(Object.values(healthWeights).reduce((a,b)=>a+b,0)).toBe(100); });
   it.each([[0,100,"degraded"],[69.999,100,"degraded"],[70,100,"attention"],[89.999,100,"attention"],[90,100,"healthy"],[100,100,"healthy"],[100,59.999,"insufficient"],[100,60,"healthy"],[null,0,"unknown"]] as const)("bandas %s / cobertura %s → %s", (score,coverage,state) => { expect(healthState(score,coverage)).toBe(state); });

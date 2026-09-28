@@ -1,6 +1,6 @@
 # IGX NEXUS — Analytics Metric Contract
 
-Estado: **V02-019 / issue #96 — implementación propuesta**.
+Estado: **V02-019 integrado mediante PR #99 / issue #96; extensión V02-020 en implementación mediante PR #103 / issue #102**.
 
 ## 1. Propósito
 
@@ -229,6 +229,37 @@ Pregunta:
 
 El valor `unknown` es una respuesta canónica conocida, por lo que no reduce measurement coverage.
 
+### nexus.quality.provenance.core_fields.ratio — V02-020
+
+Pregunta:
+
+> ¿Qué proporción de los campos canónicos gobernados posee provenance explícito?
+
+Campos gobernados:
+
+- `displayName`;
+- `domain`;
+- `assetClass`;
+- `role`;
+- `lifecycle`;
+- `criticality`.
+
+El numerator cuenta slots con al menos un `ProvenanceRecord` y el denominator es `6 × activos scoped`.
+
+La ausencia de provenance es un resultado medible de calidad y reduce el **value**. No reduce measurement coverage, porque `provenance` forma parte del contrato de `TechnologyAsset` y su ausencia para un field path puede observarse explícitamente.
+
+### nexus.quality.taxonomy.conflict.ratio — V02-020
+
+Pregunta:
+
+> Entre los assets con assessment Taxonomy v2 disponible, ¿qué proporción contiene al menos una decisión en estado `conflict`?
+
+- numerator: assets con conflicto explícito en domain, asset class o role;
+- denominator: assets con assessment presente;
+- measurement coverage: assets con assessment / población elegible.
+
+Un asset sin assessment no se cuenta como libre de conflictos: queda fuera del denominator y reduce coverage.
+
 ## 10. Demo / Live
 
 La definición de la métrica es la misma.
@@ -282,6 +313,8 @@ La suite de `analytics.test.ts` cubre:
 - source missing como resultado medible;
 - compatibility taxonomy fuera de dimensiones analíticas;
 - source instance identity;
+- provenance de campos canónicos gobernados;
+- conflicto Taxonomy v2 separado de assessment ausente;
 - dimensiones no permitidas;
 - población vacía;
 - normalización determinista;
@@ -291,14 +324,9 @@ La suite de `analytics.test.ts` cubre:
 
 ### V02-020 — CMDB Quality 2.0
 
-Puede reutilizar:
+Extiende el contrato con métricas de provenance y conflicto Taxonomy v2, reutiliza `nexus.sources.instance_identity.ratio` y mantiene value separado de measurement coverage.
 
-- MetricDefinition;
-- MetricResult;
-- scope/dimensiones;
-- measurement coverage.
-
-No debe reutilizar automáticamente los pesos de v0.1 sin decisión explícita.
+El score histórico de CMDB Health conserva sus pesos v0.1 en V02-020. Las métricas de evidencia canónica se presentan como señales complementarias con denominadores propios; no se introduce una ponderación corporativa no aprobada.
 
 ### V02-021 — Lifecycle & Investment
 
