@@ -53,7 +53,7 @@ Dirección conceptual posterior:
 | V02-016 | Asset Explorer 2.0 | P1 | ✅ Integrado — PR #87 / issue #85 / merge `68479fd9`; CI #608 verde |
 | V02-017 | Asset 360 2.0 | P1 | ✅ Integrado — PR #90 / issue #89 / merge `4cc6e7b2`; CI #651 verde |
 | V02-018 | Technology Map 2.0 | P1 | ✅ Integrado — PR #93 / issue #92 / merge `19ff461d` |
-| V02-019 | Analytics Contract Layer | P0 | ⚪ Pendiente |
+| V02-019 | Analytics Contract Layer | P0 | 🟡 En implementación — issue #96 |
 | V02-020 | CMDB Quality 2.0 | P1 | ⚪ Pendiente |
 | V02-021 | Lifecycle & Investment | P1 | ⚪ Pendiente |
 | V02-022 | IT / OT Intelligence | P1 | ⚪ Pendiente |
@@ -348,9 +348,36 @@ Siguiente trabajo: **V02-019 — Analytics Contract Layer**.
 
 ## Epic 5 — Technology Analytics
 
-### V02-019 — Analytics Contract Layer
+### V02-019 — Analytics Contract Layer — en implementación
 
-Catálogo de métricas con numerador, denominador, ventana temporal, fuente, cobertura y semántica centralizados.
+Issue #96.
+
+Pregunta central:
+
+> **¿Cómo define NEXUS una métrica para que su valor, población, denominador, cobertura, fuente, temporalidad y significado sean consistentes y explicables en cualquier superficie?**
+
+Dirección implementada en la rama:
+
+- contrato `MetricDefinition / MetricScope / MetricResult / MetricCoverage` dentro de `@igx-nexus/types`;
+- evaluación pura sobre `TechnologySnapshot`, sin nuevo servicio analítico;
+- value y measurement coverage separados;
+- count sin denominator artificial;
+- ratio dimensionless en rango `0..1`;
+- unknown / excluded / unavailable diferenciados;
+- scope con dimensiones gobernadas;
+- Taxonomy dimensions sólo desde assessments `classified`, nunca desde compatibility fallback;
+- source dimension preserva `sourceInstanceId` tras AUD-DATA-002;
+- cuatro métricas contractuales de referencia;
+- CMDB Health histórico permanece sin reinterpretación; V02-020 conserva ownership de su evolución;
+- OpenTelemetry/Prometheus usados como referencia de conventions; MetricFlow/Cube quedan Hold;
+- sin endpoint/API ornamental mientras no exista consumer real;
+- sin warehouse, TSDB, semantic engine, charts ni dashboard nuevo.
+
+Documentos:
+
+- `docs/analytics/metric-contract.md`;
+- `docs/product/technology-scan-v02-019.md`;
+- ADR-0024 Analytics Contract Layer — propuesto.
 
 ### V02-020 — CMDB Quality 2.0
 
