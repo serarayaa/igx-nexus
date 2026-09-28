@@ -80,7 +80,11 @@ describe("V02-011/V02-012 canonical demo dataset", () => {
     for (const asset of snapshot.assets) {
       expect(asset.id).toMatch(/^DEMO-\d{4}$/);
       expect(asset.sourceReferences).toHaveLength(1);
-      expect(asset.sourceReferences[0]).toMatchObject({ source: "demo", sourceScope: "demo-v0.2" });
+      expect(asset.sourceReferences[0]).toMatchObject({
+        source: "demo",
+        sourceInstanceId: "demo-v0.2",
+        sourceScope: "demo-v0.2",
+      });
       expect(asset.attributes["demo.datasetVersion"]).toBe(DEMO_DATASET_VERSION);
       expect(asset.attributes["demo.synthetic"]).toBe(true);
 
@@ -139,6 +143,6 @@ describe("V02-011/V02-012 canonical demo dataset", () => {
 
     // Review semantic changes before intentionally updating this digest.
     const digest = createHash("sha256").update(JSON.stringify(snapshot)).digest("hex");
-    expect(digest).toBe("b97fb701d94332e2726e5f0c4673a1ed20e0cfbfb4a83c95c30bb89e0819943d");
+    expect(digest).toBe("b28a14f5db5009739af9b8ce9b883ec062bc3662c1bcfd673e1ffc4daa43b05d");
   });
 });
