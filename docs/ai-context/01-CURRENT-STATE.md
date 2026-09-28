@@ -7,11 +7,13 @@
 
 - Repository: `serarayaa/igx-nexus`
 - Branch estable: `main`
-- Baseline de esta actualización: `4c721b3`
+- Baseline de esta actualización: `b4dd799`
 - Release en desarrollo: **v0.2 — Technology Intelligence**
 - v0.1: **cerrada — 13/13 tickets**
 
-Este archivo representa el estado conocido de `main` en el momento de su última actualización. Si Git contradice este documento, Git prevalece.
+Este archivo representa el estado conocido de `main` en el momento de su última actualización.
+
+Si Git contradice este documento, Git prevalece.
 
 ---
 
@@ -21,7 +23,7 @@ IGX NEXUS evoluciona desde una CMDB/ITAM visual hacia una plataforma de **Techno
 
 Modelo conceptual:
 
-`fuentes reales → reconciliación/evidencia → modelo canónico NEXUS → API → experiencia de producto`
+`fuentes reales → reconciliación/evidencia → modelo canónico NEXUS → contratos analíticos/API → experiencia de producto`
 
 Principios vigentes:
 
@@ -41,30 +43,26 @@ Principios vigentes:
 
 Integrado:
 
-- V02-001 — Canonical Technology Model
-- V02-002 — NEXUS API Runtime
-- V02-003 — API Security Baseline
-- V02-004 — Provider Mode Contract
-- V02-005 — GLPI API v2 Adapter
-- V02-006 — GLPI Service Identity & RBAC
-- V02-007 — GLPI Agent Live Lab
-- V02-008 — Live Asset 360 Vertical Slice
-- V02-009 — Provenance & Reconciliation
-- V02-010 — IT/OT Taxonomy v2
-- V02-011 — Demo Dataset v0.2 Migration
-- V02-012 — Relationship Evidence v2
-- V02-013 — Product IA & Visual Direction
-- V02-014 — Shell & Motion 2.0
-- V02-015 — Technology Overview
-- V02-016 — Asset Explorer 2.0
-- V02-017 — Asset 360 2.0
-- V02-018 — Technology Map 2.0
+**V02-001 .. V02-019**
 
-Siguiente desarrollo funcional planificado:
+Último desarrollo funcional integrado:
 
 **V02-019 — Analytics Contract Layer**
 
-El resto del roadmap permanece definido en:
+Resultado relevante de V02-019:
+
+- contratos analíticos tipados y reutilizables;
+- definición explícita de métricas, dimensiones y cobertura;
+- semántica analítica separada de la presentación;
+- soporte para evolución posterior de superficies de inteligencia sin inventar métricas en UI;
+- ADR-0024 aceptado;
+- documentación canónica en `../analytics/metric-contract.md`.
+
+Siguiente desarrollo funcional planificado:
+
+**V02-020 — CMDB Quality 2.0**
+
+El detalle completo permanece definido en:
 
 `../roadmap-v0.2.md`
 
@@ -74,15 +72,16 @@ No cargar todos los tickets pendientes salvo que sean necesarios para la tarea a
 
 ## Producto actualmente disponible
 
-Las superficies principales de v0.2 incluyen:
+Las principales superficies y capacidades disponibles incluyen:
 
 - Technology Overview;
 - Asset Explorer;
 - Asset 360;
 - Technology Map;
-- Data Quality / CMDB Health;
+- Data Quality / CMDB Health existente;
 - infraestructura Demo / Live;
-- modelo canónico con provenance y relationship evidence.
+- modelo canónico con provenance y relationship evidence;
+- Analytics Contract Layer.
 
 Las pantallas deben responder preguntas operacionales concretas y evitar métricas o inferencias sin contrato semántico defendible.
 
@@ -90,17 +89,21 @@ Las pantallas deben responder preguntas operacionales concretas y evitar métric
 
 ## Arquitectura vigente
 
-ADR canónicos:
+Los ADR canónicos viven en:
 
 `../architecture/`
 
-El índice oficial se encuentra en:
+Índice oficial:
 
 `../architecture/README.md`
 
+La arquitectura actual incluye decisiones hasta:
+
+**ADR-0024 — Analytics Contract Layer**
+
 Los ADR antiguos pueden ser supersedidos por decisiones posteriores.
 
-`docs/decisions/` es histórico y no debe duplicar ADR canónicos.
+`docs/decisions/` es histórico y no debe utilizarse para duplicar decisiones canónicas.
 
 ---
 
@@ -117,9 +120,12 @@ Conceptos centrales:
 - taxonomy assessment;
 - operational contexts;
 - relationship evidence;
-- reconciliation.
+- reconciliation;
+- analytics contracts.
 
 Una señal débil como hostname o IP no debe fusionar CIs automáticamente.
+
+Una métrica o agregación tampoco debe adquirir semántica únicamente porque pueda calcularse técnicamente.
 
 ---
 
@@ -129,13 +135,14 @@ Una señal débil como hostname o IP no debe fusionar CIs automáticamente.
 
 - dataset canónico versionado;
 - útil para producto, tests y escenarios reproducibles;
+- puede representar escenarios sintéticos explícitos;
 - no debe introducir comportamiento ficticio dentro de Live.
 
 ### Live
 
-- usa fuentes reales soportadas;
+- usa únicamente fuentes reales soportadas;
 - debe mostrar explícitamente cobertura parcial o ausencia de datos;
-- no debe fabricar relaciones, clasificación o telemetría inexistente.
+- no debe fabricar relaciones, clasificación, telemetría, métricas ni evidencia inexistente.
 
 ---
 
@@ -143,10 +150,10 @@ Una señal débil como hostname o IP no debe fusionar CIs automáticamente.
 
 Las remediaciones integradas en `main` forman parte del baseline actual.
 
-El HEAD de esta actualización incluye:
+Remediaciones relevantes ya integradas:
 
-- correcciones de contract integrity previas;
-- correcciones de calidad/integridad de datos;
+- `AUD-API-001` — preservación del contrato canónico durante el HTTP round-trip;
+- `AUD-DATA-001` — endurecimiento de calidad de identificadores para reconciliación;
 - `AUD-DATA-002` — source identity namespaced by instance.
 
 No asumir que un finding histórico sigue activo.
@@ -166,11 +173,13 @@ Para comenzar una nueva tarea:
 1. leer `00-START-HERE.md`;
 2. leer este archivo;
 3. leer `03-SESSION-HANDOFF.md`;
-4. consultar el roadmap o ADR únicamente si la tarea lo requiere;
+4. consultar roadmap, ADR o documentación específica únicamente si la tarea lo requiere;
 5. verificar `git status`, branch y HEAD antes de modificar código.
+
+---
 
 ## Próximo objetivo funcional
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-019 — Analytics Contract Layer**
+**V02-020 — CMDB Quality 2.0**

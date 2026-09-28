@@ -7,20 +7,22 @@
 
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
-- Baseline observado: `4c721b3`
+- Stable baseline: `b4dd799`
 - Working branch: `docs/ai-context-bootstrap`
+- Working HEAD after sync: `dc2c5b9`
+- Active PR: `#100 — docs(ai): add modular context bootstrap`
 
 ## Trabajo actual
 
-Bootstrap del sistema de contexto modular para agentes de IA.
+Finalización del bootstrap de contexto modular para agentes de IA.
 
 Objetivo:
 
-Reducir tokens y reconstrucción de contexto entre sesiones usando documentación pequeña y enrutable, sin duplicar la documentación canónica de IGX NEXUS.
+Reducir reconstrucción repetida de contexto y consumo innecesario de tokens mediante una capa pequeña de navegación y continuidad, sin duplicar documentación canónica.
 
-## Completado en esta sesión
+## Estado del bootstrap
 
-Creado:
+Creados:
 
 - `00-START-HERE.md`
 - `01-CURRENT-STATE.md`
@@ -30,11 +32,11 @@ Creado:
 Configurado:
 
 - `.obsidian/` ignorado mediante `.gitignore`;
-- repositorio abierto localmente como vault de Obsidian;
-- GitHub continúa siendo la fuente de verdad;
-- Obsidian actúa únicamente como interfaz de navegación/edición.
+- repositorio local abierto como vault de Obsidian;
+- GitHub/repository docs continúan siendo la fuente de verdad;
+- Obsidian se utiliza únicamente como interfaz local de navegación y edición.
 
-## Decisiones
+## Decisiones vigentes
 
 ### Contexto modular
 
@@ -46,40 +48,64 @@ Los agentes deben comenzar por:
 2. `01-CURRENT-STATE.md`
 3. `03-SESSION-HANDOFF.md`
 
-y expandir contexto solamente según la tarea.
+y expandir contexto solamente según la tarea activa.
 
 ### No duplicar documentación
 
-Arquitectura, producto, roadmap, auditorías y demás documentación existente siguen viviendo en sus ubicaciones canónicas.
+Arquitectura, producto, roadmap, auditorías, contratos analíticos y demás documentación existente permanecen en sus ubicaciones canónicas.
 
-`ai-context/` actúa como índice operativo y estado resumido.
+`ai-context/` funciona como:
+
+- router de contexto;
+- snapshot resumido;
+- reglas de trabajo;
+- handoff operativo.
 
 ### Obsidian
 
 La configuración local `.obsidian/` no se versiona.
 
-Los Markdown deben mantenerse compatibles con GitHub y agentes de IA, sin depender de funcionalidades propietarias de Obsidian.
+Los Markdown deben seguir siendo compatibles con GitHub y agentes de IA sin depender de funcionalidades propietarias de Obsidian.
 
 ## Estado funcional relevante
 
-v0.2 tiene integrado V02-001 a V02-018.
+v0.2 tiene integrado:
 
-El siguiente desarrollo funcional planificado es:
+**V02-001 .. V02-019**
+
+Último desarrollo funcional integrado:
 
 **V02-019 — Analytics Contract Layer**
 
-El baseline actual también contiene remediaciones de auditoría posteriores a V02-018.
+Siguiente desarrollo funcional planificado:
+
+**V02-020 — CMDB Quality 2.0**
+
+El baseline actual también contiene las remediaciones de auditoría integradas previamente, incluyendo:
+
+- `AUD-API-001`
+- `AUD-DATA-001`
+- `AUD-DATA-002`
 
 ## Próxima acción
 
-Finalizar el bootstrap:
+Finalizar PR #100:
 
-1. revisar diff completo;
-2. validar que solamente cambien `.gitignore` y `docs/ai-context/`;
-3. hacer commit;
-4. publicar branch;
-5. crear PR hacia `main`;
-6. después continuar desarrollo funcional desde V02-019, salvo que exista una prioridad nueva.
+1. revisar cambios finales de `01-CURRENT-STATE.md` y este handoff;
+2. ejecutar validaciones de Git;
+3. commit de actualización de contexto;
+4. push de la rama;
+5. verificar CI;
+6. merge manual a `main`.
+
+Después del merge:
+
+1. cambiar a `main`;
+2. hacer `git pull`;
+3. actualizar este handoff para eliminar referencias al bootstrap/PR #100;
+4. continuar desarrollo funcional desde:
+
+**V02-020 — CMDB Quality 2.0**
 
 ## Regla para la próxima sesión
 
