@@ -14,6 +14,7 @@ export function HealthFindings({ findings }: { findings: readonly HealthFinding[
   return findings.length ? <ul className="nexus-health-findings">{findings.map((finding, index) => <li key={`${finding.code}-${index}`}>
     <div><StatusBadge status={severityTones[finding.severity]}>{severityLabels[finding.severity]}</StatusBadge> <strong>{findingTitle(finding)}</strong></div>
     {finding.relationshipId && <p>Relación: <code>{finding.relationshipId}</code></p>}
+    {finding.paths?.length ? <p>Campos: <code>{finding.paths.join(", ")}</code></p> : null}
     <p>{findingCatalog[finding.code].action}</p>
   </li>)}</ul> : <p>No se detectaron señales de calidad que requieran revisión en el alcance evaluado.</p>;
 }
