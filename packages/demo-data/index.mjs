@@ -158,6 +158,7 @@ function canonicalLifecycle(value) {
 function sourceFor(assetId) {
   return Object.freeze({
     source: "demo",
+    sourceInstanceId: "demo-v0.2",
     externalId: assetId,
     entityType: "synthetic_asset",
     sourceScope: "demo-v0.2",
@@ -256,6 +257,7 @@ function toCanonicalAsset(asset) {
 function relationshipSourceFor(relationshipId) {
   return Object.freeze({
     source: "demo",
+    sourceInstanceId: "demo-v0.2",
     externalId: relationshipId,
     entityType: "synthetic_relationship",
     sourceScope: "demo-v0.2",
