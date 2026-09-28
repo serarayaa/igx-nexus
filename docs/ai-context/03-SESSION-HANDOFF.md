@@ -8,7 +8,7 @@
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
-- Último desarrollo funcional integrado: **V02-019 — Analytics Contract Layer**
+- Último desarrollo funcional integrado: **V02-020 — CMDB Quality 2.0**
 - Próximo desarrollo funcional: **V02-020 — CMDB Quality 2.0**
 
 ## Estado actual
