@@ -12,7 +12,7 @@ export type MetricValueKind = (typeof metricValueKinds)[number];
 export const metricUnits = ["count", "1"] as const;
 export type MetricUnit = (typeof metricUnits)[number];
 
-export const metricCategories = ["inventory", "taxonomy", "sources", "lifecycle"] as const;
+export const metricCategories = ["inventory", "taxonomy", "sources", "lifecycle", "quality"] as const;
 export type MetricCategory = (typeof metricCategories)[number];
 
 export const metricDimensions = [
@@ -191,7 +191,70 @@ export const referenceMetricDefinitions = [
     requiredEvidence: ["lifecycle_state"],
     allowedDimensions: without("lifecycle"),
   },
+  {
+    id: "nexus.quality.provenance.core_fields.ratio",
+    version: 1,
+    label: "Provenance de campos canónicos",
+    description: "Proporción de campos canónicos gobernados que poseen al menos un registro de provenance.",
+    category: "quality",
+    valueKind: "ratio",
+    unit: "1",
+    populationDescription: "Activos canónicos dentro del scope.",
+    numeratorDescription: "Slots de campo gobernado con al menos un ProvenanceRecord.",
+    denominatorDescription: "Seis slots por activo: displayName, domain, assetClass, role, lifecycle y criticality.",
+    timeBasis: "snapshot",
+    requiredEvidence: ["asset"],
+    allowedDimensions: allDimensions,
+  },
+  {
+    id: "nexus.quality.taxonomy.conflict.ratio",
+    version: 1,
+    label: "Conflictos Taxonomy v2",
+    description: "Proporción de assessments Taxonomy v2 conocidos que contienen al menos una decisión en estado conflict.",
+    category: "quality",
+    valueKind: "ratio",
+    unit: "1",
+    populationDescription: "Activos dentro del scope; coverage indica cuántos poseen assessment Taxonomy v2.",
+    numeratorDescription: "Assets con al menos una decisión Taxonomy v2 en estado conflict.",
+    denominatorDescription: "Assets con assessment Taxonomy v2 disponible.",
+    timeBasis: "snapshot",
+    requiredEvidence: ["taxonomy_assessment"],
+    allowedDimensions: without("taxonomyState"),
+  },
 ] as const satisfies readonly MetricDefinition[];
+
+export const cmdbQualityCoreProvenanceFields = [
+  "displayName",
+  "domain",
+  "assetClass",
+  "role",
+  "lifecycle",
+  "criticality",
+] as const;
+export type CmdbQualityCoreProvenanceField = (typeof cmdbQualityCoreProvenanceFields)[number];
+
+export function cmdbQualityProvenanceCoverage(asset: TechnologyAsset): {
+  readonly covered: number;
+  readonly total: number;
+  readonly ratio: number;
+  readonly missing: readonly CmdbQualityCoreProvenanceField[];
+} {
+  const present = new Set(asset.provenance.map((record) => record.fieldPath));
+  const missing = cmdbQualityCoreProvenanceFields.filter((field) => !present.has(field));
+  const covered = cmdbQualityCoreProvenanceFields.length - missing.length;
+  return {
+    covered,
+    total: cmdbQualityCoreProvenanceFields.length,
+    ratio: covered / cmdbQualityCoreProvenanceFields.length,
+    missing,
+  };
+}
+
+export function technologyAssetTaxonomyHasConflict(asset: TechnologyAsset): boolean {
+  if (!asset.taxonomy) return false;
+  return [asset.taxonomy.domain, asset.taxonomy.assetClass, asset.taxonomy.role]
+    .some((decision) => decision.state === "conflict");
+}
 
 export type ReferenceMetricId = (typeof referenceMetricDefinitions)[number]["id"];
 
@@ -361,6 +424,22 @@ function computeMetric(id: ReferenceMetricId, assets: readonly TechnologyAsset[]
         denominator: assets.length,
         known: assets.length,
       };
+    case "nexus.quality.provenance.core_fields.ratio": {
+      const coverages = assets.map(cmdbQualityProvenanceCoverage);
+      return {
+        numerator: coverages.reduce((sum, coverage) => sum + coverage.covered, 0),
+        denominator: assets.length * cmdbQualityCoreProvenanceFields.length,
+        known: assets.length,
+      };
+    }
+    case "nexus.quality.taxonomy.conflict.ratio": {
+      const known = assets.filter((asset) => asset.taxonomy !== undefined);
+      return {
+        numerator: known.filter(technologyAssetTaxonomyHasConflict).length,
+        denominator: known.length,
+        known: known.length,
+      };
+    }
   }
 }
 
