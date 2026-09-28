@@ -8,12 +8,12 @@
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
-- Último desarrollo funcional integrado: **V02-019 — Analytics Contract Layer**
-- Trabajo activo: **V02-020 — CMDB Quality 2.0 / PR #103 / issue #102**
+- Último desarrollo funcional integrado: **V02-020 — CMDB Quality 2.0**
+- Próximo desarrollo funcional: **V02-021 — Lifecycle & Investment**
 
 ## Estado actual
 
-V02-020 está en implementación mediante PR #103. El diseño conserva CMDB Quality separado de Device Health y mantiene el score histórico mientras añade métricas canónicas de evidencia.
+V02-020 consolidó CMDB Quality sobre evidencia canónica sin convertirla en Device Health ni redefinir silenciosamente el score histórico.
 
 La capa `docs/ai-context/` está compuesta por:
 
@@ -45,15 +45,15 @@ No recorrer todo el repositorio ni toda la documentación salvo necesidad real.
 
 v0.2 tiene integrado:
 
-**V02-001 .. V02-019**
+**V02-001 .. V02-020**
 
 Último desarrollo funcional integrado:
 
-**V02-019 — Analytics Contract Layer**
-
-Trabajo activo:
-
 **V02-020 — CMDB Quality 2.0**
+
+Siguiente desarrollo funcional:
+
+**V02-021 — Lifecycle & Investment**
 
 Las remediaciones de auditoría relevantes integradas incluyen:
 
@@ -65,17 +65,17 @@ Los findings históricos no deben asumirse como deuda activa sin verificar el es
 
 ## Próxima acción
 
-Finalizar y validar **V02-020 — CMDB Quality 2.0** en PR #103.
+Iniciar **V02-021 — Lifecycle & Investment**.
 
 Antes de implementar:
 
 1. verificar `main` limpio y actualizado;
-2. revisar CI y diff de PR #103;
-3. validar métricas, findings y UX de evidencia canónica;
-4. corregir cualquier regresión antes del merge manual;
-5. después del merge, actualizar el handoff hacia V02-021.
+2. consultar `../roadmap-v0.2.md`;
+3. crear issue y branch cuando el alcance esté suficientemente definido;
+4. cargar solamente ADR, contratos y documentación relacionados con lifecycle/investment;
+5. definir semántica temporal y coverage antes de diseñar UI.
 
-No adelantar V02-021 ni tickets posteriores hasta integrar V02-020.
+No adelantar V02-022 ni tickets posteriores salvo dependencia demostrada.
 
 ## Regla para futuras sesiones
 
