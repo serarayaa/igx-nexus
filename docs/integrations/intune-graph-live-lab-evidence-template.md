@@ -28,17 +28,18 @@
 - Endpoint reachable: `sí / no`
 - HTTP esperado: `200 / otro sanitizado`
 - Retornó al menos una fila: `sí / no`
-- `id` presente: `sí / no`
-- `azureADDeviceId` presente: `sí / no`
-- `serialNumber` presente: `sí / no`
-- `manufacturer` presente: `sí / no`
-- `model` presente: `sí / no`
-- `operatingSystem` presente: `sí / no`
-- `osVersion` presente: `sí / no`
-- `lastSyncDateTime` presente: `sí / no`
-- `complianceState` presente: `sí / no`
+- Tamaño de muestra: `x` (máximo 100)
+- cobertura `id`: `x/y`
+- cobertura `azureADDeviceId`: `x/y`
+- cobertura `serialNumber`: `x/y`
+- cobertura `manufacturer`: `x/y`
+- cobertura `model`: `x/y`
+- cobertura `operatingSystem`: `x/y`
+- cobertura `osVersion`: `x/y`
+- cobertura `lastSyncDateTime`: `x/y`
+- cobertura `complianceState`: `x/y`
 
-No registrar los valores.
+No registrar los valores ni identificar qué dispositivos forman la muestra.
 
 ## Analytics
 
