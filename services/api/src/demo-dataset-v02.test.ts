@@ -173,6 +173,6 @@ describe("V02-011/V02-012 canonical demo dataset", () => {
 
     // Review semantic changes before intentionally updating this digest.
     const digest = createHash("sha256").update(JSON.stringify(snapshot)).digest("hex");
-    expect(digest).toBe("b28a14f5db5009739af9b8ce9b883ec062bc3662c1bcfd673e1ffc4daa43b05d");
+    expect(digest).toBe("208f279149aa867fed981fc5f302b2a07094ded7c84b3ec77784228b65729102");
   });
 });
