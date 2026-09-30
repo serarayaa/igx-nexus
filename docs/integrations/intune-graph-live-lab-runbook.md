@@ -65,14 +65,14 @@ No guardar este comando con el valor real en scripts, historial compartido, docu
 Desde la raíz del repositorio:
 
 ```powershell
-.\scripts\live-lab\Test-IntuneGraphPreflight.ps1
+.\scripts\live-lab\Test-IntuneGraphPreflight.ps1 -PermissionReviewConfirmed
 ```
 
 El script:
 
-- inspecciona claims localmente sin imprimir el token;
-- exige capacidad de lectura de managed devices;
-- rechaza por defecto tokens con permisos Intune ReadWrite;
+- trata el access token como **opaque string** y nunca intenta decodificarlo;
+- exige `-PermissionReviewConfirmed` después de revisar manualmente la app registration/service principal;
+- el review debe confirmar `DeviceManagementManagedDevices.Read.All` y ausencia de permisos Intune ReadWrite;
 - usa sólo `GET`;
 - consulta como máximo una fila de `managedDevices`;
 - sólo informa presencia/ausencia de campos;
@@ -80,17 +80,21 @@ El script:
 - no crea export jobs;
 - no imprime valores de dispositivos.
 
-### Token sobreprivilegiado
+### Revisión de permisos
 
-Si el laboratorio autorizado ya entrega un token con ReadWrite, el script se detiene. Existe `-AllowOverprivilegedToken` únicamente para diagnosticar un token ya aprobado; **no es una recomendación de permisos** y no cambia el carácter GET-only del script.
+Antes de ejecutar el script, revisar la API permission efectiva de la app/service principal autorizada. Para el probe de inventario el baseline esperado es `DeviceManagementManagedDevices.Read.All`; los permisos Intune `ReadWrite` deben estar ausentes.
+
+El switch `-PermissionReviewConfirmed` registra esa revisión humana. No demuestra ni modifica permisos y no autoriza sobreprivilegio.
+
+El script no parsea el access token: Microsoft indica que los clientes deben tratarlo como una credencial opaca cuyo formato no es contrato estable.
 
 ## Resultado esperado
 
 Ejemplo sanitizado:
 
 ```text
-token.managedDevicesRead=present
-token.intuneReadWrite=absent
+permission.review=confirmed (manual least-privilege review completed)
+token.format=opaque (contents intentionally not inspected)
 graph.managedDevices=reachable
 graph.managedDevices.sample=available
 field.id=observed

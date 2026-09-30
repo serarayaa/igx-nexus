@@ -18,8 +18,10 @@
 - Graph beta utilizado: `no`
 - Export job creado: `no`
 - Remote action ejecutada: `no`
-- Permiso Intune ReadWrite detectado: `sí / no`
-- Si ReadWrite estaba presente, aprobación explícita de laboratorio: `sí / no / no aplica`
+- API permissions de la app/service principal revisadas manualmente: `sí / no`
+- `DeviceManagementManagedDevices.Read.All` presente: `sí / no`
+- Permisos Intune ReadWrite ausentes: `sí / no`
+- Access token decodificado/inspeccionado por el preflight: `no`
 
 ## managedDevices
 

@@ -75,7 +75,7 @@ Los tests y CI continúan utilizando exclusivamente datos y credenciales sintét
 - no se realiza active scanning corporativo ni OT;
 - el backend de secretos por environment de NEXUS es un mecanismo de laboratorio/v0.2, no el secret manager corporativo definitivo;
 - la conexión real de un endpoint a GLPI no forma parte de CI y requiere evidencia manual sanitizada;
-- V02-023 no incorpora todavía un provider Intune: su preflight acepta un token temporal sólo desde environment, realiza exclusivamente GET y nunca imprime token ni identificadores observados;
+- V02-023 no incorpora todavía un provider Intune: su preflight acepta un token temporal sólo desde environment, lo trata como credencial opaca, realiza exclusivamente GET y nunca imprime token ni identificadores observados;
 - CI valida únicamente sintaxis del preflight Intune y no dispone de credenciales Graph reales.
 
 ## Fronteras y amenazas
@@ -139,7 +139,7 @@ Los tests y CI continúan utilizando exclusivamente datos y credenciales sintét
 | CI → evidencia | CI verde presentada como prueba de endpoint real | mitigado por gate | issue/ADR/runbook exigen evidencia manual sanitizada | mínimo un endpoint real antes de cerrar V02-007 |
 | Rotación de secretos | runtime conserva credenciales antiguas | riesgo conocido v0.2 | backend environment se carga al bootstrap; runbook exige reinicio | secret manager/rotación dinámica en v0.3 |
 | Revocación de token | token cacheado continúa hasta fallo/renovación | riesgo abierto | expiración/renovación acotada; no se asume revocación inmediata | validar semántica real GLPI en Live Lab |
-| API → Intune/Graph | scopes excesivos | spike activo V02-023 | `managedDevices` v1.0 admite `DeviceManagementManagedDevices.Read.All`; preflight GET-only rechaza ReadWrite por defecto | validar service identity/consent real antes de integración |
+| API → Intune/Graph | scopes excesivos | spike activo V02-023 | `managedDevices` v1.0 admite `DeviceManagementManagedDevices.Read.All`; preflight GET-only exige revisión humana de mínimo privilegio y trata el token como opaco | validar service identity/consent real antes de integración |
 | Graph reports → NEXUS | creación de export jobs exige permisos más amplios que lectura de inventario | gate abierto V02-023 | no se ejecuta POST/export job en el spike | resolver alternativa read-only o aprobación explícita antes de adoptar reporting |
 | API → OT | scanning/acción insegura | fuera de alcance | NEXUS no realiza active scanning OT | threat model específico para cualquier integración OT |
 | Runtime → red | exposición accidental a LAN | mitigado localmente | host default `127.0.0.1` | v0.3 define interfaces/firewall/reverse proxy |

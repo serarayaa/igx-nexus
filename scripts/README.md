@@ -11,4 +11,4 @@ Los scripts deben ser idempotentes cuando sea práctico y nunca deben incorporar
 `Test-GlpiAgentPreflight.ps1` valida el baseline seguro del GLPI Agent sin instalar software, modificar registro, forzar inventario ni imprimir secretos. Su resultado no reemplaza la evidencia manual de que un endpoint real llegó correctamente a GLPI.
 
 
-`Test-IntuneGraphPreflight.ps1` valida únicamente conectividad y cobertura mínima de Microsoft Graph v1.0 mediante GET. Lee el bearer token desde environment, rechaza permisos Intune ReadWrite por defecto y nunca imprime token ni valores identificables del dispositivo. No adquiere credenciales ni crea export jobs.
+`Test-IntuneGraphPreflight.ps1` valida únicamente conectividad y cobertura mínima de Microsoft Graph v1.0 mediante GET. Lee el bearer token desde environment como cadena opaca, exige confirmación humana de revisión de mínimo privilegio y nunca imprime token ni valores identificables del dispositivo. No adquiere credenciales ni crea export jobs.

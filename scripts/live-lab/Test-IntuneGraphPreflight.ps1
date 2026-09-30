@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [string]$GraphBaseUrl = "https://graph.microsoft.com/v1.0",
-    [switch]$AllowOverprivilegedToken
+    [switch]$PermissionReviewConfirmed
 )
 
 Set-StrictMode -Version Latest
@@ -11,37 +11,6 @@ function Write-Check {
     param([string]$Name, [string]$State, [string]$Detail)
     $suffix = if ([string]::IsNullOrWhiteSpace($Detail)) { "" } else { " ($Detail)" }
     Write-Output ("{0}={1}{2}" -f $Name, $State, $suffix)
-}
-
-function ConvertFrom-Base64Url {
-    param([string]$Value)
-    $normalized = $Value.Replace("-", "+").Replace("_", "/")
-    switch ($normalized.Length % 4) {
-        2 { $normalized += "==" }
-        3 { $normalized += "=" }
-        0 { }
-        default { throw "JWT payload has invalid base64url length." }
-    }
-    [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($normalized))
-}
-
-function Get-TokenPermissions {
-    param([string]$AccessToken)
-    $parts = $AccessToken.Split(".")
-    if ($parts.Count -lt 2) { throw "NEXUS_INTUNE_ACCESS_TOKEN is not JWT-shaped." }
-    $claims = (ConvertFrom-Base64Url $parts[1]) | ConvertFrom-Json
-    $permissions = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-    if ($null -ne $claims.roles) {
-        foreach ($role in @($claims.roles)) {
-            if ($role -is [string] -and $role.Trim()) { [void]$permissions.Add($role) }
-        }
-    }
-    if ($null -ne $claims.scp -and $claims.scp -is [string]) {
-        foreach ($scope in $claims.scp.Split(" ", [System.StringSplitOptions]::RemoveEmptyEntries)) {
-            [void]$permissions.Add($scope)
-        }
-    }
-    $permissions
 }
 
 function Invoke-GraphRead {
@@ -60,22 +29,24 @@ if ($GraphBaseUrl -ne "https://graph.microsoft.com/v1.0") {
     throw "V02-023 preflight is pinned to Microsoft Graph v1.0. Beta is intentionally excluded."
 }
 
-$permissions = @(Get-TokenPermissions $token)
-$hasManagedRead = $permissions -contains "DeviceManagementManagedDevices.Read.All" -or $permissions -contains "DeviceManagementManagedDevices.ReadWrite.All"
-$hasReadWrite = @($permissions | Where-Object { $_ -like "DeviceManagement*.ReadWrite.All" }).Count -gt 0
-
-Write-Check "token.managedDevicesRead" ($(if ($hasManagedRead) { "present" } else { "missing" })) ""
-Write-Check "token.intuneReadWrite" ($(if ($hasReadWrite) { "present" } else { "absent" })) ""
-
-if (-not $hasManagedRead) { throw "Token lacks DeviceManagementManagedDevices.Read.All." }
-if ($hasReadWrite -and -not $AllowOverprivilegedToken) {
-    throw "Token contains Intune ReadWrite permission. Least-privilege preflight refuses it by default."
+if (-not $PermissionReviewConfirmed) {
+    throw "Review Entra API permissions first. Confirm DeviceManagementManagedDevices.Read.All is present and Intune ReadWrite permissions are absent, then rerun with -PermissionReviewConfirmed."
 }
 
-$select = [Uri]::EscapeDataString("id,azureADDeviceId,serialNumber,manufacturer,model,operatingSystem,osVersion,lastSyncDateTime,complianceState")
-$deviceResponse = Invoke-GraphRead "deviceManagement/managedDevices?`$top=1&`$select=$select" $token
-Write-Check "graph.managedDevices" "reachable" ""
+# Microsoft access tokens are client-opaque credentials. This script intentionally
+# does not parse or validate token claims; Microsoft Graph is the resource server.
+Write-Check "permission.review" "confirmed" "manual least-privilege review completed"
+Write-Check "token.format" "opaque" "contents intentionally not inspected"
 
+$select = [Uri]::EscapeDataString("id,azureADDeviceId,serialNumber,manufacturer,model,operatingSystem,osVersion,lastSyncDateTime,complianceState")
+try {
+    $deviceResponse = Invoke-GraphRead "deviceManagement/managedDevices?`$top=1&`$select=$select" $token
+} catch {
+    Write-Check "graph.managedDevices" "unavailable" "GET failed; details suppressed"
+    throw "Microsoft Graph managedDevices read probe failed. Review consent, licensing and network access without copying the upstream response into Git."
+}
+
+Write-Check "graph.managedDevices" "reachable" ""
 $sample = @($deviceResponse.value) | Select-Object -First 1
 if ($null -eq $sample) {
     Write-Check "graph.managedDevices.sample" "unavailable" "zero rows returned"

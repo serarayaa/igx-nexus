@@ -80,9 +80,9 @@ Antes de adoptar reporting hay que resolver una alternativa read-only o aprobar 
 `scripts/live-lab/Test-IntuneGraphPreflight.ps1` debe:
 
 1. recibir un access token sólo desde `NEXUS_INTUNE_ACCESS_TOKEN`;
-2. no imprimir token, IDs, seriales, nombres ni usuarios;
-3. inspeccionar claims localmente;
-4. fallar por defecto ante permisos Intune ReadWrite;
+2. tratarlo como **opaque string** y no depender de su formato/claims;
+3. no imprimir token, IDs, seriales, nombres ni usuarios;
+4. exigir confirmación humana de revisión de mínimo privilegio (`DeviceManagementManagedDevices.Read.All` presente y permisos Intune ReadWrite ausentes);
 5. probar sólo GET contra Graph v1.0;
 6. comprobar `managedDevices?$top=1` y presencia de campos sin revelar valores;
 7. comprobar el contenedor `deviceManagement/reports`;
@@ -114,3 +114,9 @@ CI sólo valida sintaxis del preflight. Una CI verde no demuestra acceso al tena
 - https://learn.microsoft.com/intune/endpoint-analytics/ref-data-collection
 - https://learn.microsoft.com/intune/advanced-analytics/
 - https://learn.microsoft.com/intune/fundamentals/licensing/
+
+## Access token opacity
+
+Microsoft indica que las aplicaciones cliente deben tratar access tokens como cadenas opacas y no depender de su formato o claims. El preflight no intenta validar ni decodificar el bearer token de Microsoft Graph. La ausencia de permisos ReadWrite se confirma revisando la configuración autorizada de la app/service principal y queda registrada en la evidencia sanitizada.
+
+Referencia: https://learn.microsoft.com/entra/identity-platform/access-tokens
