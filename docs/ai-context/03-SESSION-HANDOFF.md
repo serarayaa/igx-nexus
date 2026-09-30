@@ -8,12 +8,12 @@
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
-- Último desarrollo funcional integrado: **V02-021 — Lifecycle & Investment**
-- Próximo desarrollo funcional: **V02-022 — IT / OT Intelligence**
+- Último desarrollo funcional integrado: **V02-022 — IT / OT Intelligence**
+- Próximo desarrollo funcional: **V02-023 — Intune Analytics Feasibility Spike**
 
 ## Estado actual
 
-V02-021 consolidó planificación lifecycle con fechas y provenance explícitos, coverage por hito y ventanas 3/6/12/24 meses, sin convertir Investment en presupuesto inventado.
+V02-022 consolidó cohortes IT/OT sobre Taxonomy v2 resuelta, coverage explícita y métricas gobernadas, sin convertir compatibility projection ni datos no resueltos en clasificación analítica.
 
 La capa `docs/ai-context/` está compuesta por:
 
@@ -45,15 +45,15 @@ No recorrer todo el repositorio ni toda la documentación salvo necesidad real.
 
 v0.2 tiene integrado:
 
-**V02-001 .. V02-021**
+**V02-001 .. V02-022**
 
 Último desarrollo funcional integrado:
 
-**V02-021 — Lifecycle & Investment**
+**V02-022 — IT / OT Intelligence**
 
 Siguiente desarrollo funcional:
 
-**V02-022 — IT / OT Intelligence**
+**V02-023 — Intune Analytics Feasibility Spike**
 
 Las remediaciones de auditoría relevantes integradas incluyen:
 
@@ -65,17 +65,17 @@ Los findings históricos no deben asumirse como deuda activa sin verificar el es
 
 ## Próxima acción
 
-Iniciar **V02-022 — IT / OT Intelligence**.
+Iniciar **V02-023 — Intune Analytics Feasibility Spike**.
 
 Antes de implementar:
 
 1. verificar `main` limpio y actualizado;
 2. consultar `../roadmap-v0.2.md`;
-3. crear issue y branch cuando el alcance esté suficientemente definido;
-4. reutilizar Taxonomy v2, Operational Context y Analytics Contract Layer en vez de redefinirlos;
-5. definir preguntas operacionales, población, denominadores y coverage antes de diseñar nuevas vistas.
+3. tratar el ticket como feasibility spike, no como integración productiva;
+4. verificar datos realmente disponibles, permisos, licencias y APIs antes de diseñar contratos definitivos;
+5. documentar qué señales son observables, con qué cobertura y qué limitaciones existen.
 
-No adelantar V02-023 ni tickets posteriores salvo dependencia demostrada.
+No adelantar V02-024 ni tickets posteriores salvo dependencia demostrada.
 
 ## Regla para futuras sesiones
 
