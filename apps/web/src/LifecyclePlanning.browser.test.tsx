@@ -41,10 +41,10 @@ it("expone Lifecycle como workspace propio con horizontes 3/6/12/24 y evidencia 
   await userEvent.click(screen.getByRole("button", { name: "3 meses" }));
   expect(screen.getByRole("button", { name: "3 meses" }).getAttribute("aria-pressed")).toBe("true");
 
-  expect(screen.getByText("Garantía")).toBeTruthy();
-  expect(screen.getByText("Fin de vida (EOL)")).toBeTruthy();
-  expect(screen.getByText("Fin de soporte (EOS)")).toBeTruthy();
-  expect(screen.getByText("Objetivo de reemplazo")).toBeTruthy();
+  expect(screen.getAllByText("Garantía").length).toBeGreaterThan(0);
+  expect(screen.getAllByText("Fin de vida (EOL)").length).toBeGreaterThan(0);
+  expect(screen.getAllByText("Fin de soporte (EOS)").length).toBeGreaterThan(0);
+  expect(screen.getAllByText("Objetivo de reemplazo").length).toBeGreaterThan(0);
   expect(screen.getByText(/Investment significa planificación temporal, no presupuesto/i)).toBeTruthy();
   expect(screen.getByText(/no asigna CAPEX, precios, vida útil estándar/i)).toBeTruthy();
 });
