@@ -24,6 +24,7 @@ export type AppRoute =
   | { readonly view: "dashboard" }
   | { readonly view: "assets" }
   | { readonly view: "health" }
+  | { readonly view: "lifecycle" }
   | { readonly view: "asset"; readonly assetId: string; readonly section: AssetSection }
   | { readonly view: "relations"; readonly assetId: string; readonly mapState: TechnologyMapState }
   | { readonly view: "label"; readonly assetId: string }
@@ -33,7 +34,6 @@ const dashboardHashes = new Set([
   "",
   "#overview",
   "#quality",
-  "#lifecycle",
   "#next-views",
 ]);
 
@@ -70,6 +70,7 @@ function technologyMapState(query: string): TechnologyMapState {
 export function routeFromHash(hash: string): AppRoute | null {
   if (dashboardHashes.has(hash)) return { view: "dashboard" };
   if (hash === "#health") return { view: "health" };
+  if (hash === "#lifecycle") return { view: "lifecycle" };
   if (hash === "#assets") return { view: "assets" };
 
   const qrPrefix = "#q/";
