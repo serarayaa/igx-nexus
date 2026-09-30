@@ -8,12 +8,12 @@
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
-- Último desarrollo funcional integrado: **V02-020 — CMDB Quality 2.0**
+- Último desarrollo funcional integrado: **V02-022 — IT / OT Intelligence**
 - Próximo desarrollo funcional: **V02-021 — Lifecycle & Investment**
 
 ## Estado actual
 
-V02-020 consolidó CMDB Quality sobre evidencia canónica sin convertirla en Device Health ni redefinir silenciosamente el score histórico.
+V02-021 consolidó planificación lifecycle con fechas y provenance explícitos, coverage por hito y ventanas 3/6/12/24 meses, sin convertir Investment en presupuesto inventado.
 
 La capa `docs/ai-context/` está compuesta por:
 
@@ -45,7 +45,7 @@ No recorrer todo el repositorio ni toda la documentación salvo necesidad real.
 
 v0.2 tiene integrado:
 
-**V02-001 .. V02-020**
+**V02-001 .. V02-021**
 
 Último desarrollo funcional integrado:
 
