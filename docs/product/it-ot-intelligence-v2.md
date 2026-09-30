@@ -67,15 +67,18 @@ No se inventan Purdue level, site, network segment o security zone.
 
 ## Producto
 
-V02-022 parte sin una ruta global nueva.
+V02-022 no agrega una ruta global nueva.
 
-Primero se estabiliza el modelo puro. Luego se decidirá si la pregunta operacional cabe mejor como:
+La primera integración de producto utiliza una **lente IT/OT dentro de Technology Overview** y conserva Explorer como workspace de investigación:
 
-- contexto/lente dentro de Overview;
-- drill-down hacia Explorer con facetas gobernadas;
-- o una superficie propia sólo si aporta una pregunta distinta y durable.
+- Overview muestra domain classification coverage y cohortes IT/OT;
+- al seleccionar IT u OT, el scope usa IDs de la cohorte canónica cuando existe TechnologySnapshot;
+- compatibility projection no asigna activos a la cohorte;
+- cada cohorte muestra denominadores propios para Taxonomy completa, lifecycle, source identity y Operational Context;
+- composición Asset Class / Role conserva coverage independiente;
+- Explorer continúa como drill-down, sin duplicar su tabla/facetas.
 
-Esto evita duplicar Dashboard y Explorer.
+Si el provider no entrega snapshot canónico, la lente se presenta como no disponible y no fabrica cohortes desde scalars legacy.
 
 ## Demo / Live
 

@@ -63,6 +63,8 @@ export interface ItOtDomainMetrics {
 
 export interface ItOtDomainCohort {
   readonly domain: TechnologyDomain;
+  /** IDs canónicos de la cohorte, ordenados para scope/drill-down determinista. */
+  readonly assetIds: readonly string[];
   readonly population: number;
   readonly assetClass: ItOtDimensionSummary;
   readonly role: ItOtDimensionSummary;
@@ -198,6 +200,7 @@ function buildCohort(
 ): ItOtDomainCohort {
   return {
     domain,
+    assetIds: assets.map((asset) => asset.id).sort((left, right) => left.localeCompare(right)),
     population: assets.length,
     assetClass: summarizeDimension(assets, assetClassValue),
     role: summarizeDimension(assets, roleValue),

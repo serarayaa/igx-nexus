@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, Boxes, CalendarClock, Clock3, ShieldCheck } from "lucide-react";
 import { Badge, Button, Card, ContentSection, DataTable, EmptyState, ErrorState, LoadingState, PageHeader, StatusBadge, Toolbar, type DataTableColumn } from "@igx-nexus/ui";
+import { buildItOtIntelligenceReport } from "@igx-nexus/types";
 import { demoProvider } from "./demo-provider";
 import { percentage, warrantyDays, type DashboardAsset, type DashboardProvider, type DashboardSnapshot, type Domain } from "./dashboard-model";
 import { assetHash } from "./navigation-model";
 import { buildOverview, type OverviewMode } from "./overview-model";
 import { NexusShell } from "./NexusShell";
+import { ItOtIntelligenceSummary } from "./ItOtIntelligenceSummary";
 
 type LoadState = { status: "loading" } | { status: "error" } | { status: "ready"; snapshot: DashboardSnapshot };
 const dateFormat = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeZone: "UTC" });
@@ -33,7 +35,20 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
     return () => controller.abort();
   }, [provider, attempt]);
 
-  const overview = state.status === "ready" ? buildOverview(state.snapshot, domain, mode) : null;
+  const intelligence = state.status === "ready" && state.snapshot.canonical
+    ? buildItOtIntelligenceReport(state.snapshot.canonical)
+    : null;
+  const canonicalScope = intelligence && domain !== "all"
+    ? new Set(intelligence.cohorts[domain].assetIds)
+    : null;
+  const overviewSnapshot = state.status === "ready" && canonicalScope
+    ? { ...state.snapshot, assets: state.snapshot.assets.filter(asset => canonicalScope.has(asset.id)) }
+    : state.status === "ready"
+      ? state.snapshot
+      : null;
+  const overview = overviewSnapshot
+    ? buildOverview(overviewSnapshot, intelligence && domain !== "all" ? "all" : domain, mode)
+    : null;
   const result = overview?.summary ?? null;
   const asOf = state.status === "ready" ? state.snapshot.asOf : "";
   const live = mode === "live";
@@ -81,7 +96,9 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
       title={state.snapshot.assets.length === 0 ? "El inventario está vacío" : "No hay activos para este alcance"}
       description={state.snapshot.assets.length === 0
         ? live ? "NEXUS API no devolvió activos. La ausencia se mantiene explícita y no se reemplaza con Demo." : "No hay activos disponibles en el dataset de demostración."
-        : "Prueba con todos los dominios para ampliar el alcance."}
+        : intelligence && domain !== "all"
+          ? `No hay activos con domain Taxonomy v2 classified como ${domain} dentro de la cobertura de presentación actual.`
+          : "Prueba con todos los dominios para ampliar el alcance."}
       action={state.snapshot.assets.length === 0
         ? <Button onPress={() => setAttempt(n => n + 1)}>Volver a cargar</Button>
         : <Button onPress={() => setDomain("all")}>Ver todos los activos</Button>}
@@ -94,9 +111,11 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
         <div>
           <p className="nexus-overline">Contexto</p>
           <h2 id="overview-context-heading">Alcance y cobertura</h2>
-          <p>{live
-            ? "Overview Live resume únicamente inventario y freshness observables a través de NEXUS API. Campos no cubiertos permanecen desconocidos."
-            : "Overview Demo utiliza el dataset canónico sintético y sus reglas históricas de frescura, datos básicos y garantía."}</p>
+          <p>{intelligence
+            ? `El alcance ${scopeLabel} usa domain Taxonomy v2 classified para cohortes IT/OT. Los estados no resueltos quedan fuera del filtro y permanecen visibles en coverage.`
+            : live
+              ? "Overview Live resume únicamente inventario y freshness observables a través de NEXUS API. Sin snapshot canónico, el filtro histórico no se interpreta como cohorte analítica."
+              : "Overview Demo utiliza el dataset canónico sintético y sus reglas históricas de frescura, datos básicos y garantía."}</p>
         </div>
         <dl className="nexus-overview-context-facts">
           <div><dt>Alcance</dt><dd>{scopeLabel}</dd></div>
@@ -166,6 +185,8 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
           </div>}
         </dl>
       </section>
+
+      <ItOtIntelligenceSummary report={intelligence} selectedDomain={domain} />
 
       {!live && <Card>
         <ContentSection title="Garantías próximas" description="Detalle de los próximos 5 vencimientos ya observables en el dataset Demo. No es una proyección de inversión.">

@@ -108,3 +108,21 @@ a:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outli
   .nexus-overview-context, .nexus-attention-empty, .nexus-overview-drilldowns > a { border-color: CanvasText; }
   .nexus-attention-list, .nexus-attention-item, .nexus-overview-summary, .nexus-overview-summary > div { border-color: CanvasText; }
 }
+
+
+/* V02-022 — IT / OT Intelligence lens */
+.nexus-itot-coverage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--igx-density-content-gap); padding: var(--igx-spacing-4); border: 1px solid var(--igx-semantic-color-border-subtle); border-radius: var(--igx-semantic-shape-card); background: var(--igx-semantic-color-surface-base); }
+.nexus-itot-coverage > div { min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--igx-spacing-2); }
+.nexus-itot-coverage strong { font-variant-numeric: tabular-nums; }
+.nexus-itot-coverage span, .nexus-itot-coverage small { color: var(--igx-semantic-color-text-secondary); }
+.nexus-itot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--igx-density-content-gap); }
+.nexus-itot-grid > * { min-width: 0; }
+.nexus-itot-facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr)); gap: var(--igx-spacing-3); }
+.nexus-itot-facts > div { min-width: 0; padding-block: var(--igx-spacing-2); border-bottom: 1px solid var(--igx-semantic-color-border-subtle); }
+.nexus-itot-facts dt { color: var(--igx-semantic-color-text-secondary); font-size: .75rem; }
+.nexus-itot-facts dd { margin: var(--igx-spacing-1) 0 0; font-weight: var(--igx-font-weight-semibold); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.nexus-itot-composition { display: grid; gap: var(--igx-spacing-3); margin-top: var(--igx-spacing-4); }
+.nexus-itot-composition > div { display: grid; gap: var(--igx-spacing-1); }
+.nexus-itot-composition span, .nexus-itot-composition small { color: var(--igx-semantic-color-text-secondary); font-size: .8125rem; }
+@media (max-width: 767px) { .nexus-itot-coverage, .nexus-itot-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (forced-colors: active) { .nexus-itot-coverage, .nexus-itot-facts > div { border-color: CanvasText; } }

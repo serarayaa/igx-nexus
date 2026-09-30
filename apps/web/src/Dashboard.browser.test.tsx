@@ -16,6 +16,8 @@ it("prioriza atención, mantiene el alcance IT/OT y conserva preferencias del sh
   expect(screen.getByRole("heading", { name: "Technology Overview", level: 1 })).toBeTruthy();
   expect(screen.getByRole("heading", { name: "Requiere atención", level: 2 })).toBeTruthy();
   expect(screen.getByRole("heading", { name: "Estado resumido", level: 2 })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "IT / OT Intelligence", level: 2 })).toBeTruthy();
+  expect(screen.getByText("240 de 240")).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "OT" }));
   expect(screen.getByRole("button", { name: "OT" }).getAttribute("aria-pressed")).toBe("true");
   expect(screen.getByText("41 activos en el alcance OT.")).toBeTruthy();
@@ -74,6 +76,43 @@ it("reemplaza el recorrido promocional por drill-downs operacionales existentes"
   expect(screen.getByText(/No constituyen un risk score/)).toBeTruthy();
 });
 
+it("no asigna una compatibility projection a una cohorte IT/OT cuando Taxonomy v2 está unresolved", async () => {
+  const presentation = demoSnapshot.assets[0]!;
+  const canonical = demoSnapshot.canonical!;
+  const canonicalAsset = canonical.assets[0]!;
+  const liveSnapshot: DashboardSnapshot = {
+    asOf: canonical.asOf,
+    assets: [{ ...presentation, domain: "IT" }],
+    canonical: {
+      ...canonical,
+      assets: [{
+        ...canonicalAsset,
+        domain: "IT",
+        taxonomy: {
+          ...canonicalAsset.taxonomy!,
+          domain: {
+            state: "unclassified",
+            reviewRequired: true,
+            ruleId: "test.compatibility-only",
+            reasonCode: "no-domain-evidence",
+          },
+        },
+      }],
+      relationships: [],
+      observations: [],
+    },
+  };
+
+  render(<Dashboard mode="live" provider={async () => liveSnapshot} />);
+  await screen.findByRole("heading", { name: "IT / OT Intelligence", level: 2 });
+  expect(screen.getByText("0 de 1")).toBeTruthy();
+  expect(screen.getByText(/sin clasificar 1/)).toBeTruthy();
+
+  await userEvent.click(screen.getByRole("button", { name: "IT" }));
+  expect(await screen.findByText("No hay activos para este alcance")).toBeTruthy();
+  expect(screen.getByText(/No hay activos con domain Taxonomy v2 classified como IT/)).toBeTruthy();
+});
+
 it("mantiene Overview Live honesto ante cobertura parcial y nunca muestra hallazgos Demo", async () => {
   const liveSnapshot: DashboardSnapshot = {
     asOf: "2026-09-21T12:00:00.000Z",
@@ -98,6 +137,8 @@ it("mantiene Overview Live honesto ante cobertura parcial y nunca muestra hallaz
   expect(screen.queryByRole("table", { name: "Próximos vencimientos de garantía" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Calidad de datos" })).toBeNull();
   expect(screen.getAllByRole("link", { name: /Lifecycle & Investment/ }).some(link => link.getAttribute("href") === "#lifecycle")).toBe(true);
+  expect(screen.getByRole("heading", { name: "IT / OT Intelligence", level: 2 })).toBeTruthy();
+  expect(screen.getByText("Sin evidencia canónica")).toBeTruthy();
   expect(screen.getAllByText(/no se infieren/i).length).toBeGreaterThan(0);
 });
 

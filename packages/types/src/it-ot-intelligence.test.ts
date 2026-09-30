@@ -116,23 +116,26 @@ describe("IT / OT Intelligence", () => {
       asset("OT-1", { scalarDomain: "OT" }),
       asset("LEGACY", { scalarDomain: "IT", taxonomyDomain: null }),
       asset("UNKNOWN", { scalarDomain: "IT", taxonomyDomain: unresolved("unknown") }),
+      asset("UNCLASSIFIED", { scalarDomain: "OT", taxonomyDomain: unresolved("unclassified") }),
       asset("CONFLICT", { scalarDomain: "OT", taxonomyDomain: conflict() }),
     ]));
 
     expect(report.population).toEqual({
-      total: 5,
+      total: 6,
       classified: 2,
-      unresolved: 3,
-      domainCoverage: { state: "partial", known: 2, total: 5, ratio: 0.4 },
+      unresolved: 4,
+      domainCoverage: { state: "partial", known: 2, total: 6, ratio: 1 / 3 },
       unresolvedByReason: {
         assessmentMissing: 1,
         unknown: 1,
-        unclassified: 0,
+        unclassified: 1,
         conflict: 1,
       },
     });
     expect(report.cohorts.IT.population).toBe(1);
+    expect(report.cohorts.IT.assetIds).toEqual(["IT-1"]);
     expect(report.cohorts.OT.population).toBe(1);
+    expect(report.cohorts.OT.assetIds).toEqual(["OT-1"]);
   });
 
   it("mantiene coverage propio para class y role dentro de una cohorte", () => {
@@ -210,6 +213,18 @@ describe("IT / OT Intelligence", () => {
       denominator: 2,
       population: { scoped: 2, eligible: 2, unknown: 0 },
     });
+  });
+
+  it("no muta el snapshot al construir cohortes y distribuciones", () => {
+    const input = snapshot([
+      asset("IT-1"),
+      asset("OT-1", { scalarDomain: "OT", operationalContexts: [{ id: "SITE-1", kind: "site" }] }),
+    ]);
+    const before = JSON.stringify(input);
+
+    buildItOtIntelligenceReport(input);
+
+    expect(JSON.stringify(input)).toBe(before);
   });
 
   it("conserva población vacía como unavailable en vez de fabricar 0 %", () => {
