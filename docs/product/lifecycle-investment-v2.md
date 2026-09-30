@@ -1,6 +1,6 @@
 # V02-021 — Lifecycle & Investment
 
-Estado: **en implementación** · issue #105.
+Estado: **integrado** · PR #107 · issue #105 · merge `34f3ee8`.
 
 ## Pregunta operacional
 
@@ -159,7 +159,7 @@ V02-021 no implementa:
 
 ## QA
 
-La implementación debe conservar:
+La implementación integrada conserva:
 
 - contrato puro testeable en `@igx-nexus/types`;
 - Demo/Live sin fallback;
