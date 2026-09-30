@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
     [string]$GraphBaseUrl = "https://graph.microsoft.com/v1.0",
+    [ValidateRange(1, 100)][int]$SampleSize = 25,
     [switch]$PermissionReviewConfirmed
 )
 
@@ -40,22 +41,28 @@ Write-Check "token.format" "opaque" "contents intentionally not inspected"
 
 $select = [Uri]::EscapeDataString("id,azureADDeviceId,serialNumber,manufacturer,model,operatingSystem,osVersion,lastSyncDateTime,complianceState")
 try {
-    $deviceResponse = Invoke-GraphRead "deviceManagement/managedDevices?`$top=1&`$select=$select" $token
+    $deviceResponse = Invoke-GraphRead "deviceManagement/managedDevices?`$top=$SampleSize&`$select=$select" $token
 } catch {
     Write-Check "graph.managedDevices" "unavailable" "GET failed; details suppressed"
     throw "Microsoft Graph managedDevices read probe failed. Review consent, licensing and network access without copying the upstream response into Git."
 }
 
 Write-Check "graph.managedDevices" "reachable" ""
-$sample = @($deviceResponse.value) | Select-Object -First 1
-if ($null -eq $sample) {
+$samples = @($deviceResponse.value)
+Write-Check "graph.managedDevices.sampleCount" ([string]$samples.Count) "bounded sample; no values printed"
+
+if ($samples.Count -eq 0) {
     Write-Check "graph.managedDevices.sample" "unavailable" "zero rows returned"
 } else {
     Write-Check "graph.managedDevices.sample" "available" ""
     foreach ($field in @("id","azureADDeviceId","serialNumber","manufacturer","model","operatingSystem","osVersion","lastSyncDateTime","complianceState")) {
-        $property = $sample.PSObject.Properties[$field]
-        $hasValue = $null -ne $property -and $null -ne $property.Value -and -not [string]::IsNullOrWhiteSpace([string]$property.Value)
-        Write-Check "field.$field" ($(if ($hasValue) { "observed" } else { "missing" })) ""
+        $known = 0
+        foreach ($sample in $samples) {
+            $property = $sample.PSObject.Properties[$field]
+            $hasValue = $null -ne $property -and $null -ne $property.Value -and -not [string]::IsNullOrWhiteSpace([string]$property.Value)
+            if ($hasValue) { $known++ }
+        }
+        Write-Check "field.$field.coverage" "$known/$($samples.Count)" "values suppressed"
     }
 }
 
