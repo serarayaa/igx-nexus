@@ -1,6 +1,6 @@
 # ADR-0026 — Lifecycle Evidence & Planning
 
-Estado: **Propuesto en V02-021 / issue #105**.
+Estado: **Accepted** — V02-021 integrado mediante PR #107 / issue #105.
 
 ## Contexto
 
