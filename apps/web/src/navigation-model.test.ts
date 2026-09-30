@@ -3,7 +3,7 @@ import { assetHash, assetSectionHash, defaultTechnologyMapState, demoQrHash, lab
 
 describe("routeFromHash", () => {
   it("reconoce las rutas del Dashboard", () => {
-    for (const hash of ["", "#overview", "#quality", "#lifecycle", "#next-views"]) expect(routeFromHash(hash)).toEqual({ view: "dashboard" });
+    for (const hash of ["", "#overview", "#quality", "#next-views"]) expect(routeFromHash(hash)).toEqual({ view: "dashboard" });
   });
 
   it("reconoce el Asset Explorer", () => {
@@ -58,3 +58,4 @@ describe("route builders", () => {
 });
 
 it("reconoce Health como ruta propia", () => { expect(routeFromHash("#health")).toEqual({ view: "health" }); });
+it("reconoce Lifecycle & Investment como ruta propia", () => { expect(routeFromHash("#lifecycle")).toEqual({ view: "lifecycle" }); });

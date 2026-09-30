@@ -7,6 +7,18 @@ export const DEMO_AS_OF = "2026-09-09T12:00:00.000Z";
 const date = (days) => new Date(Date.parse(DEMO_AS_OF) + days * DAY).toISOString();
 const id = (number) => `DEMO-${String(number).padStart(4, "0")}`;
 
+function syntheticLifecyclePlan(number) {
+  const ageDays = 365 + ((number * 29) % 720);
+  const eolOffset = ((number * 47) % 1095) - 180;
+  return {
+    purchaseAt: number % 13 === 0 ? null : date(-ageDays),
+    commissionedAt: number % 7 === 0 ? null : date(-(ageDays - 14)),
+    eolAt: number % 5 === 0 ? null : date(eolOffset),
+    eosAt: number % 4 === 0 ? null : date(eolOffset + 180),
+    replacementTargetAt: number % 3 === 0 ? null : date(eolOffset + 60),
+  };
+}
+
 export const demoSites = Object.freeze([
   "Oficina Demo Centro",
   "Planta Demo Norte",
@@ -68,6 +80,7 @@ function authoredAsset(number, product, domain, location, overrides = {}) {
     critical: false,
     lastSeen: date(-2),
     warrantyEnds: date(365),
+    ...syntheticLifecyclePlan(number),
     ...overrides,
   };
 }
@@ -77,7 +90,18 @@ function heroAssets() {
   const north = demoSites[1];
   const warehouse = demoSites[3];
   return [
-    authoredAsset(1, "notebook", "IT", office, { serial: null, owner: null, location: null, lastSeen: null, warrantyEnds: null }),
+    authoredAsset(1, "notebook", "IT", office, {
+      serial: null,
+      owner: null,
+      location: null,
+      lastSeen: null,
+      warrantyEnds: null,
+      purchaseAt: null,
+      commissionedAt: null,
+      eolAt: null,
+      eosAt: null,
+      replacementTargetAt: null,
+    }),
     authoredAsset(2, "desktop", "IT", office, { warrantyEnds: date(-30) }),
     authoredAsset(3, "switch", "IT", office, { critical: true }),
     authoredAsset(4, "phone", "IT", office, { name: "Teléfono Demo Recepción", warrantyEnds: date(20) }),
@@ -207,6 +231,16 @@ function toCanonicalAsset(asset) {
   const contexts = asset.location
     ? [Object.freeze({ id: siteIds[asset.location], kind: "site", displayName: asset.location, source })]
     : [];
+  const lifecycleProvenance = [
+    ["attributes.nexus.lifecycle.purchaseAt", asset.purchaseAt],
+    ["attributes.nexus.lifecycle.commissionedAt", asset.commissionedAt],
+    ["attributes.nexus.lifecycle.warrantyEndAt", asset.warrantyEnds],
+    ["attributes.nexus.lifecycle.eolAt", asset.eolAt],
+    ["attributes.nexus.lifecycle.eosAt", asset.eosAt],
+    ["attributes.nexus.lifecycle.replacementTargetAt", asset.replacementTargetAt],
+  ]
+    .filter(([, value]) => typeof value === "string")
+    .map(([fieldPath]) => provenance(fieldPath, source));
 
   return Object.freeze({
     id: asset.id,
@@ -238,6 +272,12 @@ function toCanonicalAsset(asset) {
       "demo.lastSeen": asset.lastSeen,
       "demo.warrantyEnds": asset.warrantyEnds,
       "demo.critical": asset.critical,
+      "nexus.lifecycle.purchaseAt": asset.purchaseAt,
+      "nexus.lifecycle.commissionedAt": asset.commissionedAt,
+      "nexus.lifecycle.warrantyEndAt": asset.warrantyEnds,
+      "nexus.lifecycle.eolAt": asset.eolAt,
+      "nexus.lifecycle.eosAt": asset.eosAt,
+      "nexus.lifecycle.replacementTargetAt": asset.replacementTargetAt,
     }),
     provenance: Object.freeze([
       provenance("displayName", source),
@@ -250,6 +290,7 @@ function toCanonicalAsset(asset) {
       provenance("attributes.demo.owner", source),
       provenance("attributes.demo.lastSeen", source),
       provenance("attributes.demo.warrantyEnds", source),
+      ...lifecycleProvenance,
     ]),
   });
 }

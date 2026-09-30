@@ -1,0 +1,22 @@
+.nexus-lifecycle { max-width: 96rem; }
+.nexus-lifecycle-context { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(22rem, 1fr); gap: var(--igx-density-section-gap); padding: var(--igx-spacing-5); border: 1px solid var(--igx-semantic-color-border-subtle); border-radius: var(--igx-semantic-shape-card); background: var(--igx-semantic-color-surface-base); }
+.nexus-lifecycle-context h2 { margin-top: 0; }
+.nexus-lifecycle-context p:last-child { margin-bottom: 0; color: var(--igx-semantic-color-text-secondary); }
+.nexus-lifecycle-context dl { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--igx-spacing-4); align-content: center; }
+.nexus-lifecycle-context dt { color: var(--igx-semantic-color-text-secondary); font-size: .75rem; }
+.nexus-lifecycle-context dd { margin: var(--igx-spacing-1) 0 0; font-size: 1.25rem; font-weight: var(--igx-font-weight-semibold); font-variant-numeric: tabular-nums; }
+.nexus-lifecycle-section { display: grid; gap: var(--igx-density-content-gap); }
+.nexus-lifecycle-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--igx-density-content-gap); }
+.nexus-lifecycle-card-status { margin-bottom: var(--igx-spacing-4); }
+.nexus-lifecycle-facts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--igx-spacing-3); }
+.nexus-lifecycle-facts div { min-width: 0; padding-top: var(--igx-spacing-2); border-top: 1px solid var(--igx-semantic-color-border-subtle); }
+.nexus-lifecycle-facts dt { color: var(--igx-semantic-color-text-secondary); font-size: .75rem; }
+.nexus-lifecycle-facts dd { margin: var(--igx-spacing-1) 0 0; font-size: 1.25rem; font-weight: var(--igx-font-weight-semibold); font-variant-numeric: tabular-nums; }
+.nexus-lifecycle-asset-name { display: block; margin-top: var(--igx-spacing-1); color: var(--igx-semantic-color-text-secondary); font-size: .75rem; }
+.nexus-lifecycle-boundary { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--igx-spacing-4); align-items: start; padding: var(--igx-spacing-5); border: 1px solid var(--igx-semantic-color-border-subtle); border-radius: var(--igx-semantic-shape-card); background: var(--igx-semantic-color-surface-base); }
+.nexus-lifecycle-boundary svg { width: 24px; height: 24px; }
+.nexus-lifecycle-boundary p { margin-bottom: 0; color: var(--igx-semantic-color-text-secondary); }
+@media (max-width: 1199px) { .nexus-lifecycle-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .nexus-lifecycle-context { grid-template-columns: minmax(0, 1fr); } .nexus-lifecycle-cards { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 479px) { .nexus-lifecycle-context { padding: var(--igx-spacing-4); } .nexus-lifecycle-context dl, .nexus-lifecycle-facts { grid-template-columns: minmax(0, 1fr); } .nexus-lifecycle-boundary { padding: var(--igx-spacing-4); grid-template-columns: minmax(0, 1fr); } }
+@media (forced-colors: active) { .nexus-lifecycle-context, .nexus-lifecycle-facts div, .nexus-lifecycle-boundary { border-color: CanvasText; } }

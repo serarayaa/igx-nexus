@@ -80,7 +80,7 @@ a:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outli
 .nexus-overview-summary dd { margin: var(--igx-spacing-2) 0 0; }
 .nexus-overview-summary dd strong { display: block; font-size: 1.75rem; font-weight: var(--igx-semantic-typography-metric-font-weight); font-variant-numeric: tabular-nums; }
 .nexus-overview-summary dd span { display: block; margin-top: var(--igx-spacing-2); color: var(--igx-semantic-color-text-secondary); font-size: .8125rem; font-weight: 400; }
-.nexus-overview-drilldowns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--igx-density-content-gap); }
+.nexus-overview-drilldowns { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: var(--igx-density-content-gap); }
 .nexus-overview-drilldowns > a { min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--igx-spacing-3); min-height: 64px; padding: var(--igx-spacing-4); border: 1px solid var(--igx-semantic-color-border-subtle); border-radius: var(--igx-semantic-shape-card); background: var(--igx-semantic-color-surface-base); text-decoration: none; }
 .nexus-overview-drilldowns > a:hover { border-color: var(--igx-semantic-color-border-strong); }
 .nexus-overview-drilldowns svg { width: 20px; height: 20px; }

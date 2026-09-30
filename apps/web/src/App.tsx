@@ -6,6 +6,7 @@ import { DemoQrResolver } from "./DemoQrResolver";
 import { LabelDesigner } from "./LabelDesigner";
 import { RelationshipGraph } from "./RelationshipGraph";
 import { CmdbHealth } from "./CmdbHealth";
+import { LifecyclePlanning } from "./LifecyclePlanning";
 import { NexusShell } from "./NexusShell";
 import { demoProvider } from "./demo-provider";
 import { liveProvider } from "./live-provider";
@@ -28,7 +29,7 @@ function savedRoute(): AppRoute | null {
   const value: unknown = window.history.state?.nexusRoute;
   if (!value || typeof value !== "object" || !("view" in value)) return null;
   const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown; locator?: unknown; section?: unknown; mapState?: unknown };
-  if (route.view === "dashboard" || route.view === "assets" || route.view === "health") return { view: route.view };
+  if (route.view === "dashboard" || route.view === "assets" || route.view === "health" || route.view === "lifecycle") return { view: route.view };
   if (route.view === "asset" && typeof route.assetId === "string" && route.assetId) {
     const section: AssetSection = route.section === "inventory" || route.section === "evidence" || route.section === "relationships"
       ? route.section
@@ -58,13 +59,14 @@ function savedRoute(): AppRoute | null {
 
 function normalizeRouteForMode(route: AppRoute | null, mode: InventoryMode): AppRoute {
   if (mode === "demo") return route ?? { view: "dashboard" };
-  if (route?.view === "dashboard" || route?.view === "asset" || route?.view === "assets" || route?.view === "relations") return route;
+  if (route?.view === "dashboard" || route?.view === "asset" || route?.view === "assets" || route?.view === "relations" || route?.view === "lifecycle") return route;
   return { view: "dashboard" };
 }
 
 function routeTitle(route: AppRoute): string {
   if (route.view === "dashboard") return "Technology Overview";
   if (route.view === "health") return "CMDB Health";
+  if (route.view === "lifecycle") return "Lifecycle & Investment";
   if (route.view === "assets") return "Activos";
   if (route.view === "asset") return `Asset ${route.assetId}`;
   if (route.view === "label") return `Etiqueta ${route.assetId}`;
@@ -95,7 +97,8 @@ export function App() {
       ? assetSectionHash(route.assetId, route.section)
       : route.view === "relations"
         ? relationsHash(route.assetId, route.mapState)
-        : route.view === "assets" ? "#assets" : "#overview";
+        : route.view === "assets" ? "#assets"
+          : route.view === "lifecycle" ? "#lifecycle" : "#overview";
     if (window.location.hash !== expectedHash) {
       window.history.replaceState({ ...window.history.state, nexusRoute: route }, "", expectedHash);
     }
@@ -121,6 +124,8 @@ export function App() {
     ? <DashboardContent provider={inventory.provider} mode={inventory.mode} />
     : route.view === "health"
       ? <CmdbHealth />
+    : route.view === "lifecycle"
+      ? <LifecyclePlanning inventoryProvider={inventory.provider} mode={inventory.mode} />
     : route.view === "assets"
       ? <AssetExplorer provider={inventory.provider} mode={inventory.mode} />
       : route.view === "asset"

@@ -130,6 +130,36 @@ describe("V02-011/V02-012 canonical demo dataset", () => {
     }
   });
 
+  it("authors lifecycle milestones with explicit evidence while preserving honest gaps", () => {
+    const byId = new Map(snapshot.assets.map((asset) => [asset.id, asset]));
+    const lifecycleKeys = [
+      "nexus.lifecycle.purchaseAt",
+      "nexus.lifecycle.commissionedAt",
+      "nexus.lifecycle.warrantyEndAt",
+      "nexus.lifecycle.eolAt",
+      "nexus.lifecycle.eosAt",
+      "nexus.lifecycle.replacementTargetAt",
+    ] as const;
+
+    const insufficient = byId.get("DEMO-0001");
+    expect(insufficient).toBeDefined();
+    for (const key of lifecycleKeys) expect(insufficient?.attributes[key]).toBeNull();
+
+    expect(byId.get("DEMO-0002")?.attributes["nexus.lifecycle.warrantyEndAt"]).toBe("2026-08-10T12:00:00.000Z");
+    expect(byId.get("DEMO-0004")?.attributes["nexus.lifecycle.warrantyEndAt"]).toBe("2026-09-29T12:00:00.000Z");
+
+    for (const asset of snapshot.assets) {
+      for (const key of lifecycleKeys) {
+        const value = asset.attributes[key];
+        if (value === null) continue;
+        expect(typeof value).toBe("string");
+        const records = asset.provenance.filter((record) => record.fieldPath === `attributes.${key}`);
+        expect(records.length, `${asset.id} must evidence ${key}`).toBeGreaterThan(0);
+        expect(records.every((record) => record.source.source === "demo")).toBe(true);
+      }
+    }
+  });
+
   it("is deterministic, immutable and protected by a canonical digest", () => {
     const second = createCanonicalDemoSnapshot();
     expect(second).not.toBe(snapshot);
@@ -143,6 +173,6 @@ describe("V02-011/V02-012 canonical demo dataset", () => {
 
     // Review semantic changes before intentionally updating this digest.
     const digest = createHash("sha256").update(JSON.stringify(snapshot)).digest("hex");
-    expect(digest).toBe("b28a14f5db5009739af9b8ce9b883ec062bc3662c1bcfd673e1ffc4daa43b05d");
+    expect(digest).toBe("208f279149aa867fed981fc5f302b2a07094ded7c84b3ec77784228b65729102");
   });
 });
