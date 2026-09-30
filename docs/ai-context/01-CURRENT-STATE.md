@@ -42,27 +42,27 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-021**
+**V02-001 .. V02-022**
 
 Último desarrollo funcional integrado:
 
-**V02-021 — Lifecycle & Investment**
+**V02-022 — IT / OT Intelligence**
 
-Resultado relevante de V02-021:
+Resultado relevante de V02-022:
 
-- hitos temporales lifecycle quedan separados del estado actual de `TechnologyAsset.lifecycle`;
-- purchase/commissioned/warranty/EOL/EOS/replacement target requieren fecha válida y provenance explícito para considerarse conocidos;
-- ventanas de 3/6/12/24 meses usan meses calendario UTC desde `snapshot.asOf`;
-- edad sólo se calcula desde commissioned/purchase respaldados por evidencia;
-- coverage se publica por hito y no convierte ausencia de fecha en ausencia de riesgo;
-- Demo incorpora hitos sintéticos deterministas; Live mantiene unavailable/partial sin fallback;
-- `#lifecycle` ofrece planificación temporal con drill-down a Asset 360;
-- Investment no implica CAPEX, precios ni presupuesto inventado;
-- ADR-0026 aceptado.
+- cohortes IT/OT se derivan únicamente desde `taxonomy.domain.state=classified`;
+- assessment ausente, unknown, unclassified y conflict permanecen fuera de cohortes y reducen domain coverage;
+- compatibility projection no se interpreta como clasificación analítica;
+- Asset Class y Role mantienen coverage independiente dentro de cada cohorte;
+- Operational Context distingue ausencia de cobertura de colección conocida vacía;
+- métricas de inventory, taxonomy resolved, source instance identity y lifecycle known reutilizan V02-019;
+- Technology Overview incorpora una lente IT/OT sin crear una ruta global nueva;
+- Live sin snapshot canónico presenta la lente como unavailable y no fabrica cohortes;
+- no se introducen ranking, maturity score, risk score ni Device Health.
 
 Siguiente desarrollo funcional planificado:
 
-**V02-022 — IT / OT Intelligence**
+**V02-023 — Intune Analytics Feasibility Spike**
 
 El detalle completo permanece definido en:
 
@@ -84,7 +84,8 @@ Las principales superficies y capacidades disponibles incluyen:
 - infraestructura Demo / Live;
 - modelo canónico con provenance y relationship evidence;
 - Analytics Contract Layer;
-- Lifecycle & Investment.
+- Lifecycle & Investment;
+- IT / OT Intelligence.
 
 CMDB Quality y Device Operational Health permanecen conceptualmente separados.
 
@@ -190,4 +191,4 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-022 — IT / OT Intelligence**
+**V02-023 — Intune Analytics Feasibility Spike**
