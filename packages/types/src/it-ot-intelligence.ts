@@ -217,12 +217,10 @@ function buildCohort(
  */
 export function buildItOtIntelligenceReport(snapshot: TechnologySnapshot): ItOtIntelligenceReport {
   const cohorts: Record<TechnologyDomain, TechnologyAsset[]> = { IT: [], OT: [] };
-  const unresolvedByReason: ItOtDomainResolutionBreakdown = {
-    assessmentMissing: 0,
-    unknown: 0,
-    unclassified: 0,
-    conflict: 0,
-  };
+  let assessmentMissing = 0;
+  let unknown = 0;
+  let unclassified = 0;
+  let conflict = 0;
 
   for (const asset of snapshot.assets) {
     const domain = classifiedDomain(asset);
@@ -232,10 +230,10 @@ export function buildItOtIntelligenceReport(snapshot: TechnologySnapshot): ItOtI
     }
 
     const reason = unresolvedReason(asset);
-    if (reason === "assessment_missing") unresolvedByReason.assessmentMissing++;
-    else if (reason === "unknown") unresolvedByReason.unknown++;
-    else if (reason === "unclassified") unresolvedByReason.unclassified++;
-    else if (reason === "conflict") unresolvedByReason.conflict++;
+    if (reason === "assessment_missing") assessmentMissing++;
+    else if (reason === "unknown") unknown++;
+    else if (reason === "unclassified") unclassified++;
+    else if (reason === "conflict") conflict++;
   }
 
   const classified = cohorts.IT.length + cohorts.OT.length;
@@ -248,7 +246,12 @@ export function buildItOtIntelligenceReport(snapshot: TechnologySnapshot): ItOtI
       classified,
       unresolved: total - classified,
       domainCoverage: coverage(classified, total),
-      unresolvedByReason,
+      unresolvedByReason: {
+        assessmentMissing,
+        unknown,
+        unclassified,
+        conflict,
+      },
     },
     cohorts: {
       IT: buildCohort(snapshot, "IT", cohorts.IT),
