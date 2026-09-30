@@ -55,7 +55,7 @@ Dirección conceptual posterior:
 | V02-018 | Technology Map 2.0 | P1 | ✅ Integrado — PR #93 / issue #92 / merge `19ff461d` |
 | V02-019 | Analytics Contract Layer | P0 | ✅ Integrado — PR #99 / issue #96 |
 | V02-020 | CMDB Quality 2.0 | P1 | ✅ Integrado — PR #103 / issue #102 / merge `7f5d824`; CI #827 verde |
-| V02-021 | Lifecycle & Investment | P1 | ⚪ Pendiente |
+| V02-021 | Lifecycle & Investment | P1 | 🟡 En implementación — issue #105 |
 | V02-022 | IT / OT Intelligence | P1 | ⚪ Pendiente |
 | V02-023 | Intune Analytics Feasibility Spike | P0 | ⚪ Pendiente |
 | V02-024 | Windows / Dell Lab Telemetry | P1 | ⚪ Pendiente |
@@ -402,9 +402,32 @@ ADR-0025 CMDB Quality 2.0 — Accepted.
 
 Siguiente trabajo: **V02-021 — Lifecycle & Investment**.
 
-### V02-021 — Lifecycle & Investment
+### V02-021 — Lifecycle & Investment 🟡
 
-Garantía/EOL/EOS/edad/reemplazo a horizontes 3/6/12/24 meses sin inventar presupuesto corporativo.
+Issue #105.
+
+Pregunta central:
+
+> **¿Qué hitos conocidos del ciclo de vida requieren planificación dentro de los próximos 3, 6, 12 o 24 meses, y qué cobertura de evidencia respalda esa lectura?**
+
+Dirección implementada en la rama:
+
+- contrato lifecycle puro en `@igx-nexus/types`;
+- purchase/commissioned/warranty/EOL/EOS/replacement target como hitos temporales separados de `TechnologyAsset.lifecycle`;
+- fecha válida sin provenance = `unverified`, no conocimiento confirmado;
+- ventanas de 3/6/12/24 meses mediante meses calendario UTC desde `snapshot.asOf`;
+- edad sólo desde commissioned/purchase explícitos, con base visible;
+- coverage por hito independiente de expired/in-window/outside-window;
+- dataset Demo con hitos sintéticos deterministas y provenance;
+- workspace `#lifecycle` compartido por Demo/Live;
+- Live conserva unavailable/partial coverage sin fallback a Demo;
+- Investment se limita a planificación temporal: sin CAPEX, precios, presupuesto ni vida útil inventada;
+- V02-022 permanece fuera de alcance.
+
+Documentos:
+
+- `docs/product/lifecycle-investment-v2.md`;
+- ADR-0026 Lifecycle Evidence & Planning — propuesto.
 
 ### V02-022 — IT / OT Intelligence
 
