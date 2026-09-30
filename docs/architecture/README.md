@@ -42,6 +42,6 @@ Principios fundamentales:
 - [ADR-0023 — Product Information Architecture v2](adr-0023-product-information-architecture-v2.md) — aceptado tras V02-013 (PR #76 / issue #75; CI post-merge #493).
 - [ADR-0024 — Analytics Contract Layer](adr-0024-analytics-contract-layer.md) — aceptado tras V02-019 (PR #99 / issue #96).
 - [ADR-0025 — CMDB Quality 2.0](adr-0025-cmdb-quality-v2.md) — aceptado tras V02-020 (PR #103 / issue #102).
-- [ADR-0026 — Lifecycle Evidence & Planning](adr-0026-lifecycle-evidence-planning.md) — propuesto en V02-021 (issue #105).
+- [ADR-0026 — Lifecycle Evidence & Planning](adr-0026-lifecycle-evidence-planning.md) — aceptado tras V02-021 (PR #107 / issue #105).
 
 Los ADR canónicos viven en `docs/architecture/`. El directorio histórico `docs/decisions/` no debe utilizarse para duplicar decisiones ya registradas aquí.
