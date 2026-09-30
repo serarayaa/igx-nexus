@@ -55,7 +55,7 @@ Dirección conceptual posterior:
 | V02-018 | Technology Map 2.0 | P1 | ✅ Integrado — PR #93 / issue #92 / merge `19ff461d` |
 | V02-019 | Analytics Contract Layer | P0 | ✅ Integrado — PR #99 / issue #96 |
 | V02-020 | CMDB Quality 2.0 | P1 | ✅ Integrado — PR #103 / issue #102 / merge `7f5d824`; CI #827 verde |
-| V02-021 | Lifecycle & Investment | P1 | 🟡 En implementación — issue #105 |
+| V02-021 | Lifecycle & Investment | P1 | ✅ Integrado — PR #107 / issue #105 / merge `34f3ee8` |
 | V02-022 | IT / OT Intelligence | P1 | ⚪ Pendiente |
 | V02-023 | Intune Analytics Feasibility Spike | P0 | ⚪ Pendiente |
 | V02-024 | Windows / Dell Lab Telemetry | P1 | ⚪ Pendiente |
@@ -356,7 +356,7 @@ Pregunta central:
 
 > **¿Cómo define NEXUS una métrica para que su valor, población, denominador, cobertura, fuente, temporalidad y significado sean consistentes y explicables en cualquier superficie?**
 
-Dirección implementada en la rama:
+Resultado:
 
 - contrato `MetricDefinition / MetricScope / MetricResult / MetricCoverage` dentro de `@igx-nexus/types`;
 - evaluación pura sobre `TechnologySnapshot`, sin nuevo servicio analítico;
@@ -402,9 +402,9 @@ ADR-0025 CMDB Quality 2.0 — Accepted.
 
 Siguiente trabajo: **V02-021 — Lifecycle & Investment**.
 
-### V02-021 — Lifecycle & Investment 🟡
+### V02-021 — Lifecycle & Investment ✅
 
-Issue #105.
+Integrado mediante PR #107, merge `34f3ee8884df8874663bf191aaab744957f8c6c7`.
 
 Pregunta central:
 
@@ -427,7 +427,9 @@ Dirección implementada en la rama:
 Documentos:
 
 - `docs/product/lifecycle-investment-v2.md`;
-- ADR-0026 Lifecycle Evidence & Planning — propuesto.
+- ADR-0026 Lifecycle Evidence & Planning — Accepted.
+
+Siguiente trabajo: **V02-022 — IT / OT Intelligence**.
 
 ### V02-022 — IT / OT Intelligence
 
