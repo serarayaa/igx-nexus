@@ -42,28 +42,27 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-020**
+**V02-001 .. V02-021**
 
 Último desarrollo funcional integrado:
 
-**V02-020 — CMDB Quality 2.0**
+**V02-022 — IT / OT Intelligence**
 
-Resultado relevante de V02-020:
+Resultado relevante de V02-021:
 
-- CMDB Health conserva su score histórico y sus cinco dimensiones sin inventar nuevos pesos corporativos;
-- evidencia canónica se presenta mediante métricas separadas con value, denominador y measurement coverage explícitos;
-- source instance identity reutiliza el contrato analítico existente;
-- provenance gobierna `displayName`, `domain`, `assetClass`, `role`, `lifecycle` y `criticality`;
-- conflictos Taxonomy v2 sólo se presentan cuando existe estado `conflict` explícito;
-- ausencia de assessment reduce coverage y no se interpreta como ausencia de conflicto;
-- Demo y Live conservan `InventorySnapshot.canonical` bajo el mismo contrato;
-- Demo usa `sourceInstanceId=demo-v0.2`;
-- `AttributeConflict` permanece no disponible mientras no sea transportado por `TechnologySnapshot`;
-- ADR-0025 aceptado.
+- hitos temporales lifecycle quedan separados del estado actual de `TechnologyAsset.lifecycle`;
+- purchase/commissioned/warranty/EOL/EOS/replacement target requieren fecha válida y provenance explícito para considerarse conocidos;
+- ventanas de 3/6/12/24 meses usan meses calendario UTC desde `snapshot.asOf`;
+- edad sólo se calcula desde commissioned/purchase respaldados por evidencia;
+- coverage se publica por hito y no convierte ausencia de fecha en ausencia de riesgo;
+- Demo incorpora hitos sintéticos deterministas; Live mantiene unavailable/partial sin fallback;
+- `#lifecycle` ofrece planificación temporal con drill-down a Asset 360;
+- Investment no implica CAPEX, precios ni presupuesto inventado;
+- ADR-0026 aceptado.
 
 Siguiente desarrollo funcional planificado:
 
-**V02-021 — Lifecycle & Investment**
+**V02-022 — IT / OT Intelligence**
 
 El detalle completo permanece definido en:
 
@@ -84,7 +83,8 @@ Las principales superficies y capacidades disponibles incluyen:
 - CMDB Quality 2.0 / CMDB Health;
 - infraestructura Demo / Live;
 - modelo canónico con provenance y relationship evidence;
-- Analytics Contract Layer.
+- Analytics Contract Layer;
+- Lifecycle & Investment.
 
 CMDB Quality y Device Operational Health permanecen conceptualmente separados.
 
@@ -104,7 +104,7 @@ Los ADR canónicos viven en:
 
 La arquitectura actual incluye decisiones hasta:
 
-**ADR-0025 — CMDB Quality 2.0**
+**ADR-0026 — Lifecycle Evidence & Planning**
 
 Los ADR antiguos pueden ser supersedidos por decisiones posteriores.
 
