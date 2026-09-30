@@ -66,6 +66,9 @@ Desde la raíz del repositorio:
 
 ```powershell
 .\scripts\live-lab\Test-IntuneGraphPreflight.ps1 -PermissionReviewConfirmed
+
+# Opcional: cambiar la muestra sin superar 100
+.\scripts\live-lab\Test-IntuneGraphPreflight.ps1 -PermissionReviewConfirmed -SampleSize 50
 ```
 
 El script:
@@ -74,8 +77,8 @@ El script:
 - exige `-PermissionReviewConfirmed` después de revisar manualmente la app registration/service principal;
 - el review debe confirmar `DeviceManagementManagedDevices.Read.All` y ausencia de permisos Intune ReadWrite;
 - usa sólo `GET`;
-- consulta como máximo una fila de `managedDevices`;
-- sólo informa presencia/ausencia de campos;
+- consulta una muestra acotada de 25 `managedDevices` por defecto (configurable 1–100);
+- sólo informa conteos de cobertura por campo, nunca sus valores;
 - prueba reachability del contenedor `deviceManagement/reports`;
 - no crea export jobs;
 - no imprime valores de dispositivos.
@@ -97,16 +100,17 @@ permission.review=confirmed (manual least-privilege review completed)
 token.format=opaque (contents intentionally not inspected)
 graph.managedDevices=reachable
 graph.managedDevices.sample=available
-field.id=observed
-field.azureADDeviceId=observed
-field.serialNumber=observed
-field.operatingSystem=observed
+graph.managedDevices.sampleCount=25 (bounded sample; no values printed)
+field.id.coverage=25/25 (values suppressed)
+field.azureADDeviceId.coverage=25/25 (values suppressed)
+field.serialNumber.coverage=23/25 (values suppressed)
+field.operatingSystem.coverage=25/25 (values suppressed)
 graph.reportsContainer=reachable
 graph.exportJobs.create=not-probed (POST excluded from read-only spike)
 result=complete (no token or device values printed)
 ```
 
-Un campo `missing` no es un error automático: puede depender de plataforma, enrolamiento o cobertura.
+Una cobertura parcial no es un error automático: puede depender de plataforma, enrolamiento o calidad de datos. El preflight no pagina el tenant completo; la muestra sólo sirve para decidir factibilidad y diseñar el siguiente paso.
 
 ## Validación manual en Intune
 
