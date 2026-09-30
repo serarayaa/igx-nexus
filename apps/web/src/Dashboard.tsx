@@ -184,6 +184,7 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
         </div>
         <div className="nexus-overview-drilldowns">
           <a href="#assets"><Boxes aria-hidden="true" /><span><strong>Explorar activos</strong><small>Buscar, filtrar y abrir Asset 360.</small></span><ArrowRight aria-hidden="true" /></a>
+          <a href="#lifecycle"><CalendarClock aria-hidden="true" /><span><strong>Lifecycle &amp; Investment</strong><small>Revisar vencimientos, cobertura y horizontes 3/6/12/24 meses.</small></span><ArrowRight aria-hidden="true" /></a>
           {!live && <a href="#health"><ShieldCheck aria-hidden="true" /><span><strong>Calidad de datos</strong><small>Investigar reglas y evidencia del registro CMDB.</small></span><ArrowRight aria-hidden="true" /></a>}
         </div>
       </section>
