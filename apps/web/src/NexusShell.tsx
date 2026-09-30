@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Boxes, LayoutDashboard, Moon, ShieldCheck, SlidersHorizontal, Sun } from "lucide-react";
+import { Boxes, CalendarClock, LayoutDashboard, Moon, ShieldCheck, SlidersHorizontal, Sun } from "lucide-react";
 import { AppHeader, AppShell, AppSidebar, Badge, IconButton } from "@igx-nexus/ui";
 import logo from "../../../assets/branding/igx-nexus-logo.png";
 import {
@@ -15,12 +15,13 @@ import {
   type PreferenceStorage,
 } from "./shell-preferences";
 
-type NexusView = "dashboard" | "health" | "assets" | "asset" | "relations" | "label" | "qr";
+type NexusView = "dashboard" | "health" | "lifecycle" | "assets" | "asset" | "relations" | "label" | "qr";
 type NexusDataMode = "demo" | "live";
 
 const viewLabels: Record<NexusView, string> = {
   dashboard: "Technology Overview",
   health: "Calidad de datos",
+  lifecycle: "Lifecycle & Investment",
   assets: "Activos",
   asset: "Asset 360",
   relations: "Technology Map",
@@ -104,6 +105,7 @@ export function NexusShell({ children, view = "dashboard", mode = "demo" }: { ch
       <p className="nexus-nav-heading">Espacios de trabajo</p>
       <a className="nexus-nav-link" href="#overview" aria-current={view === "dashboard" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><LayoutDashboard aria-hidden="true" />Overview</a>
       <a className="nexus-nav-link" href="#assets" aria-current={assetsCurrent ? "page" : undefined} onClick={() => setNavigationOpen(false)}><Boxes aria-hidden="true" />Activos</a>
+      <a className="nexus-nav-link" href="#lifecycle" aria-current={view === "lifecycle" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><CalendarClock aria-hidden="true" />Lifecycle &amp; Investment</a>
       {!live && <a className="nexus-nav-link" href="#health" aria-current={view === "health" ? "page" : undefined} onClick={() => setNavigationOpen(false)}><ShieldCheck aria-hidden="true" />Calidad de datos</a>}
     </AppSidebar>}>
 
