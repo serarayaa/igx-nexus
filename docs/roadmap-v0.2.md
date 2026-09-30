@@ -56,7 +56,7 @@ Dirección conceptual posterior:
 | V02-019 | Analytics Contract Layer | P0 | ✅ Integrado — PR #99 / issue #96 |
 | V02-020 | CMDB Quality 2.0 | P1 | ✅ Integrado — PR #103 / issue #102 / merge `7f5d824`; CI #827 verde |
 | V02-021 | Lifecycle & Investment | P1 | ✅ Integrado — PR #107 / issue #105 / merge `34f3ee8` |
-| V02-022 | IT / OT Intelligence | P1 | 🟡 En implementación — issue #109 |
+| V02-022 | IT / OT Intelligence | P1 | ✅ Integrado — PR #110 / issue #109 / merge `4ffef6d`; CI #866 verde |
 | V02-023 | Intune Analytics Feasibility Spike | P0 | ⚪ Pendiente |
 | V02-024 | Windows / Dell Lab Telemetry | P1 | ⚪ Pendiente |
 | V02-025 | Endpoint Experience | P1 | ⚪ Pendiente |
@@ -431,15 +431,15 @@ Documentos:
 
 Siguiente trabajo: **V02-022 — IT / OT Intelligence**.
 
-### V02-022 — IT / OT Intelligence 🟡
+### V02-022 — IT / OT Intelligence ✅
 
-Issue #109.
+Integrado mediante PR #110, merge `4ffef6ddad78ca9c6507d19b26f32c93cfc64520`; CI post-merge #866 verde.
 
 Pregunta central:
 
 > **¿Qué composición tecnológica y qué cobertura de evidencia existen en IT y OT, y qué diferencias descriptivas pueden observarse sin mezclar poblaciones incompatibles ni convertir unknown en una clasificación?**
 
-Dirección inicial:
+Resultado:
 
 - cohortes IT/OT sólo desde `taxonomy.domain.state=classified`;
 - unresolved/assessment ausente quedan fuera de cohortes y reducen coverage;
@@ -454,6 +454,8 @@ Dirección inicial:
 Documento:
 
 - `docs/product/it-ot-intelligence-v2.md`.
+
+Siguiente trabajo: **V02-023 — Intune Analytics Feasibility Spike**.
 
 ## Epic 6 — Proactive Endpoint Intelligence
 
