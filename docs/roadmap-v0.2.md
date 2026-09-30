@@ -57,7 +57,7 @@ Dirección conceptual posterior:
 | V02-020 | CMDB Quality 2.0 | P1 | ✅ Integrado — PR #103 / issue #102 / merge `7f5d824`; CI #827 verde |
 | V02-021 | Lifecycle & Investment | P1 | ✅ Integrado — PR #107 / issue #105 / merge `34f3ee8` |
 | V02-022 | IT / OT Intelligence | P1 | ✅ Integrado — PR #110 / issue #109 / merge `4ffef6d`; CI #866 verde |
-| V02-023 | Intune Analytics Feasibility Spike | P0 | ⚪ Pendiente |
+| V02-023 | Intune Analytics Feasibility Spike | P0 | 🟡 En implementación — issue #112 |
 | V02-024 | Windows / Dell Lab Telemetry | P1 | ⚪ Pendiente |
 | V02-025 | Endpoint Experience | P1 | ⚪ Pendiente |
 | V02-026 | Proactive Findings Engine | P2 | ⚪ Pendiente |
@@ -459,9 +459,28 @@ Siguiente trabajo: **V02-023 — Intune Analytics Feasibility Spike**.
 
 ## Epic 6 — Proactive Endpoint Intelligence
 
-### V02-023 — Intune Analytics Feasibility Spike
+### V02-023 — Intune Analytics Feasibility Spike 🟡
 
-Verificar datos, permisos/licencias y APIs disponibles antes de diseñar integración definitiva.
+Issue #112.
+
+Pregunta central:
+
+> **¿Qué datos de Microsoft Intune / Endpoint Analytics están realmente disponibles para NEXUS, con qué permisos, licencias, temporalidad y estabilidad de API?**
+
+Dirección:
+
+- evaluar `managedDevices` v1.0 como fuente de inventario/identidad;
+- verificar Endpoint Analytics sin asumir cobertura tenant;
+- separar Advanced Analytics por gate de licencia;
+- tratar ReadWrite de export jobs como gate de mínimo privilegio;
+- preflight GET-only sin secretos ni inventario real;
+- matriz Adopt / Assess / Hold / Reject;
+- sin provider Intune productivo;
+- no adelantar V02-024.
+
+Documento: `docs/integrations/intune-analytics-feasibility-v02-023.md`.
+
+Preflight: `scripts/live-lab/Test-IntuneGraphPreflight.ps1`.
 
 ### V02-024 — Windows / Dell Lab Telemetry
 
