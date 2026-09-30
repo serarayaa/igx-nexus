@@ -1,6 +1,6 @@
 # V02-022 — IT / OT Intelligence
 
-Estado: **en implementación** · issue #109.
+Estado: **integrado** · PR #110 · issue #109 · merge `4ffef6d` · CI post-merge #866 verde.
 
 ## Pregunta operacional
 
@@ -107,9 +107,9 @@ Si el provider no entrega snapshot canónico, la lente se presenta como no dispo
 - nueva taxonomía;
 - scoring comparativo IT/OT.
 
-## QA inicial
+## QA
 
-El contrato debe probar:
+La implementación integrada prueba:
 
 - classified IT;
 - classified OT;
