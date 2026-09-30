@@ -46,7 +46,7 @@ Integrado:
 
 Último desarrollo funcional integrado:
 
-**V02-022 — IT / OT Intelligence**
+**V02-021 — Lifecycle & Investment**
 
 Resultado relevante de V02-021:
 
@@ -190,4 +190,4 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-021 — Lifecycle & Investment**
+**V02-022 — IT / OT Intelligence**
