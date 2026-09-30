@@ -56,7 +56,7 @@ Dirección conceptual posterior:
 | V02-019 | Analytics Contract Layer | P0 | ✅ Integrado — PR #99 / issue #96 |
 | V02-020 | CMDB Quality 2.0 | P1 | ✅ Integrado — PR #103 / issue #102 / merge `7f5d824`; CI #827 verde |
 | V02-021 | Lifecycle & Investment | P1 | ✅ Integrado — PR #107 / issue #105 / merge `34f3ee8` |
-| V02-022 | IT / OT Intelligence | P1 | ⚪ Pendiente |
+| V02-022 | IT / OT Intelligence | P1 | 🟡 En implementación — issue #109 |
 | V02-023 | Intune Analytics Feasibility Spike | P0 | ⚪ Pendiente |
 | V02-024 | Windows / Dell Lab Telemetry | P1 | ⚪ Pendiente |
 | V02-025 | Endpoint Experience | P1 | ⚪ Pendiente |
@@ -431,9 +431,29 @@ Documentos:
 
 Siguiente trabajo: **V02-022 — IT / OT Intelligence**.
 
-### V02-022 — IT / OT Intelligence
+### V02-022 — IT / OT Intelligence 🟡
 
-Vistas/contextos especializados con denominadores y semántica compatibles.
+Issue #109.
+
+Pregunta central:
+
+> **¿Qué composición tecnológica y qué cobertura de evidencia existen en IT y OT, y qué diferencias descriptivas pueden observarse sin mezclar poblaciones incompatibles ni convertir unknown en una clasificación?**
+
+Dirección inicial:
+
+- cohortes IT/OT sólo desde `taxonomy.domain.state=classified`;
+- unresolved/assessment ausente quedan fuera de cohortes y reducen coverage;
+- Asset Class / Role conservan coverage independiente;
+- reutilizar métricas y dimensiones de V02-019;
+- Operational Context sólo con evidencia disponible;
+- comparaciones descriptivas, sin ranking ni score IT vs OT;
+- no duplicar Overview/Explorer ni crear ruta global antes de justificarla;
+- Demo/Live misma semántica, sin fallback;
+- V02-023 fuera de alcance.
+
+Documento:
+
+- `docs/product/it-ot-intelligence-v2.md`.
 
 ## Epic 6 — Proactive Endpoint Intelligence
 
