@@ -68,6 +68,7 @@ it("reemplaza el recorrido promocional por drill-downs operacionales existentes"
   render(<Dashboard />); await ready();
   expect(screen.queryByText("Recorrido de la demo")).toBeNull();
   expect(screen.getByRole("link", { name: /Explorar activos/ }).getAttribute("href")).toBe("#assets");
+  expect(screen.getByRole("link", { name: /Lifecycle & Investment/ }).getAttribute("href")).toBe("#lifecycle");
   expect(screen.getByRole("link", { name: /^Calidad de datos$/ }).getAttribute("href")).toBe("#health");
   expect(screen.queryByRole("link", { name: "Technology Map" })).toBeNull();
   expect(screen.getByText(/No constituyen un risk score/)).toBeTruthy();
@@ -96,6 +97,7 @@ it("mantiene Overview Live honesto ante cobertura parcial y nunca muestra hallaz
   expect(screen.queryByText("Datos básicos presentes")).toBeNull();
   expect(screen.queryByRole("table", { name: "Próximos vencimientos de garantía" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Calidad de datos" })).toBeNull();
+  expect(screen.getByRole("link", { name: /Lifecycle & Investment/ }).getAttribute("href")).toBe("#lifecycle");
   expect(screen.getAllByText(/no se infieren/i).length).toBeGreaterThan(0);
 });
 
