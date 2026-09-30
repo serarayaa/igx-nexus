@@ -84,7 +84,7 @@ Antes de adoptar reporting hay que resolver una alternativa read-only o aprobar 
 3. no imprimir token, IDs, seriales, nombres ni usuarios;
 4. exigir confirmación humana de revisión de mínimo privilegio (`DeviceManagementManagedDevices.Read.All` presente y permisos Intune ReadWrite ausentes);
 5. probar sólo GET contra Graph v1.0;
-6. comprobar `managedDevices?$top=1` y presencia de campos sin revelar valores;
+6. consultar una muestra acotada (25 por defecto, máximo 100) y calcular cobertura de campos sin revelar valores;
 7. comprobar el contenedor `deviceManagement/reports`;
 8. no crear export jobs ni ejecutar remote actions.
 
