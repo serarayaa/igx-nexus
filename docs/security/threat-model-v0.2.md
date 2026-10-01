@@ -138,6 +138,8 @@ Los tests y CI continúan utilizando exclusivamente datos y credenciales sintét
 | Rotación de secretos | runtime conserva credenciales antiguas | riesgo conocido v0.2 | backend environment se carga al bootstrap; runbook exige reinicio | secret manager/rotación dinámica en v0.3 |
 | Revocación de token | token cacheado continúa hasta fallo/renovación | riesgo abierto | expiración/renovación acotada; no se asume revocación inmediata | validar semántica real GLPI en Live Lab |
 | API → Intune/Graph | scopes excesivos | pendiente | integración aún no existe | spike/permisos mínimos antes de consumo real |
+| Windows endpoint → lab evidence | raw Event Log/CIM expone hostname, usuario, serial o contenido sensible | mitigado en V02-024 | probe local allowlisted; agrega conteos/cobertura; no emite Message/XML ni identificadores | validar evidencia sanitizada en 1–3 endpoints autorizados |
+| Dell Command Monitor → endpoint | métodos CIM mutables cambian BIOS/thermal/configuración | mitigado por alcance V02-024 | sólo Get-CimClass/Get-CimInstance; sin Invoke-CimMethod ni instalación automática | cualquier acción mutable requiere ticket/threat model separado |
 | API → OT | scanning/acción insegura | fuera de alcance | NEXUS no realiza active scanning OT | threat model específico para cualquier integración OT |
 | Runtime → red | exposición accidental a LAN | mitigado localmente | host default `127.0.0.1` | v0.3 define interfaces/firewall/reverse proxy |
 | Runtime → transporte | tráfico sin TLS | riesgo aceptado sólo en local | no se declara HSTS/TLS falsamente | v0.3 debe terminar TLS |
