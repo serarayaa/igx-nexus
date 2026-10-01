@@ -6,6 +6,8 @@ import {
   type ProactiveFindingsReport,
 } from "@igx-nexus/types";
 import { assetHash } from "./navigation-model";
+import { createDemoResearchReport } from "./demo-research";
+import { KnowledgeResearchPanel } from "./KnowledgeResearchPanel";
 
 const numberFormat = new Intl.NumberFormat("es-CL");
 const percentFormat = new Intl.NumberFormat("es-CL", { style: "percent", maximumFractionDigits: 0 });
@@ -37,7 +39,7 @@ function evaluationStateText(evaluation: ProactiveFindingRuleEvaluation): string
   return "Sin patrón dentro de la población cubierta";
 }
 
-export function ProactiveFindingsSummary({ report }: { report: ProactiveFindingsReport | null }) {
+export function ProactiveFindingsSummary({ report, mode = "demo" }: { report: ProactiveFindingsReport | null; mode?: "demo" | "live" }) {
   if (!report) {
     return <section className="nexus-overview-section" aria-labelledby="proactive-findings-heading">
       <div className="nexus-overview-section-heading">
@@ -130,6 +132,14 @@ export function ProactiveFindingsSummary({ report }: { report: ProactiveFindings
                     {finding.investigationGuidance.map(step => <li key={step}>{step}</li>)}
                   </ul>
                 </div>
+
+                <details className="nexus-research-disclosure">
+                  <summary>Investigar conocimiento</summary>
+                  <KnowledgeResearchPanel
+                    report={mode === "demo" ? createDemoResearchReport(finding) : null}
+                    demoInteractive={mode === "demo"}
+                  />
+                </details>
               </ContentSection>
             </Card>;
           })}
@@ -143,6 +153,6 @@ export function ProactiveFindingsSummary({ report }: { report: ProactiveFindings
             : "No existe coverage suficiente para evaluar las reglas. NEXUS no transforma falta de evidencia en cero findings."}</p>
         </div>}
 
-    <p className="nexus-muted">V02-026 no ejecuta remediation, comandos ni búsquedas externas. Correlación y recurrencia se presentan como patrones observables, no como root cause.</p>
+    <p className="nexus-muted">V02-027 añade research auditable sobre el finding. External knowledge no reemplaza evidence local y ninguna revisión habilita ejecución automática.</p>
   </section>;
 }
