@@ -96,7 +96,7 @@ export function ProactiveFindingsSummary({ report }: { report: ProactiveFindings
               <ContentSection
                 title={finding.title}
                 description={finding.summary}
-                action={<a href={assetHash(finding.assetId)}>Abrir Asset 360</a>}
+                actions={<a href={assetHash(finding.assetId)}>Abrir Asset 360</a>}
               >
                 <div className="nexus-findings-meta">
                   <Badge>{finding.assetId}</Badge>
