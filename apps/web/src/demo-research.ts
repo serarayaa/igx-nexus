@@ -1,6 +1,7 @@
 import {
   researchRequestFromFinding,
   type KnowledgeResearchReport,
+  type KnowledgeSource,
   type ProactiveFinding,
   type ResearchClaim,
   type ResearchConflict,
@@ -108,7 +109,7 @@ export function createDemoResearchReport(
   finding: ProactiveFinding,
 ): KnowledgeResearchReport {
   const retrievedAt = finding.asOf;
-  const sources = [
+  const sources: KnowledgeSource[] = [
     Object.freeze({
       id: sourceId(finding, "source-guide"),
       title: "Fixture Demo · Guía técnica de investigación",
