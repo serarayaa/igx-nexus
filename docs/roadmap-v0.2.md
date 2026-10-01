@@ -497,7 +497,7 @@ Documentos:
 - `docs/integrations/windows-dell-lab-telemetry-runbook.md`;
 - `docs/integrations/windows-dell-lab-telemetry-evidence-2026-10-01.md`.
 
-Siguiente trabajo funcional no bloqueado: **V02-026 — Proactive Findings Engine**.
+Siguiente trabajo funcional no bloqueado en ese punto: **V02-025 — Endpoint Experience**.
 
 ### V02-025 — Endpoint Experience ✅
 
