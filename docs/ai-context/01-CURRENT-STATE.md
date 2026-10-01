@@ -46,7 +46,7 @@ Integrado:
 
 Último desarrollo funcional integrado:
 
-**V02-026 — Proactive Findings Engine**
+**V02-025 — Endpoint Experience**
 
 Resultado relevante de V02-025:
 
@@ -70,7 +70,7 @@ Repo-side está preparado en draft PR #113, pero la validación tenant requiere 
 
 Siguiente desarrollo funcional no bloqueado:
 
-**V02-025 — Endpoint Experience**
+**V02-026 — Proactive Findings Engine**
 
 El detalle completo permanece definido en:
 
