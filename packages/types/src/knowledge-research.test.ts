@@ -66,7 +66,7 @@ describe("Knowledge Research Workflow", () => {
     const input = report({
       recommendations: [{
         ...report().recommendations[0]!,
-        executionAllowed: true as false,
+        executionAllowed: true as unknown as false,
       }],
     });
     expect(validateKnowledgeResearchReport(input)).toContainEqual(expect.objectContaining({
@@ -79,7 +79,7 @@ describe("Knowledge Research Workflow", () => {
     const input = report({
       recommendations: [{
         ...report().recommendations[0]!,
-        humanReviewRequired: false as true,
+        humanReviewRequired: false as unknown as true,
       }],
     });
     expect(validateKnowledgeResearchReport(input)).toContainEqual(expect.objectContaining({
@@ -92,7 +92,7 @@ describe("Knowledge Research Workflow", () => {
     const input = report({
       claims: [{
         ...report().claims[0]!,
-        localEvidence: true as false,
+        localEvidence: true as unknown as false,
       }],
     });
     expect(validateKnowledgeResearchReport(input)).toContainEqual(expect.objectContaining({
