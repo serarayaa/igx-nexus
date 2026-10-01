@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
+import { buildEndpointExperienceReport } from "@igx-nexus/types";
 import { createDemoDataset, demoDataset, demoHeroes, DEMO_AS_OF, legacyDemoDatasetProjection } from "./demo-dataset";
 import { demoProvider, demoSnapshot } from "./demo-provider";
 import { demoRelationshipInventoryProvider, demoRelationshipProvider } from "./demo-relationship-provider";
@@ -176,6 +177,22 @@ describe("cross-view scenarios", () => {
   });
 });
 
+it("provides deterministic Endpoint Experience evidence without changing the legacy projection", () => {
+  const canonical = demoDataset.inventory.canonical!;
+  const report = buildEndpointExperienceReport(canonical);
+
+  expect(canonical.observations.length).toBeGreaterThan(0);
+  expect(new Set(canonical.observations.map(observation => observation.id)).size).toBe(canonical.observations.length);
+  expect(canonical.observations.every(observation => Date.parse(observation.observedAt) <= Date.parse(canonical.asOf))).toBe(true);
+  expect(report.population.eligible).toBeGreaterThan(0);
+  expect(report.reliability.coverage.state).toBe("partial");
+  expect(report.restarts.coverage.state).toBe("partial");
+  expect(report.startup.coverage.state).toBe("partial");
+  expect(report.startup.samples).toBeGreaterThan(0);
+  expect(report.battery.capabilityCoverage.state).toBe("partial");
+  expect(report.battery.present).toBeGreaterThan(0);
+  expect(report.battery.averageCapacityPercent).not.toBeNull();
+});
 // Deliberate legacy projection contract. Additive v0.2 metadata must not rewrite the reviewed v0.1 fields.
 it("locks the reviewed legacy catalog content and distribution", () => {
   expect(createHash("sha256").update(JSON.stringify(legacyDemoDatasetProjection())).digest("hex")).toBe("290589c730513eec3c04c7db008bc4ff95d03eb7b142aab7c991f89117d087f1");
