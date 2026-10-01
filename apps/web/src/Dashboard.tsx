@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, Boxes, CalendarClock, Clock3, ShieldCheck } from "lucide-react";
 import { Badge, Button, Card, ContentSection, DataTable, EmptyState, ErrorState, LoadingState, PageHeader, StatusBadge, Toolbar, type DataTableColumn } from "@igx-nexus/ui";
-import { buildEndpointExperienceReport, buildItOtIntelligenceReport } from "@igx-nexus/types";
+import { buildEndpointExperienceReport, buildItOtIntelligenceReport, buildProactiveFindingsReport } from "@igx-nexus/types";
 import { demoProvider } from "./demo-provider";
 import { percentage, warrantyDays, type DashboardAsset, type DashboardProvider, type DashboardSnapshot, type Domain } from "./dashboard-model";
 import { assetHash } from "./navigation-model";
@@ -9,6 +9,7 @@ import { buildOverview, type OverviewMode } from "./overview-model";
 import { NexusShell } from "./NexusShell";
 import { ItOtIntelligenceSummary } from "./ItOtIntelligenceSummary";
 import { EndpointExperienceSummary } from "./EndpointExperienceSummary";
+import { ProactiveFindingsSummary } from "./ProactiveFindingsSummary";
 
 type LoadState = { status: "loading" } | { status: "error" } | { status: "ready"; snapshot: DashboardSnapshot };
 const dateFormat = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeZone: "UTC" });
@@ -41,6 +42,9 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
     : null;
   const endpointExperience = state.status === "ready" && state.snapshot.canonical
     ? buildEndpointExperienceReport(state.snapshot.canonical, { domain })
+    : null;
+  const proactiveFindings = state.status === "ready" && state.snapshot.canonical
+    ? buildProactiveFindingsReport(state.snapshot.canonical, { domain })
     : null;
   const canonicalScope = intelligence && domain !== "all"
     ? new Set(intelligence.cohorts[domain].assetIds)
@@ -193,6 +197,8 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
       <ItOtIntelligenceSummary report={intelligence} selectedDomain={domain} />
 
       <EndpointExperienceSummary report={endpointExperience} selectedDomain={domain} />
+
+      <ProactiveFindingsSummary report={proactiveFindings} />
 
       {!live && <Card>
         <ContentSection title="Garantías próximas" description="Detalle de los próximos 5 vencimientos ya observables en el dataset Demo. No es una proyección de inversión.">
