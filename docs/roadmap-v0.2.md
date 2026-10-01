@@ -60,7 +60,7 @@ Dirección conceptual posterior:
 | V02-023 | Intune Analytics Feasibility Spike | P0 | 🟡 Bloqueado por RBAC tenant — issue #112 / draft PR #113 |
 | V02-024 | Windows / Dell Lab Telemetry | P1 | ✅ Integrado — PR #115 / issue #114 / merge `d8c2c1e` |
 | V02-025 | Endpoint Experience | P1 | ✅ Integrado — PR #118 / issue #117 / merge `95bbfec` |
-| V02-026 | Proactive Findings Engine | P2 | ⚪ Pendiente |
+| V02-026 | Proactive Findings Engine | P2 | ✅ Integrado — PR #121 / issue #120 / merge `a0e5d72` |
 | V02-027 | Knowledge Research Workflow | P2 | ⚪ Pendiente |
 | V02-028 | Backend & Integration CI | P0 | ⚪ Pendiente |
 | V02-029 | v0.2 Demo / Live Lab Readiness | P1 | ⚪ Pendiente |
@@ -529,9 +529,37 @@ Documento:
 
 Siguiente trabajo funcional no bloqueado: **V02-026 — Proactive Findings Engine**.
 
-### V02-026 — Proactive Findings Engine
+### V02-026 — Proactive Findings Engine ✅
 
-Evidencia -> patrón -> hipótesis -> confianza. Correlación no se presenta como causalidad.
+Integrado mediante PR #121, merge `a0e5d72dc07445356f6239459d1651aed05502b3`; issue #120 cerrado.
+
+Pregunta central:
+
+> **¿Qué patrones observables justifican levantar un finding investigable, con qué evidencia, cobertura y confianza, sin presentarlo como una causa demostrada?**
+
+Resultado:
+
+- contrato `ProactiveFindingsReport` dentro de `@igx-nexus/types`;
+- rule IDs y versiones estables;
+- separación explícita evidence → pattern → hypothesis → confidence;
+- estados `triggered`, `not_triggered` y `unavailable`;
+- coverage por regla y población evaluada;
+- IDs deterministas por rule + asset;
+- reglas de referencia para inestabilidad repetida de aplicaciones, reinicios no limpios repetidos y gap de evidencia de capacidad de batería;
+- confidence describe soporte de evidencia, no probabilidad causal;
+- findings derivados sólo desde observations canónicas;
+- Demo no contiene findings hard-coded: se derivan de la evidencia sintética existente;
+- Live sin observations queda no evaluable y nunca recibe fallback a Demo;
+- Technology Overview incorpora Proactive Findings sin nueva ruta global;
+- cada finding expone patrón, hipótesis no causal, evidencia, coverage y guidance de investigación;
+- no root-cause engine, risk score, remediation, command execution ni Internet research;
+- CI #922 verde antes del merge.
+
+Documento:
+
+- `docs/product/proactive-findings-v02-026.md`.
+
+Siguiente trabajo funcional no bloqueado: **V02-027 — Knowledge Research Workflow**.
 
 ### V02-027 — Knowledge Research Workflow
 
