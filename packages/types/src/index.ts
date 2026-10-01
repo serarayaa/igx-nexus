@@ -8,3 +8,4 @@ export * from "./lifecycle.js";
 export * from "./it-ot-intelligence.js";
 export * from "./endpoint-experience.js";
 export * from "./proactive-findings.js";
+export * from "./knowledge-research.js";

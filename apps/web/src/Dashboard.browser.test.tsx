@@ -2,6 +2,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { page, userEvent } from "vitest/browser";
 import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import axe from "axe-core";
+import { buildProactiveFindingsReport } from "@igx-nexus/types";
 import { Dashboard } from "./Dashboard";
 import { demoSnapshot } from "./demo-provider";
 import type { DashboardProvider, DashboardSnapshot } from "./dashboard-model";
@@ -175,6 +176,63 @@ it("presenta findings como patrón e hipótesis investigable, no como causa o sc
   expect(view.getByText(/Confidence expresa soporte de evidencia del patrón; nunca probabilidad causal/)).toBeTruthy();
   expect(view.getAllByRole("link", { name: "Abrir Asset 360" }).length).toBeGreaterThan(0);
   expect(view.queryByText(/root cause demostrada/i)).toBeNull();
+});
+
+it("expone Knowledge Research Demo con provenance, contradicción y revisión humana sin ejecución", async () => {
+  render(<Dashboard />);
+  await ready();
+
+  const findingHeading = screen.getByRole("heading", { name: "Inestabilidad repetida de aplicación", level: 2 });
+  const card = findingHeading.closest(".igx-card") as HTMLElement | null;
+  expect(card).toBeTruthy();
+  const cardView = within(card!);
+  const summary = cardView.getByText("Investigar conocimiento");
+  await userEvent.click(summary);
+
+  expect(cardView.getByText("Pregunta de investigación")).toBeTruthy();
+  expect(cardView.getAllByText("Synthetic fixture").length).toBeGreaterThan(0);
+  expect(cardView.getAllByText("untrusted input").length).toBeGreaterThan(0);
+  expect(cardView.getByText("Contradicciones conservadas")).toBeTruthy();
+  expect(cardView.getByText(/NEXUS conserva la discrepancia y no la resuelve automáticamente/)).toBeTruthy();
+  expect(cardView.getByText("Execution allowed: no")).toBeTruthy();
+  expect(cardView.queryByRole("link", { name: "Abrir fuente externa" })).toBeNull();
+
+  await userEvent.click(cardView.getByRole("button", { name: "Aprobar seguimiento" }));
+  expect(cardView.getAllByText("Aprobado para seguimiento").length).toBeGreaterThan(0);
+  expect(cardView.getByText(/Revisión local de demostración; no persistida/)).toBeTruthy();
+  expect(cardView.getByText(/La revisión nunca habilita ejecución/)).toBeTruthy();
+});
+
+it("mantiene Knowledge Research Live sin fallback a fixtures Demo", async () => {
+  const canonical = demoSnapshot.canonical!;
+  const report = buildProactiveFindingsReport(canonical);
+  const finding = report.findings[0]!;
+  const canonicalAsset = canonical.assets.find(asset => asset.id === finding.assetId)!;
+  const presentation = demoSnapshot.assets.find(asset => asset.id === finding.assetId)!;
+
+  const liveSnapshot: DashboardSnapshot = {
+    asOf: canonical.asOf,
+    assets: [presentation],
+    canonical: {
+      ...canonical,
+      assets: [canonicalAsset],
+      relationships: [],
+      observations: canonical.observations.filter(observation => observation.assetId === finding.assetId),
+    },
+  };
+
+  render(<Dashboard mode="live" provider={async () => liveSnapshot} />);
+  const findingsHeading = await screen.findByRole("heading", { name: "Proactive Findings", level: 2 });
+  const section = findingsHeading.closest("section");
+  expect(section).toBeTruthy();
+  const view = within(section!);
+  const disclosure = view.getByText("Investigar conocimiento");
+  await userEvent.click(disclosure);
+
+  expect(view.getByText("Research packet no disponible")).toBeTruthy();
+  expect(view.getByText(/no sustituye esta ausencia con fixtures Demo/)).toBeTruthy();
+  expect(view.queryByText("Synthetic fixture")).toBeNull();
+  expect(view.queryByRole("button", { name: "Aprobar seguimiento" })).toBeNull();
 });
 
 it("mantiene Live sin observations como unavailable en vez de fabricar cero eventos", async () => {
