@@ -295,6 +295,96 @@ function toCanonicalAsset(asset) {
   });
 }
 
+function endpointObservationSource(observationId, observedAt) {
+  return Object.freeze({
+    source: "demo",
+    sourceInstanceId: "demo-v0.2",
+    externalId: observationId,
+    entityType: "synthetic_endpoint_observation",
+    sourceScope: "demo-v0.2:endpoint-experience",
+    observedAt,
+    authority: "trusted",
+  });
+}
+
+function createEndpointExperienceObservations(authored) {
+  let sequence = 1;
+  const observations = [];
+  const supportedProducts = new Set(["notebook", "desktop", "workstation", "console"]);
+  const supportedLifecycles = new Set(["active", "maintenance", "repair"]);
+
+  const push = (asset, name, value, observedAt = DEMO_AS_OF, category = "metric") => {
+    const observationId = `DEMO-OBS-${String(sequence++).padStart(5, "0")}`;
+    const source = endpointObservationSource(observationId, observedAt);
+    observations.push(Object.freeze({
+      id: observationId,
+      assetId: asset.id,
+      category,
+      name,
+      value: Object.freeze(value),
+      observedAt,
+      source,
+      authority: "trusted",
+      evidence: Object.freeze([Object.freeze({
+        kind: "source_record",
+        reference: `demo-dataset:${observationId}`,
+        label: "Synthetic endpoint experience fixture",
+        observedAt,
+      })]),
+    }));
+  };
+
+  for (const asset of authored) {
+    if (!supportedProducts.has(asset.product)) continue;
+    if (!supportedLifecycles.has(canonicalLifecycle(asset.lifecycle))) continue;
+
+    const number = Number(asset.id.slice(-4));
+    const hasEventLogWindow = number % 5 !== 0;
+    const hasReliabilityWindow = number % 4 !== 0;
+    const hasStartupWindow = number % 3 !== 0;
+
+    if (hasEventLogWindow) {
+      push(asset, "endpoint.event_log.window.days", { kind: "number", value: 14, unit: "day" });
+      if (number % 13 === 0) {
+        push(asset, "system.unexpected_restart", { kind: "none" }, date(-((number % 11) + 1)), "event");
+      }
+      if (number % 31 === 0) {
+        push(asset, "system.stop_error_restart", { kind: "none" }, date(-((number % 9) + 1)), "event");
+      }
+    }
+
+    if (hasReliabilityWindow) {
+      push(asset, "endpoint.reliability.window.days", { kind: "number", value: 14, unit: "day" });
+      if (number % 9 === 0) {
+        push(asset, "application.crash", { kind: "none" }, date(-((number % 10) + 1)), "event");
+      }
+      if (number % 17 === 0) {
+        push(asset, "application.crash", { kind: "none" }, date(-((number % 7) + 2)), "event");
+      }
+      if (number % 11 === 0) {
+        push(asset, "application.hang", { kind: "none" }, date(-((number % 12) + 1)), "event");
+      }
+    }
+
+    if (hasStartupWindow) {
+      push(asset, "endpoint.startup.window.days", { kind: "number", value: 14, unit: "day" });
+      push(asset, "startup.duration.ms", { kind: "number", value: 32000 + ((number * 1700) % 68000), unit: "ms" }, date(-((number % 8) + 1)));
+      if (number % 4 === 0) {
+        push(asset, "startup.duration.ms", { kind: "number", value: 35000 + ((number * 1300) % 62000), unit: "ms" }, date(-((number % 6) + 2)));
+      }
+    }
+
+    if (number % 6 !== 0) {
+      const batteryPresent = asset.product === "notebook";
+      push(asset, "battery.present", { kind: "boolean", value: batteryPresent }, DEMO_AS_OF, "state");
+      if (batteryPresent && number % 5 !== 0) {
+        push(asset, "battery.capacity.percent", { kind: "number", value: 65 + ((number * 7) % 34), unit: "percent" }, date(-1));
+      }
+    }
+  }
+
+  return Object.freeze(observations);
+}
 function relationshipSourceFor(relationshipId) {
   return Object.freeze({
     source: "demo",
@@ -370,13 +460,15 @@ function authoredAssets() {
 }
 
 export function createCanonicalDemoSnapshot() {
-  const assets = authoredAssets().map(toCanonicalAsset);
+  const authored = authoredAssets();
+  const assets = authored.map(toCanonicalAsset);
+  const observations = createEndpointExperienceObservations(authored);
   return Object.freeze({
     schemaVersion: "0.2",
     asOf: DEMO_AS_OF,
     assets: Object.freeze(assets),
     relationships: Object.freeze([...demoRelationshipFixtures]),
-    observations: Object.freeze([]),
+    observations,
   });
 }
 
