@@ -259,3 +259,23 @@ export function researchRequestFromFinding(
     assetId: finding.assetId,
   });
 }
+
+
+export function applyResearchReview(
+  report: KnowledgeResearchReport,
+  decision: Exclude<ResearchReviewState, "pending">,
+  reviewedAt: string,
+  note?: string,
+): KnowledgeResearchReport {
+  if (!isIsoTimestamp(reviewedAt)) throw new Error("reviewedAt must be a valid ISO timestamp.");
+  const nextReview: ResearchHumanReview = Object.freeze({
+    state: decision,
+    reviewedAt,
+    ...(note?.trim() ? { note: note.trim() } : {}),
+    executionAuthorized: false,
+  });
+  return Object.freeze({
+    ...report,
+    review: nextReview,
+  });
+}
