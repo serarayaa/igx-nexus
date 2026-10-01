@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ProactiveFinding } from "./proactive-findings.js";
 import {
+  applyResearchReview,
   researchRequestFromFinding,
   validateKnowledgeResearchReport,
   type KnowledgeResearchReport,
@@ -200,6 +201,25 @@ describe("Knowledge Research Workflow", () => {
       "research.claim.source.missing",
       "research.recommendation.claim.missing",
     ]));
+  });
+
+  it("aplica revisión humana sin habilitar ejecución ni mutar el report original", () => {
+    const input = report();
+    const before = JSON.stringify(input);
+    const reviewed = applyResearchReview(
+      input,
+      "approved_for_follow_up",
+      "2026-10-01T13:00:00.000Z",
+      "Continuar investigación manual.",
+    );
+    expect(reviewed.review).toEqual({
+      state: "approved_for_follow_up",
+      reviewedAt: "2026-10-01T13:00:00.000Z",
+      note: "Continuar investigación manual.",
+      executionAuthorized: false,
+    });
+    expect(validateKnowledgeResearchReport(reviewed)).toEqual([]);
+    expect(JSON.stringify(input)).toBe(before);
   });
 
   it("genera una pregunta no causal desde un finding sin mutarlo", () => {
