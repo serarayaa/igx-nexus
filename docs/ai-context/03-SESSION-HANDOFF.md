@@ -8,12 +8,12 @@
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
-- Último desarrollo funcional integrado: **V02-024 — Windows / Dell Lab Telemetry**
-- Próximo desarrollo funcional no bloqueado: **V02-025 — Endpoint Experience**
+- Último desarrollo funcional integrado: **V02-025 — Endpoint Experience**
+- Próximo desarrollo funcional no bloqueado: **V02-026 — Proactive Findings Engine**
 
 ## Estado actual
 
-V02-024 validó un baseline endpoint local/read-only mediante Windows Event Log y CIM/WMI. LAB-01 confirmó señales observables y output sanitizado; Dell Command | Monitor quedó como capability opcional/Assess y no se instala sólo para satisfacer el spike.
+V02-025 consolidó Endpoint Experience como lectura explicable sobre observations canónicas: crashes, hangs, restarts, startup y batería con ventanas/coverage explícitas, sin score global, causalidad inventada ni fallback Live → Demo.
 
 La capa `docs/ai-context/` está compuesta por:
 
@@ -45,11 +45,11 @@ No recorrer todo el repositorio ni toda la documentación salvo necesidad real.
 
 v0.2 tiene integrado:
 
-**V02-001 .. V02-022 + V02-024**
+**V02-001 .. V02-022 + V02-024 + V02-025**
 
 Último desarrollo funcional integrado:
 
-**V02-024 — Windows / Dell Lab Telemetry**
+**V02-025 — Endpoint Experience**
 
 Pendiente bloqueado:
 
@@ -62,7 +62,7 @@ Pendiente bloqueado:
 
 Siguiente desarrollo funcional no bloqueado:
 
-**V02-025 — Endpoint Experience**
+**V02-026 — Proactive Findings Engine**
 
 Las remediaciones de auditoría relevantes integradas incluyen:
 
@@ -74,17 +74,18 @@ Los findings históricos no deben asumirse como deuda activa sin verificar el es
 
 ## Próxima acción
 
-Iniciar **V02-025 — Endpoint Experience** sin cerrar artificialmente V02-023.
+Iniciar **V02-026 — Proactive Findings Engine** sin cerrar artificialmente V02-023.
 
 Antes de implementar:
 
 1. verificar `main` limpio y actualizado;
 2. consultar `../roadmap-v0.2.md`;
-3. reutilizar únicamente señales defendibles demostradas por V02-024;
-4. mantener Event Log/CIM como evidencia, no causalidad;
-5. separar measurement coverage de interpretación de experiencia endpoint;
-6. diseñar hangs, crashes, restarts, startup y batería con ventanas/denominadores explícitos;
-7. no depender de Intune/Endpoint Analytics mientras V02-023 continúe bloqueado.
+3. reutilizar observations, coverage y ventanas ya definidas por V02-025;
+4. separar hecho observado, patrón, hipótesis y confianza;
+5. no presentar correlación como causalidad;
+6. no crear remediation automática ni ejecutar comandos;
+7. preservar Demo/Live bajo contratos compartidos, sin fallback;
+8. mantener findings explicables y auditables.
 
 Cuando exista App Registration autorizada, retomar V02-023 desde su runbook/preflight sin rehacer el spike.
 
