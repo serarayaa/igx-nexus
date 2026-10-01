@@ -140,3 +140,107 @@ a:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outli
 .nexus-endpoint-facts dd { margin: var(--igx-spacing-1) 0 0; font-weight: var(--igx-font-weight-semibold); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 @media (max-width: 767px) { .nexus-endpoint-coverage, .nexus-endpoint-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (forced-colors: active) { .nexus-endpoint-coverage, .nexus-endpoint-facts > div { border-color: CanvasText; } }
+
+
+/* V02-026 — Proactive Findings */
+.nexus-findings-contract {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--igx-density-content-gap);
+  padding: var(--igx-spacing-4);
+  border: 1px solid var(--igx-semantic-color-border-subtle);
+  border-radius: var(--igx-semantic-shape-card);
+  background: var(--igx-semantic-color-surface-base);
+}
+.nexus-findings-contract > div {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--igx-spacing-2);
+}
+.nexus-findings-contract strong { font-variant-numeric: tabular-nums; }
+.nexus-findings-contract span,
+.nexus-findings-contract small { color: var(--igx-semantic-color-text-secondary); }
+.nexus-findings-evaluations {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--igx-density-content-gap);
+}
+.nexus-findings-evaluations > div {
+  min-width: 0;
+  padding: var(--igx-spacing-4);
+  border: 1px solid var(--igx-semantic-color-border-subtle);
+  border-radius: var(--igx-semantic-shape-card);
+  background: var(--igx-semantic-color-surface-base);
+}
+.nexus-findings-evaluations > div > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--igx-spacing-2);
+}
+.nexus-findings-evaluations span {
+  display: block;
+  margin-top: var(--igx-spacing-2);
+  color: var(--igx-semantic-color-text-secondary);
+  font-size: .8125rem;
+}
+.nexus-findings-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--igx-density-content-gap);
+}
+.nexus-findings-list > * { min-width: 0; }
+.nexus-findings-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--igx-spacing-2);
+  margin-bottom: var(--igx-spacing-4);
+}
+.nexus-findings-meta > span {
+  color: var(--igx-semantic-color-text-secondary);
+  font-size: .8125rem;
+}
+.nexus-findings-detail {
+  margin: 0;
+  display: grid;
+  gap: var(--igx-spacing-3);
+}
+.nexus-findings-detail > div {
+  min-width: 0;
+  padding-block: var(--igx-spacing-2);
+  border-bottom: 1px solid var(--igx-semantic-color-border-subtle);
+}
+.nexus-findings-detail dt {
+  color: var(--igx-semantic-color-text-secondary);
+  font-size: .75rem;
+}
+.nexus-findings-detail dd {
+  margin: var(--igx-spacing-1) 0 0;
+  overflow-wrap: anywhere;
+}
+.nexus-findings-guidance {
+  margin-top: var(--igx-spacing-4);
+}
+.nexus-findings-guidance ul {
+  margin-bottom: 0;
+  padding-inline-start: var(--igx-spacing-5);
+}
+.nexus-findings-guidance li + li {
+  margin-top: var(--igx-spacing-2);
+}
+@media (max-width: 1023px) {
+  .nexus-findings-evaluations { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .nexus-findings-contract,
+  .nexus-findings-list { grid-template-columns: minmax(0, 1fr); }
+}
+@media (forced-colors: active) {
+  .nexus-findings-contract,
+  .nexus-findings-evaluations > div,
+  .nexus-findings-detail > div { border-color: CanvasText; }
+}
