@@ -182,7 +182,7 @@ it("expone Knowledge Research Demo con provenance, contradicción y revisión hu
   render(<Dashboard />);
   await ready();
 
-  const findingHeading = screen.getByRole("heading", { name: "Reinicios no limpios repetidos", level: 2 });
+  const findingHeading = screen.getByRole("heading", { name: "Inestabilidad repetida de aplicación", level: 2 });
   const card = findingHeading.closest(".igx-card");
   expect(card).toBeTruthy();
   const cardView = within(card!);
