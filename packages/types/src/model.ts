@@ -253,7 +253,11 @@ export const observationCategories = ["metric", "event", "state"] as const;
 export type ObservationCategory = (typeof observationCategories)[number];
 
 export const knownObservationNames = [
+  "battery.present",
   "battery.capacity.percent",
+  "endpoint.event_log.window.days",
+  "endpoint.reliability.window.days",
+  "endpoint.startup.window.days",
   "application.crash",
   "application.hang",
   "system.unexpected_restart",

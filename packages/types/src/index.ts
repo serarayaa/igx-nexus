@@ -6,3 +6,4 @@ export * from "./http-contract.js";
 export * from "./analytics.js";
 export * from "./lifecycle.js";
 export * from "./it-ot-intelligence.js";
+export * from "./endpoint-experience.js";
