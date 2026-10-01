@@ -8,12 +8,12 @@
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
-- Último desarrollo funcional integrado: **V02-025 — Endpoint Experience**
-- Próximo desarrollo funcional no bloqueado: **V02-026 — Proactive Findings Engine**
+- Último desarrollo funcional integrado: **V02-026 — Proactive Findings Engine**
+- Próximo desarrollo funcional no bloqueado: **V02-027 — Knowledge Research Workflow**
 
 ## Estado actual
 
-V02-025 consolidó Endpoint Experience como lectura explicable sobre observations canónicas: crashes, hangs, restarts, startup y batería con ventanas/coverage explícitas, sin score global, causalidad inventada ni fallback Live → Demo.
+V02-026 consolidó Proactive Findings como una capa determinista de triage sobre observations canónicas: evidence → pattern → hypothesis → confidence, con coverage explícita y sin convertir correlación en causalidad, ejecutar remediation ni depender de Internet research.
 
 La capa `docs/ai-context/` está compuesta por:
 
@@ -45,11 +45,11 @@ No recorrer todo el repositorio ni toda la documentación salvo necesidad real.
 
 v0.2 tiene integrado:
 
-**V02-001 .. V02-022 + V02-024 + V02-025**
+**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026**
 
 Último desarrollo funcional integrado:
 
-**V02-025 — Endpoint Experience**
+**V02-026 — Proactive Findings Engine**
 
 Pendiente bloqueado:
 
@@ -62,7 +62,7 @@ Pendiente bloqueado:
 
 Siguiente desarrollo funcional no bloqueado:
 
-**V02-026 — Proactive Findings Engine**
+**V02-027 — Knowledge Research Workflow**
 
 Las remediaciones de auditoría relevantes integradas incluyen:
 
@@ -74,18 +74,18 @@ Los findings históricos no deben asumirse como deuda activa sin verificar el es
 
 ## Próxima acción
 
-Iniciar **V02-026 — Proactive Findings Engine** sin cerrar artificialmente V02-023.
+Iniciar **V02-027 — Knowledge Research Workflow** sin cerrar artificialmente V02-023.
 
 Antes de implementar:
 
 1. verificar `main` limpio y actualizado;
 2. consultar `../roadmap-v0.2.md`;
-3. reutilizar observations, coverage y ventanas ya definidas por V02-025;
-4. separar hecho observado, patrón, hipótesis y confianza;
-5. no presentar correlación como causalidad;
-6. no crear remediation automática ni ejecutar comandos;
-7. preservar Demo/Live bajo contratos compartidos, sin fallback;
-8. mantener findings explicables y auditables.
+3. reutilizar Proactive Findings como contexto de investigación, no como root cause;
+4. definir fuentes técnicas confiables, provenance y temporalidad de la investigación;
+5. mantener separación entre evidencia local, fuente externa y recomendación;
+6. no ejecutar automáticamente comandos, scripts o remediation obtenidos desde Internet;
+7. preservar trazabilidad de qué fuente respalda cada recomendación;
+8. diseñar el workflow para que un humano revise y decida antes de cualquier acción.
 
 Cuando exista App Registration autorizada, retomar V02-023 desde su runbook/preflight sin rehacer el spike.
 
