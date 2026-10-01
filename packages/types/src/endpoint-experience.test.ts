@@ -101,6 +101,18 @@ describe("Endpoint Experience", () => {
     expect(report.battery.averageCapacityPercent).toBe(82);
   });
 
+  it("ignora capability de batería fuera de ventana y capacidad con unidad incorrecta", () => {
+    const input = snapshot([asset("STALE"), asset("WRONG-UNIT")], [
+      observation("STALE-PRESENT", "STALE", "battery.present", { kind: "boolean", value: true }, "2026-08-01T12:00:00.000Z", "state"),
+      observation("WRONG-PRESENT", "WRONG-UNIT", "battery.present", { kind: "boolean", value: true }, at, "state"),
+      observation("WRONG-CAP", "WRONG-UNIT", "battery.capacity.percent", { kind: "number", value: 88, unit: "%" }, "2026-09-30T12:00:00.000Z"),
+    ]);
+    const report = buildEndpointExperienceReport(input);
+    expect(report.battery.capabilityCoverage).toEqual({ state: "partial", known: 1, total: 2, ratio: 0.5 });
+    expect(report.battery.present).toBe(1);
+    expect(report.battery.capacityCoverage).toEqual({ state: "unavailable", known: 0, total: 1, ratio: 0 });
+    expect(report.battery.averageCapacityPercent).toBeNull();
+  });
   it("respeta cohortes domain sólo desde Taxonomy v2 classified y lifecycle operacional", () => {
     const unresolved = asset("UNRESOLVED");
     const input = snapshot([
