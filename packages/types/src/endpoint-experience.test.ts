@@ -91,7 +91,7 @@ describe("Endpoint Experience", () => {
     const input = snapshot([asset("LAPTOP"), asset("DESKTOP"), asset("UNKNOWN")], [
       observation("LP-PRESENT", "LAPTOP", "battery.present", { kind: "boolean", value: true }),
       observation("DT-PRESENT", "DESKTOP", "battery.present", { kind: "boolean", value: false }),
-      observation("LP-CAP", "LAPTOP", "battery.capacity.percent", { kind: "number", value: 82, unit: "%" }, "2026-09-30T12:00:00.000Z"),
+      observation("LP-CAP", "LAPTOP", "battery.capacity.percent", { kind: "number", value: 82, unit: "percent" }, "2026-09-30T12:00:00.000Z"),
     ]);
     const report = buildEndpointExperienceReport(input);
     expect(report.battery.capabilityCoverage).toEqual({ state: "partial", known: 2, total: 3, ratio: 2 / 3 });
