@@ -205,6 +205,28 @@ function latestObservation(
     )[0] ?? null;
 }
 
+function latestValidCapacityObservation(
+  snapshot: TechnologySnapshot,
+  assetId: string,
+  start: number,
+  end: number,
+): Observation | null {
+  return snapshot.observations
+    .filter((observation) =>
+      observation.assetId === assetId
+      && observation.name === "battery.capacity.percent"
+      && inWindow(observation, start, end)
+      && observation.value.kind === "number"
+      && observation.value.unit === "percent"
+      && Number.isFinite(observation.value.value)
+      && observation.value.value >= 0
+      && observation.value.value <= 100,
+    )
+    .sort((left, right) =>
+      right.observedAt.localeCompare(left.observedAt) || right.id.localeCompare(left.id),
+    )[0] ?? null;
+}
+
 function evidence(observations: readonly Observation[]): readonly ProactiveFindingEvidence[] {
   return observations.map((observation) => Object.freeze({
     observationId: observation.id,
@@ -356,13 +378,8 @@ export function buildProactiveFindingsReport(
     if (batteryPresent?.value.kind === "boolean") {
       batteryKnown += 1;
       if (batteryPresent.value.value) {
-        const capacity = latestObservation(snapshot, asset.id, "battery.capacity.percent", start, end);
-        const hasValidCapacity = capacity?.value.kind === "number"
-          && capacity.value.unit === "percent"
-          && Number.isFinite(capacity.value.value)
-          && capacity.value.value >= 0
-          && capacity.value.value <= 100;
-        if (!hasValidCapacity) {
+        const capacity = latestValidCapacityObservation(snapshot, asset.id, start, end);
+        if (!capacity) {
           batteryTriggered += 1;
           findings.push(Object.freeze({
             id: findingId("nexus.endpoint.battery-capacity-evidence-gap", asset.id),
