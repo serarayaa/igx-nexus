@@ -183,7 +183,7 @@ it("expone Knowledge Research Demo con provenance, contradicción y revisión hu
   await ready();
 
   const findingHeading = screen.getByRole("heading", { name: "Inestabilidad repetida de aplicación", level: 2 });
-  const card = findingHeading.closest(".igx-card");
+  const card = findingHeading.closest(".igx-card") as HTMLElement | null;
   expect(card).toBeTruthy();
   const cardView = within(card!);
   const summary = cardView.getByText("Investigar conocimiento");
