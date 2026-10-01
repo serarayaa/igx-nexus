@@ -198,7 +198,7 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
 
       <EndpointExperienceSummary report={endpointExperience} selectedDomain={domain} />
 
-      <ProactiveFindingsSummary report={proactiveFindings} />
+      <ProactiveFindingsSummary report={proactiveFindings} mode={mode} />
 
       {!live && <Card>
         <ContentSection title="Garantías próximas" description="Detalle de los próximos 5 vencimientos ya observables en el dataset Demo. No es una proyección de inversión.">
