@@ -144,14 +144,15 @@ function eventSummary(
   };
 }
 
-function latestBoolean(
+function latestBooleanInWindow(
   observations: readonly Observation[],
   assetId: string,
   name: ObservationName,
-  asOf: string,
+  start: number,
+  end: number,
 ): boolean | null {
   const candidates = observations
-    .filter((observation) => observation.assetId === assetId && observation.name === name && observation.observedAt <= asOf)
+    .filter((observation) => observation.assetId === assetId && observation.name === name && inWindow(observation, start, end))
     .sort((left, right) => right.observedAt.localeCompare(left.observedAt));
   const value = candidates[0]?.value;
   return value?.kind === "boolean" ? value.value : null;
@@ -163,12 +164,17 @@ function latestNumberInWindow(
   name: ObservationName,
   start: number,
   end: number,
+  unit?: string,
 ): number | null {
   const candidates = observations
     .filter((observation) => observation.assetId === assetId && observation.name === name && inWindow(observation, start, end))
     .sort((left, right) => right.observedAt.localeCompare(left.observedAt));
   const value = candidates[0]?.value;
-  return value?.kind === "number" && Number.isFinite(value.value) ? value.value : null;
+  return value?.kind === "number"
+    && Number.isFinite(value.value)
+    && (unit === undefined || value.unit === unit)
+    ? value.value
+    : null;
 }
 
 export function buildEndpointExperienceReport(
@@ -206,12 +212,12 @@ export function buildEndpointExperienceReport(
 
   const batteryKnown = new Map<string, boolean>();
   for (const asset of eligibleAssets) {
-    const value = latestBoolean(snapshot.observations, asset.id, "battery.present", snapshot.asOf);
+    const value = latestBooleanInWindow(snapshot.observations, asset.id, "battery.present", start, end);
     if (value !== null) batteryKnown.set(asset.id, value);
   }
   const presentIds = [...batteryKnown.entries()].filter(([, present]) => present).map(([assetId]) => assetId);
   const capacities = presentIds
-    .map((assetId) => latestNumberInWindow(snapshot.observations, assetId, "battery.capacity.percent", start, end))
+    .map((assetId) => latestNumberInWindow(snapshot.observations, assetId, "battery.capacity.percent", start, end, "percent"))
     .filter((value): value is number => value !== null && value >= 0 && value <= 100);
 
   return {
