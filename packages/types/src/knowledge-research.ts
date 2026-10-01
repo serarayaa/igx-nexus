@@ -122,12 +122,7 @@ function nonEmpty(value: string): boolean {
 }
 
 function validExternalUri(value: string): boolean {
-  try {
-    const uri = new URL(value);
-    return uri.protocol === "https:" || uri.protocol === "http:";
-  } catch {
-    return false;
-  }
+  return /^https?:\/\/[^\s]+$/i.test(value);
 }
 
 function duplicateIds(values: readonly { readonly id: string }[]): readonly string[] {
