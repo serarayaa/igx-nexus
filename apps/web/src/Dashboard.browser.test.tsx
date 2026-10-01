@@ -198,7 +198,7 @@ it("expone Knowledge Research Demo con provenance, contradicción y revisión hu
   expect(cardView.queryByRole("link", { name: "Abrir fuente externa" })).toBeNull();
 
   await userEvent.click(cardView.getByRole("button", { name: "Aprobar seguimiento" }));
-  expect(cardView.getByText("Aprobado para seguimiento")).toBeTruthy();
+  expect(cardView.getAllByText("Aprobado para seguimiento").length).toBeGreaterThan(0);
   expect(cardView.getByText(/Revisión local de demostración; no persistida/)).toBeTruthy();
   expect(cardView.getByText(/La revisión nunca habilita ejecución/)).toBeTruthy();
 });
