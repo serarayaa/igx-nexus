@@ -61,7 +61,7 @@ Resultado relevante de V02-024:
 
 Trabajo pendiente bloqueado:
 
-**V02-025 — Endpoint Experience**
+**V02-023 — Intune Analytics Feasibility Spike**
 
 Repo-side está preparado en draft PR #113, pero la validación tenant requiere una App Registration dedicada o intervención administrativa en Entra.
 
@@ -196,4 +196,6 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-023 — Intune Analytics Feasibility Spike**
+**V02-025 — Endpoint Experience**
+
+V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra.
