@@ -29,6 +29,14 @@ function baseClaims(finding: ProactiveFinding): readonly ResearchClaim[] {
         applicability: "Limita explícitamente cualquier conclusión causal del escenario Demo.",
         localEvidence: false,
       }),
+      Object.freeze({
+        id: sourceId(finding, "claim-defect"),
+        statement: "Fixture contradictorio: la recurrencia bastaría para declarar un defecto de aplicación como causa demostrada.",
+        sourceIds: [sourceId(finding, "source-community"), sourceId(finding, "source-limitations")],
+        supportState: "contested",
+        applicability: "Se conserva para demostrar una discrepancia de fuentes; NEXUS no adopta esta afirmación como conclusión.",
+        localEvidence: false,
+      }),
     ]);
   }
 
@@ -82,15 +90,15 @@ function baseClaims(finding: ProactiveFinding): readonly ResearchClaim[] {
 }
 
 function conflicts(finding: ProactiveFinding): readonly ResearchConflict[] {
-  if (finding.ruleId !== "nexus.endpoint.repeated-unclean-restart") return Object.freeze([]);
+  if (finding.ruleId !== "nexus.endpoint.application-instability") return Object.freeze([]);
   return Object.freeze([
     Object.freeze({
       id: sourceId(finding, "conflict-cause"),
       claimIds: [
-        sourceId(finding, "claim-power"),
-        sourceId(finding, "claim-noncausal"),
+        sourceId(finding, "claim-defect"),
+        sourceId(finding, "claim-limit"),
       ],
-      summary: "Los fixtures difieren sobre si el síntoma permitiría atribuir una causa eléctrica. NEXUS conserva la discrepancia y no la resuelve automáticamente.",
+      summary: "Los fixtures difieren sobre si la recurrencia permite declarar un defecto de aplicación como causa. NEXUS conserva la discrepancia y no la resuelve automáticamente.",
       resolution: "unresolved",
     }),
   ]);
@@ -133,7 +141,7 @@ export function createDemoResearchReport(
     }),
   ];
 
-  if (finding.ruleId === "nexus.endpoint.repeated-unclean-restart") {
+  if (finding.ruleId === "nexus.endpoint.application-instability" || finding.ruleId === "nexus.endpoint.repeated-unclean-restart") {
     sources.push(Object.freeze({
       id: sourceId(finding, "source-community"),
       title: "Fixture Demo · Aporte comunitario contradictorio",
