@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { page, userEvent } from "vitest/browser";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import axe from "axe-core";
 import { Dashboard } from "./Dashboard";
 import { demoSnapshot } from "./demo-provider";
@@ -17,6 +17,7 @@ it("prioriza atención, mantiene el alcance IT/OT y conserva preferencias del sh
   expect(screen.getByRole("heading", { name: "Requiere atención", level: 2 })).toBeTruthy();
   expect(screen.getByRole("heading", { name: "Estado resumido", level: 2 })).toBeTruthy();
   expect(screen.getByRole("heading", { name: "IT / OT Intelligence", level: 2 })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Endpoint Experience", level: 2 })).toBeTruthy();
   expect(screen.getByText("240 de 240")).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "OT" }));
   expect(screen.getByRole("button", { name: "OT" }).getAttribute("aria-pressed")).toBe("true");
@@ -142,6 +143,47 @@ it("mantiene Overview Live honesto ante cobertura parcial y nunca muestra hallaz
   expect(screen.getAllByText(/no se infieren/i).length).toBeGreaterThan(0);
 });
 
+it("presenta Endpoint Experience como evidencia con coverage, no como Device Health", async () => {
+  render(<Dashboard />);
+  await ready();
+  const heading = screen.getByRole("heading", { name: "Endpoint Experience", level: 2 });
+  const section = heading.closest("section");
+  expect(section).toBeTruthy();
+  const view = within(section!);
+  expect(view.getByText("Confiabilidad de aplicaciones")).toBeTruthy();
+  expect(view.getByText("Reinicios")).toBeTruthy();
+  expect(view.getByText("Startup")).toBeTruthy();
+  expect(view.getByText("Batería")).toBeTruthy();
+  expect(view.getByText(/Endpoint Experience no es CMDB Health, Device Health, risk score ni diagnóstico causal/)).toBeTruthy();
+});
+
+it("mantiene Live sin observations como unavailable en vez de fabricar cero eventos", async () => {
+  const canonical = demoSnapshot.canonical!;
+  const canonicalAsset = canonical.assets.find(asset =>
+    asset.taxonomy?.assetClass.state === "classified"
+    && asset.taxonomy.assetClass.value === "endpoint"
+    && asset.lifecycle === "active",
+  )!;
+  const presentation = demoSnapshot.assets.find(asset => asset.id === canonicalAsset.id)!;
+  const liveSnapshot: DashboardSnapshot = {
+    asOf: canonical.asOf,
+    assets: [presentation],
+    canonical: {
+      ...canonical,
+      assets: [canonicalAsset],
+      relationships: [],
+      observations: [],
+    },
+  };
+
+  render(<Dashboard mode="live" provider={async () => liveSnapshot} />);
+  const heading = await screen.findByRole("heading", { name: "Endpoint Experience", level: 2 });
+  const section = heading.closest("section");
+  expect(section).toBeTruthy();
+  const view = within(section!);
+  expect(view.getAllByText("No disponible").length).toBeGreaterThan(0);
+  expect(view.queryByText(/0 eventos/)).toBeNull();
+});
 it("pasa axe en light/dark y no desborda el viewport móvil", async () => {
   const { container } = render(<Dashboard />); await ready();
   for (const width of [1440, 768, 320]) {
