@@ -29,10 +29,10 @@ describe("Demo Knowledge Research", () => {
     }
   });
 
-  it("usa la regla de reinicios para demostrar contradicción unresolved", () => {
+  it("usa un finding Demo real para demostrar contradicción unresolved", () => {
     const canonical = demoSnapshot.canonical!;
     const finding = buildProactiveFindingsReport(canonical).findings.find(
-      item => item.ruleId === "nexus.endpoint.repeated-unclean-restart",
+      item => item.ruleId === "nexus.endpoint.application-instability",
     );
     expect(finding).toBeTruthy();
 
