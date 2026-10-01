@@ -18,6 +18,7 @@ it("prioriza atención, mantiene el alcance IT/OT y conserva preferencias del sh
   expect(screen.getByRole("heading", { name: "Estado resumido", level: 2 })).toBeTruthy();
   expect(screen.getByRole("heading", { name: "IT / OT Intelligence", level: 2 })).toBeTruthy();
   expect(screen.getByRole("heading", { name: "Endpoint Experience", level: 2 })).toBeTruthy();
+  expect(screen.getByRole("heading", { name: "Proactive Findings", level: 2 })).toBeTruthy();
   expect(screen.getByText("240 de 240")).toBeTruthy();
   await userEvent.click(screen.getByRole("button", { name: "OT" }));
   expect(screen.getByRole("button", { name: "OT" }).getAttribute("aria-pressed")).toBe("true");
@@ -160,6 +161,22 @@ it("presenta Endpoint Experience como evidencia con coverage, no como Device Hea
   expect(view.getByText(/Endpoint Experience no es CMDB Health, Device Health, risk score ni diagnóstico causal/)).toBeTruthy();
 });
 
+it("presenta findings como patrón e hipótesis investigable, no como causa o score", async () => {
+  render(<Dashboard />);
+  await ready();
+
+  const heading = screen.getByRole("heading", { name: "Proactive Findings", level: 2 });
+  const section = heading.closest("section");
+  expect(section).toBeTruthy();
+  const view = within(section!);
+
+  expect(view.getByText(/Evidence → pattern → hypothesis/)).toBeTruthy();
+  expect(view.getByText(/Un finding propone una investigación; no demuestra causa, riesgo ni severidad/)).toBeTruthy();
+  expect(view.getByText(/Confidence expresa soporte de evidencia del patrón; nunca probabilidad causal/)).toBeTruthy();
+  expect(view.getAllByRole("link", { name: "Abrir Asset 360" }).length).toBeGreaterThan(0);
+  expect(view.queryByText(/root cause demostrada/i)).toBeNull();
+});
+
 it("mantiene Live sin observations como unavailable en vez de fabricar cero eventos", async () => {
   const canonical = demoSnapshot.canonical!;
   const canonicalAsset = canonical.assets.find(asset =>
@@ -186,6 +203,13 @@ it("mantiene Live sin observations como unavailable en vez de fabricar cero even
   const view = within(section!);
   expect(view.getAllByText("No disponible").length).toBeGreaterThan(0);
   expect(view.queryByText(/0 eventos/)).toBeNull();
+
+  const findingsHeading = screen.getByRole("heading", { name: "Proactive Findings", level: 2 });
+  const findingsSection = findingsHeading.closest("section");
+  expect(findingsSection).toBeTruthy();
+  const findingsView = within(findingsSection!);
+  expect(findingsView.getByText("Reglas no evaluables")).toBeTruthy();
+  expect(findingsView.queryByRole("link", { name: "Abrir Asset 360" })).toBeNull();
 });
 it("pasa axe en light/dark y no desborda el viewport móvil", async () => {
   const { container } = render(<Dashboard />); await ready();
