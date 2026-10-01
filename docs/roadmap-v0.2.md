@@ -61,7 +61,7 @@ Dirección conceptual posterior:
 | V02-024 | Windows / Dell Lab Telemetry | P1 | ✅ Integrado — PR #115 / issue #114 / merge `d8c2c1e` |
 | V02-025 | Endpoint Experience | P1 | ✅ Integrado — PR #118 / issue #117 / merge `95bbfec` |
 | V02-026 | Proactive Findings Engine | P2 | ✅ Integrado — PR #121 / issue #120 / merge `a0e5d72` |
-| V02-027 | Knowledge Research Workflow | P2 | ⚪ Pendiente |
+| V02-027 | Knowledge Research Workflow | P2 | ✅ Integrado — PR #124 / issue #123 / merge `aad9a3a`; CI #947 verde |
 | V02-028 | Backend & Integration CI | P0 | ⚪ Pendiente |
 | V02-029 | v0.2 Demo / Live Lab Readiness | P1 | ⚪ Pendiente |
 
@@ -561,9 +561,35 @@ Documento:
 
 Siguiente trabajo funcional no bloqueado: **V02-027 — Knowledge Research Workflow**.
 
-### V02-027 — Knowledge Research Workflow
+### V02-027 — Knowledge Research Workflow ✅
 
-Fuentes técnicas confiables y recomendaciones auditables. NEXUS no ejecuta automáticamente comandos obtenidos desde Internet.
+Integrado mediante PR #124, merge `aad9a3adbef1254d458e9f29d904934385779899`; issue #123 cerrado; CI #947 verde.
+
+Pregunta central:
+
+> **¿Cómo puede NEXUS investigar conocimiento técnico externo para enriquecer un finding, preservando fuente, temporalidad, contradicciones y revisión humana, sin confundir documentación externa con evidencia observada ni ejecutar instrucciones obtenidas desde Internet?**
+
+Resultado:
+
+- contrato `Knowledge Research` versionado en `@igx-nexus/types`;
+- cadena explícita local evidence → finding → research question → sources → claims → recommendation → human review;
+- fuentes con provenance, clase y temporalidad separada entre publicación/actualización y retrieval;
+- contenido externo/sintético modelado como `untrusted`;
+- claims enlazados a sources y nunca convertidos en evidence local;
+- estados `supported`, `partially_supported`, `contested`, `unsupported` y `unknown`;
+- contradicciones preservadas como `unresolved`, sin majority vote;
+- recomendaciones enlazadas a claims, limitaciones y revisión humana obligatoria;
+- `executionAllowed=false` y `executionAuthorized=false` por contrato;
+- Demo determinista con `synthetic_fixture`, sin URLs externas falsas;
+- Live sin research real muestra ausencia explícita y nunca cae a fixtures Demo;
+- UX contextual dentro de Proactive Findings mediante **Investigar conocimiento**;
+- no buscador web genérico, crawler, remediation, command execution ni LLM-as-source.
+
+Documento:
+
+- `docs/product/knowledge-research-v02-027.md`.
+
+Siguiente trabajo funcional no bloqueado: **V02-028 — Backend & Integration CI**.
 
 ## Epic 7 — Hardening / Demo
 
