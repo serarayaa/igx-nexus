@@ -42,27 +42,32 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-022**
+**V02-001 .. V02-022 + V02-024**
 
 Último desarrollo funcional integrado:
 
-**V02-022 — IT / OT Intelligence**
+**V02-024 — Windows / Dell Lab Telemetry**
 
-Resultado relevante de V02-022:
+Resultado relevante de V02-024:
 
-- cohortes IT/OT se derivan únicamente desde `taxonomy.domain.state=classified`;
-- assessment ausente, unknown, unclassified y conflict permanecen fuera de cohortes y reducen domain coverage;
-- compatibility projection no se interpreta como clasificación analítica;
-- Asset Class y Role mantienen coverage independiente dentro de cada cohorte;
-- Operational Context distingue ausencia de cobertura de colección conocida vacía;
-- métricas de inventory, taxonomy resolved, source instance identity y lifecycle known reutilizan V02-019;
-- Technology Overview incorpora una lente IT/OT sin crear una ruta global nueva;
-- Live sin snapshot canónico presenta la lente como unavailable y no fabrica cohortes;
-- no se introducen ranking, maturity score, risk score ni Device Health.
+- probe local/read-only de Event Log, Windows CIM y Dell Command | Monitor;
+- LAB-01 confirmó cobertura útil desde Windows CIM y System Event Log;
+- ProviderName + Event ID se conservan como hechos observados, sin inferir causa;
+- Kernel-Power 41 / EventLog 6008 no se interpretan como falla de hardware;
+- `Win32_Battery` conserva coverage parcial cuando capacidad de diseño/carga completa no está disponible;
+- Dell Command | Monitor es capability opcional y su ausencia no invalida el laboratorio;
+- CI bloquea comandos mutables/remotos dentro del probe;
+- output sanitizado evita hostname, serial, usuario, dominio, IP/MAC y raw event messages.
 
-Siguiente desarrollo funcional planificado:
+Trabajo pendiente bloqueado:
 
 **V02-023 — Intune Analytics Feasibility Spike**
+
+Repo-side está preparado en draft PR #113, pero la validación tenant requiere una App Registration dedicada o intervención administrativa en Entra.
+
+Siguiente desarrollo funcional no bloqueado:
+
+**V02-025 — Endpoint Experience**
 
 El detalle completo permanece definido en:
 
@@ -191,4 +196,6 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-023 — Intune Analytics Feasibility Spike**
+**V02-025 — Endpoint Experience**
+
+V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra.

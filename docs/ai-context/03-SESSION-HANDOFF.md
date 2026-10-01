@@ -8,12 +8,12 @@
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
 - Bootstrap de contexto modular: **integrado**
-- Último desarrollo funcional integrado: **V02-022 — IT / OT Intelligence**
-- Próximo desarrollo funcional: **V02-023 — Intune Analytics Feasibility Spike**
+- Último desarrollo funcional integrado: **V02-024 — Windows / Dell Lab Telemetry**
+- Próximo desarrollo funcional no bloqueado: **V02-025 — Endpoint Experience**
 
 ## Estado actual
 
-V02-022 consolidó cohortes IT/OT sobre Taxonomy v2 resuelta, coverage explícita y métricas gobernadas, sin convertir compatibility projection ni datos no resueltos en clasificación analítica.
+V02-024 validó un baseline endpoint local/read-only mediante Windows Event Log y CIM/WMI. LAB-01 confirmó señales observables y output sanitizado; Dell Command | Monitor quedó como capability opcional/Assess y no se instala sólo para satisfacer el spike.
 
 La capa `docs/ai-context/` está compuesta por:
 
@@ -45,15 +45,24 @@ No recorrer todo el repositorio ni toda la documentación salvo necesidad real.
 
 v0.2 tiene integrado:
 
-**V02-001 .. V02-022**
+**V02-001 .. V02-022 + V02-024**
 
 Último desarrollo funcional integrado:
 
-**V02-022 — IT / OT Intelligence**
+**V02-024 — Windows / Dell Lab Telemetry**
 
-Siguiente desarrollo funcional:
+Pendiente bloqueado:
 
 **V02-023 — Intune Analytics Feasibility Spike**
+
+- draft PR #113;
+- issue #112;
+- validación real detenida por RBAC/App Registration en Entra;
+- no ampliar permisos ni solicitar ReadWrite para sortear el bloqueo.
+
+Siguiente desarrollo funcional no bloqueado:
+
+**V02-025 — Endpoint Experience**
 
 Las remediaciones de auditoría relevantes integradas incluyen:
 
@@ -65,17 +74,19 @@ Los findings históricos no deben asumirse como deuda activa sin verificar el es
 
 ## Próxima acción
 
-Iniciar **V02-023 — Intune Analytics Feasibility Spike**.
+Iniciar **V02-025 — Endpoint Experience** sin cerrar artificialmente V02-023.
 
 Antes de implementar:
 
 1. verificar `main` limpio y actualizado;
 2. consultar `../roadmap-v0.2.md`;
-3. tratar el ticket como feasibility spike, no como integración productiva;
-4. verificar datos realmente disponibles, permisos, licencias y APIs antes de diseñar contratos definitivos;
-5. documentar qué señales son observables, con qué cobertura y qué limitaciones existen.
+3. reutilizar únicamente señales defendibles demostradas por V02-024;
+4. mantener Event Log/CIM como evidencia, no causalidad;
+5. separar measurement coverage de interpretación de experiencia endpoint;
+6. diseñar hangs, crashes, restarts, startup y batería con ventanas/denominadores explícitos;
+7. no depender de Intune/Endpoint Analytics mientras V02-023 continúe bloqueado.
 
-No adelantar V02-024 ni tickets posteriores salvo dependencia demostrada.
+Cuando exista App Registration autorizada, retomar V02-023 desde su runbook/preflight sin rehacer el spike.
 
 ## Regla para futuras sesiones
 

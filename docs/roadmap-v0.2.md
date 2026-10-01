@@ -57,8 +57,8 @@ Dirección conceptual posterior:
 | V02-020 | CMDB Quality 2.0 | P1 | ✅ Integrado — PR #103 / issue #102 / merge `7f5d824`; CI #827 verde |
 | V02-021 | Lifecycle & Investment | P1 | ✅ Integrado — PR #107 / issue #105 / merge `34f3ee8` |
 | V02-022 | IT / OT Intelligence | P1 | ✅ Integrado — PR #110 / issue #109 / merge `4ffef6d`; CI #866 verde |
-| V02-023 | Intune Analytics Feasibility Spike | P0 | ⚪ Pendiente |
-| V02-024 | Windows / Dell Lab Telemetry | P1 | ⚪ Pendiente |
+| V02-023 | Intune Analytics Feasibility Spike | P0 | 🟡 Bloqueado por RBAC tenant — issue #112 / draft PR #113 |
+| V02-024 | Windows / Dell Lab Telemetry | P1 | ✅ Integrado — PR #115 / issue #114 / merge `d8c2c1e` |
 | V02-025 | Endpoint Experience | P1 | ⚪ Pendiente |
 | V02-026 | Proactive Findings Engine | P2 | ⚪ Pendiente |
 | V02-027 | Knowledge Research Workflow | P2 | ⚪ Pendiente |
@@ -459,13 +459,45 @@ Siguiente trabajo: **V02-023 — Intune Analytics Feasibility Spike**.
 
 ## Epic 6 — Proactive Endpoint Intelligence
 
-### V02-023 — Intune Analytics Feasibility Spike
+### V02-023 — Intune Analytics Feasibility Spike 🟡
 
-Verificar datos, permisos/licencias y APIs disponibles antes de diseñar integración definitiva.
+Repo-side preparado en draft PR #113 / issue #112.
 
-### V02-024 — Windows / Dell Lab Telemetry
+Estado tenant:
 
-Event Log, WMI/CIM y Dell Command Monitor read-only en laboratorio. No crear agente NEXUS propio todavía.
+- inventario Graph v1.0 evaluado con `DeviceManagementManagedDevices.Read.All` como permiso application candidato;
+- Endpoint Analytics permanece Assess y Advanced Analytics Hold hasta validar entitlement;
+- export jobs permanecen Hold por requerir permisos ReadWrite para crear jobs;
+- preflight diseñado GET-only, token opaco y evidencia sanitizada;
+- validación real bloqueada porque la cuenta de laboratorio no puede crear App Registrations en Entra;
+- pendiente solicitar App Registration dedicada o intervención administrativa con privilegio mínimo.
+
+No cerrar ni mergear #113 hasta completar la validación tenant.
+
+### V02-024 — Windows / Dell Lab Telemetry ✅
+
+Integrado mediante PR #115, merge `d8c2c1e3280b38487b6f3dd9427d2aca446cb683`.
+
+Resultado:
+
+- probe PowerShell local y read-only;
+- Event Log gobernado por ProviderName + Event ID;
+- Windows CIM/WMI con cobertura explícita;
+- Dell Command | Monitor tratado como capability opcional;
+- ausencia de DCM es estado soportado, sin instalación automática;
+- CI impide comandos CIM mutables/remotos en el probe;
+- LAB-01 real validó Windows CIM y Event Log con output sanitizado;
+- Event 41/6008 permanecen como evidencia de reinicio/apagado no limpio, nunca como causa raíz;
+- `Win32_Battery` mostró charge coverage pero no capacidad defendible en LAB-01;
+- DCM quedó Assess/unavailable en LAB-01 y no se instala sólo para satisfacer el spike.
+
+Documentos:
+
+- `docs/integrations/windows-dell-lab-telemetry-v02-024.md`;
+- `docs/integrations/windows-dell-lab-telemetry-runbook.md`;
+- `docs/integrations/windows-dell-lab-telemetry-evidence-2026-10-01.md`.
+
+Siguiente trabajo funcional no bloqueado: **V02-025 — Endpoint Experience**.
 
 ### V02-025 — Endpoint Experience
 
