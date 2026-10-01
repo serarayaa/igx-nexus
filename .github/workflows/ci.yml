@@ -69,6 +69,21 @@ jobs:
             exit 1
           }
 
+      - name: Validar sintaxis del probe Windows / Dell
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $parseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            'scripts/live-lab/Test-WindowsDellTelemetry.ps1',
+            [ref]$tokens,
+            [ref]$parseErrors
+          ) | Out-Null
+          if ($parseErrors.Count -gt 0) {
+            $parseErrors | ForEach-Object { Write-Error $_.Message }
+            exit 1
+          }
+
       - name: Instalar Chromium para tests de UI
         run: |
           # Chromium de Playwright no depende del repositorio Google Chrome que trae el runner.
