@@ -156,6 +156,21 @@ describe("Proactive Findings Engine", () => {
     });
   });
 
+  it("no genera gap si existe al menos una capacidad válida dentro de la ventana", () => {
+    const input = snapshot([asset("A")], [
+      observation("PRESENT", "A", "battery.present", { kind: "boolean", value: true }),
+      observation("VALID", "A", "battery.capacity.percent", { kind: "number", value: 81, unit: "percent" }, "2026-09-29T12:00:00.000Z"),
+      observation("INVALID-LATEST", "A", "battery.capacity.percent", { kind: "number", value: 81, unit: "%" }, "2026-09-30T12:00:00.000Z"),
+    ]);
+    const report = buildProactiveFindingsReport(input);
+    expect(report.findings.filter(item => item.ruleId === "nexus.endpoint.battery-capacity-evidence-gap")).toHaveLength(0);
+    expect(report.evaluations[2]).toMatchObject({
+      state: "not_triggered",
+      evaluatedAssets: 1,
+      triggeredAssets: 0,
+    });
+  });
+
   it("mantiene domain unresolved fuera de cohortes y lifecycle no operacional fuera de población", () => {
     const input = snapshot([
       asset("IT"),
