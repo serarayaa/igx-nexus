@@ -59,7 +59,7 @@ Dirección conceptual posterior:
 | V02-022 | IT / OT Intelligence | P1 | ✅ Integrado — PR #110 / issue #109 / merge `4ffef6d`; CI #866 verde |
 | V02-023 | Intune Analytics Feasibility Spike | P0 | 🟡 Bloqueado por RBAC tenant — issue #112 / draft PR #113 |
 | V02-024 | Windows / Dell Lab Telemetry | P1 | ✅ Integrado — PR #115 / issue #114 / merge `d8c2c1e` |
-| V02-025 | Endpoint Experience | P1 | ⚪ Pendiente |
+| V02-025 | Endpoint Experience | P1 | ✅ Integrado — PR #118 / issue #117 / merge `95bbfec` |
 | V02-026 | Proactive Findings Engine | P2 | ⚪ Pendiente |
 | V02-027 | Knowledge Research Workflow | P2 | ⚪ Pendiente |
 | V02-028 | Backend & Integration CI | P0 | ⚪ Pendiente |
@@ -497,11 +497,37 @@ Documentos:
 - `docs/integrations/windows-dell-lab-telemetry-runbook.md`;
 - `docs/integrations/windows-dell-lab-telemetry-evidence-2026-10-01.md`.
 
-Siguiente trabajo funcional no bloqueado: **V02-025 — Endpoint Experience**.
+Siguiente trabajo funcional no bloqueado en ese punto: **V02-025 — Endpoint Experience**.
 
-### V02-025 — Endpoint Experience
+### V02-025 — Endpoint Experience ✅
 
-Hangs, crashes, restarts, startup, batería y cohortes con métricas explicables y cobertura explícita.
+Integrado mediante PR #118, merge `95bbfecdd60b8b7952bccb7b48ce7193b7cf91cb`; issue #117 cerrado.
+
+Pregunta central:
+
+> **¿Qué experiencia operacional muestran los endpoints a partir de señales observables de crashes, hangs, restarts, startup y batería, con ventanas y cobertura explícitas?**
+
+Resultado:
+
+- contrato `EndpointExperienceReport` sobre `TechnologySnapshot.observations`;
+- ventanas gobernadas de 7/14/30 días, con 14 días como presentación inicial;
+- población elegible desde Asset Class Taxonomy v2 classified + lifecycle operacional;
+- crashes/hangs separados y medidos sólo cuando existe coverage declarada;
+- reinicios no limpios separados de stop-error, sin inferencia causal;
+- startup expresado como muestras y media descriptiva cuando existe evidencia;
+- batería separa capability coverage de capacity coverage;
+- `0` observado y `unavailable` permanecen semánticamente distintos;
+- Demo usa observations sintéticas deterministas;
+- Live sin observations permanece unavailable y no cae a Demo;
+- Technology Overview incorpora Endpoint Experience sin crear una ruta global nueva;
+- Endpoint Experience permanece separado de CMDB Quality, Device Health, risk score y root-cause;
+- CI #906 verde antes del merge.
+
+Documento:
+
+- `docs/product/endpoint-experience-v2.md`.
+
+Siguiente trabajo funcional no bloqueado: **V02-026 — Proactive Findings Engine**.
 
 ### V02-026 — Proactive Findings Engine
 

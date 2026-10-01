@@ -42,22 +42,25 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-022 + V02-024**
+**V02-001 .. V02-022 + V02-024 + V02-025**
 
 Último desarrollo funcional integrado:
 
-**V02-024 — Windows / Dell Lab Telemetry**
+**V02-025 — Endpoint Experience**
 
-Resultado relevante de V02-024:
+Resultado relevante de V02-025:
 
-- probe local/read-only de Event Log, Windows CIM y Dell Command | Monitor;
-- LAB-01 confirmó cobertura útil desde Windows CIM y System Event Log;
-- ProviderName + Event ID se conservan como hechos observados, sin inferir causa;
-- Kernel-Power 41 / EventLog 6008 no se interpretan como falla de hardware;
-- `Win32_Battery` conserva coverage parcial cuando capacidad de diseño/carga completa no está disponible;
-- Dell Command | Monitor es capability opcional y su ausencia no invalida el laboratorio;
-- CI bloquea comandos mutables/remotos dentro del probe;
-- output sanitizado evita hostname, serial, usuario, dominio, IP/MAC y raw event messages.
+- contrato Endpoint Experience sobre observations canónicas;
+- ventanas 7/14/30 días y coverage explícita por familia de señal;
+- crashes/hangs y reinicios se presentan como evidencia observada, no como causa;
+- reinicios no limpios y stop-error permanecen separados;
+- startup requiere muestras observables dentro de ventana;
+- batería separa capability coverage de capacity coverage;
+- zero y unavailable nunca son equivalentes;
+- cohortes IT/OT usan sólo Taxonomy v2 classified;
+- Demo es sintética/determinista y Live no recibe fallback;
+- Technology Overview integra Endpoint Experience sin crear una ruta global nueva;
+- Endpoint Experience no es CMDB Health, Device Health, risk score ni root-cause engine.
 
 Trabajo pendiente bloqueado:
 
@@ -67,7 +70,7 @@ Repo-side está preparado en draft PR #113, pero la validación tenant requiere 
 
 Siguiente desarrollo funcional no bloqueado:
 
-**V02-025 — Endpoint Experience**
+**V02-026 — Proactive Findings Engine**
 
 El detalle completo permanece definido en:
 
@@ -90,7 +93,8 @@ Las principales superficies y capacidades disponibles incluyen:
 - modelo canónico con provenance y relationship evidence;
 - Analytics Contract Layer;
 - Lifecycle & Investment;
-- IT / OT Intelligence.
+- IT / OT Intelligence;
+- Endpoint Experience.
 
 CMDB Quality y Device Operational Health permanecen conceptualmente separados.
 
@@ -196,6 +200,6 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-025 — Endpoint Experience**
+**V02-026 — Proactive Findings Engine**
 
 V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra.
