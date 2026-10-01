@@ -138,8 +138,11 @@ it("mantiene Overview Live honesto ante cobertura parcial y nunca muestra hallaz
   expect(screen.queryByRole("table", { name: "Próximos vencimientos de garantía" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Calidad de datos" })).toBeNull();
   expect(screen.getAllByRole("link", { name: /Lifecycle & Investment/ }).some(link => link.getAttribute("href") === "#lifecycle")).toBe(true);
-  expect(screen.getByRole("heading", { name: "IT / OT Intelligence", level: 2 })).toBeTruthy();
-  expect(screen.getByText("Sin evidencia canónica")).toBeTruthy();
+  const itOtHeading = screen.getByRole("heading", { name: "IT / OT Intelligence", level: 2 });
+  expect(itOtHeading).toBeTruthy();
+  const itOtSection = itOtHeading.closest("section");
+  expect(itOtSection).toBeTruthy();
+  expect(within(itOtSection!).getByText("Sin evidencia canónica")).toBeTruthy();
   expect(screen.getAllByText(/no se infieren/i).length).toBeGreaterThan(0);
 });
 
