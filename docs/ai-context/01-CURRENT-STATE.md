@@ -42,25 +42,24 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-022 + V02-024 + V02-025**
+**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026**
 
 Último desarrollo funcional integrado:
 
-**V02-025 — Endpoint Experience**
+**V02-026 — Proactive Findings Engine**
 
-Resultado relevante de V02-025:
+Resultado relevante de V02-026:
 
-- contrato Endpoint Experience sobre observations canónicas;
-- ventanas 7/14/30 días y coverage explícita por familia de señal;
-- crashes/hangs y reinicios se presentan como evidencia observada, no como causa;
-- reinicios no limpios y stop-error permanecen separados;
-- startup requiere muestras observables dentro de ventana;
-- batería separa capability coverage de capacity coverage;
-- zero y unavailable nunca son equivalentes;
-- cohortes IT/OT usan sólo Taxonomy v2 classified;
-- Demo es sintética/determinista y Live no recibe fallback;
-- Technology Overview integra Endpoint Experience sin crear una ruta global nueva;
-- Endpoint Experience no es CMDB Health, Device Health, risk score ni root-cause engine.
+- findings deterministas derivados desde observations canónicas;
+- evidence, pattern, hypothesis y confidence permanecen separados;
+- confidence expresa soporte de evidencia, no probabilidad causal;
+- reglas versionadas distinguen triggered, not_triggered y unavailable;
+- coverage pertenece a la capacidad de evaluar cada regla;
+- recurrencia no se presenta como causalidad ni root cause;
+- Demo deriva findings desde observations existentes, sin fixtures desacoplados;
+- Live sin evidence queda no evaluable y no recibe fallback;
+- Technology Overview integra findings explicables con drill-down a Asset 360;
+- no existe remediation, command execution, risk score ni Internet research en V02-026.
 
 Trabajo pendiente bloqueado:
 
@@ -70,7 +69,7 @@ Repo-side está preparado en draft PR #113, pero la validación tenant requiere 
 
 Siguiente desarrollo funcional no bloqueado:
 
-**V02-026 — Proactive Findings Engine**
+**V02-027 — Knowledge Research Workflow**
 
 El detalle completo permanece definido en:
 
@@ -94,7 +93,8 @@ Las principales superficies y capacidades disponibles incluyen:
 - Analytics Contract Layer;
 - Lifecycle & Investment;
 - IT / OT Intelligence;
-- Endpoint Experience.
+- Endpoint Experience;
+- Proactive Findings.
 
 CMDB Quality y Device Operational Health permanecen conceptualmente separados.
 
@@ -200,6 +200,6 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-026 — Proactive Findings Engine**
+**V02-027 — Knowledge Research Workflow**
 
 V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra.
