@@ -82,16 +82,20 @@ Un provider que entrega un contrato runtime incompatible falla cerrado y produce
 
 ### Frontera Web
 
-La Web mantiene su gate separado en `live-provider.test.ts` y Contract Integrity:
+El repositorio ya conserva `apps/web/src/contract-round-trip.test.ts`, introducido por la remediación AUD-API-001. Ese gate cruza:
 
 ```text
-canonical HTTP payload
+canonical snapshot
+  → Fastify route
+  → HTTP serialization
   → parseTechnologySnapshot()
   → projectCanonicalSnapshot()
   → Web Live model
 ```
 
-V02-028 trata ambos gates como una cadena contractual compuesta. No se introduce una dependencia runtime Web → API package sólo para construir un test monolítico.
+Además, `live-provider.test.ts` y Contract Integrity cubren rechazo de payloads incompatibles y proyección Live.
+
+V02-028 complementa esa cadena desde el otro extremo con GLPI → provider → API. En conjunto, los gates cubren la vertical sin introducir una dependencia runtime nueva Web → API sólo para construir un test monolítico.
 
 ## Gate 3 — OpenAPI / runtime security alignment
 
