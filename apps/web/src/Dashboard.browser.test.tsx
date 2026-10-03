@@ -226,7 +226,7 @@ it("resincroniza Knowledge Research y usa un reloj de revisión separado de gene
   );
 
   expect(await screen.findByText(second.request.question)).toBeTruthy();
-  expect(screen.getByText("Pendiente")).toBeTruthy();
+  expect(screen.getAllByText("Pendiente").length).toBeGreaterThan(0);
   expect(screen.queryByText("Aprobado para seguimiento")).toBeNull();
 });
 
