@@ -4,7 +4,9 @@ import { cleanup, render, screen, waitFor, within } from "@testing-library/react
 import axe from "axe-core";
 import { buildProactiveFindingsReport } from "@igx-nexus/types";
 import { Dashboard } from "./Dashboard";
+import { KnowledgeResearchPanel } from "./KnowledgeResearchPanel";
 import { demoSnapshot } from "./demo-provider";
+import { createDemoResearchReport } from "./demo-research";
 import type { DashboardProvider, DashboardSnapshot } from "./dashboard-model";
 import "@igx-nexus/ui/styles.css";
 import "./dashboard.css";
@@ -201,6 +203,31 @@ it("expone Knowledge Research Demo con provenance, contradicción y revisión hu
   expect(cardView.getAllByText("Aprobado para seguimiento").length).toBeGreaterThan(0);
   expect(cardView.getByText(/Revisión local de demostración; no persistida/)).toBeTruthy();
   expect(cardView.getByText(/La revisión nunca habilita ejecución/)).toBeTruthy();
+});
+
+it("resincroniza Knowledge Research y usa un reloj de revisión separado de generatedAt", async () => {
+  const findings = buildProactiveFindingsReport(demoSnapshot.canonical!).findings;
+  const first = createDemoResearchReport(findings[0]!);
+  const second = createDemoResearchReport(findings[1]!);
+  const reviewedAt = "2026-10-03T13:30:00.000Z";
+  const reviewClock = vi.fn(() => reviewedAt);
+
+  const view = render(
+    <KnowledgeResearchPanel report={first} demoInteractive reviewClock={reviewClock} />,
+  );
+  expect(screen.getByText(first.request.question)).toBeTruthy();
+
+  await userEvent.click(screen.getByRole("button", { name: "Aprobar seguimiento" }));
+  expect(reviewClock).toHaveBeenCalledOnce();
+  expect(screen.getAllByText("Aprobado para seguimiento").length).toBeGreaterThan(0);
+
+  view.rerender(
+    <KnowledgeResearchPanel report={second} demoInteractive reviewClock={reviewClock} />,
+  );
+
+  expect(await screen.findByText(second.request.question)).toBeTruthy();
+  expect(screen.getAllByText("Pendiente").length).toBeGreaterThan(0);
+  expect(screen.queryByText("Aprobado para seguimiento")).toBeNull();
 });
 
 it("mantiene Knowledge Research Live sin fallback a fixtures Demo", async () => {

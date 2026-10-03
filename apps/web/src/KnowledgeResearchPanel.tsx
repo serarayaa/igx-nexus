@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   applyResearchReview,
   type KnowledgeResearchReport,
@@ -51,11 +51,19 @@ function reviewTone(state: ResearchReviewState): "success" | "warning" | "critic
 export function KnowledgeResearchPanel({
   report,
   demoInteractive = false,
+  reviewClock = () => new Date().toISOString(),
 }: {
   report: KnowledgeResearchReport | null;
   demoInteractive?: boolean;
+  reviewClock?: () => string;
 }) {
   const [current, setCurrent] = useState(report);
+  const reportRequestId = report?.request.id;
+  const reportGeneratedAt = report?.generatedAt;
+
+  useEffect(() => {
+    setCurrent(report);
+  }, [reportRequestId, reportGeneratedAt]);
 
   if (!current) {
     return <div className="nexus-research-panel nexus-research-unavailable">
@@ -75,7 +83,7 @@ export function KnowledgeResearchPanel({
     setCurrent(applyResearchReview(
       current,
       decision,
-      current.generatedAt,
+      reviewClock(),
       "Revisión local de demostración; no persistida.",
     ));
   };

@@ -88,11 +88,33 @@ describe("Technology snapshot route", () => {
     expect(response.body).not.toContain("TECHNOLOGY_PROVIDER_UNAVAILABLE");
   });
 
-  it("documents the protected snapshot route in OpenAPI", async () => {
+  it("keeps OpenAPI security aligned with the protected runtime route", async () => {
     app = await buildApp({ config: loadConfig({ NEXUS_API_ENV: "test" }) });
     const openApi = (await app.inject({ method: "GET", url: "/openapi.json" })).json<{
-      paths?: Record<string, unknown>;
+      components?: {
+        securitySchemes?: Record<string, {
+          type?: string;
+          scheme?: string;
+        }>;
+      };
+      paths?: Record<string, {
+        get?: {
+          security?: readonly Record<string, readonly string[]>[];
+          responses?: Record<string, unknown>;
+        };
+      }>;
     }>();
-    expect(openApi.paths).toHaveProperty("/api/v1/technology/snapshot");
+
+    expect(openApi.components?.securitySchemes?.nexusBearer).toMatchObject({
+      type: "http",
+      scheme: "bearer",
+    });
+
+    const operation = openApi.paths?.["/api/v1/technology/snapshot"]?.get;
+    expect(operation?.security).toEqual([{ nexusBearer: [] }]);
+    expect(operation?.responses).toHaveProperty("200");
+    expect(operation?.responses).toHaveProperty("401");
+    expect(operation?.responses).toHaveProperty("403");
+    expect(operation?.responses).toHaveProperty("503");
   });
 });

@@ -89,6 +89,30 @@ describe("Knowledge Research Workflow", () => {
     }));
   });
 
+  it("rechaza supportState y review.state inventados en payloads runtime", () => {
+    const invalidClaimState = report({
+      claims: [{
+        ...report().claims[0]!,
+        supportState: "invented-state" as unknown as "supported",
+      }],
+    });
+    expect(validateKnowledgeResearchReport(invalidClaimState)).toContainEqual(expect.objectContaining({
+      code: "research.claim.supportState.invalid",
+      severity: "error",
+    }));
+
+    const invalidReviewState = report({
+      review: {
+        ...report().review,
+        state: "auto_approved" as unknown as "pending",
+      },
+    });
+    expect(validateKnowledgeResearchReport(invalidReviewState)).toContainEqual(expect.objectContaining({
+      code: "research.review.state.invalid",
+      severity: "error",
+    }));
+  });
+
   it("no permite que un claim externo se marque como evidence local", () => {
     const input = report({
       claims: [{

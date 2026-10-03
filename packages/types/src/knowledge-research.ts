@@ -198,6 +198,9 @@ export function validateKnowledgeResearchReport(
     if (!nonEmpty(claim.id)) error("research.claim.id.empty", path + ".id", "El claim requiere ID.");
     if (!nonEmpty(claim.statement)) error("research.claim.statement.empty", path + ".statement", "El claim no puede estar vacío.");
     if (!nonEmpty(claim.applicability)) error("research.claim.applicability.empty", path + ".applicability", "El claim debe declarar aplicabilidad.");
+    if (!researchClaimSupportStates.includes(claim.supportState)) {
+      error("research.claim.supportState.invalid", path + ".supportState", "Estado de soporte no soportado.");
+    }
     if (claim.localEvidence !== false) error("research.claim.localEvidence.invalid", path + ".localEvidence", "Un research claim externo nunca se convierte en evidence local.");
     if (claim.sourceIds.length === 0) error("research.claim.sources.empty", path + ".sourceIds", "Todo claim debe enlazar al menos una fuente.");
     for (const sourceId of claim.sourceIds) {
@@ -230,6 +233,9 @@ export function validateKnowledgeResearchReport(
     }
   });
 
+  if (!researchReviewStates.includes(report.review.state)) {
+    error("research.review.state.invalid", "review.state", "Estado de revisión no soportado.");
+  }
   if (report.review.executionAuthorized !== false) {
     error("research.review.execution.invalid", "review.executionAuthorized", "Human review no autoriza ejecución en V02-027.");
   }

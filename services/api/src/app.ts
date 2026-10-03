@@ -112,6 +112,16 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
         { name: "Runtime", description: "Estado y metadata del runtime NEXUS API" },
         { name: "Technology", description: "Lecturas canónicas de Technology Intelligence" },
       ],
+      components: {
+        securitySchemes: {
+          nexusBearer: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "NEXUS access token",
+            description: "Identidad autenticada por la frontera NEXUS. El mecanismo concreto depende del entorno.",
+          },
+        },
+      },
     },
   });
 

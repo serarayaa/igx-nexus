@@ -12,7 +12,13 @@ export function registerTechnologyRoutes(app: FastifyInstance, provider: Technol
       schema: {
         tags: ["Technology"],
         summary: "Snapshot canónico read-only del Technology Provider activo",
-        response: { 200: technologySnapshotHttpSchema },
+        security: [{ nexusBearer: [] }],
+        response: {
+          200: technologySnapshotHttpSchema,
+          401: { $ref: "ApiErrorResponse#" },
+          403: { $ref: "ApiErrorResponse#" },
+          503: { $ref: "ApiErrorResponse#" },
+        },
       },
     },
     async () => {

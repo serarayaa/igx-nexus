@@ -54,6 +54,9 @@ jobs:
           npm run build --workspace @igx-nexus/api
           npm pack --dry-run --workspace @igx-nexus/api
 
+      - name: Gate black-box HTTP del backend
+        run: node scripts/qa-api-blackbox.mjs
+
       - name: Validar sintaxis del preflight GLPI Agent
         shell: pwsh
         run: |
