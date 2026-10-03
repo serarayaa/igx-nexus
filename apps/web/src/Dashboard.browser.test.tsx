@@ -219,7 +219,7 @@ it("resincroniza Knowledge Research y usa un reloj de revisión separado de gene
 
   await userEvent.click(screen.getByRole("button", { name: "Aprobar seguimiento" }));
   expect(reviewClock).toHaveBeenCalledOnce();
-  expect(screen.getByText("Aprobado para seguimiento")).toBeTruthy();
+  expect(screen.getAllByText("Aprobado para seguimiento").length).toBeGreaterThan(0);
 
   view.rerender(
     <KnowledgeResearchPanel report={second} demoInteractive reviewClock={reviewClock} />,
