@@ -42,24 +42,24 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026**
+**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027**
 
 Último desarrollo funcional integrado:
 
-**V02-026 — Proactive Findings Engine**
+**V02-027 — Knowledge Research Workflow**
 
-Resultado relevante de V02-026:
+Resultado relevante de V02-027:
 
-- findings deterministas derivados desde observations canónicas;
-- evidence, pattern, hypothesis y confidence permanecen separados;
-- confidence expresa soporte de evidencia, no probabilidad causal;
-- reglas versionadas distinguen triggered, not_triggered y unavailable;
-- coverage pertenece a la capacidad de evaluar cada regla;
-- recurrencia no se presenta como causalidad ni root cause;
-- Demo deriva findings desde observations existentes, sin fixtures desacoplados;
-- Live sin evidence queda no evaluable y no recibe fallback;
-- Technology Overview integra findings explicables con drill-down a Asset 360;
-- no existe remediation, command execution, risk score ni Internet research en V02-026.
+- Knowledge Research agrega una capa auditable sobre Proactive Findings;
+- external knowledge permanece separado de observations/evidence local;
+- fuentes transportan provenance, clase y temporalidad explícita;
+- todo contenido de research se trata como `untrusted input`;
+- claims enlazan fuentes y conservan estados de soporte/contradicción;
+- contradicciones permanecen visibles como `unresolved`;
+- recomendaciones requieren revisión humana y nunca autorizan ejecución;
+- Demo usa fixtures sintéticos deterministas y claramente etiquetados;
+- Live sin research real queda explícitamente sin packet y no cae a Demo;
+- no existe crawler, búsqueda web autónoma, remediation ni command execution en V02-027.
 
 Trabajo pendiente bloqueado:
 
@@ -69,7 +69,7 @@ Repo-side está preparado en draft PR #113, pero la validación tenant requiere 
 
 Siguiente desarrollo funcional no bloqueado:
 
-**V02-027 — Knowledge Research Workflow**
+**V02-028 — Backend & Integration CI**
 
 El detalle completo permanece definido en:
 
@@ -94,7 +94,8 @@ Las principales superficies y capacidades disponibles incluyen:
 - Lifecycle & Investment;
 - IT / OT Intelligence;
 - Endpoint Experience;
-- Proactive Findings.
+- Proactive Findings;
+- Knowledge Research.
 
 CMDB Quality y Device Operational Health permanecen conceptualmente separados.
 
@@ -200,6 +201,6 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-027 — Knowledge Research Workflow**
+**V02-028 — Backend & Integration CI**
 
 V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra.
