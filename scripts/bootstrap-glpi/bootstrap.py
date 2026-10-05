@@ -14,14 +14,61 @@ import argparse
 import json
 import os
 import sys
+from ipaddress import ip_address
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.parse import urlencode, urlsplit
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 
 DEFAULT_GLPI_BASE_URL = "http://localhost:8080/api.php/v2.3.0"
+
+_LOOPBACK_HOSTNAMES = {"localhost"}
+
+
+class _NoRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(
+        self,
+        req: Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> None:
+        return None
+
+
+def _is_loopback_host(hostname: str | None) -> bool:
+    if hostname is None:
+        return False
+    normalized = hostname.lower()
+    if normalized in _LOOPBACK_HOSTNAMES:
+        return True
+    try:
+        return ip_address(normalized).is_loopback
+    except ValueError:
+        return False
+
+
+def normalize_glpi_base_url(raw_url: str) -> str:
+    value = raw_url.strip()
+    parsed = urlsplit(value)
+
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        raise ValueError("GLPI_BASE_URL debe ser una URL absoluta HTTP(S).")
+    if parsed.username or parsed.password:
+        raise ValueError("GLPI_BASE_URL no puede contener credenciales.")
+    if parsed.query or parsed.fragment:
+        raise ValueError("GLPI_BASE_URL no puede contener query string ni fragmento.")
+    if parsed.scheme == "http" and not _is_loopback_host(parsed.hostname):
+        raise ValueError(
+            "GLPI_BASE_URL debe usar HTTPS salvo endpoints loopback explícitos "
+            "(localhost, 127.0.0.1 o ::1)."
+        )
+
+    return value.rstrip("/")
 
 PHYSICAL_TYPE_TO_VISIBILITY = {
     "Computers": "computer",
@@ -231,8 +278,9 @@ def parent_name(item: dict[str, Any]) -> str | None:
 
 class GLPIClient:
     def __init__(self, base_url: str, token: str) -> None:
-        self.base_url = base_url.rstrip("/")
+        self.base_url = normalize_glpi_base_url(base_url)
         self.token = token
+        self._opener = build_opener(_NoRedirectHandler())
 
     def _headers(
         self,
@@ -282,19 +330,23 @@ class GLPIClient:
             method=method,
         )
         try:
-            with urlopen(request, timeout=20) as response:
+            with self._opener.open(request, timeout=20) as response:
                 raw = response.read()
                 if not raw:
                     return None
                 return json.loads(raw.decode("utf-8"))
         except HTTPError as error:
-            detail = error.read().decode("utf-8", errors="replace")
+            if 300 <= error.code < 400:
+                raise RuntimeError(
+                    f"GLPI intentó redirigir {method} {path}; "
+                    "los redirects autenticados están bloqueados."
+                ) from error
             raise RuntimeError(
-                f"GLPI respondió HTTP {error.code} para {method} {path}: {detail[:500]}"
+                f"GLPI respondió HTTP {error.code} para {method} {path}."
             ) from error
         except URLError as error:
             raise RuntimeError(
-                f"No fue posible conectar con GLPI para {method} {path}: {error}"
+                f"No fue posible conectar con GLPI para {method} {path}."
             ) from error
 
     def get(
