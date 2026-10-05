@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import {
   technologySchemaVersion,
+  isIsoTimestamp,
   validateTechnologySnapshot,
   validateTechnologySnapshotTaxonomy,
   type AssetIdentifier,
@@ -321,6 +322,24 @@ function addAttribute(
   if (value !== undefined) attributes[key] = value;
 }
 
+function addGlpiTimestampAttribute(
+  attributes: Record<string, TechnologyAttributeValue>,
+  key: "dateCreation" | "dateModified" | "lastInventoryUpdate" | "lastBoot",
+  rawValue: string | undefined,
+): void {
+  if (rawValue === undefined) return;
+
+  if (isIsoTimestamp(rawValue)) {
+    addAttribute(attributes, `glpi.${key}`, rawValue);
+    return;
+  }
+
+  // GLPI may expose wall-clock or zero-date strings. Without an explicit timezone,
+  // NEXUS cannot promote them into canonical time. Preserve the source value as
+  // evidence while leaving the semantic timestamp unavailable.
+  addAttribute(attributes, `glpi.raw.${key}`, rawValue);
+}
+
 function addNamedReferenceAttributes(
   attributes: Record<string, TechnologyAttributeValue>,
   prefix: string,
@@ -392,10 +411,10 @@ export function mapGlpiComputerToTechnologyAsset(
   addAttribute(attributes, "glpi.itemType", "Computer");
   addAttribute(attributes, "glpi.isDeleted", record.is_deleted);
   addAttribute(attributes, "glpi.isDynamic", record.is_dynamic);
-  addAttribute(attributes, "glpi.dateCreation", record.date_creation);
-  addAttribute(attributes, "glpi.dateModified", record.date_mod);
-  addAttribute(attributes, "glpi.lastInventoryUpdate", record.last_inventory_update);
-  addAttribute(attributes, "glpi.lastBoot", record.last_boot);
+  addGlpiTimestampAttribute(attributes, "dateCreation", record.date_creation);
+  addGlpiTimestampAttribute(attributes, "dateModified", record.date_mod);
+  addGlpiTimestampAttribute(attributes, "lastInventoryUpdate", record.last_inventory_update);
+  addGlpiTimestampAttribute(attributes, "lastBoot", record.last_boot);
   addNamedReferenceAttributes(attributes, "glpi.status", record.status);
   addNamedReferenceAttributes(attributes, "glpi.entity", record.entity);
   addNamedReferenceAttributes(attributes, "glpi.manufacturer", record.manufacturer);

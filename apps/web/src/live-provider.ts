@@ -24,6 +24,11 @@ function attributeBoolean(asset: CanonicalAsset, key: string): boolean | null {
   return typeof value === "boolean" ? value : null;
 }
 
+function attributeTimestamp(asset: CanonicalAsset, key: string): string | null {
+  const value = asset.attributes[key];
+  return typeof value === "string" && isIsoTimestamp(value) ? value : null;
+}
+
 function taxonomyState(asset: CanonicalAsset): TaxonomyClassificationState {
   const states = [
     attributeString(asset, "nexus.taxonomy.domain.state"),
@@ -55,11 +60,7 @@ function mapCanonicalAsset(asset: CanonicalAsset): Asset {
   const sourceObservedAt = asset.sourceReferences[0]?.observedAt ?? null;
 
   const assessment = asset.taxonomy ? summarizeTaxonomy(asset.taxonomy) : null;
-  const lastInventory = asset.attributes["glpi.lastInventoryUpdate"];
-  if (lastInventory !== undefined && lastInventory !== null &&
-      (typeof lastInventory !== "string" || !isIsoTimestamp(lastInventory))) {
-    throw new TechnologyContractError("asset.attributes.glpi.lastInventoryUpdate", "timestamp.invalid");
-  }
+  const lastInventory = attributeTimestamp(asset, "glpi.lastInventoryUpdate");
   return Object.freeze({
     id: asset.id,
     name: asset.displayName,
@@ -80,7 +81,7 @@ function mapCanonicalAsset(asset: CanonicalAsset): Asset {
       Object.freeze({ ...context, displayName: context.displayName ?? null }))) } : {}),
     owner: null,
     location: attributeString(asset, "glpi.location.name"),
-    lastSeen: attributeString(asset, "glpi.lastInventoryUpdate"),
+    lastSeen: lastInventory,
     warrantyEnds: null,
     hostname: identifier(asset, "hostname"),
     serial: identifier(asset, "serial_number"),
