@@ -16,7 +16,7 @@ No demuestra despliegue corporativo, SSO productivo, disponibilidad de Intune, o
 - dependencias instaladas mediante `npm ci`;
 - Chromium de Playwright cuando se ejecuten browser tests.
 
-No se requiere GLPI, Intune, Entra ni Internet para ejecutar la Demo.
+No se requiere GLPI, Intune, Entra ni conexión a fuentes corporativas para ejecutar la Demo una vez instaladas las dependencias. `npm ci` y la instalación de Chromium pueden requerir acceso a los registries/orígenes de paquetes.
 
 ## Preparación
 
