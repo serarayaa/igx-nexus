@@ -732,8 +732,13 @@ function operationalContextStableKey(context: OperationalContextReference): stri
   ]);
 }
 
-function mergeOperationalContexts(records: readonly TechnologyAsset[]): readonly OperationalContextReference[] {
-  const contexts = records
+function mergeOperationalContexts(
+  records: readonly TechnologyAsset[],
+): readonly OperationalContextReference[] | undefined {
+  const coveredRecords = records.filter((record) => record.operationalContexts !== undefined);
+  if (coveredRecords.length === 0) return undefined;
+
+  const contexts = coveredRecords
     .flatMap((record) => record.operationalContexts ?? [])
     .sort((left, right) => operationalContextStableKey(left).localeCompare(operationalContextStableKey(right)));
   const merged = new Map<string, OperationalContextReference>();
@@ -929,7 +934,7 @@ export function projectCanonicalAsset(
     ...(taxonomy === undefined ? {} : { taxonomy }),
     lifecycle: resolvedString(resolutionsByField, "lifecycle") as TechnologyAsset["lifecycle"],
     criticality: resolvedString(resolutionsByField, "criticality") as TechnologyAsset["criticality"],
-    operationalContexts,
+    ...(operationalContexts === undefined ? {} : { operationalContexts }),
     identifiers: mergeIdentifiers(records),
     sourceReferences: mergeSourceReferences(records),
     attributes: Object.freeze(attributes),
@@ -937,7 +942,7 @@ export function projectCanonicalAsset(
   });
 
   const taxonomyIssues = taxonomy === undefined ? [] : validateAssetTaxonomyProjection(asset);
-  const contextIssues = operationalContexts.flatMap((context, index) =>
+  const contextIssues = (operationalContexts ?? []).flatMap((context, index) =>
     validateOperationalContextReference(context, `asset.operationalContexts[${index}]`),
   );
   if (taxonomyIssues.length > 0 || contextIssues.length > 0) {
