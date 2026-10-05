@@ -99,8 +99,8 @@ Roadmap cerrado de la release: [IGX NEXUS v0.2 — Technology Intelligence](docs
 
 La dirección conceptual posterior reserva:
 
-- **v0.3 — Intelligence & Automation**;
-- **v0.4 — Product Experience**;
+- **v0.3 — Product Experience**;
+- **v0.4 — Intelligence & Automation**;
 - **v0.5 — Corporate Infrastructure**;
 - **v0.6 — Cybersecurity Assurance**;
 - **v0.7 — Quality Assurance**.
