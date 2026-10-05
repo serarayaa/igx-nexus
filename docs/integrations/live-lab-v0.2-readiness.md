@@ -253,3 +253,37 @@ Un PARTIAL debe ser una decisión explícita de release, no un PASS disfrazado.
 4. volver a Demo;
 5. no borrar evidencia histórica sanitizada;
 6. no modificar activos GLPI sólo para “hacer pasar” el gate.
+
+
+## Revalidación final — 2026-10-05
+
+Resultado: **PASS**.
+
+HEAD de runtime validado:
+
+`451dae46327b73356a495e23db554dd2c404b105`.
+
+Evidencia sanitizada:
+
+`live-lab-v0.2-evidence-2026-10-05.md`.
+
+Se verificó manualmente:
+
+- GLPI Agent preflight PASS;
+- GLPI/OAuth disponibles;
+- NEXUS API Live en loopback;
+- `/health=200`;
+- `/ready=200`;
+- `providerMode=live`;
+- `providerAvailability=ready`;
+- snapshot sin autenticación = `401`;
+- Web Live con 1 activo agregado;
+- Overview / Explorer / Asset 360 / Evidence / Relationships / Technology Map / Lifecycle visibles;
+- unknown/unavailable conservados cuando falta evidencia;
+- relaciones Live ausentes permanecen ausentes;
+- lifecycle sin evidencia permanece sin cobertura;
+- ningún fallback Demo observado.
+
+La frescura cambió de antigua a reciente durante el gate después de una actualización del inventario del Agent; Explorer y Asset 360 convergieron al mismo estado final. No se detectó divergencia de cálculo.
+
+Observación local no bloqueante: el contenedor GLPI preexistente había sido creado con una publicación de puerto más amplia que el compose vigente. El archivo actual ya restringe GLPI a loopback; recrear el contenedor más adelante tras recuperar la configuración local.
