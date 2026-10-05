@@ -41,7 +41,7 @@ function asset(
   id: string,
   src: SourceReference,
   taxonomy: TechnologyTaxonomyAssessment | undefined,
-  contexts: readonly OperationalContextReference[] = [],
+  contexts?: readonly OperationalContextReference[],
 ): TechnologyAsset {
   const isOt = taxonomy?.domain.state === "classified" && taxonomy.domain.value === "OT";
   return Object.freeze({
@@ -53,7 +53,7 @@ function asset(
     ...(taxonomy === undefined ? {} : { taxonomy }),
     lifecycle: "active",
     criticality: "medium",
-    operationalContexts: Object.freeze([...contexts]),
+    ...(contexts === undefined ? {} : { operationalContexts: Object.freeze([...contexts]) }),
     identifiers: Object.freeze([]),
     sourceReferences: Object.freeze([src]),
     attributes: Object.freeze({}),
@@ -111,12 +111,20 @@ describe("V02-010 taxonomy-aware reconciliation", () => {
     ]);
   });
 
-  it("keeps legacy-only projection compatible when no v2 assessment exists", () => {
+  it("keeps operational context unavailable when no reconciled source covers it", () => {
     const anchor = asset("NXS-ANCHOR", source("glpi", "a"), undefined);
     const incoming = asset("NXS-INCOMING", source("intune", "b"), undefined);
     const result = projectCanonicalAsset(anchor, [incoming]);
 
     expect(result.asset.taxonomy).toBeUndefined();
+    expect(result.asset.operationalContexts).toBeUndefined();
+  });
+
+  it("preserves a known-empty operational context collection when another source is unavailable", () => {
+    const anchor = asset("NXS-ANCHOR", source("glpi", "a"), itTaxonomy());
+    const incoming = asset("NXS-INCOMING", source("intune", "b"), itTaxonomy(), []);
+    const result = projectCanonicalAsset(anchor, [incoming]);
+
     expect(result.asset.operationalContexts).toEqual([]);
   });
 });
