@@ -14,8 +14,8 @@ El traslado completo a infraestructura corporativa se reserva para **v0.5 — Co
 
 Dirección conceptual posterior:
 
-- v0.3 — Intelligence & Automation;
-- v0.4 — Product Experience;
+- v0.3 — Product Experience;
+- v0.4 — Intelligence & Automation;
 - v0.5 — Corporate Infrastructure;
 - v0.6 — Cybersecurity Assurance;
 - v0.7 — Quality Assurance.
