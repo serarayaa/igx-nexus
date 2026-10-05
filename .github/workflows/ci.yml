@@ -57,6 +57,11 @@ jobs:
       - name: Gate black-box HTTP del backend
         run: node scripts/qa-api-blackbox.mjs
 
+      - name: Hardening del bootstrap GLPI
+        run: |
+          python3 -m py_compile scripts/bootstrap-glpi/bootstrap.py
+          python3 scripts/bootstrap-glpi/test_bootstrap_security.py
+
       - name: Validar sintaxis del preflight GLPI Agent
         shell: pwsh
         run: |

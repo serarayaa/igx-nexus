@@ -40,6 +40,8 @@ También puede definirse una URL distinta mediante `GLPI_BASE_URL` o `--glpi-bas
 http://localhost:8080/api.php/v2.3.0
 ```
 
+Por seguridad, HTTP plano sólo está permitido para endpoints loopback explícitos (`localhost`, `127.0.0.1` o `::1`). Cualquier GLPI remoto debe usar HTTPS. El cliente no sigue redirects autenticados, por lo que un `3xx` falla cerrado antes de que el Bearer token pueda enviarse a otro destino.
+
 El modo `--check-glpi`:
 
 1. consulta entidades mediante `/Administration/Entity`;
@@ -144,6 +146,8 @@ No se asigna automáticamente ningún usuario durante los bootstraps RBAC.
 - La futura identidad `NEXUS API Service` tendrá su propio cliente/perfil de mínimo privilegio cuando exista un contrato técnico estable para la integración.
 - La configuración del repositorio debe contener únicamente datos corporativos aprobados para versionamiento.
 - Las operaciones no soportadas o no validadas se rechazan en vez de inferirse de forma riesgosa.
+- El bootstrap GLPI exige HTTPS para destinos no-loopback y bloquea redirects autenticados.
+- Los errores HTTP upstream no incorporan el body remoto en el mensaje local.
 
 ## Validación de persistencia CMDB-004
 
