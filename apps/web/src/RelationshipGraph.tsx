@@ -8,12 +8,12 @@ import {
   taxonomyStateLabels,
   technologyRoleLabel,
   type Asset,
-  type AssetDataMode,
   type InventoryProvider,
   type InventorySnapshot,
 } from "./asset-model";
 import { demoProvider } from "./demo-provider";
 import { demoRelationshipProvider } from "./demo-relationship-provider";
+import { assertSnapshotMatchesMode, resolveProviderForMode, type ModeAwareInventoryProviderProps } from "./data-mode-guard";
 import {
   assetHash,
   defaultTechnologyMapState,
@@ -47,6 +47,12 @@ type RelationshipLoadState =
   | { readonly status: "loading" }
   | { readonly status: "error" }
   | { readonly status: "ready"; readonly snapshot: RelationshipSnapshot };
+
+type RelationshipGraphProps = {
+  assetId: string;
+  mapState?: TechnologyMapState;
+  relationshipProvider?: RelationshipProvider;
+} & ModeAwareInventoryProviderProps<InventoryProvider>;
 
 const perspectiveLabels = {
   upstream: "Dependencias upstream",
@@ -196,19 +202,10 @@ function SelectionPanel({ selectedId, focusId, graphAssets, relationships, onFoc
   </section>;
 }
 
-export function RelationshipGraph({
-  assetId,
-  mode = "demo",
-  mapState = defaultTechnologyMapState,
-  inventoryProvider = demoProvider,
-  relationshipProvider,
-}: {
-  assetId: string;
-  mode?: AssetDataMode;
-  mapState?: TechnologyMapState;
-  inventoryProvider?: InventoryProvider;
-  relationshipProvider?: RelationshipProvider;
-}) {
+export function RelationshipGraph(props: RelationshipGraphProps) {
+  const { assetId, mapState = defaultTechnologyMapState, relationshipProvider } = props;
+  const mode = props.mode ?? "demo";
+  const inventoryProvider = resolveProviderForMode(mode, props.inventoryProvider, demoProvider);
   const effectiveRelationshipProvider = relationshipProvider ?? (mode === "demo" ? demoRelationshipProvider : undefined);
   const [inventoryState, setInventoryState] = useState<InventoryLoadState>({ status: "loading" });
   const [relationshipState, setRelationshipState] = useState<RelationshipLoadState>(() => effectiveRelationshipProvider ? { status: "loading" } : { status: "unavailable" });
@@ -222,10 +219,11 @@ export function RelationshipGraph({
     const controller = new AbortController();
     setInventoryState({ status: "loading" });
     Promise.resolve().then(() => inventoryProvider(controller.signal))
+      .then((snapshot) => assertSnapshotMatchesMode(mode, snapshot))
       .then((snapshot) => { if (!controller.signal.aborted) setInventoryState({ status: "ready", snapshot }); })
       .catch(() => { if (!controller.signal.aborted) setInventoryState({ status: "error" }); });
     return () => controller.abort();
-  }, [assetId, inventoryProvider, attempt]);
+  }, [assetId, inventoryProvider, mode, attempt]);
 
   useEffect(() => {
     if (!effectiveRelationshipProvider) {
