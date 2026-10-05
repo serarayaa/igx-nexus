@@ -28,13 +28,13 @@ CMDB-013 valida y pule el recorrido completo, elimina lenguaje de roadmap de la 
 
 La v0.1 respondió la pregunta: **«¿Podemos construir la idea?»**
 
-## v0.2 — Technology Intelligence 🚧
+## v0.2 — Technology Intelligence ✅
 
 Después del cierre de v0.1 se realizó un Discovery específico antes de promover el producto a infraestructura corporativa. La decisión resultante es validar primero el comportamiento real de la plataforma y sus integraciones, evitando trasladar al servidor una arquitectura que todavía dependa de datos sintéticos.
 
 La v0.2 responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-El roadmap activo y sus epics se mantienen en [`roadmap-v0.2.md`](roadmap-v0.2.md).
+El roadmap cerrado y sus epics se mantienen en [`roadmap-v0.2.md`](roadmap-v0.2.md).
 
 Orden inicial:
 
@@ -64,13 +64,13 @@ La v0.2 prioriza integraciones reales controladas, procedencia, modelo IT/OT cor
 
 El detalle posterior a v0.2 se definirá con evidencia obtenida durante el desarrollo. Como norte actual:
 
-### v0.3 — Intelligence & Automation
+### v0.3 — Product Experience
+
+Concentrar el esfuerzo exclusivamente en UI/UX, arquitectura de información, Design System, visualización, Asset 360, Technology Map, accesibilidad, responsive/mobile, motion y flujos por persona. Esta fase evita convertirse en otra expansión de backend o automatización.
+
+### v0.4 — Intelligence & Automation
 
 Profundizar el valor operacional mediante automatización, reporting/auditoría, observabilidad, ciencia de datos, Graph Intelligence, detección de anomalías e IA/ML explicable. La IA puede recomendar, detectar y explicar, pero no reemplaza provenance ni revisión humana.
-
-### v0.4 — Product Experience
-
-Concentrar el esfuerzo en UI/UX, arquitectura de información, Design System, visualización, Asset 360, Technology Map, accesibilidad, responsive/mobile, motion y flujos por persona, evitando que esta etapa se convierta en otra gran expansión de backend.
 
 ### v0.5 — Corporate Infrastructure
 

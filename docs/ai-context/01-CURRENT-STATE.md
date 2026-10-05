@@ -165,19 +165,28 @@ Un conflicto sólo se presenta como tal cuando el contrato transporta evidencia 
 
 Las remediaciones integradas en `main` forman parte del baseline actual.
 
-Remediaciones relevantes ya integradas:
+Remediaciones históricas relevantes ya integradas:
 
 - `AUD-API-001` — preservación del contrato canónico durante el HTTP round-trip;
 - `AUD-DATA-001` — endurecimiento de calidad de identificadores para reconciliación;
 - `AUD-DATA-002` — source identity namespaced by instance.
 
-No asumir que un finding histórico sigue activo.
+Post-release audit 2026-10-05 — hotfixes prioritarios cerrados:
 
-Para trabajo de auditoría consultar:
+- post-release `AUD-LIVE-001` — PR #131 / CI #1021;
+- post-release `AUD-API-001` — PR #132 / CI #1023;
+- post-release `AUD-DATA-001` — PR #133 / CI #1025;
+- post-release `AUD-SEC-001` — PR #134 / CI #1027.
 
-`../audits/`
+Baseline post-remediación: `main @ 8a1661f205fd872e8a117dc9e5b30e867b856cc0`.
 
-y el handoff actual.
+Los IDs post-release pueden coincidir con findings históricos. Usar siempre fecha/PR/SHA para desambiguar y no asumir que un finding histórico sigue activo.
+
+Cierre verificable:
+
+`../audits/v0.2-post-release-remediation-closure.md`
+
+Para trabajo de auditoría consultar `../audits/` y el handoff actual.
 
 ---
 
@@ -195,6 +204,10 @@ Para comenzar una nueva tarea:
 
 ## Próximo objetivo funcional
 
-v0.2 está formalmente cerrada. No asumir automáticamente el siguiente trabajo funcional: revisar prioridades post-v0.2 antes de abrir alcance nuevo.
+v0.2 está formalmente cerrada y sus cuatro hotfix prioritarios post-release están integrados.
+
+La siguiente fase funcional planificada es **v0.3 — Product Experience**, dedicada a UI/UX, interfaz, visualización, accesibilidad, responsive, motion y flujos por persona. No ampliar v0.3 hacia Intelligence & Automation.
+
+**v0.4 — Intelligence & Automation** concentra automatización, reporting/auditoría, observabilidad, ciencia de datos, Graph Intelligence, detección de anomalías e IA/ML explicable.
 
 V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra. Su estado no invalida el cierre de v0.2.
