@@ -28,13 +28,13 @@ CMDB-013 valida y pule el recorrido completo, elimina lenguaje de roadmap de la 
 
 La v0.1 respondió la pregunta: **«¿Podemos construir la idea?»**
 
-## v0.2 — Technology Intelligence 🚧
+## v0.2 — Technology Intelligence ✅
 
 Después del cierre de v0.1 se realizó un Discovery específico antes de promover el producto a infraestructura corporativa. La decisión resultante es validar primero el comportamiento real de la plataforma y sus integraciones, evitando trasladar al servidor una arquitectura que todavía dependa de datos sintéticos.
 
 La v0.2 responde: **«¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?»**
 
-El roadmap activo y sus epics se mantienen en [`roadmap-v0.2.md`](roadmap-v0.2.md).
+El roadmap cerrado y sus epics se mantienen en [`roadmap-v0.2.md`](roadmap-v0.2.md).
 
 Orden inicial:
 
