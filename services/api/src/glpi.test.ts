@@ -94,7 +94,7 @@ describe("GLPI record parsing and canonical mapping", () => {
     });
     expect(asset.lifecycle).toBe("unknown");
     expect(asset.criticality).toBe("unknown");
-    expect(asset.operationalContexts).toEqual([]);
+    expect(asset.operationalContexts).toBeUndefined();
     expect(asset.identifiers).toEqual([
       expect.objectContaining({ kind: "serial_number", value: "SER-42" }),
       expect.objectContaining({ kind: "asset_tag", value: "IGX-0042" }),
