@@ -1,6 +1,6 @@
 # IGX NEXUS v0.2 — Technology Intelligence
 
-Estado: **en desarrollo**. Demo v0.1 permanece cerrada en 13/13 tickets.
+Estado: **cierre de release listo para merge manual**. Demo v0.1 permanece cerrada en 13/13 tickets; v0.2 completó sus gates de readiness.
 
 ## Objetivo
 
@@ -62,8 +62,8 @@ Dirección conceptual posterior:
 | V02-025 | Endpoint Experience | P1 | ✅ Integrado — PR #118 / issue #117 / merge `95bbfec` |
 | V02-026 | Proactive Findings Engine | P2 | ✅ Integrado — PR #121 / issue #120 / merge `a0e5d72` |
 | V02-027 | Knowledge Research Workflow | P2 | ✅ Integrado — PR #124 / issue #123 / merge `aad9a3a`; CI #947 verde |
-| V02-028 | Backend & Integration CI | P0 | ⚪ Pendiente |
-| V02-029 | v0.2 Demo / Live Lab Readiness | P1 | ⚪ Pendiente |
+| V02-028 | Backend & Integration CI | P0 | ✅ Integrado — PR #127 / merge `e16a227`; CI #971 verde |
+| V02-029 | v0.2 Demo / Live Lab Readiness | P1 | ✅ Readiness PASS — issue #128 / PR #129 |
 
 No abrir todos los tickets futuros por adelantado. Crear issues cuando el alcance esté suficientemente definido.
 
@@ -589,17 +589,47 @@ Documento:
 
 - `docs/product/knowledge-research-v02-027.md`.
 
-Siguiente trabajo funcional no bloqueado: **V02-028 — Backend & Integration CI**.
+Siguiente trabajo de cierre no bloqueado: **V02-029 — v0.2 Demo / Live Lab Readiness**.
 
 ## Epic 7 — Hardening / Demo
 
-### V02-028 — Backend & Integration CI
+### V02-028 — Backend & Integration CI ✅
 
-Extender rigor de QA a API, contracts, adapters, auth, integración y seguridad.
+Integrado mediante PR #127, merge `e16a227`; CI #971 verde.
 
-### V02-029 — v0.2 Demo / Live Lab Readiness
+Resultado:
 
-Cerrar demo/live-lab reproducible, documentación y narrativa de v0.2.
+- gate black-box contra el API compilado sobre TCP/HTTP real;
+- round-trip GLPI sintético → provider → API → contrato canónico;
+- OpenAPI alineado con la protección runtime del snapshot;
+- Knowledge Research endurecido ante estados runtime inválidos;
+- resincronización y reloj de review Demo determinista;
+- documentación de fronteras, límites y guardrails;
+- sin GLPI real, Intune tenant ni secretos en CI.
+
+Documento: `docs/architecture/backend-integration-ci-v02-028.md`.
+
+### V02-029 — v0.2 Demo / Live Lab Readiness ✅
+
+**Resultado de cierre V02-029:** Demo PASS, Live Lab PASS y 8/8 criterios de salida PASS. Evidencia Live sanitizada: `docs/integrations/live-lab-v0.2-evidence-2026-10-05.md`. V02-023 permanece bloqueado/non-blocking por dependencia externa de tenant. El merge final continúa siendo manual. 🟡
+
+Issue #128.
+
+Objetivo de cierre:
+
+- smoke integrado Demo v0.2;
+- gate CI de readiness;
+- runbook Demo v0.2;
+- runbook Live Lab consolidado;
+- matriz PASS / PARTIAL / FAIL de los ocho criterios de salida;
+- sincronización documental;
+- V02-023 permanece como dependencia externa no bloqueante mientras no exista acceso tenant autorizado.
+
+Documentos de trabajo:
+
+- `docs/demo-v0.2.md`;
+- `docs/integrations/live-lab-v0.2-readiness.md`;
+- `docs/v0.2-readiness.md`.
 
 ## Fuera de alcance de v0.2
 
