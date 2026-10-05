@@ -25,10 +25,10 @@ import {
 } from "@igx-nexus/types";
 import type { Asset, InventoryProvider, InventorySnapshot } from "./asset-model";
 import { demoProvider } from "./demo-provider";
+import { assertSnapshotMatchesMode, resolveProviderForMode, type ModeAwareInventoryProviderProps } from "./data-mode-guard";
 import { assetHash } from "./navigation-model";
 import "./lifecycle-planning.css";
 
-type LifecycleMode = "demo" | "live";
 type LoadState =
   | { readonly status: "loading" }
   | { readonly status: "error" }
@@ -122,13 +122,9 @@ function rowStatus(row: LifecycleAttentionRow) {
   return <StatusBadge status="info">Sin evidencia</StatusBadge>;
 }
 
-export function LifecyclePlanning({
-  inventoryProvider = demoProvider,
-  mode = "demo",
-}: {
-  inventoryProvider?: InventoryProvider;
-  mode?: LifecycleMode;
-}) {
+export function LifecyclePlanning(props: ModeAwareInventoryProviderProps<InventoryProvider>) {
+  const mode = props.mode ?? "demo";
+  const inventoryProvider = resolveProviderForMode(mode, props.inventoryProvider, demoProvider);
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [horizon, setHorizon] = useState<LifecycleHorizonMonths>(12);
@@ -138,6 +134,7 @@ export function LifecyclePlanning({
     setState({ status: "loading" });
     Promise.resolve()
       .then(() => inventoryProvider(controller.signal))
+      .then(snapshot => assertSnapshotMatchesMode(mode, snapshot))
       .then(snapshot => {
         if (!controller.signal.aborted) setState({ status: "ready", snapshot });
       })
@@ -145,7 +142,7 @@ export function LifecyclePlanning({
         if (!controller.signal.aborted) setState({ status: "error" });
       });
     return () => controller.abort();
-  }, [inventoryProvider, attempt]);
+  }, [inventoryProvider, mode, attempt]);
 
   const report = state.status === "ready" && state.snapshot.canonical
     ? buildLifecyclePlanningReport(state.snapshot.canonical.assets, state.snapshot.canonical.asOf, horizon)

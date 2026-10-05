@@ -9,13 +9,13 @@ import {
   technologyRoleLabel,
   typeLabels,
   type Asset,
-  type AssetDataMode,
   type InventoryProvider,
   type InventorySnapshot,
 } from "./asset-model";
 import { warrantyDays } from "./dashboard-model";
 import { demoProvider } from "./demo-provider";
 import { demoRelationshipInventoryProvider } from "./demo-relationship-provider";
+import { assertSnapshotMatchesMode, resolveProviderForMode, type ModeAwareProviderProps } from "./data-mode-guard";
 import { AssetHealthSection } from "./HealthDetails";
 import { validHealthDate } from "./health-engine";
 import {
@@ -33,6 +33,12 @@ type LoadState =
   | { status: "loading" }
   | { status: "error" }
   | { status: "ready"; snapshot: InventorySnapshot };
+
+type Asset360Props = {
+  assetId: string;
+  section?: AssetSection;
+  relationshipProvider?: RelationshipInventoryProvider;
+} & ModeAwareProviderProps<InventoryProvider>;
 
 type RelationshipLoadState =
   | { status: "unavailable" }
@@ -128,13 +134,14 @@ function TaxonomyStatus({ asset }: { asset: Asset }) {
 function SummaryPanel({
   asset,
   snapshot,
+  isLive,
   relationshipProvider,
 }: {
   asset: Asset;
   snapshot: InventorySnapshot;
+  isLive: boolean;
   relationshipProvider?: RelationshipInventoryProvider;
 }) {
-  const isLive = asset.dataMode === "live";
   const warranty = warrantyPresentation(asset, snapshot.asOf, isLive);
   const freshness = freshnessPresentation(asset, snapshot.asOf);
   const criticality = asset.criticality ?? "unknown";
@@ -211,8 +218,7 @@ function SummaryPanel({
   </section>;
 }
 
-function InventoryPanel({ asset, snapshot }: { asset: Asset; snapshot: InventorySnapshot }) {
-  const isLive = asset.dataMode === "live";
+function InventoryPanel({ asset, snapshot, isLive }: { asset: Asset; snapshot: InventorySnapshot; isLive: boolean }) {
   const locator = isLive ? null : demoLocatorForAsset(asset.id);
   const warranty = warrantyPresentation(asset, snapshot.asOf, isLive);
   const criticality = asset.criticality ?? "unknown";
@@ -300,8 +306,7 @@ function InventoryPanel({ asset, snapshot }: { asset: Asset; snapshot: Inventory
   </section>;
 }
 
-function EvidencePanel({ asset, snapshot }: { asset: Asset; snapshot: InventorySnapshot }) {
-  const isLive = asset.dataMode === "live";
+function EvidencePanel({ asset, snapshot, isLive }: { asset: Asset; snapshot: InventorySnapshot; isLive: boolean }) {
   const references = asset.sourceReferences?.length
     ? asset.sourceReferences
     : (asset.sourceSystems ?? []).map(source => ({ source, observedAt: asset.sourceObservedAt ?? null }));
@@ -342,13 +347,15 @@ function EvidencePanel({ asset, snapshot }: { asset: Asset; snapshot: InventoryS
 function RelationshipPanel({
   asset,
   inventory,
+  isLive,
   provider,
 }: {
   asset: Asset;
   inventory: InventorySnapshot;
+  isLive: boolean;
   provider?: RelationshipInventoryProvider;
 }) {
-  const effectiveProvider = provider ?? (asset.dataMode === "live" ? undefined : demoRelationshipInventoryProvider);
+  const effectiveProvider = provider ?? (isLive ? undefined : demoRelationshipInventoryProvider);
   const [state, setState] = useState<RelationshipLoadState>(() => effectiveProvider ? { status: "loading" } : { status: "unavailable" });
   const [attempt, setAttempt] = useState(0);
 
@@ -416,19 +423,10 @@ function RelationshipPanel({
   </section>;
 }
 
-export function Asset360({
-  assetId,
-  section = "summary",
-  mode = "demo",
-  provider = demoProvider,
-  relationshipProvider,
-}: {
-  assetId: string;
-  section?: AssetSection;
-  mode?: AssetDataMode;
-  provider?: InventoryProvider;
-  relationshipProvider?: RelationshipInventoryProvider;
-}) {
+export function Asset360(props: Asset360Props) {
+  const { assetId, section = "summary", relationshipProvider } = props;
+  const mode = props.mode ?? "demo";
+  const provider = resolveProviderForMode(mode, props.provider, demoProvider);
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -441,6 +439,7 @@ export function Asset360({
         controller.signal.throwIfAborted();
         return provider(controller.signal);
       })
+      .then((snapshot) => assertSnapshotMatchesMode(mode, snapshot))
       .then((snapshot) => {
         if (!controller.signal.aborted) setState({ status: "ready", snapshot });
       })
@@ -448,7 +447,7 @@ export function Asset360({
         if (!controller.signal.aborted) setState({ status: "error" });
       });
     return () => controller.abort();
-  }, [provider, attempt, assetId]);
+  }, [provider, mode, attempt, assetId]);
 
   useEffect(() => {
     if (state.status !== "ready") return;
@@ -481,7 +480,7 @@ export function Asset360({
     return <EmptyState title="Activo no encontrado" description={`No existe un activo con el identificador ${assetId} en este inventario.`} action={<a href="#assets">Volver al inventario</a>} />;
   }
 
-  const isLive = asset.dataMode === "live" || mode === "live";
+  const isLive = mode === "live";
   const criticality = asset.criticality ?? "unknown";
   const freshness = freshnessPresentation(asset, state.snapshot.asOf);
   const sourceCount = new Set(asset.sourceReferences?.map(reference => reference.source) ?? asset.sourceSystems ?? []).size;
@@ -518,9 +517,9 @@ export function Asset360({
 
     <AssetSectionNav assetId={asset.id} section={section} />
 
-    {section === "summary" && <SummaryPanel asset={asset} snapshot={state.snapshot} {...(relationshipProvider ? { relationshipProvider } : {})} />}
-    {section === "inventory" && <InventoryPanel asset={asset} snapshot={state.snapshot} />}
-    {section === "evidence" && <EvidencePanel asset={asset} snapshot={state.snapshot} />}
-    {section === "relationships" && <RelationshipPanel asset={asset} inventory={state.snapshot} {...(relationshipProvider ? { provider: relationshipProvider } : {})} />}
+    {section === "summary" && <SummaryPanel asset={asset} snapshot={state.snapshot} isLive={isLive} {...(relationshipProvider ? { relationshipProvider } : {})} />}
+    {section === "inventory" && <InventoryPanel asset={asset} snapshot={state.snapshot} isLive={isLive} />}
+    {section === "evidence" && <EvidencePanel asset={asset} snapshot={state.snapshot} isLive={isLive} />}
+    {section === "relationships" && <RelationshipPanel asset={asset} inventory={state.snapshot} isLive={isLive} {...(relationshipProvider ? { provider: relationshipProvider } : {})} />}
   </div>;
 }

@@ -84,7 +84,11 @@ it("maneja activo inexistente, inventario vacío y ausencia real de relaciones",
 });
 
 it("Live comparte la IA sin caer a fixtures Demo", async () => {
-  render(<NexusShell view="relations" mode="live"><RelationshipGraph assetId="DEMO-0002" mode="live" inventoryProvider={async () => demoSnapshot} /></NexusShell>);
+  const liveSnapshot = {
+    ...demoSnapshot,
+    assets: demoSnapshot.assets.map(asset => ({ ...asset, dataMode: "live" as const })),
+  };
+  render(<NexusShell view="relations" mode="live"><RelationshipGraph assetId="DEMO-0002" mode="live" inventoryProvider={async () => liveSnapshot} /></NexusShell>);
   await ready();
   expect(screen.getByText("Relaciones no disponibles en este provider")).toBeTruthy();
   expect(screen.getByText(/No se usan fixtures Demo como fallback/)).toBeTruthy();
