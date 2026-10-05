@@ -9,8 +9,8 @@
 - Stable branch: `main`
 - Baseline estable al iniciar V02-029: `e16a2272ed6e573259e7db6d88073d3b4e6f1f5c`
 - Último desarrollo integrado: **V02-028 — Backend & Integration CI**
-- Trabajo activo: **V02-029 — v0.2 Demo / Live Lab Readiness**
-- Issue activo: **#128**
+- Trabajo activo: **V02-029 — listo para merge manual**
+- Issue de cierre: **#128**
 - Rama de trabajo: `feature/v02-029-v02-readiness`
 
 ## Estado funcional
@@ -110,9 +110,11 @@ Evidencia existente:
 - V02-008 GLPI → API → Web: PASS, 2026-09-15;
 - V02-024 Windows/Dell telemetry: PASS, 2026-10-01.
 
-V02-029 debe revalidar el vertical soportado sobre el HEAD de cierre o registrar explícitamente PARTIAL si el laboratorio no está disponible.
+V02-029 revalidó el vertical soportado el 2026-10-05 sobre `451dae46327b73356a495e23db554dd2c404b105`.
 
-PARTIAL no debe convertirse en PASS por conveniencia.
+Resultado: **PASS**.
+
+Evidencia: `docs/integrations/live-lab-v0.2-evidence-2026-10-05.md`.
 
 ## Guardrails
 
@@ -131,12 +133,24 @@ PARTIAL no debe convertirse en PASS por conveniencia.
 
 ## Próximos pasos
 
-1. abrir PR de V02-029;
-2. ejecutar CI y corregir el smoke integrado si aparece fragilidad real;
-3. revisar diff/documentación;
-4. ejecutar/repetir Live Lab manual sobre el HEAD de cierre cuando sea posible;
-5. actualizar `docs/v0.2-readiness.md` con PASS/PARTIAL/FAIL final;
-6. merge manual por Sergio;
-7. housekeeping final de v0.2 si fuera necesario.
+1. confirmar CI verde del HEAD documental final;
+2. marcar PR #129 Ready for review;
+3. merge manual por Sergio;
+4. cerrar issue #128 como completed;
+5. realizar housekeeping post-merge sólo si Git/CI lo requiere;
+6. mantener V02-023 en su rama/PR separado hasta disponer de autorización tenant.
 
 Git, código, tests y evidencias específicas continúan siendo la fuente de verdad.
+
+
+## Resultado final V02-029
+
+- Demo readiness: **PASS**;
+- Live Lab: **PASS**;
+- criterios de salida: **8/8 PASS**;
+- no-fallback Demo→Live: **PASS**;
+- API snapshot sin auth: **401**;
+- V02-023: **BLOCKED / NON-BLOCKING**;
+- release v0.2: **READY FOR MANUAL MERGE**.
+
+Los commits posteriores al HEAD de runtime validado sólo registran evidencia y sincronizan documentación de cierre.
