@@ -13,6 +13,14 @@ import "./dashboard.css";
 
 afterEach(() => cleanup());
 
+it("fails closed at runtime when AssetExplorer Live omits the provider", async () => {
+  const unsafeProps = { mode: "live" } as unknown as Parameters<typeof AssetExplorer>[0];
+  render(<NexusShell mode="live" view="assets"><AssetExplorer {...unsafeProps} /></NexusShell>);
+  expect(await screen.findByText("No se pudo cargar el inventario")).toBeTruthy();
+  expect(screen.queryByRole("table", { name: "Inventario de activos Live" })).toBeNull();
+  expect(screen.queryByText("240 de 240 activos")).toBeNull();
+});
+
 it("fails closed when AssetExplorer Live receives the Demo provider", async () => {
   render(<NexusShell mode="live" view="assets"><AssetExplorer mode="live" provider={demoProvider} /></NexusShell>);
   expect(await screen.findByText("No se pudo cargar el inventario")).toBeTruthy();
