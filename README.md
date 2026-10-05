@@ -79,13 +79,13 @@ La v0.2 responde:
 
 > **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-**Estado de v0.2:** V02-001..V02-022 + V02-024..V02-029 completados o listos para integración; V02-023 permanece bloqueado/non-blocking por dependencia externa de tenant.
+**Estado de v0.2:** **CERRADA**. V02-001..V02-022 + V02-024..V02-029 están integrados; V02-023 permanece bloqueado/non-blocking por dependencia externa de tenant.
 
-Último baseline estable antes del cierre:
+Baseline estable de cierre:
 
 - **V02-028 — Backend & Integration CI** — PR #127, merge `e16a227`, CI #971 verde;
 - **V02-023 — Intune Analytics Feasibility Spike** permanece bloqueado por una dependencia externa de App Registration/RBAC tenant (issue #112 / draft PR #113);
-- **V02-029 — v0.2 Demo / Live Lab Readiness** quedó en **PASS** para Demo + Live Lab, con 8/8 criterios de salida y PR #129 listo para merge manual.
+- **V02-029 — v0.2 Demo / Live Lab Readiness** quedó en **PASS** para Demo + Live Lab, con 8/8 criterios de salida; PR #129 mergeado en `775e8a1` y CI post-merge #1016 verde.
 
 V02-029 no agrega capacidades de producto: consolida un smoke Demo v0.2, runbooks de Demo/Live Lab, evidencia de readiness y sincronización documental.
 
@@ -95,7 +95,7 @@ Guías de cierre:
 - [Live Lab v0.2 Readiness](docs/integrations/live-lab-v0.2-readiness.md);
 - [Release Readiness v0.2](docs/v0.2-readiness.md).
 
-Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
+Roadmap cerrado de la release: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
 La dirección conceptual posterior reserva:
 
@@ -314,7 +314,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-Baseline de cierre V02-029: `main @ e16a227` al iniciar el ticket. La rama de readiness agrega `npm run test:readiness:v02` como smoke integrado de Demo v0.2; CI #1000 fue verde sobre el HEAD de runtime y el Live Lab final del 2026-10-05 quedó PASS.
+V02-029 inició desde `main @ e16a227` y cerró mediante PR #129 en `main @ 775e8a1`. `npm run test:readiness:v02` quedó como smoke integrado de Demo v0.2; Live Lab final del 2026-10-05 PASS y CI post-merge #1016 SUCCESS.
 
 ## Flujo de desarrollo
 
