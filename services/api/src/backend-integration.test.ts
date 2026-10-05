@@ -1,4 +1,4 @@
-import { parseTechnologySnapshot } from "@igx-nexus/types";
+import { buildItOtIntelligenceReport, parseTechnologySnapshot } from "@igx-nexus/types";
 import type { FastifyInstance } from "fastify";
 import { afterEach, describe, expect, it } from "vitest";
 import { buildApp } from "./app.js";
@@ -98,8 +98,8 @@ describe("Backend vertical integration contract", () => {
       domain: "OT",
       assetClass: "operator_interface",
       role: "supervision",
-      operationalContexts: [],
     });
+    expect(asset.operationalContexts).toBeUndefined();
     expect(asset.taxonomy).toMatchObject({
       taxonomyVersion: "2",
       domain: { state: "classified", value: "OT", method: "normalized", reviewRequired: true },
@@ -120,9 +120,17 @@ describe("Backend vertical integration contract", () => {
     expect(asset.attributes["glpi.itemType"]).toBe("Computer");
     expect(asset.attributes["glpi.location.name"]).toBe("Synthetic Lab");
 
+    const intelligence = buildItOtIntelligenceReport(snapshot);
+    expect(intelligence.cohorts.OT.operationalContext.coverage).toEqual({
+      state: "unavailable",
+      known: 0,
+      total: 1,
+      ratio: 0,
+    });
+
     const rawAsset = (wirePayload as { assets: Array<Record<string, unknown>> }).assets[0]!;
     expect(Object.hasOwn(rawAsset, "taxonomy")).toBe(true);
-    expect(Object.hasOwn(rawAsset, "operationalContexts")).toBe(true);
+    expect(Object.hasOwn(rawAsset, "operationalContexts")).toBe(false);
     expect(Object.hasOwn(rawAsset, "sourceReferences")).toBe(true);
     expect(Object.hasOwn(rawAsset, "provenance")).toBe(true);
 
