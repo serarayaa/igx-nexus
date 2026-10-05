@@ -73,19 +73,19 @@ La v0.1 respondió:
 
 > **¿Podemos construir la idea?**
 
-### v0.2 — Technology Intelligence 🚧
+### v0.2 — Technology Intelligence ✅
 
 La v0.2 responde:
 
 > **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-**Integrado en v0.2:** V02-001..V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028.
+**Estado de v0.2:** V02-001..V02-022 + V02-024..V02-029 completados o listos para integración; V02-023 permanece bloqueado/non-blocking por dependencia externa de tenant.
 
 Último baseline estable antes del cierre:
 
 - **V02-028 — Backend & Integration CI** — PR #127, merge `e16a227`, CI #971 verde;
 - **V02-023 — Intune Analytics Feasibility Spike** permanece bloqueado por una dependencia externa de App Registration/RBAC tenant (issue #112 / draft PR #113);
-- **V02-029 — v0.2 Demo / Live Lab Readiness** es el trabajo activo de cierre (issue #128 / PR #129).
+- **V02-029 — v0.2 Demo / Live Lab Readiness** quedó en **PASS** para Demo + Live Lab, con 8/8 criterios de salida y PR #129 listo para merge manual.
 
 V02-029 no agrega capacidades de producto: consolida un smoke Demo v0.2, runbooks de Demo/Live Lab, evidencia de readiness y sincronización documental.
 
@@ -314,7 +314,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-Baseline de cierre V02-029: `main @ e16a227` al iniciar el ticket. La rama de readiness agrega además `npm run test:readiness:v02` como smoke integrado de Demo v0.2.
+Baseline de cierre V02-029: `main @ e16a227` al iniciar el ticket. La rama de readiness agrega `npm run test:readiness:v02` como smoke integrado de Demo v0.2; CI #1000 fue verde sobre el HEAD de runtime y el Live Lab final del 2026-10-05 quedó PASS.
 
 ## Flujo de desarrollo
 
