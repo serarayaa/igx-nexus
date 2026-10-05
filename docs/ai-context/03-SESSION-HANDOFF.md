@@ -7,17 +7,18 @@
 
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
-- Baseline estable al iniciar V02-029: `e16a2272ed6e573259e7db6d88073d3b4e6f1f5c`
-- Último desarrollo integrado: **V02-028 — Backend & Integration CI**
-- Trabajo activo: **V02-029 — listo para merge manual**
-- Issue de cierre: **#128**
-- Rama de trabajo: `feature/v02-029-v02-readiness`
+- Baseline estable de cierre v0.2: `775e8a16c1128384549e704c0cea2d0eb423bc63`
+- Último desarrollo integrado: **V02-029 — v0.2 Demo / Live Lab Readiness**
+- Release: **v0.2 cerrada**
+- Issue #128: **closed / completed**
+- PR #129: **merged**
+- CI post-merge: **#1016 SUCCESS**
 
 ## Estado funcional
 
 Integrado en v0.2:
 
-**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028**
+**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028 + V02-029**
 
 Pendiente bloqueado:
 
@@ -47,11 +48,9 @@ Documento:
 
 `docs/architecture/backend-integration-ci-v02-028.md`
 
-## V02-029 — Readiness audit
+## V02-029 — Readiness final
 
-Los ocho criterios de salida de v0.2 no presentan un FAIL estructural inicial.
-
-Estado inicial:
+Resultado final:
 
 1. Demo/Live contratos compartidos — PASS;
 2. evidence/provenance — PASS;
@@ -62,7 +61,7 @@ Estado inicial:
 7. señales endpoint explicables — PASS con cobertura Live limitada;
 8. auditable/seguro/testeable — PASS.
 
-La decisión final debe volver a evaluar estos criterios con evidencia de readiness.
+Demo y Live Lab quedaron PASS; V02-029 fue mergeado mediante PR #129 y `main` quedó verde en CI #1016.
 
 ## Hallazgos que V02-029 debe cerrar
 
@@ -73,9 +72,9 @@ La decisión final debe volver a evaluar estos criterios con evidencia de readin
 5. roadmap/AI context estaban atrasados respecto de V02-028;
 6. V02-023 no debe bloquear ni inducir fallback/coverage ficticia.
 
-## Trabajo ya iniciado en V02-029
+## Entregables de V02-029
 
-Se agregó en la rama:
+Integrado en `main`:
 
 - `apps/web/src/DemoV02.browser.test.tsx`;
 - `npm run test:readiness:v02`;
@@ -133,12 +132,10 @@ Evidencia: `docs/integrations/live-lab-v0.2-evidence-2026-10-05.md`.
 
 ## Próximos pasos
 
-1. confirmar CI verde del HEAD documental final;
-2. marcar PR #129 Ready for review;
-3. merge manual por Sergio;
-4. cerrar issue #128 como completed;
-5. realizar housekeeping post-merge sólo si Git/CI lo requiere;
-6. mantener V02-023 en su rama/PR separado hasta disponer de autorización tenant.
+1. sincronizar el checkout local con `main` antes de iniciar nuevo trabajo;
+2. no abrir automáticamente v0.3: priorizar primero el siguiente objetivo de producto;
+3. mantener V02-023 en su rama/PR separado hasta disponer de autorización tenant;
+4. tratar cualquier revisión UI/UX posterior como trabajo nuevo, sin reabrir el scope funcional de v0.2.
 
 Git, código, tests y evidencias específicas continúan siendo la fuente de verdad.
 
@@ -151,6 +148,6 @@ Git, código, tests y evidencias específicas continúan siendo la fuente de ver
 - no-fallback Demo→Live: **PASS**;
 - API snapshot sin auth: **401**;
 - V02-023: **BLOCKED / NON-BLOCKING**;
-- release v0.2: **READY FOR MANUAL MERGE**.
+- release v0.2: **CLOSED — PR #129 merged / CI #1016 SUCCESS**.
 
 Los commits posteriores al HEAD de runtime validado sólo registran evidencia y sincronizan documentación de cierre.
