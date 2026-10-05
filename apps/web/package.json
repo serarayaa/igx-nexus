@@ -1,6 +1,6 @@
 {
   "name": "@igx-nexus/web",
-  "version": "0.1.0-dev",
+  "version": "0.2.0-dev",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,7 +12,7 @@
     "test:demo-v02": "vitest run --project dashboard src/DemoV02.browser.test.tsx"
   },
   "dependencies": {
-    "@igx-nexus/ui": "0.1.0-dev",
+    "@igx-nexus/ui": "0.2.0-dev",
     "lucide-react": "^1.42.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
