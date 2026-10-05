@@ -53,6 +53,31 @@ describe("GLPI record parsing and canonical mapping", () => {
     expect(() => parseGlpiComputerRecord(null)).toThrow(GlpiPayloadError);
   });
 
+  it("promotes only timezone-qualified GLPI timestamps and preserves ambiguous source values", () => {
+    const asset = mapGlpiComputerToTechnologyAsset(
+      parseGlpiComputerRecord(computer({
+        date_creation: "2026-01-02T10:00:00-03:00",
+        date_mod: "0000-00-00 00:00:00",
+        last_inventory_update: "2026-10-05 12:00:00",
+        last_boot: "2026-02-30T09:00:00Z",
+      })),
+      OBSERVED_AT,
+      SOURCE_INSTANCE_ID,
+    );
+
+    expect(asset.attributes["glpi.dateCreation"]).toBe("2026-01-02T10:00:00-03:00");
+    expect(asset.attributes["glpi.raw.dateCreation"]).toBeUndefined();
+
+    expect(asset.attributes["glpi.dateModified"]).toBeUndefined();
+    expect(asset.attributes["glpi.raw.dateModified"]).toBe("0000-00-00 00:00:00");
+
+    expect(asset.attributes["glpi.lastInventoryUpdate"]).toBeUndefined();
+    expect(asset.attributes["glpi.raw.lastInventoryUpdate"]).toBe("2026-10-05 12:00:00");
+
+    expect(asset.attributes["glpi.lastBoot"]).toBeUndefined();
+    expect(asset.attributes["glpi.raw.lastBoot"]).toBe("2026-02-30T09:00:00Z");
+  });
+
   it("keeps generic Notebook hardware taxonomically unclassified while preserving the legacy scalar bridge", () => {
     const asset = mapGlpiComputerToTechnologyAsset(parseGlpiComputerRecord(computer()), OBSERVED_AT, SOURCE_INSTANCE_ID);
 
