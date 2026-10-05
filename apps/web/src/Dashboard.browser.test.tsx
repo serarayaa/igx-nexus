@@ -83,11 +83,12 @@ it("reemplaza el recorrido promocional por drill-downs operacionales existentes"
 
 it("no asigna una compatibility projection a una cohorte IT/OT cuando Taxonomy v2 está unresolved", async () => {
   const presentation = demoSnapshot.assets[0]!;
+  const livePresentation = { ...presentation, dataMode: "live" as const, domain: "IT" as const };
   const canonical = demoSnapshot.canonical!;
   const canonicalAsset = canonical.assets[0]!;
   const liveSnapshot: DashboardSnapshot = {
     asOf: canonical.asOf,
-    assets: [{ ...presentation, dataMode: "live", domain: "IT" }],
+    assets: [livePresentation],
     canonical: {
       ...canonical,
       assets: [{
@@ -236,10 +237,11 @@ it("mantiene Knowledge Research Live sin fallback a fixtures Demo", async () => 
   const finding = report.findings[0]!;
   const canonicalAsset = canonical.assets.find(asset => asset.id === finding.assetId)!;
   const presentation = demoSnapshot.assets.find(asset => asset.id === finding.assetId)!;
+  const livePresentation = { ...presentation, dataMode: "live" as const };
 
   const liveSnapshot: DashboardSnapshot = {
     asOf: canonical.asOf,
-    assets: [{ ...presentation, dataMode: "live" }],
+    assets: [livePresentation],
     canonical: {
       ...canonical,
       assets: [canonicalAsset],
@@ -270,9 +272,10 @@ it("mantiene Live sin observations como unavailable en vez de fabricar cero even
     && asset.lifecycle === "active",
   )!;
   const presentation = demoSnapshot.assets.find(asset => asset.id === canonicalAsset.id)!;
+  const livePresentation = { ...presentation, dataMode: "live" as const };
   const liveSnapshot: DashboardSnapshot = {
     asOf: canonical.asOf,
-    assets: [presentation],
+    assets: [livePresentation],
     canonical: {
       ...canonical,
       assets: [canonicalAsset],
