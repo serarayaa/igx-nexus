@@ -466,7 +466,8 @@ export function mapGlpiComputerToTechnologyAsset(
     taxonomy,
     lifecycle: "unknown",
     criticality: "unknown",
-    operationalContexts: Object.freeze([]),
+    // Assets/Computer does not observe NEXUS Operational Context. Omit the
+    // optional collection so downstream analytics can represent coverage as unavailable.
     identifiers: Object.freeze(identifiers),
     sourceReferences: Object.freeze([source]),
     attributes: Object.freeze(attributes),
