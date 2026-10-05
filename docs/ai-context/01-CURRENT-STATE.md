@@ -7,7 +7,7 @@
 
 - Repository: `serarayaa/igx-nexus`
 - Branch estable: `main`
-- Release en desarrollo: **v0.2 — Technology Intelligence**
+- Release candidata al cierre: **v0.2 — Technology Intelligence**
 - v0.1: **cerrada — 13/13 tickets**
 
 Este archivo representa el estado conocido de `main` en el momento de su última actualización.
@@ -63,9 +63,9 @@ Trabajo pendiente bloqueado:
 
 Repo-side está preparado en draft PR #113, pero la validación tenant requiere una App Registration dedicada o intervención administrativa en Entra.
 
-Siguiente trabajo de cierre no bloqueado:
+Readiness de cierre:
 
-**V02-029 — v0.2 Demo / Live Lab Readiness**
+**V02-029 — v0.2 Demo / Live Lab Readiness — PASS (Demo + Live Lab, 8/8 criterios)**
 
 El detalle completo permanece definido en:
 
@@ -195,8 +195,6 @@ Para comenzar una nueva tarea:
 
 ## Próximo objetivo funcional
 
-Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
+Completar merge manual de **PR #129 — V02-029** y cerrar formalmente v0.2. Después del merge, el siguiente trabajo funcional no debe asumirse automáticamente: revisar roadmap posterior y priorización de v0.3.
 
-**V02-029 — v0.2 Demo / Live Lab Readiness**
-
-V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra. V02-029 no debe inventar cobertura Live para compensarlo.
+V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra; es una dependencia externa non-blocking para el cierre de v0.2.
