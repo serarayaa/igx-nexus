@@ -28,10 +28,13 @@ it("valida el recorrido integrado de Technology Intelligence v0.2 en Demo", asyn
   const findingsView = within(findingsSection!);
   const researchDisclosures = findingsView.getAllByText("Investigar conocimiento");
   expect(researchDisclosures.length).toBeGreaterThan(0);
+  const researchDetails = researchDisclosures[0]!.closest("details");
+  expect(researchDetails).toBeTruthy();
   await userEvent.click(researchDisclosures[0]!);
-  expect(findingsView.getByText("Pregunta de investigación")).toBeTruthy();
-  expect(findingsView.getAllByText("Synthetic fixture").length).toBeGreaterThan(0);
-  expect(findingsView.getAllByText("Execution allowed: no").length).toBeGreaterThan(0);
+  const researchView = within(researchDetails!);
+  expect(researchView.getByText("Pregunta de investigación")).toBeTruthy();
+  expect(researchView.getAllByText("Synthetic fixture").length).toBeGreaterThan(0);
+  expect(researchView.getAllByText("Execution allowed: no").length).toBeGreaterThan(0);
 
   const lifecycleLink = screen.getAllByRole("link", { name: /Lifecycle & Investment/ })
     .find(link => link.getAttribute("href") === "#lifecycle");
