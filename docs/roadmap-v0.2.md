@@ -589,7 +589,7 @@ Documento:
 
 - `docs/product/knowledge-research-v02-027.md`.
 
-Siguiente trabajo funcional no bloqueado: **V02-028 — Backend & Integration CI**.
+Siguiente trabajo de cierre no bloqueado: **V02-029 — v0.2 Demo / Live Lab Readiness**.
 
 ## Epic 7 — Hardening / Demo
 
