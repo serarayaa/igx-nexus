@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Badge, Button, EmptyState, ErrorState, LoadingState, PageHeader, Pagination, Search, Toolbar } from "@igx-nexus/ui";
 import { demoProvider } from "./demo-provider";
-import type { AssetDataMode, InventoryProvider, InventorySnapshot } from "./asset-model";
+import { assertSnapshotMatchesMode, resolveProviderForMode, type ModeAwareProviderProps } from "./data-mode-guard";
+import type { InventoryProvider, InventorySnapshot } from "./asset-model";
 import { emptyFilters, explore, facetOptions, hasFacetCoverage, type ExplorerQuery } from "./explorer-model";
 import { ExplorerFilters } from "./ExplorerFilters";
 import { AssetTable } from "./AssetTable";
@@ -11,7 +12,9 @@ type LoadState = { status: "loading" } | { status: "error" } | { status: "ready"
 const initialQuery: ExplorerQuery = { search: "", filters: emptyFilters, sort: { columnId: "name", direction: "ascending" }, page: 1, pageSize: 25 };
 const dateFormat = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeZone: "UTC" });
 
-export function AssetExplorer({ provider = demoProvider, mode = "demo" }: { provider?: InventoryProvider; mode?: AssetDataMode }) {
+export function AssetExplorer(props: ModeAwareProviderProps<InventoryProvider>) {
+  const mode = props.mode ?? "demo";
+  const provider = resolveProviderForMode(mode, props.provider, demoProvider);
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [query, setQuery] = useState(initialQuery);
@@ -25,14 +28,14 @@ export function AssetExplorer({ provider = demoProvider, mode = "demo" }: { prov
     Promise.resolve().then(() => {
       controller.signal.throwIfAborted();
       return provider(controller.signal);
-    }).then(snapshot => {
+    }).then(snapshot => assertSnapshotMatchesMode(mode, snapshot)).then(snapshot => {
       if (!controller.signal.aborted) {
         setQuery(current => ({ ...current, page: 1 }));
         setState({ status: "ready", snapshot });
       }
     }).catch(() => { if (!controller.signal.aborted) setState({ status: "error" }); });
     return () => controller.abort();
-  }, [provider, attempt]);
+  }, [provider, mode, attempt]);
 
   function changeQuery(update: Partial<ExplorerQuery>) {
     setQuery(current => ({ ...current, ...update, page: 1 }));
