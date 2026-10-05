@@ -3,9 +3,10 @@ import { ArrowRight, Boxes, CalendarClock, Clock3, ShieldCheck } from "lucide-re
 import { Badge, Button, Card, ContentSection, DataTable, EmptyState, ErrorState, LoadingState, PageHeader, StatusBadge, Toolbar, type DataTableColumn } from "@igx-nexus/ui";
 import { buildEndpointExperienceReport, buildItOtIntelligenceReport, buildProactiveFindingsReport } from "@igx-nexus/types";
 import { demoProvider } from "./demo-provider";
+import { assertSnapshotMatchesMode, resolveProviderForMode, type ModeAwareProviderProps } from "./data-mode-guard";
 import { percentage, warrantyDays, type DashboardAsset, type DashboardProvider, type DashboardSnapshot, type Domain } from "./dashboard-model";
 import { assetHash } from "./navigation-model";
-import { buildOverview, type OverviewMode } from "./overview-model";
+import { buildOverview } from "./overview-model";
 import { NexusShell } from "./NexusShell";
 import { ItOtIntelligenceSummary } from "./ItOtIntelligenceSummary";
 import { EndpointExperienceSummary } from "./EndpointExperienceSummary";
@@ -21,7 +22,9 @@ const attentionLabels = {
   info: "Cobertura parcial",
 } as const;
 
-export function DashboardContent({ provider = demoProvider, mode = "demo" }: { provider?: DashboardProvider; mode?: OverviewMode }) {
+export function DashboardContent(props: ModeAwareProviderProps<DashboardProvider>) {
+  const mode = props.mode ?? "demo";
+  const provider = resolveProviderForMode(mode, props.provider, demoProvider);
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [domain, setDomain] = useState<Domain | "all">("all");
@@ -29,13 +32,13 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
   useEffect(() => {
     const controller = new AbortController();
     setState({ status: "loading" });
-    Promise.resolve().then(() => provider(controller.signal)).then(snapshot => {
+    Promise.resolve().then(() => provider(controller.signal)).then(snapshot => assertSnapshotMatchesMode(mode, snapshot)).then(snapshot => {
       if (!controller.signal.aborted) setState({ status: "ready", snapshot });
     }).catch(() => {
       if (!controller.signal.aborted) setState({ status: "error" });
     });
     return () => controller.abort();
-  }, [provider, attempt]);
+  }, [provider, mode, attempt]);
 
   const intelligence = state.status === "ready" && state.snapshot.canonical
     ? buildItOtIntelligenceReport(state.snapshot.canonical)
@@ -226,6 +229,8 @@ export function DashboardContent({ provider = demoProvider, mode = "demo" }: { p
 }
 
 /** Entrada aislada para los consumidores y pruebas de Technology Overview. */
-export function Dashboard({ provider = demoProvider, mode = "demo" }: { provider?: DashboardProvider; mode?: OverviewMode }) {
+export function Dashboard(props: ModeAwareProviderProps<DashboardProvider>) {
+  const mode = props.mode ?? "demo";
+  const provider = resolveProviderForMode(mode, props.provider, demoProvider);
   return <NexusShell mode={mode}><DashboardContent provider={provider} mode={mode} /></NexusShell>;
 }
