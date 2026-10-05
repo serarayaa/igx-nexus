@@ -7,118 +7,136 @@
 
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
-- Baseline estable verificado: `aad9a3adbef1254d458e9f29d904934385779899`
-- Bootstrap de contexto modular: **integrado**
-- Último desarrollo funcional integrado: **V02-027 — Knowledge Research Workflow**
-- Próximo desarrollo funcional no bloqueado: **V02-028 — Backend & Integration CI**
+- Baseline estable al iniciar V02-029: `e16a2272ed6e573259e7db6d88073d3b4e6f1f5c`
+- Último desarrollo integrado: **V02-028 — Backend & Integration CI**
+- Trabajo activo: **V02-029 — v0.2 Demo / Live Lab Readiness**
+- Issue activo: **#128**
+- Rama de trabajo: `feature/v02-029-v02-readiness`
 
-## Estado actual
+## Estado funcional
 
-V02-027 fue integrado mediante PR #124 y cerró issue #123.
+Integrado en v0.2:
 
-Knowledge Research extiende Proactive Findings mediante una cadena explícita:
-
-```text
-local evidence
-  → finding
-  → research question
-  → external/synthetic sources
-  → claims
-  → recommendation
-  → human review
-```
-
-Las capas permanecen separadas:
-
-- external knowledge != local evidence;
-- research claim != observation canónica;
-- recommendation != remediation;
-- human review != execution authorization.
-
-El contrato fuerza `executionAllowed=false` y `executionAuthorized=false`.
-Demo usa fixtures sintéticos deterministas y Live no cae silenciosamente a Demo.
-
-## Estado funcional relevante
-
-v0.2 tiene integrado:
-
-**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027**
-
-Último desarrollo funcional integrado:
-
-**V02-027 — Knowledge Research Workflow**
+**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028**
 
 Pendiente bloqueado:
 
 **V02-023 — Intune Analytics Feasibility Spike**
 
-- draft PR #113;
 - issue #112;
-- validación real detenida por RBAC/App Registration en Entra;
-- no ampliar permisos ni solicitar ReadWrite para sortear el bloqueo;
-- retomar desde el runbook/preflight existente cuando exista identidad autorizada.
+- draft PR #113;
+- repo-side preparado;
+- tenant-side bloqueado por App Registration/RBAC;
+- no solicitar ReadWrite para sortear el bloqueo;
+- continuar desde la rama/PR existente cuando exista autorización.
 
-Siguiente desarrollo funcional no bloqueado:
+## Resultado de V02-028
 
-**V02-028 — Backend & Integration CI**
+PR #127 integrado en `main @ e16a227`.
 
-## Insumos concretos para V02-028
+V02-028 agregó:
 
-El objetivo de V02-028 es extender el rigor de QA más allá del frontend y cubrir de forma explícita API, contracts, adapters, auth, integración y seguridad.
+- black-box HTTP real contra el API compilado;
+- round-trip controlado GLPI → provider → API → contrato;
+- OpenAPI auth alignment;
+- runtime hardening de Knowledge Research;
+- resincronización/review clock de Knowledge Research Demo;
+- CI #971 verde.
 
-Al revisar V02-027 quedaron tres candidatos de hardening que no bloquearon su merge y pueden evaluarse dentro de V02-028:
+Documento:
 
-1. **Runtime validation de Knowledge Research**
-   - endurecer validación de enums/estados frente a payloads runtime inválidos, aunque TypeScript ya restrinja tipos en compile time;
-   - ejemplos: `supportState`, `review.state` y estructuras externas recibidas por frontera HTTP/provider.
+`docs/architecture/backend-integration-ci-v02-028.md`
 
-2. **Resincronización de estado en KnowledgeResearchPanel**
-   - `useState(report)` inicializa desde la prop pero no se resincroniza automáticamente si cambia el report manteniendo la misma instancia de componente;
-   - evaluar si el flujo real puede cambiar el packet sin remount y cubrirlo con test si corresponde.
+## V02-029 — Readiness audit
 
-3. **Timestamp de revisión Demo**
-   - la interacción Demo usa actualmente `generatedAt` como `reviewedAt`;
-   - evaluar un reloj inyectable/determinista para distinguir claramente generación de packet y momento de revisión sin volver los tests no deterministas.
+Los ocho criterios de salida de v0.2 no presentan un FAIL estructural inicial.
 
-Estos puntos son **candidatos**, no findings activos confirmados hasta verificarlos dentro del alcance de V02-028.
+Estado inicial:
 
-## Dirección para V02-028
+1. Demo/Live contratos compartidos — PASS;
+2. evidence/provenance — PASS;
+3. reconciliación conservadora — PASS;
+4. Taxonomy IT/OT con incertidumbre — PASS;
+5. relaciones con evidencia — PASS;
+6. UX/analytics útiles — PASS;
+7. señales endpoint explicables — PASS con cobertura Live limitada;
+8. auditable/seguro/testeable — PASS.
 
-Antes de implementar:
+La decisión final debe volver a evaluar estos criterios con evidencia de readiness.
 
-1. verificar `main` limpio y actualizado;
-2. revisar CI actual y mapear qué capas están realmente cubiertas;
-3. identificar gaps concretos en:
-   - API runtime;
-   - contratos y serialización HTTP;
-   - adapters/providers;
-   - auth/authz y security baseline;
-   - integración Demo/Live;
-   - scripts/preflight donde aplique;
-4. preferir tests que crucen fronteras reales sobre duplicar unit tests existentes;
-5. preservar deny-by-default, mínimo privilegio y Live read-only;
-6. no debilitar tests ni agregar dependencias sólo para aumentar coverage;
-7. distinguir coverage numérico de cobertura semántica de riesgos;
-8. mantener V02-029 fuera de alcance salvo artefactos estrictamente necesarios para validar V02-028.
+## Hallazgos que V02-029 debe cerrar
 
-## Remediaciones de auditoría integradas
+1. el smoke oficial integrado seguía siendo Demo v0.1;
+2. no existía runbook Demo v0.2;
+3. Live Lab estaba documentado por tickets, no como release compuesto;
+4. V02-007/V02-008 tenían evidencia PASS histórica pero anterior al HEAD final;
+5. roadmap/AI context estaban atrasados respecto de V02-028;
+6. V02-023 no debe bloquear ni inducir fallback/coverage ficticia.
 
-Las remediaciones relevantes ya integradas incluyen:
+## Trabajo ya iniciado en V02-029
 
-- `AUD-API-001`;
-- `AUD-DATA-001`;
-- `AUD-DATA-002`.
+Se agregó en la rama:
 
-Los findings históricos no deben asumirse como deuda activa sin verificar el estado actual.
+- `apps/web/src/DemoV02.browser.test.tsx`;
+- `npm run test:readiness:v02`;
+- gate CI explícito de Demo v0.2;
+- `docs/demo-v0.2.md`;
+- `docs/integrations/live-lab-v0.2-readiness.md`;
+- `docs/v0.2-readiness.md`;
+- roadmap/current-state sincronizados.
 
-## Regla para futuras sesiones
+El smoke v0.2 recorre de forma representativa:
 
-Antes de continuar:
-
-```bash
-git status
-git branch --show-current
-git rev-parse --short HEAD
+```text
+Overview
+ → IT/OT Intelligence
+ → Endpoint Experience
+ → Proactive Findings
+ → Knowledge Research
+ → Lifecycle
+ → Explorer
+ → Asset 360
+ → Technology Map
+ → CMDB Quality
 ```
 
-GitHub, código, tests, ADR y documentación específica continúan siendo la fuente de verdad.
+DemoV01 se conserva para QR/Label y el recorrido histórico.
+
+## Live Lab
+
+Evidencia existente:
+
+- V02-007 Agent → GLPI: PASS, 2026-09-15;
+- V02-008 GLPI → API → Web: PASS, 2026-09-15;
+- V02-024 Windows/Dell telemetry: PASS, 2026-10-01.
+
+V02-029 debe revalidar el vertical soportado sobre el HEAD de cierre o registrar explícitamente PARTIAL si el laboratorio no está disponible.
+
+PARTIAL no debe convertirse en PASS por conveniencia.
+
+## Guardrails
+
+- no feature creep;
+- no secretos reales;
+- no datos corporativos en Demo;
+- no GLPI/Intune real en CI;
+- no nuevos permisos;
+- no ReadWrite;
+- no active OT scanning;
+- no remediation;
+- no network discovery;
+- no fallback Live → Demo;
+- no inventar observations, relationships, lifecycle o research faltante;
+- no declarar producción/certificación.
+
+## Próximos pasos
+
+1. abrir PR de V02-029;
+2. ejecutar CI y corregir el smoke integrado si aparece fragilidad real;
+3. revisar diff/documentación;
+4. ejecutar/repetir Live Lab manual sobre el HEAD de cierre cuando sea posible;
+5. actualizar `docs/v0.2-readiness.md` con PASS/PARTIAL/FAIL final;
+6. merge manual por Sergio;
+7. housekeeping final de v0.2 si fuera necesario.
+
+Git, código, tests y evidencias específicas continúan siendo la fuente de verdad.
