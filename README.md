@@ -79,19 +79,21 @@ La v0.2 responde:
 
 > **¿Puede IGX NEXUS convertirse realmente en una plataforma de Technology Intelligence para Innergex?**
 
-**V02-001 a V02-018 están integrados.**
+**Integrado en v0.2:** V02-001..V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028.
 
-V02-014 — Shell & Motion 2.0 quedó incorporado mediante PR #80 en el merge `e650e288b47903d6811675aa265ac7f0141f51a7`; CI post-merge #537 verde. NEXUS ya materializa Product IA v2 en el shell real con navegación global y contextual separadas, Demo/Live como contexto de fuente, preferencias persistentes de theme/density, responsive móvil accesible y motion breve compatible con reduced motion.
+Último baseline estable antes del cierre:
 
-V02-015 — Technology Overview quedó incorporado mediante PR #83 en el merge `c30eb25fa581f45eafa61c8bf7dd9d23fd7ccfe9`; CI post-merge #573 verde. `#overview` es ahora la home operacional de triage para Demo y Live, con contexto/cobertura explícitos, señales de atención deterministas, summary facts defendibles y drill-downs a superficies existentes sin adelantar el contrato analítico de V02-019.
+- **V02-028 — Backend & Integration CI** — PR #127, merge `e16a227`, CI #971 verde;
+- **V02-023 — Intune Analytics Feasibility Spike** permanece bloqueado por una dependencia externa de App Registration/RBAC tenant (issue #112 / draft PR #113);
+- **V02-029 — v0.2 Demo / Live Lab Readiness** es el trabajo activo de cierre (issue #128 / PR #129).
 
-V02-016 — Asset Explorer 2.0 quedó incorporado mediante PR #87 en el merge `68479fd9dd8c45be06a99b0042be83cfba9a2277`; CI post-merge #608 verde. `#assets` es ahora un workspace de investigación data-dense con facetas canónicas, counts contextuales, visibilidad de source/taxonomy coverage y tabla orientada a encontrar el CI correcto sin confundir compatibility fallback con clasificación resuelta.
+V02-029 no agrega capacidades de producto: consolida un smoke Demo v0.2, runbooks de Demo/Live Lab, evidencia de readiness y sincronización documental.
 
-V02-017 — Asset 360 2.0 quedó incorporado mediante PR #90 en el merge `4cc6e7b25b8e4d1bde56fc7a735be6e81261fcd8`; CI post-merge #651 verde. Asset 360 organiza el detalle del CI por intención, hace explícita Taxonomy v2 y la cobertura de evidencia, preserva Demo/Live sin mezclar fuentes y mantiene separados CMDB Quality, freshness, lifecycle y futura Device Health.
+Guías de cierre:
 
-V02-018 — Technology Map 2.0 quedó incorporado mediante PR #93 en el merge `19ff461d747ce39375c430f6ba59e0382d3976df`. `#assets/:id/relations` funciona como workspace focus/scope-first, conserva estado esencial en URL, mantiene equivalencia semántica accesible y separa estrictamente Demo/Live sin inventar relaciones ni impacto causal.
-
-El trabajo actual es **V02-019 — Analytics Contract Layer** (issue #96).
+- [Demo v0.2](docs/demo-v0.2.md);
+- [Live Lab v0.2 Readiness](docs/integrations/live-lab-v0.2-readiness.md);
+- [Release Readiness v0.2](docs/v0.2-readiness.md).
 
 Roadmap activo: [IGX NEXUS v0.2 — Technology Intelligence](docs/roadmap-v0.2.md).
 
@@ -312,7 +314,7 @@ npm run test:demo
 npm run storybook:build --workspace @igx-nexus/ui
 ```
 
-Baseline efectivo de V02-019: `main @ 4c721b3587095d9c29001a3b9e5f33a97bc3e599`, luego de incorporar las remediaciones de auditoría vigentes, incluida AUD-DATA-002.
+Baseline de cierre V02-029: `main @ e16a227` al iniciar el ticket. La rama de readiness agrega además `npm run test:readiness:v02` como smoke integrado de Demo v0.2.
 
 ## Flujo de desarrollo
 
