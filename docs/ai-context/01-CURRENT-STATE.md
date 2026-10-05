@@ -42,24 +42,20 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027**
+**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028**
 
-Último desarrollo funcional integrado:
+Último desarrollo integrado:
 
-**V02-027 — Knowledge Research Workflow**
+**V02-028 — Backend & Integration CI**
 
-Resultado relevante de V02-027:
+Resultado relevante de V02-028:
 
-- Knowledge Research agrega una capa auditable sobre Proactive Findings;
-- external knowledge permanece separado de observations/evidence local;
-- fuentes transportan provenance, clase y temporalidad explícita;
-- todo contenido de research se trata como `untrusted input`;
-- claims enlazan fuentes y conservan estados de soporte/contradicción;
-- contradicciones permanecen visibles como `unresolved`;
-- recomendaciones requieren revisión humana y nunca autorizan ejecución;
-- Demo usa fixtures sintéticos deterministas y claramente etiquetados;
-- Live sin research real queda explícitamente sin packet y no cae a Demo;
-- no existe crawler, búsqueda web autónoma, remediation ni command execution en V02-027.
+- API compilado validado por TCP/HTTP real;
+- contrato vertical GLPI/provider/API cubierto con fixtures controlados;
+- OpenAPI y auth runtime alineados para el snapshot protegido;
+- Knowledge Research rechaza estados runtime no soportados;
+- CI mantiene Demo/Live, mínimo privilegio y fail-closed;
+- no se introducen secretos, tenant Intune ni servicios externos reales en GitHub Actions.
 
 Trabajo pendiente bloqueado:
 
@@ -67,9 +63,9 @@ Trabajo pendiente bloqueado:
 
 Repo-side está preparado en draft PR #113, pero la validación tenant requiere una App Registration dedicada o intervención administrativa en Entra.
 
-Siguiente desarrollo funcional no bloqueado:
+Siguiente trabajo de cierre no bloqueado:
 
-**V02-028 — Backend & Integration CI**
+**V02-029 — v0.2 Demo / Live Lab Readiness**
 
 El detalle completo permanece definido en:
 
@@ -201,6 +197,6 @@ Para comenzar una nueva tarea:
 
 Si no existe otro trabajo activo definido en `03-SESSION-HANDOFF.md`, continuar desde:
 
-**V02-028 — Backend & Integration CI**
+**V02-029 — v0.2 Demo / Live Lab Readiness**
 
-V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra.
+V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra. V02-029 no debe inventar cobertura Live para compensarlo.
