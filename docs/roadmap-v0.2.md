@@ -1,6 +1,6 @@
 # IGX NEXUS v0.2 — Technology Intelligence
 
-Estado: **cierre de release listo para merge manual**. Demo v0.1 permanece cerrada en 13/13 tickets; v0.2 completó sus gates de readiness.
+Estado: **CERRADA**. Demo v0.1 permanece cerrada en 13/13 tickets; v0.2 completó Demo + Live Lab readiness y fue integrada en `main`.
 
 ## Objetivo
 
@@ -63,7 +63,7 @@ Dirección conceptual posterior:
 | V02-026 | Proactive Findings Engine | P2 | ✅ Integrado — PR #121 / issue #120 / merge `a0e5d72` |
 | V02-027 | Knowledge Research Workflow | P2 | ✅ Integrado — PR #124 / issue #123 / merge `aad9a3a`; CI #947 verde |
 | V02-028 | Backend & Integration CI | P0 | ✅ Integrado — PR #127 / merge `e16a227`; CI #971 verde |
-| V02-029 | v0.2 Demo / Live Lab Readiness | P1 | ✅ Readiness PASS — issue #128 / PR #129 |
+| V02-029 | v0.2 Demo / Live Lab Readiness | P1 | ✅ Integrado — PR #129 / issue #128 / merge `775e8a1`; CI #1016 verde |
 
 No abrir todos los tickets futuros por adelantado. Crear issues cuando el alcance esté suficientemente definido.
 
@@ -589,7 +589,7 @@ Documento:
 
 - `docs/product/knowledge-research-v02-027.md`.
 
-Siguiente trabajo de cierre no bloqueado: **V02-029 — v0.2 Demo / Live Lab Readiness**.
+V02-029 cerró posteriormente la readiness de v0.2 con Demo + Live Lab PASS.
 
 ## Epic 7 — Hardening / Demo
 
@@ -611,9 +611,9 @@ Documento: `docs/architecture/backend-integration-ci-v02-028.md`.
 
 ### V02-029 — v0.2 Demo / Live Lab Readiness ✅
 
-**Resultado de cierre V02-029:** Demo PASS, Live Lab PASS y 8/8 criterios de salida PASS. Evidencia Live sanitizada: `docs/integrations/live-lab-v0.2-evidence-2026-10-05.md`. V02-023 permanece bloqueado/non-blocking por dependencia externa de tenant. El merge final continúa siendo manual. 🟡
+**Resultado de cierre V02-029:** Demo PASS, Live Lab PASS y 8/8 criterios de salida PASS. Evidencia Live sanitizada: `docs/integrations/live-lab-v0.2-evidence-2026-10-05.md`. V02-023 permanece bloqueado/non-blocking por dependencia externa de tenant. PR #129 fue mergeado en `775e8a1`; CI post-merge #1016 verde.
 
-Issue #128.
+Issue #128 cerrado como completed.
 
 Objetivo de cierre:
 
