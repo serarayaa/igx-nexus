@@ -50,10 +50,21 @@ describe("supported canonical HTTP boundary", () => {
   ])("rejects invalid canonical timestamp at %s", path => {
     expect(() => projectCanonicalSnapshot(changed(path, "not-a-date"))).toThrow(TechnologyContractError);
   });
-  it("rejects an invalid inventory timestamp used by the presentation", () => {
-    const input = canonicalSnapshotFixture();
-    expect(() => projectCanonicalSnapshot({ ...input, assets: [{ ...input.assets[0], attributes: { "glpi.itemType": "Computer", "glpi.lastInventoryUpdate": "not-a-date" } }] })).toThrow(TechnologyContractError);
-  });
+  it.each(["not-a-date", "2026-10-05 12:00:00", "0000-00-00 00:00:00"])(
+    "keeps an invalid optional inventory timestamp unavailable instead of blanking the snapshot: %s",
+    value => {
+      const input = canonicalSnapshotFixture();
+      const projected = projectCanonicalSnapshot({
+        ...input,
+        assets: [{
+          ...input.assets[0],
+          attributes: { ...input.assets[0]!.attributes, "glpi.lastInventoryUpdate": value },
+        }],
+      });
+      expect(projected.assets[0]?.lastSeen).toBeNull();
+      expect(projected.canonical?.assets[0]?.attributes["glpi.lastInventoryUpdate"]).toBe(value);
+    },
+  );
   it.each(["sourceReferences", "identifiers", "provenance", "attributes"])("rejects malformed asset %s", key => {
     expect(() => projectCanonicalSnapshot(changed(`assets.0.${key}`, null))).toThrow(TechnologyContractError);
   });
