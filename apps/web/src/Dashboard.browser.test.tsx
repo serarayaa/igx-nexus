@@ -87,7 +87,7 @@ it("no asigna una compatibility projection a una cohorte IT/OT cuando Taxonomy v
   const canonicalAsset = canonical.assets[0]!;
   const liveSnapshot: DashboardSnapshot = {
     asOf: canonical.asOf,
-    assets: [{ ...presentation, domain: "IT" }],
+    assets: [{ ...presentation, dataMode: "live", domain: "IT" }],
     canonical: {
       ...canonical,
       assets: [{
@@ -239,7 +239,7 @@ it("mantiene Knowledge Research Live sin fallback a fixtures Demo", async () => 
 
   const liveSnapshot: DashboardSnapshot = {
     asOf: canonical.asOf,
-    assets: [presentation],
+    assets: [{ ...presentation, dataMode: "live" }],
     canonical: {
       ...canonical,
       assets: [canonicalAsset],
