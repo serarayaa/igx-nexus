@@ -7,12 +7,12 @@
 
 - Repository: `serarayaa/igx-nexus`
 - Stable branch: `main`
-- Baseline estable de cierre v0.2: `775e8a16c1128384549e704c0cea2d0eb423bc63`
-- Último desarrollo integrado: **V02-029 — v0.2 Demo / Live Lab Readiness**
+- Baseline estable de cierre funcional v0.2: `775e8a16c1128384549e704c0cea2d0eb423bc63`
+- Baseline estable post-remediación: `8a1661f205fd872e8a117dc9e5b30e867b856cc0`
+- Último ciclo integrado: **v0.2.x post-release audit hardening**
 - Release: **v0.2 cerrada**
-- Issue #128: **closed / completed**
-- PR #129: **merged**
-- CI post-merge: **#1016 SUCCESS**
+- V02-029: PR #129 / CI #1016 SUCCESS
+- Post-release hotfixes: PR #131–#134 / CI #1021, #1023, #1025, #1027 SUCCESS
 
 ## Estado funcional
 
@@ -133,12 +133,26 @@ Evidencia: `docs/integrations/live-lab-v0.2-evidence-2026-10-05.md`.
 ## Próximos pasos
 
 1. sincronizar el checkout local con `main` antes de iniciar nuevo trabajo;
-2. no abrir automáticamente v0.3: priorizar primero el siguiente objetivo de producto;
-3. mantener V02-023 en su rama/PR separado hasta disponer de autorización tenant;
-4. tratar cualquier revisión UI/UX posterior como trabajo nuevo, sin reabrir el scope funcional de v0.2.
+2. iniciar **v0.3 — Product Experience** como fase dedicada a UI/UX, interfaz, visualización, accesibilidad, responsive, motion y flujos por persona;
+3. mantener Intelligence & Automation fuera de v0.3 y reservarla para **v0.4**;
+4. mantener V02-023 en su rama/PR separado hasta disponer de autorización tenant;
+5. no reabrir el scope funcional de v0.2 salvo hotfix explícito.
 
 Git, código, tests y evidencias específicas continúan siendo la fuente de verdad.
 
+
+## Post-release audit hardening — 2026-10-05
+
+Cerrados e integrados:
+
+- post-release AUD-LIVE-001 — PR #131 / CI #1021;
+- post-release AUD-API-001 — PR #132 / CI #1023;
+- post-release AUD-DATA-001 — PR #133 / CI #1025;
+- post-release AUD-SEC-001 — PR #134 / CI #1027.
+
+Detalle: `docs/audits/v0.2-post-release-remediation-closure.md`.
+
+Los IDs anteriores deben interpretarse dentro del namespace de la auditoría post-release 2026-10-05; existen IDs históricos coincidentes en el repositorio.
 
 ## Resultado final V02-029
 
