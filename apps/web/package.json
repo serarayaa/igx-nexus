@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:demo": "vitest run --project dashboard src/DemoV01.browser.test.tsx"
+    "test:demo": "vitest run --project dashboard src/DemoV01.browser.test.tsx",
+    "test:demo-v02": "vitest run --project dashboard src/DemoV02.browser.test.tsx"
   },
   "dependencies": {
     "@igx-nexus/ui": "0.1.0-dev",
