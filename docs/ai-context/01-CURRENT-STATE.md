@@ -7,7 +7,7 @@
 
 - Repository: `serarayaa/igx-nexus`
 - Branch estable: `main`
-- Release candidata al cierre: **v0.2 — Technology Intelligence**
+- Release cerrada: **v0.2 — Technology Intelligence**
 - v0.1: **cerrada — 13/13 tickets**
 
 Este archivo representa el estado conocido de `main` en el momento de su última actualización.
@@ -42,11 +42,11 @@ Principios vigentes:
 
 Integrado:
 
-**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028**
+**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028 + V02-029**
 
 Último desarrollo integrado:
 
-**V02-028 — Backend & Integration CI**
+**V02-029 — v0.2 Demo / Live Lab Readiness**
 
 Resultado relevante de V02-028:
 
@@ -63,9 +63,9 @@ Trabajo pendiente bloqueado:
 
 Repo-side está preparado en draft PR #113, pero la validación tenant requiere una App Registration dedicada o intervención administrativa en Entra.
 
-Readiness de cierre:
+Cierre v0.2:
 
-**V02-029 — v0.2 Demo / Live Lab Readiness — PASS (Demo + Live Lab, 8/8 criterios)**
+**V02-029 — PASS e integrado mediante PR #129 / `main @ 775e8a1`; CI post-merge #1016 verde. Demo + Live Lab PASS, 8/8 criterios de salida PASS.**
 
 El detalle completo permanece definido en:
 
@@ -195,6 +195,6 @@ Para comenzar una nueva tarea:
 
 ## Próximo objetivo funcional
 
-Completar merge manual de **PR #129 — V02-029** y cerrar formalmente v0.2. Después del merge, el siguiente trabajo funcional no debe asumirse automáticamente: revisar roadmap posterior y priorización de v0.3.
+v0.2 está formalmente cerrada. No asumir automáticamente el siguiente trabajo funcional: revisar prioridades post-v0.2 antes de abrir alcance nuevo.
 
-V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra; es una dependencia externa non-blocking para el cierre de v0.2.
+V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra. Su estado no invalida el cierre de v0.2.
