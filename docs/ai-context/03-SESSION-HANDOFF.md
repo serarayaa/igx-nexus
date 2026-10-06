@@ -1,28 +1,29 @@
 # IGX NEXUS — Session Handoff
 
-## Repository State
+## Repository state
 
-- Repository: serarayaa/igx-nexus
-- Stable main: 80b07704c8ba719a6c7a53449168739dc1745d32, verified by fetch before edits and before handoff.
-- Work branch: feature/v03-002-design-system-foundations.
-- v0.2 and post-release hardening remain closed; no backend/providers/contracts changed.
-- V03-001: human APPROVED / GO WITH CONDITIONS.
-- V03-002: additive foundation prepared for review; human visual checkpoint pending. Not merged, not closed, no automatic next ticket.
+- Repository: serarayaa/igx-nexus; stable baseline main@80b07704c8ba719a6c7a53449168739dc1745d32.
+- Branch: feature/v03-002-design-system-foundations; existing PR #136: https://github.com/serarayaa/igx-nexus/pull/136.
+- V03-001: APPROVED / GO WITH CONDITIONS.
+- **V03-002 Human Review Checkpoint = APPROVED WITH CONDITIONS** (human closure, 2026-10-06). Closure authorized; integration remains subject to green CI and Sergio's manual merge. Do not merge automatically.
+- v0.2/hardening remain closed. V02-023 stays separate, externally blocked by tenant/RBAC and nonblocking for Product Experience.
 
-## What changed
+## Human decision and remaining conditions
 
-Preserved DTCG adapter, primitives, themes/density, React Aria, Lucide and legacy APIs. Added evidence, coverage, severity, interaction, surface, typography and motion roles; EvidenceBadge/CoverageIndicator/SeverityBadge; distinct selection marker and pressed feedback; runtime preferences also work for nested themes. Existing health/criticality/status semantics retained. Three isolated SVG product-mark concepts; current shell asset unchanged. Eight native browser captures and manifest in docs/design-system/evidence/v03-002.
+Semantics, Coverage ≠ Severity, Light/Dark, Comfortable/Compact, responsive, Data Visualization and Motion foundations approved; Technology Workspace/Map direction accepted.
 
-Docs: six v0.3 documents in docs/design-system, baseline inventory, roadmap and updated DS index. V03-001 historical audit deliverables remain outside its commits, as originally requested.
+- **B — N conectado: APPROVED AS DESIGN DIRECTION**. Current SVG is not a final production asset. Optical refinement required especially at 16 px to reduce terminal-node noise, consistent with 24/32 px and the same visual concept.
+- **A: TECHNICAL FALLBACK** only if B fails small-size legibility/recognition testing; no automatic adoption.
+- **C: REJECTED**; retained solely as historical exploration evidence, no further branding development.
+- Final branding application belongs to a later ticket; no production logo, favicon, manifest, shell or screen changes in this closure.
+- **V03-007 is Graph/Map representation within V03-005 Technology Workspace, not an independent surface**. Share scope, filters, selection, navigation context, URL state and investigation context; no second selection/filter/navigation state or duplicated scope.
+- Full Workspace implementation requires V03-008 state/navigation contract. **V03-008 NOT STARTED**; no next ticket started automatically.
+- Real Live remains unverified; no conclusions inferred from unverified Live. Accessibility requires a specific audit per surface; no absolute WCAG compliance claim. High Contrast/reduced motion evidence is Chromium emulation, not manual OS/SR certification.
 
-## Validation
+## Scope and validation
 
-Token/UI build and workspace typecheck PASS. Storybook build and 54 tests PASS. Four foundation contrast/preferences tests PASS. Web build, Demo v0.2 readiness and UI package dry-run PASS. Local full Web runs exercised 338 cases but had timing failures in Lifecycle axe/reflow and cold-start contract; isolated reruns passed 6/6 and 2/2. Linux CI confirms 338/338 Web cases with existing limits; tests were not weakened. QA detail and screenshots: docs/design-system/v0.3-visual-qa.md.
+This closure changes documentation only. Implementation, tokens, components, dependencies, providers, backend and conceptual SVG assets are unchanged. Historical screenshots and their capture manifest remain unchanged; pending-review labels there describe capture time, not the current human decision.
 
-npm audit high gate required minimal source-map-js lockfile patch 1.2.1→1.2.2. No new dependency; moderate Fastify advisory remains outside ticket. CI SUCCESS on implementation 4f3a7b282ab0637e492b52541e9993ed8b126715: https://github.com/serarayaa/igx-nexus/actions/runs/37471179421. Draft PR #136: https://github.com/serarayaa/igx-nexus/pull/136. Technical validation passed; human visual decision still pending.
+Prior implementation validation: tokens/UI build and typecheck PASS; Storybook 54/54; foundation checks 4/4; Web Linux CI 338/338 with existing limits; readiness 1/1. Local full Web runs previously had Lifecycle/cold-start timing failures, isolated reruns passed 6/6 and 2/2; no tests weakened. See docs/design-system/v0.3-visual-qa.md. Prior documentation HEAD fb17c280240d7c8106a482bfbebc20cdf7d7ce83 had both CI runs SUCCESS: 37471899773 and 37471893979. Do not present these as results of the new closure commit.
 
-## Human decision / next permitted step
-
-GO WITH CONDITIONS. Review lockup/mark/palette/typography/semantic states/representative components/light-dark/compact-comfortable according to request §33. B (N conectado) recommended, A/C alternatives; no aesthetic approval inferred. Do not adopt mark or close ticket before approval. Technology Workspace still requires scope/filter/selection/URL/navigation/performance/accessibility validation in V03-008. Do not start next ticket automatically.
-
-V02-023 stays separate, externally blocked by tenant/RBAC and nonblocking for Product Experience. No new Graph/Intune/ML/automation/scanning/infrastructure/security capabilities. High Contrast/reduced motion are Chromium-emulated evidence, not full manual SR/OS audit; Live real remains unverified.
+Validate closure diff/scope locally and use CI on the final PR head as final regression evidence; record exact SHA/run links in PR body. After green CI, take #136 out of Draft and leave **READY FOR MANUAL MERGE BY SERGIO**. The sole next permitted action is Sergio's manual review/merge, not V03-008 implementation. **GO WITH CONDITIONS** remains the recommendation for the next level of work.

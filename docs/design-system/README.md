@@ -78,7 +78,7 @@ Las foundations de CMDB-005 ya forman parte del baseline integrado. Este párraf
 
 ## Product Experience v0.3
 
-V03-001 aprobado **GO WITH CONDITIONS**. V03-002 prepara una evolución aditiva; revisión visual humana pendiente, marca sin adoptar.
+V03-001 aprobado **GO WITH CONDITIONS**. V03-002: **Human Review Checkpoint = APPROVED WITH CONDITIONS**, cierre autorizado y merge manual de Sergio sujeto a CI verde. Mark B aprobado como dirección con refinamiento óptico pendiente; A sólo fallback técnico y C rechazado. Marca productiva sin adoptar. Ver [decisión de marca](v0.3-brand-system.md) y [checkpoint y límites](v0.3-visual-qa.md).
 
 - [Foundations e inventario](v0.3-foundations.md)
 - [Lenguaje semántico](v0.3-semantic-language.md)
