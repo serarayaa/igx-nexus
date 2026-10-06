@@ -2,28 +2,45 @@
 
 ## Repository state
 
-- Repository: serarayaa/igx-nexus; stable baseline main@80b07704c8ba719a6c7a53449168739dc1745d32.
-- Branch: feature/v03-002-design-system-foundations; existing PR #136: https://github.com/serarayaa/igx-nexus/pull/136.
-- V03-001: APPROVED / GO WITH CONDITIONS.
-- **V03-002 Human Review Checkpoint = APPROVED WITH CONDITIONS** (human closure, 2026-10-06). Closure authorized; integration remains subject to green CI and Sergio's manual merge. Do not merge automatically.
-- v0.2/hardening remain closed. V02-023 stays separate, externally blocked by tenant/RBAC and nonblocking for Product Experience.
+- Baseline verified: main@e04c4025dc3764bc668a6155df883e275c0519f6, merge of PR #136. main was updated fast-forward from origin/main with a clean tree before creating this branch.
+- Branch: feature/v03-008-cross-surface-state-navigation. V03-008 in existing PR #137 (https://github.com/serarayaa/igx-nexus/pull/137); not merged; human checkpoint APPROVED WITH CONDITIONS. Ready for Review after final CI SUCCESS and clean mergeability; manual merge by Sergio.
+- V03-001/002 human conditions remain. B approved design direction, not final production SVG; A technical fallback only if B fails small-size tests; C rejected/historical. No branding assets changed.
+- V03-003 and V03-005 NOT STARTED. V03-007 remains Graph/Map inside V03-005, never an independent surface/store. V02-023 separate and externally blocked; v0.2/hotfixes not reopened.
 
-## Human decision and remaining conditions
+## Delivered foundation
 
-Semantics, Coverage ≠ Severity, Light/Dark, Comfortable/Compact, responsive, Data Visualization and Motion foundations approved; Technology Workspace/Map direction accepted.
+Read docs/product/v0.3-navigation-state-contract.md for baseline audit, ownership matrix, canonical URL examples, precedence, history policies, journey diagram, graph scope/selection rules, return behavior, invalid/stale handling, a11y/responsive/performance and migration.
 
-- **B — N conectado: APPROVED AS DESIGN DIRECTION**. Current SVG is not a final production asset. Optical refinement required especially at 16 px to reduce terminal-node noise, consistent with 24/32 px and the same visual concept.
-- **A: TECHNICAL FALLBACK** only if B fails small-size legibility/recognition testing; no automatic adoption.
-- **C: REJECTED**; retained solely as historical exploration evidence, no further branding development.
-- Final branding application belongs to a later ticket; no production logo, favicon, manifest, shell or screen changes in this closure.
-- **V03-007 is Graph/Map representation within V03-005 Technology Workspace, not an independent surface**. Share scope, filters, selection, navigation context, URL state and investigation context; no second selection/filter/navigation state or duplicated scope.
-- Full Workspace implementation requires V03-008 state/navigation contract. **V03-008 NOT STARTED**; no next ticket started automatically.
-- Real Live remains unverified; no conclusions inferred from unverified Live. Accessibility requires a specific audit per surface; no absolute WCAG compliance claim. High Contrast/reduced motion evidence is Chromium emulation, not manual OS/SR certification.
+Typed InvestigationState/parser/serializer/normalize/helpers reuse existing ExplorerQuery and graph enums. URL is durable owner; native history with useSyncExternalStore subscribes to hashchange/popstate and explicit notification of push/replace. No dependency/router migration or backend/provider changes.
 
-## Scope and validation
+Representative production adapter: #assets query/search/facets/sort/page/size persist through refresh; Overview CTA transports selected classified domain; asset links and all four Asset360 sections preserve a bounded validated return hash. Selection, graph root and DOM focus are different concepts. Focus restored to visible identity link or result summary, not stolen by query updates. Stale page clamps via replace; stale facets remain visible and produce no matches.
 
-This closure changes documentation only. Implementation, tokens, components, dependencies, providers, backend and conceptual SVG assets are unchanged. Historical screenshots and their capture manifest remain unchanged; pending-review labels there describe capture time, not the current human decision.
+Table↔Graph context contract is exercised by a test-only semantic harness, not a final Workspace renderer. New Graph URLs explicitly display inventory fallback and preserve requested view/context. Legacy #assets/:id/relations renderer is unchanged and still has its own selection reset behavior; migrate it only in V03-005 under the shared contract. Specialized views/QR/label adapters are later incremental work. No fake Live data or new sources.
 
-Prior implementation validation: tokens/UI build and typecheck PASS; Storybook 54/54; foundation checks 4/4; Web Linux CI 338/338 with existing limits; readiness 1/1. Local full Web runs previously had Lifecycle/cold-start timing failures, isolated reruns passed 6/6 and 2/2; no tests weakened. See docs/design-system/v0.3-visual-qa.md. Prior documentation HEAD fb17c280240d7c8106a482bfbebc20cdf7d7ce83 had both CI runs SUCCESS: 37471899773 and 37471893979. Do not present these as results of the new closure commit.
+## Validation observed locally
 
-Validate closure diff/scope locally and use CI on the final PR head as final regression evidence; record exact SHA/run links in PR body. After green CI, take #136 out of Draft and leave **READY FOR MANUAL MERGE BY SERGIO**. The sole next permitted action is Sergio's manual review/merge, not V03-008 implementation. **GO WITH CONDITIONS** remains the recommendation for the next level of work.
+- UI/types prerequisite builds PASS; web build and typecheck PASS; diff formatting reviewed.
+- New model contract 13 tests + existing navigation 10 + canonical HTTP round-trip 2: 25/25 PASS in isolated run.
+- Affected production browser journeys + initial new harness: 34/34 PASS across five files after focus fixes. Final expanded navigation harness: 7/7 PASS, including stale page/facet and Live snapshot fail-closed under URL mode input.
+- Physical refresh/deep-link tests: 2/2 PASS (real Chromium reload, Explorer/Asset360 return, graph fallback and stale facet); dedicated npm script and CI step added with existing Playwright dependency.
+- Full local Web execution before the two additional tests: 354/356 PASS, two existing environment timing failures (canonical HTTP cold start 5s, Lifecycle axe/reflow 30s). Isolated reruns: HTTP 2/2 PASS and Lifecycle 6/6 PASS with original limits. Do not claim the full local run passed; no tests/timeouts weakened. Final CI on PR HEAD is the regression gate, recorded in PR body.
+- Generated CSS build artifacts were restored to baseline; tokens/styles/branding/shell unchanged. No new dependencies, providers, contracts in packages/types, tenant operations, intelligence/automation or infrastructure.
+
+## Remote validation evidence
+
+Implementation commit 21480ce6c904639051751b9f58a38c627acbc3cb: CI SUCCESS in https://github.com/serarayaa/igx-nexus/actions/runs/37482463481. Web 358/358, Storybook 54/54, foundation 4/4, physical reload 2/2 and readiness 1/1 PASS, plus contracts/API and existing production QA gates. This resolves the complete regression gate on Linux with unchanged timing limits. The final PR HEAD checks and SHA are recorded in PR #137 body after the documentation handoff commit; do not conflate the above implementation run with a later SHA.
+
+## Human checkpoint / next permitted step
+
+**V03-008 Human Review Checkpoint = APPROVED WITH CONDITIONS**. Se mantiene **GO WITH CONDITIONS**. Cierre humano autorizado; integración pendiente de merge manual de Sergio en PR #137 tras CI final SUCCESS y mergeability clean. V03-003/V03-005 NO iniciados.
+
+Aprobados por decisión humana: URL como owner durable de InvestigationState; state ownership model; parse / serialize / normalize; canonical URLs; Push vs Replace; Back / Forward; deep links; Selection != Focus != Graph root; Table ↔ Graph shared investigation contract; Asset 360 contextual return; InvestigationIntent; Demo / Live separation; invalid/stale-state handling; responsive state preservation; implementación sin nueva global-state/router library.
+
+Final delivery after these gates: V03-008 — READY FOR MANUAL MERGE BY SERGIO. No automatic merge.
+
+Remaining conditions: legacy graph adapter migration and per-surface accessibility/performance review before final Workspace; real Live unverified; no absolute WCAG certification. This ticket does not authorize starting V03-003/V03-005. Preserve mark B optical refinement requirement before productive branding.
+
+
+Condiciones pendientes: integración productiva del renderer Graph legacy en V03-005; performance a escala corporativa; auditoría de accesibilidad específica por superficie; Asset 360 return URL length robustness. No declarar Graph completamente migrado, accesibilidad completa ni escala corporativa resuelta.
+
+El patrón `#assets/:id?...&return=<encoded investigation URL>` queda aprobado. La robustez de longitud es una condición NO BLOQUEANTE para V03-008, pendiente como seguimiento de superficies consumidoras / V03-005 si corresponde. Validar longitud práctica de la URL final Asset 360 después del encoding y probar una investigación extensa representativa con 14 facetas, búsqueda, selección y parámetros Graph; comprobar navegación, refresh y retorno para evitar URLs excesivas o degradación inesperada. Este caso ampliado no fue ejecutado durante el cierre documental. Mantener límites actuales del contrato (hash4096, q256, facetas/IDs160); el límite del origen no demuestra robustez del destino codificado. No introducir sessionStorage/global store como workaround sin evidencia.

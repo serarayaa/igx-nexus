@@ -217,7 +217,7 @@ it("navega Explorer → Asset 360 → Explorer y conserva identidad", async () =
   await explorerTable();
   await userEvent.click(screen.getByRole("link", { name: "Desktop Demo 0002" }));
   await assetHeading();
-  expect(window.location.hash).toBe("#assets/DEMO-0002");
+  expect(window.location.hash).toBe("#assets/DEMO-0002?return=%23assets%3Fselected%3DDEMO-0002");
   window.history.back();
   await explorerTable();
   window.history.forward();

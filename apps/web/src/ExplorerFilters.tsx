@@ -94,6 +94,7 @@ export function ExplorerFilters({ snapshot, query, onChange, onClear }: {
       <span>{filterLabels[key]}</span>
       <select id={`${id}-${key}`} value={filters[key]} onChange={e => onChange(key, e.target.value)}>
         <option value="">Todos</option>
+        {filters[key] && !options.some(option => option.value === filters[key]) && <option value={filters[key]}>{valueLabel(key, filters[key])} · sin coincidencias actuales</option>}
         {options.map(option => <option key={option.value} value={option.value}>
           {valueLabel(key, option.value)} ({option.count})
         </option>)}

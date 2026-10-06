@@ -47,13 +47,15 @@ function sourceLabel(source: string): string {
     : source.toLocaleUpperCase("es-CL");
 }
 
-export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical, caption = "Inventario de activos demo" }: {
+export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical, assetLink = assetHash, onAssetNavigate, caption = "Inventario de activos demo" }: {
   rows: readonly Asset[];
   asOf: string;
   sort: DataTableSort;
   onSortChange: (sort: DataTableSort) => void;
   showTechnical: boolean;
   caption?: string;
+  assetLink?: (assetId: string) => string;
+  onAssetNavigate?: (assetId: string) => void;
 }) {
   const columns: readonly DataTableColumn<Asset>[] = [
     {
@@ -62,7 +64,9 @@ export function AssetTable({ rows, asOf, sort, onSortChange, showTechnical, capt
       isRowHeader: true,
       isSortable: true,
       cell: asset => <div className="nexus-asset-identity">
-        <strong><a className="nexus-asset-link" href={assetHash(asset.id)}>{asset.name}</a></strong>
+        <strong><a className="nexus-asset-link" data-asset-link={asset.id} href={assetLink(asset.id)} onClick={event => {
+          if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) onAssetNavigate?.(asset.id);
+        }}>{asset.name}</a></strong>
         <span className="nexus-id nexus-muted">{asset.id}</span>
         {showTechnical && <dl className="nexus-asset-technical">
           <div><dt>Hostname</dt><dd>{asset.hostname ?? "Sin hostname"}</dd></div>

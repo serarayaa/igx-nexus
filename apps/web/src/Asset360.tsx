@@ -27,6 +27,7 @@ import {
 } from "./relationship-model";
 import { assetHash, assetSectionHash, demoQrHash, labelHash, relationsHash, type AssetSection } from "./navigation-model";
 import { demoLocatorForAsset } from "./qr-locator";
+import { assetReturnHash } from "./navigation-state";
 import "./asset-360.css";
 
 type LoadState =
@@ -108,10 +109,10 @@ function Field({ label, value, mono = false }: { label: string; value: string | 
   return <div><dt>{label}</dt><dd className={mono ? "nexus-asset-mono" : undefined}>{value?.trim() || "No informado"}</dd></div>;
 }
 
-function AssetSectionNav({ assetId, section }: { assetId: string; section: AssetSection }) {
+function AssetSectionNav({ assetId, section, returnHash }: { assetId: string; section: AssetSection; returnHash: string | null }) {
   return <nav className="nexus-asset-local-nav" aria-label="Secciones de Asset 360">
     {(["summary", "inventory", "evidence", "relationships"] as const).map(candidate =>
-      <a key={candidate} href={assetSectionHash(assetId, candidate)} aria-current={candidate === section ? "page" : undefined}>
+      <a key={candidate} href={assetSectionHash(assetId, candidate) + (returnHash ? `${candidate === "summary" ? "?" : "&"}return=${encodeURIComponent(returnHash)}` : "")} aria-current={candidate === section ? "page" : undefined}>
         {sectionLabels[candidate]}
       </a>
     )}
@@ -425,6 +426,7 @@ function RelationshipPanel({
 
 export function Asset360(props: Asset360Props) {
   const { assetId, section = "summary", relationshipProvider } = props;
+  const returnHash = assetReturnHash(window.location.hash);
   const mode = props.mode ?? "demo";
   const provider = resolveProviderForMode(mode, props.provider, demoProvider);
   const [state, setState] = useState<LoadState>({ status: "loading" });
@@ -472,12 +474,12 @@ export function Asset360(props: Asset360Props) {
   }
 
   if (state.snapshot.assets.length === 0) {
-    return <EmptyState title="El inventario está vacío" description={mode === "live" ? "NEXUS API no devolvió activos dentro de la cobertura actual." : "No hay activos disponibles en el dataset sintético Demo."} action={<a href="#assets">Volver al inventario</a>} />;
+    return <EmptyState title="El inventario está vacío" description={mode === "live" ? "NEXUS API no devolvió activos dentro de la cobertura actual." : "No hay activos disponibles en el dataset sintético Demo."} action={<a href={returnHash ?? "#assets"}>Volver al inventario</a>} />;
   }
 
   const asset = state.snapshot.assets.find((candidate) => candidate.id === assetId);
   if (!asset) {
-    return <EmptyState title="Activo no encontrado" description={`No existe un activo con el identificador ${assetId} en este inventario.`} action={<a href="#assets">Volver al inventario</a>} />;
+    return <EmptyState title="Activo no encontrado" description={`No existe un activo con el identificador ${assetId} en este inventario.`} action={<a href={returnHash ?? "#assets"}>Volver al inventario</a>} />;
   }
 
   const isLive = mode === "live";
@@ -489,7 +491,7 @@ export function Asset360(props: Asset360Props) {
     <nav className="nexus-breadcrumb" aria-label="Breadcrumb">
       <ol>
         <li><a href="#overview">Overview</a></li>
-        <li><a href="#assets">Activos</a></li>
+        <li><a href={returnHash ?? "#assets"}>{returnHash ? "Volver a investigación" : "Activos"}</a></li>
         <li aria-current="page">{asset.name}</li>
       </ol>
     </nav>
@@ -515,7 +517,7 @@ export function Asset360(props: Asset360Props) {
       <div><dt>Fuentes conocidas</dt><dd>{sourceCount || "Sin cobertura"}</dd></div>
     </dl>
 
-    <AssetSectionNav assetId={asset.id} section={section} />
+    <AssetSectionNav assetId={asset.id} section={section} returnHash={returnHash} />
 
     {section === "summary" && <SummaryPanel asset={asset} snapshot={state.snapshot} isLive={isLive} {...(relationshipProvider ? { relationshipProvider } : {})} />}
     {section === "inventory" && <InventoryPanel asset={asset} snapshot={state.snapshot} isLive={isLive} />}

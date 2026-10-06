@@ -71,7 +71,7 @@ export function routeFromHash(hash: string): AppRoute | null {
   if (dashboardHashes.has(hash)) return { view: "dashboard" };
   if (hash === "#health") return { view: "health" };
   if (hash === "#lifecycle") return { view: "lifecycle" };
-  if (hash === "#assets") return { view: "assets" };
+  if (hash === "#assets" || hash.startsWith("#assets?")) return { view: "assets" };
 
   const qrPrefix = "#q/";
   if (hash.startsWith(qrPrefix)) {
