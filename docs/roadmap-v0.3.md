@@ -8,7 +8,7 @@ V03-001: **APPROVED / GO WITH CONDITIONS**, según cierre humano del archivo de 
 |---|---|---|
 | V03-001 · audit | Auditoría de experiencia, Innergex, benchmarks y Preservation/Restructure Matrix | Aprobado GO WITH CONDITIONS; preservar sus límites |
 | V03-002 · foundations | Tokens aditivos, semántica, tipografía, surfaces, componentes, marca propuesta y Visual QA | Checkpoint humano completado con condiciones; CI verde y merge manual; docs en design-system |
-| V03-008 · state/navigation | Contrato tipado URL, helpers/history, adaptador Explorer/360 y recorrido Graph controlado; [contrato](product/v0.3-navigation-state-contract.md) | Implementado para revisión; CI final y checkpoint humano pendientes. No cierre automático |
+| V03-008 · state/navigation | Contrato tipado URL, helpers/history, adaptador Explorer/360 y recorrido Graph controlado; [contrato](product/v0.3-navigation-state-contract.md) | Implementado para revisión; CI verde de implementación, gate del HEAD final en PR #137 y checkpoint humano requerido. No cierre automático |
 | V03-003 · shell | Navegación, naming y aplicación de marca aprobada | 002/008, keyboard/drawer/preferencias |
 | V03-005 · Technology Workspace | Explorer + Map como representaciones del contexto | Hipótesis; 002/008/003; validar performance y alternativa semántica |
 | V03-007 · Graph / Map | Implementación/evolución de Graph/Map dentro de V03-005; **no es una superficie independiente** | Comparte scope, filtros, selección, navegación, URL state y contexto de investigación; sin estado paralelo ni scope duplicado |
