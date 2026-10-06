@@ -170,5 +170,7 @@
       "sha256": "e961b5a2f8c5574c91b91d2b05cc87b6072783dbe5d1bbf76c6b38dba42d0ed4",
       "state": "static proposal"
     }
-  ]
+  ],
+  "implementationCommit": "4f3a7b282ab0637e492b52541e9993ed8b126715",
+  "validationRun": "https://github.com/serarayaa/igx-nexus/actions/runs/37471179421"
 }
