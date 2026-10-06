@@ -109,3 +109,9 @@ V02-018 evoluciona el grafo histórico hacia un workspace focus/scope-first con 
 - V02-019 — Analytics Contract Layer
 
 ADR-0023 permanece como baseline normativo de Product IA. Cada ticket de implementación debe mantener sus límites de scope y preservar los principios de producto ya aceptados.
+
+## V03-008 — Navigation state contract (en revisión)
+
+- [Ownership, URL, history, Table/Graph, retorno y migración](v0.3-navigation-state-contract.md)
+
+Foundation para revisión humana, sin implementar Technology Workspace final ni cambiar los providers.

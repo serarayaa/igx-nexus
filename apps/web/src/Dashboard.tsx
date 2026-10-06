@@ -1,3 +1,4 @@
+import { buildInvestigationLink } from "./navigation-state";
 import { useEffect, useState } from "react";
 import { ArrowRight, Boxes, CalendarClock, Clock3, ShieldCheck } from "lucide-react";
 import { Badge, Button, Card, ContentSection, DataTable, EmptyState, ErrorState, LoadingState, PageHeader, StatusBadge, Toolbar, type DataTableColumn } from "@igx-nexus/ui";
@@ -219,7 +220,7 @@ export function DashboardContent(props: ModeAwareProviderProps<DashboardProvider
           <p>Overview orienta; las superficies especializadas contienen el detalle.</p>
         </div>
         <div className="nexus-overview-drilldowns">
-          <a href="#assets"><Boxes aria-hidden="true" /><span><strong>Explorar activos</strong><small>Buscar, filtrar y abrir Asset 360.</small></span><ArrowRight aria-hidden="true" /></a>
+          <a href={buildInvestigationLink({ filters: domain === "all" ? {} : { domain, taxonomyState: "classified" } })}><Boxes aria-hidden="true" /><span><strong>Explorar activos</strong><small>Buscar, filtrar y abrir Asset 360.</small></span><ArrowRight aria-hidden="true" /></a>
           <a href="#lifecycle"><CalendarClock aria-hidden="true" /><span><strong>Lifecycle &amp; Investment</strong><small>Revisar vencimientos, cobertura y horizontes 3/6/12/24 meses.</small></span><ArrowRight aria-hidden="true" /></a>
           {!live && <a href="#health"><ShieldCheck aria-hidden="true" /><span><strong>Calidad de datos</strong><small>Investigar reglas y evidencia del registro CMDB.</small></span><ArrowRight aria-hidden="true" /></a>}
         </div>

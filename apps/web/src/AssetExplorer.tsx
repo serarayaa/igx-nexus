@@ -6,21 +6,30 @@ import type { InventoryProvider, InventorySnapshot } from "./asset-model";
 import { emptyFilters, explore, facetOptions, hasFacetCoverage, type ExplorerQuery } from "./explorer-model";
 import { ExplorerFilters } from "./ExplorerFilters";
 import { AssetTable } from "./AssetTable";
+import { applyExplorerQuery, buildContextualAssetLink, selectionAvailability, selectionAvailabilityLabels } from "./navigation-state";
+import { useInvestigationNavigation } from "./use-investigation-navigation";
 import "./explorer.css";
 
 type LoadState = { status: "loading" } | { status: "error" } | { status: "ready"; snapshot: InventorySnapshot };
 const initialQuery: ExplorerQuery = { search: "", filters: emptyFilters, sort: { columnId: "name", direction: "ascending" }, page: 1, pageSize: 25 };
 const dateFormat = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium", timeZone: "UTC" });
 
-export function AssetExplorer(props: ModeAwareProviderProps<InventoryProvider>) {
+export function AssetExplorer(props: ModeAwareProviderProps<InventoryProvider> & { navigation?: boolean }) {
   const mode = props.mode ?? "demo";
   const provider = resolveProviderForMode(mode, props.provider, demoProvider);
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
-  const [query, setQuery] = useState(initialQuery);
+  const [localQuery, setLocalQuery] = useState(initialQuery);
+  const navigation = useInvestigationNavigation();
+  const query: ExplorerQuery = props.navigation ? navigation.state : localQuery;
+  function setQuery(update: (current: ExplorerQuery) => ExplorerQuery, history: "push" | "replace" = "push") {
+    if (props.navigation) navigation.update(applyExplorerQuery(navigation.state, update(navigation.state)), history);
+    else setLocalQuery(update);
+  }
   const [showTechnical, setShowTechnical] = useState(false);
   const searchRegion = useRef<HTMLDivElement>(null);
   const resultSummary = useRef<HTMLParagraphElement>(null);
+  const restoredFocus = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -30,15 +39,15 @@ export function AssetExplorer(props: ModeAwareProviderProps<InventoryProvider>) 
       return provider(controller.signal);
     }).then(snapshot => assertSnapshotMatchesMode(mode, snapshot)).then(snapshot => {
       if (!controller.signal.aborted) {
-        setQuery(current => ({ ...current, page: 1 }));
+        if (!props.navigation) setLocalQuery(current => ({ ...current, page: 1 }));
         setState({ status: "ready", snapshot });
       }
     }).catch(() => { if (!controller.signal.aborted) setState({ status: "error" }); });
     return () => controller.abort();
   }, [provider, mode, attempt]);
 
-  function changeQuery(update: Partial<ExplorerQuery>) {
-    setQuery(current => ({ ...current, ...update, page: 1 }));
+  function changeQuery(update: Partial<ExplorerQuery>, history: "push" | "replace" = "push") {
+    setQuery(current => ({ ...current, ...update, page: 1 }), history);
   }
   function clearAll() {
     changeQuery({ search: "", filters: emptyFilters });
@@ -51,6 +60,20 @@ export function AssetExplorer(props: ModeAwareProviderProps<InventoryProvider>) 
     ? facetOptions(state.snapshot, query, "compatibilityFallback").find(option => option.value === "yes")?.count ?? 0
     : 0;
 
+  useEffect(() => {
+    if (props.navigation && result && query.page !== result.page) navigation.update({ ...navigation.state, page: result.page }, "replace");
+  }, [props.navigation, result?.page, query.page]);
+
+  useEffect(() => {
+    if (!props.navigation || restoredFocus.current || !result) return;
+    restoredFocus.current = true;
+    if (!navigation.state.selectedId) { const heading = document.querySelector<HTMLElement>("main h1"); heading?.setAttribute("tabindex", "-1"); heading?.focus(); return; }
+    const link = Array.from(document.querySelectorAll<HTMLElement>("[data-asset-link]"))
+      .find(candidate => candidate.dataset.assetLink === navigation.state.selectedId);
+    const frame = requestAnimationFrame(() => (link ?? resultSummary.current)?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [props.navigation, Boolean(result)]);
+
   return <div className="nexus-explorer" id="assets">
     <PageHeader
       title="Explorador de activos"
@@ -60,6 +83,9 @@ export function AssetExplorer(props: ModeAwareProviderProps<InventoryProvider>) 
         : "Investiga el inventario sintético por identidad, clasificación, contexto, fuente y lifecycle."}
       meta={<Badge>{live ? "LIVE LAB · NEXUS API" : "Datos sintéticos · escenario de demostración"}</Badge>}
     />
+    {props.navigation && navigation.issues.length > 0 && <p role="status">Algunos parámetros del enlace no se pudieron aplicar. Revisa la búsqueda y los filtros.</p>}
+    {props.navigation && navigation.state.view === "graph" && <p role="status">La vista de mapa no está disponible para este enlace. Se muestra el inventario y se conserva el contexto solicitado.</p>}
+    {props.navigation && navigation.state.selectedId && <p role="status">Selección: {navigation.state.selectedId} · {selectionAvailabilityLabels[selectionAvailability(navigation.state, state.status === "ready" ? state.snapshot : null)]}</p>}
     {state.status === "loading" && <LoadingState title="Cargando inventario de activos" description={live ? "Consultando NEXUS API en modo Live." : "Preparando el inventario de demostración."} />}
     {state.status === "error" && <ErrorState title="No se pudo cargar el inventario" description={live ? "Vuelve a intentar. No se mostrarán detalles internos del error." : "Vuelve a intentar. Tu búsqueda se conservará."} action={<Button onPress={() => setAttempt(n => n + 1)}>Reintentar</Button>} />}
     {state.status === "ready" && state.snapshot.assets.length === 0 && <EmptyState title="El inventario está vacío" description={live ? "NEXUS API no devolvió activos para el provider Live." : "No hay activos disponibles en este escenario."} action={<Button onPress={() => setAttempt(n => n + 1)}>Volver a cargar</Button>} />}
@@ -69,7 +95,7 @@ export function AssetExplorer(props: ModeAwareProviderProps<InventoryProvider>) 
           label="Buscar activos"
           showLabel
           value={query.search}
-          onChange={search => changeQuery({ search })}
+          onChange={search => changeQuery({ search }, "replace")}
           placeholder="Nombre, serial, clase, rol, fuente, sitio…"
           description={live
             ? "Busca por identidad, hostname, serial, etiqueta, fabricante/modelo, dominio, clase, rol, fuente o IP cuando exista cobertura."
@@ -112,7 +138,7 @@ export function AssetExplorer(props: ModeAwareProviderProps<InventoryProvider>) 
         action={<Button onPress={clearAll}>Restablecer búsqueda y filtros</Button>}
       /> : <>
         <p className="nexus-muted nexus-explorer-scroll-hint">Desplaza la tabla horizontalmente para consultar todas las columnas. Puedes ordenar desde sus encabezados.</p>
-        <AssetTable rows={result.rows} asOf={state.snapshot.asOf} sort={query.sort} onSortChange={sort => changeQuery({ sort })} showTechnical={showTechnical} caption={live ? "Inventario de activos Live" : "Inventario de activos demo"} />
+        <AssetTable {...(props.navigation ? { assetLink: (id: string) => buildContextualAssetLink(id, { ...navigation.state, selectedId: id }), onAssetNavigate: (id: string) => navigation.update({ ...navigation.state, selectedId: id }, "replace") } : {})} rows={result.rows} asOf={state.snapshot.asOf} sort={query.sort} onSortChange={sort => changeQuery({ sort })} showTechnical={showTechnical} caption={live ? "Inventario de activos Live" : "Inventario de activos demo"} />
         <div className="nexus-explorer-pagination">
           <label className="nexus-select-field"><span>Activos por página</span><select value={query.pageSize} onChange={e => changeQuery({ pageSize: Number(e.target.value) })}>{[25, 50, 100].map(size => <option key={size} value={size}>{size}</option>)}</select></label>
           <Pagination page={result.page} totalPages={result.totalPages} ariaLabel="Páginas del inventario" onPageChange={page => {

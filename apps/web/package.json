@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:navigation-refresh": "node --test tests/navigation-refresh.test.mjs",
     "test:demo": "vitest run --project dashboard src/DemoV01.browser.test.tsx",
     "test:demo-v02": "vitest run --project dashboard src/DemoV02.browser.test.tsx"
   },

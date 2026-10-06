@@ -1,3 +1,4 @@
+import { assetReturnHash } from "./navigation-state";
 import { useEffect, useState } from "react";
 import { DashboardContent } from "./Dashboard";
 import { AssetExplorer } from "./AssetExplorer";
@@ -88,16 +89,19 @@ export function App() {
       setRoute(next);
     };
     window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, [route]);
+    window.addEventListener("popstate", onHashChange);
+    window.addEventListener("nexus:navigation", onHashChange);
+    return () => { window.removeEventListener("hashchange", onHashChange); window.removeEventListener("popstate", onHashChange); window.removeEventListener("nexus:navigation", onHashChange); };
+  }, [route.view, "assetId" in route ? route.assetId : "locator" in route ? route.locator : null]);
 
   useEffect(() => {
     if (inventory.mode !== "live") return;
+    const returnHash = assetReturnHash(window.location.hash);
     const expectedHash = route.view === "asset"
-      ? assetSectionHash(route.assetId, route.section)
+      ? assetSectionHash(route.assetId, route.section) + (returnHash ? `${route.section === "summary" ? "?" : "&"}return=${encodeURIComponent(returnHash)}` : "")
       : route.view === "relations"
         ? relationsHash(route.assetId, route.mapState)
-        : route.view === "assets" ? "#assets"
+        : route.view === "assets" ? (window.location.hash.startsWith("#assets?") ? window.location.hash : "#assets")
           : route.view === "lifecycle" ? "#lifecycle" : "#overview";
     if (window.location.hash !== expectedHash) {
       window.history.replaceState({ ...window.history.state, nexusRoute: route }, "", expectedHash);
@@ -118,7 +122,7 @@ export function App() {
       }
     });
     return () => cancelAnimationFrame(frame);
-  }, [route]);
+  }, [route.view, "assetId" in route ? route.assetId : "locator" in route ? route.locator : null]);
 
   const content = route.view === "dashboard"
     ? <DashboardContent provider={inventory.provider} mode={inventory.mode} />
@@ -127,7 +131,7 @@ export function App() {
     : route.view === "lifecycle"
       ? <LifecyclePlanning inventoryProvider={inventory.provider} mode={inventory.mode} />
     : route.view === "assets"
-      ? <AssetExplorer provider={inventory.provider} mode={inventory.mode} />
+      ? <AssetExplorer provider={inventory.provider} mode={inventory.mode} navigation />
       : route.view === "asset"
         ? <Asset360
             assetId={route.assetId}
