@@ -132,6 +132,9 @@ jobs:
       - name: Build de tokens y UI
         run: npm run build --workspace @igx-nexus/ui
 
+      - name: Contraste y preferencias de foundations
+        run: npm run test:foundations --workspace @igx-nexus/ui
+
       - name: Build estático de Storybook
         run: npm run storybook:build --workspace @igx-nexus/ui
 

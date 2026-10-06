@@ -14,6 +14,12 @@ Este archivo representa el estado conocido de `main` en el momento de su última
 
 Si Git contradice este documento, Git prevalece.
 
+## Product Experience v0.3 — propuesta en revisión
+
+V03-001 fue aprobado por el usuario como **GO WITH CONDITIONS**. V03-002 agrega foundations aditivas en `feature/v03-002-design-system-foundations`, desde `main@80b07704c8ba719a6c7a53449168739dc1745d32`. No es una release integrada ni un ticket cerrado. Marca/application mark siguen pendientes del checkpoint humano; assets propuestos no se usan en el shell. Ver `docs/design-system/v0.3-foundations.md`, `v0.3-visual-qa.md` y `docs/roadmap-v0.3.md`.
+
+Technology Workspace permanece hipótesis hasta validar estado/URL/scope/performance/a11y. V02-023 sigue separado; no nuevas capacidades backend, inteligencia, fuentes, infraestructura o seguridad.
+
 ---
 
 ## Visión actual

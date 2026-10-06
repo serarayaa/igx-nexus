@@ -1,0 +1,27 @@
+.igx-semantic-badge {
+  display: inline-flex; align-items: center; gap: var(--igx-spacing-1); max-inline-size: 100%;
+  padding: var(--igx-spacing-1) var(--igx-spacing-2); border: var(--igx-border-width-thin) solid currentColor;
+  border-radius: var(--igx-radius-sm); font-family: var(--igx-font-family-sans); font-size: var(--igx-semantic-typography-label-font-size);
+  line-height: var(--igx-semantic-typography-label-line-height); overflow-wrap: anywhere; vertical-align: middle;
+}
+.igx-semantic-badge svg { flex: 0 0 auto; inline-size: var(--igx-size-icon-sm); block-size: var(--igx-size-icon-sm); stroke-width: 2; }
+.igx-semantic-badge > span { min-inline-size: 0; }
+.igx-evidence-badge[data-evidence="inferred"] { border-style: dashed; }
+.igx-evidence-badge[data-evidence="conflict"], .igx-severity-badge[data-severity="critical"] { font-weight: var(--igx-font-weight-semibold); }
+.igx-coverage-indicator { font-variant-numeric: tabular-nums; background: var(--igx-semantic-color-coverage-surface); color: var(--igx-semantic-color-coverage-foreground); }
+.igx-evidence-badge[data-evidence="observed"] { background: var(--igx-semantic-color-evidence-observed-surface); color: var(--igx-semantic-color-evidence-observed-foreground); }
+.igx-evidence-badge[data-evidence="inferred"] { background: var(--igx-semantic-color-evidence-inferred-surface); color: var(--igx-semantic-color-evidence-inferred-foreground); }
+.igx-evidence-badge[data-evidence="manual"] { background: var(--igx-semantic-color-evidence-manual-surface); color: var(--igx-semantic-color-evidence-manual-foreground); }
+.igx-evidence-badge[data-evidence="normalized"] { background: var(--igx-semantic-color-evidence-normalized-surface); color: var(--igx-semantic-color-evidence-normalized-foreground); }
+.igx-evidence-badge[data-evidence="unknown"] { background: var(--igx-semantic-color-evidence-unknown-surface); color: var(--igx-semantic-color-evidence-unknown-foreground); }
+.igx-evidence-badge[data-evidence="unavailable"] { background: var(--igx-semantic-color-evidence-unavailable-surface); color: var(--igx-semantic-color-evidence-unavailable-foreground); }
+.igx-evidence-badge[data-evidence="partial"] { background: var(--igx-semantic-color-evidence-partial-surface); color: var(--igx-semantic-color-evidence-partial-foreground); }
+.igx-evidence-badge[data-evidence="conflict"] { background: var(--igx-semantic-color-evidence-conflict-surface); color: var(--igx-semantic-color-evidence-conflict-foreground); }
+.igx-severity-badge[data-severity="healthy"] { background: var(--igx-semantic-color-severity-healthy-surface); color: var(--igx-semantic-color-severity-healthy-foreground); }
+.igx-severity-badge[data-severity="attention"] { background: var(--igx-semantic-color-severity-attention-surface); color: var(--igx-semantic-color-severity-attention-foreground); }
+.igx-severity-badge[data-severity="degraded"] { background: var(--igx-semantic-color-severity-degraded-surface); color: var(--igx-semantic-color-severity-degraded-foreground); }
+.igx-severity-badge[data-severity="critical"] { background: var(--igx-semantic-color-severity-critical-surface); color: var(--igx-semantic-color-severity-critical-foreground); }
+.igx-severity-badge[data-severity="stale"] { background: var(--igx-semantic-color-severity-stale-surface); color: var(--igx-semantic-color-severity-stale-foreground); }
+@media (forced-colors: active) {
+  .igx-semantic-badge { background: Canvas; color: CanvasText; border-color: CanvasText; }
+}

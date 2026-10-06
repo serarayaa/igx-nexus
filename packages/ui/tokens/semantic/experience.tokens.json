@@ -1,0 +1,82 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "typography": {
+      "page": {
+        "$type": "typography",
+        "$value": "{semantic.typography.headingMedium}"
+      },
+      "section": {
+        "$type": "typography",
+        "$value": "{semantic.typography.headingSmall}"
+      },
+      "entity": {
+        "$type": "typography",
+        "$value": "{semantic.typography.headingSmall}"
+      },
+      "table": {
+        "$type": "typography",
+        "$value": "{semantic.typography.bodySmall}"
+      },
+      "metadata": {
+        "$type": "typography",
+        "$value": "{semantic.typography.bodySmall}"
+      },
+      "code": {
+        "$type": "typography",
+        "$value": {
+          "fontFamily": "{fontFamily.mono}",
+          "fontSize": "{fontSize.sm}",
+          "fontWeight": "{fontWeight.regular}",
+          "letterSpacing": {
+            "value": 0,
+            "unit": "px"
+          },
+          "lineHeight": "{lineHeight.normal}"
+        }
+      }
+    },
+    "motion": {
+      "micro": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{semantic.motion.feedback.duration}"
+        },
+        "easing": {
+          "$type": "cubicBezier",
+          "$value": "{semantic.motion.feedback.easing}"
+        }
+      },
+      "component": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{semantic.motion.transition.duration}"
+        },
+        "easing": {
+          "$type": "cubicBezier",
+          "$value": "{semantic.motion.transition.easing}"
+        }
+      },
+      "panel": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{semantic.motion.transition.duration}"
+        },
+        "easing": {
+          "$type": "cubicBezier",
+          "$value": "{semantic.motion.transition.easing}"
+        }
+      },
+      "workspace": {
+        "duration": {
+          "$type": "duration",
+          "$value": "{semantic.motion.spatial.duration}"
+        },
+        "easing": {
+          "$type": "cubicBezier",
+          "$value": "{semantic.motion.spatial.easing}"
+        }
+      }
+    }
+  }
+}

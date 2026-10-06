@@ -3,7 +3,6 @@
   "dataViz": {
     "color": {
       "categorical": {
-        "$type": "color",
         "1": {
           "$value": {
             "colorSpace": "srgb",
@@ -69,10 +68,10 @@
             ],
             "hex": "#4D7C0F"
           }
-        }
+        },
+        "$type": "color"
       },
       "sequential": {
-        "$type": "color",
         "1": {
           "$value": {
             "colorSpace": "srgb",
@@ -127,7 +126,8 @@
             ],
             "hex": "#1E3A8A"
           }
-        }
+        },
+        "$type": "color"
       },
       "diverging": {
         "$type": "color",
@@ -215,6 +215,24 @@
         "border": {
           "$type": "color",
           "$value": "{semantic.color.border.default}"
+        }
+      },
+      "severity": {
+        "$type": "color",
+        "healthy": {
+          "$value": "{semantic.color.status.success.solid}"
+        },
+        "attention": {
+          "$value": "{semantic.color.status.warning.solid}"
+        },
+        "degraded": {
+          "$value": "{semantic.color.status.danger.solid}"
+        },
+        "critical": {
+          "$value": "{semantic.color.status.danger.solid}"
+        },
+        "stale": {
+          "$value": "{semantic.color.status.neutral.solid}"
         }
       }
     }

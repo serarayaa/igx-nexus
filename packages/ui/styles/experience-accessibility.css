@@ -1,0 +1,62 @@
+@media (prefers-reduced-motion: reduce) {
+  :root, [data-theme="light"], [data-theme="dark"] {
+    --igx-semantic-motion-micro-duration: 0ms;
+    --igx-semantic-motion-component-duration: 0ms;
+    --igx-semantic-motion-panel-duration: 0ms;
+    --igx-semantic-motion-workspace-duration: 0ms;
+  }
+}
+@media (forced-colors: active) {
+  :root, [data-theme="light"], [data-theme="dark"] {
+    --igx-semantic-color-evidence-observed-surface: Canvas;
+    --igx-semantic-color-evidence-observed-foreground: CanvasText;
+    --igx-semantic-color-evidence-inferred-surface: Canvas;
+    --igx-semantic-color-evidence-inferred-foreground: CanvasText;
+    --igx-semantic-color-evidence-manual-surface: Canvas;
+    --igx-semantic-color-evidence-manual-foreground: CanvasText;
+    --igx-semantic-color-evidence-normalized-surface: Canvas;
+    --igx-semantic-color-evidence-normalized-foreground: CanvasText;
+    --igx-semantic-color-evidence-unknown-surface: Canvas;
+    --igx-semantic-color-evidence-unknown-foreground: CanvasText;
+    --igx-semantic-color-evidence-unavailable-surface: Canvas;
+    --igx-semantic-color-evidence-unavailable-foreground: CanvasText;
+    --igx-semantic-color-evidence-partial-surface: Canvas;
+    --igx-semantic-color-evidence-partial-foreground: CanvasText;
+    --igx-semantic-color-evidence-conflict-surface: Canvas;
+    --igx-semantic-color-evidence-conflict-foreground: CanvasText;
+    --igx-semantic-color-severity-healthy-surface: Canvas;
+    --igx-semantic-color-severity-healthy-foreground: CanvasText;
+    --igx-semantic-color-severity-attention-surface: Canvas;
+    --igx-semantic-color-severity-attention-foreground: CanvasText;
+    --igx-semantic-color-severity-degraded-surface: Canvas;
+    --igx-semantic-color-severity-degraded-foreground: CanvasText;
+    --igx-semantic-color-severity-critical-surface: Canvas;
+    --igx-semantic-color-severity-critical-foreground: CanvasText;
+    --igx-semantic-color-severity-stale-surface: Canvas;
+    --igx-semantic-color-severity-stale-foreground: CanvasText;
+    --igx-semantic-color-experience-demo-surface: Canvas;
+    --igx-semantic-color-experience-demo-foreground: CanvasText;
+    --igx-semantic-color-experience-live-surface: Canvas;
+    --igx-semantic-color-experience-live-foreground: CanvasText;
+    --igx-semantic-color-coverage-surface: Canvas;
+    --igx-semantic-color-coverage-foreground: CanvasText;
+    --igx-semantic-color-interaction-selected-surface: Canvas;
+    --igx-semantic-color-interaction-selected-indicator: Highlight;
+    --igx-semantic-color-interaction-current-indicator: Highlight;
+    --igx-semantic-color-interaction-hover: Canvas;
+    --igx-semantic-color-interaction-pressed-indicator: ButtonText;
+    --igx-semantic-color-surface-workspace: Canvas;
+    --igx-semantic-color-surface-primary: Canvas;
+    --igx-semantic-color-surface-secondary: Canvas;
+    --igx-semantic-color-surface-panel: Canvas;
+    --igx-semantic-color-surface-popover: Canvas;
+    --igx-semantic-color-surface-dialog: Canvas;
+    --igx-semantic-color-surface-drawer: Canvas;
+    --igx-semantic-color-surface-floating: Canvas;
+    --igx-data-viz-color-severity-healthy: CanvasText;
+    --igx-data-viz-color-severity-attention: CanvasText;
+    --igx-data-viz-color-severity-degraded: CanvasText;
+    --igx-data-viz-color-severity-critical: CanvasText;
+    --igx-data-viz-color-severity-stale: CanvasText;
+  }
+}
