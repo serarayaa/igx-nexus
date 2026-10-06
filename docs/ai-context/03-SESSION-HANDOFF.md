@@ -3,7 +3,7 @@
 ## Repository state
 
 - Baseline verified: main@e04c4025dc3764bc668a6155df883e275c0519f6, merge of PR #136. main was updated fast-forward from origin/main with a clean tree before creating this branch.
-- Branch: feature/v03-008-cross-surface-state-navigation. V03-008 proposed in Draft PR #137 (https://github.com/serarayaa/igx-nexus/pull/137); not merged, not closed, human checkpoint pending (§33 user request).
+- Branch: feature/v03-008-cross-surface-state-navigation. V03-008 in existing PR #137 (https://github.com/serarayaa/igx-nexus/pull/137); not merged; human checkpoint APPROVED WITH CONDITIONS. Ready for Review after final CI SUCCESS and clean mergeability; manual merge by Sergio.
 - V03-001/002 human conditions remain. B approved design direction, not final production SVG; A technical fallback only if B fails small-size tests; C rejected/historical. No branding assets changed.
 - V03-003 and V03-005 NOT STARTED. V03-007 remains Graph/Map inside V03-005, never an independent surface/store. V02-023 separate and externally blocked; v0.2/hotfixes not reopened.
 
@@ -32,6 +32,15 @@ Implementation commit 21480ce6c904639051751b9f58a38c627acbc3cb: CI SUCCESS in ht
 
 ## Human checkpoint / next permitted step
 
-Proposed recommendation **GO WITH CONDITIONS** after green CI: review ownership matrix, URL examples, navigation diagram, Table/Graph scope/availability, Asset360 return, Back/Forward, stale/invalid scenarios, tests and migration impacts in the contract. User approval cannot be inferred from passing tests. Keep PR Draft; do not merge automatically. Sergio merges manually after review.
+**V03-008 Human Review Checkpoint = APPROVED WITH CONDITIONS**. Se mantiene **GO WITH CONDITIONS**. Cierre humano autorizado; integración pendiente de merge manual de Sergio en PR #137 tras CI final SUCCESS y mergeability clean. V03-003/V03-005 NO iniciados.
+
+Aprobados por decisión humana: URL como owner durable de InvestigationState; state ownership model; parse / serialize / normalize; canonical URLs; Push vs Replace; Back / Forward; deep links; Selection != Focus != Graph root; Table ↔ Graph shared investigation contract; Asset 360 contextual return; InvestigationIntent; Demo / Live separation; invalid/stale-state handling; responsive state preservation; implementación sin nueva global-state/router library.
+
+Final delivery after these gates: V03-008 — READY FOR MANUAL MERGE BY SERGIO. No automatic merge.
 
 Remaining conditions: legacy graph adapter migration and per-surface accessibility/performance review before final Workspace; real Live unverified; no absolute WCAG certification. This ticket does not authorize starting V03-003/V03-005. Preserve mark B optical refinement requirement before productive branding.
+
+
+Condiciones pendientes: integración productiva del renderer Graph legacy en V03-005; performance a escala corporativa; auditoría de accesibilidad específica por superficie; Asset 360 return URL length robustness. No declarar Graph completamente migrado, accesibilidad completa ni escala corporativa resuelta.
+
+El patrón `#assets/:id?...&return=<encoded investigation URL>` queda aprobado. La robustez de longitud es una condición NO BLOQUEANTE para V03-008, pendiente como seguimiento de superficies consumidoras / V03-005 si corresponde. Validar longitud práctica de la URL final Asset 360 después del encoding y probar una investigación extensa representativa con 14 facetas, búsqueda, selección y parámetros Graph; comprobar navegación, refresh y retorno para evitar URLs excesivas o degradación inesperada. Este caso ampliado no fue ejecutado durante el cierre documental. Mantener límites actuales del contrato (hash4096, q256, facetas/IDs160); el límite del origen no demuestra robustez del destino codificado. No introducir sessionStorage/global store como workaround sin evidencia.

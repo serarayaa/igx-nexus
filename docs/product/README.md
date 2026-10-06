@@ -110,8 +110,8 @@ V02-018 evoluciona el grafo histórico hacia un workspace focus/scope-first con 
 
 ADR-0023 permanece como baseline normativo de Product IA. Cada ticket de implementación debe mantener sus límites de scope y preservar los principios de producto ya aceptados.
 
-## V03-008 — Navigation state contract (en revisión)
+## V03-008 — Navigation state contract (aprobado con condiciones)
 
 - [Ownership, URL, history, Table/Graph, retorno y migración](v0.3-navigation-state-contract.md)
 
-Foundation para revisión humana, sin implementar Technology Workspace final ni cambiar los providers.
+**V03-008 Human Review Checkpoint = APPROVED WITH CONDITIONS**. Se mantiene **GO WITH CONDITIONS**. Cierre humano autorizado; integración pendiente de merge manual de Sergio en PR #137 tras CI final SUCCESS y mergeability clean. V03-003/V03-005 NO iniciados. Foundation aprobada; condiciones y seguimiento de URL return en el contrato. Technology Workspace final no implementado; providers preservados.
