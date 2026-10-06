@@ -1,6 +1,9 @@
 # V03-003 — Paquete de revisión humana
 
-Estado: propuesta implementada, checkpoint visual PENDING. GO WITH CONDITIONS técnico, sujeto a CI final. No favicon/manifest ni merge automático. V03-005 no iniciado.
+> Decisión posterior: V03-003 VISUAL CHECKPOINT = NOT APPROVED; PRODUCT DIRECTION PIVOT APPROVED. Estas capturas documentan el TECHNICAL SHELL PROTOTYPE de PR #138, OPEN/DRAFT. Nueva propuesta aislada: [V03-003A review](../v03-003a/review.md). No merge ni inicio V03-005.
+
+
+Estado: TECHNICAL SHELL PROTOTYPE; checkpoint visual NOT APPROVED, pivot APPROVED. Validación técnica histórica preservada. No favicon/manifest ni merge automático. V03-005 no iniciado.
 
 Revisar identidad Innergex, jerarquía, espacio operativo, Dark/Light, etiquetas del rail, mobile320, drawer y reconocimiento de B a16/24/32. Las superficies de contenido son las existentes.
 

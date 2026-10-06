@@ -1,0 +1,135 @@
+{
+  "capturedAt": "2026-10-06T17:16:40.797Z",
+  "baseline": "0c0ac25f832dc99d80221ee514de238ebe7745b6",
+  "mode": "synthetic concept only",
+  "sourceHashes": {
+    "index.html": "dee2536efc18c52f68e9de2039d6bb2d84f4d261a5d98184bd45980c1510f33a",
+    "universe.css": "172ea630ce6f53affc562b06e68ee415ca2902e91204aef928fd848b21f72c0b",
+    "universe.js": "405f2a808b483258d7cef30f53800d856c5382f35792dc85efc9092db35fcb9a",
+    "../../apps/web/src/navigation-state.ts": "d177dc9e50a6ad73771805e49eb08912b63492733dd1a2cd6668a04d3a841bcc",
+    "../../packages/ui/generated/theme-light.css": "06a15c06a3790c5c1dbe7806a17b6c6f8e829cad49bc12969a3aa26bda89550c",
+    "../../packages/ui/generated/theme-dark.css": "dc0ac641b1b3077e1a90529b9889ac1a9f3dcc22c6596ff9f8a292a73bf957c2"
+  },
+  "captures": [
+    {
+      "file": "01-global-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "hash": "",
+      "sha256": "cd4bee07003935d6d731d0f8cc4ec567307771c41499239f5b7d02c7a7d18fae"
+    },
+    {
+      "file": "02-global-dark.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "hash": "",
+      "sha256": "35c6b7bc7f6bf914af9419e7d3fcf26962fb701705addfe923f75cd494917c30"
+    },
+    {
+      "file": "03-it-universe.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "hash": "#assets?f.domain=IT",
+      "sha256": "39e7a0e18b445768531bc96431fe5b578895b580870faea00362edf337da405b"
+    },
+    {
+      "file": "07-nexus-map.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "hash": "#assets?view=graph&f.domain=IT&selected=DEMO-END-01",
+      "sha256": "d2ed5c91381240b2b8e4c0003bc383c659bc21f30a186024e16211455aa33b03"
+    },
+    {
+      "file": "08-25d-experiment.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "hash": "#assets?view=graph&selected=DEMO-END-01",
+      "sha256": "36b4d62cedd29dd758e0cb56c75b1e8ecd4c065b47a2e8b5618564663a612fef"
+    },
+    {
+      "file": "10-asset-continuity.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "hash": "#assets/DEMO-END-01?return=%23assets%3Fview%3Dgraph%26selected%3DDEMO-END-01",
+      "sha256": "17c6ced0d04377da2c58ab0aa0676fe53dfb703f08c2eaff212b780d3d62672c"
+    },
+    {
+      "file": "04-ot-universe.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "hash": "#assets?f.domain=OT",
+      "sha256": "87fa4cd8318c90c7fc803383231e49e2379a14c267e1b5d1fe0aea44ea23c21f"
+    },
+    {
+      "file": "06-facility-concept.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "hash": "#assets?view=graph&f.domain=OT&f.location=Site+Demo+A",
+      "sha256": "4d298be7fc9085aa9c078732c98b1e1cc33c22dbdc42ed0afbe62a056cd5fefb"
+    },
+    {
+      "file": "05-software-concept.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "hash": "#assets?f.domain=IT",
+      "sha256": "35107496383a24d6d94049f334d702a13faf0250b373db0802fb16eb99fea194"
+    },
+    {
+      "file": "09-mobile-concept.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "theme": "light",
+      "hash": "#dashboard",
+      "sha256": "d819530f1d1682e95a7853301079d1c595f32aaab7962bc6a273510b8e611dac"
+    },
+    {
+      "file": "11-mobile-forced-reduced.png",
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "theme": "light",
+      "hash": "#assets?f.domain=OT",
+      "sha256": "74369e0c399600b396b9ded9f955f81bc48a773921751edda0f7eb293ff4c854"
+    }
+  ],
+  "checks": [
+    "URL selection/map/360/return/refresh",
+    "Map respects domain facet",
+    "Back/Forward",
+    "keyboard selection",
+    "320 reflow",
+    "forced-colors/reduced-motion emulated",
+    "two reproducible journeys"
+  ],
+  "errors": []
+}

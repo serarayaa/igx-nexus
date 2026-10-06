@@ -1,5 +1,11 @@
 # IGX NEXUS — Current State
 
+## Actualización humana V03-003A — 2026-10-06
+
+**V03-003 VISUAL CHECKPOINT = NOT APPROVED; PRODUCT DIRECTION PIVOT APPROVED.** #138 OPEN/DRAFT = TECHNICAL SHELL PROTOTYPE. Foundations técnicas preservadas, expresión admin/dashboard rechazada. Nueva propuesta ONE NEXUS / Spatial Technology Universe: Global, IT y OT como workspaces sobre modelo compartido. Leer docs/product/v0.3-product-universes.md, v0.3-universe-capability-matrix.md, v0.3-spatial-experience-direction.md y evidence/v03-003a/review.md.
+
+003A sólo documentación, investigación y prototypes/v03-003a aislado; no nueva dependencia ni cambio productivo. Software ingestion/Facility registry/OT discovery no implementados. Provider actual Computer-only con relaciones/observations vacías. Demo conceptual identificado. Benchmark renderer sintético no prueba escala/SR/low-power real. GO WITH CONDITIONS recomendado, aceptación003A pendiente antes de implementación final. PR no autorizado para merge aunque Git pueda indicar MERGEABLE. V03-005 NO INICIADO; V02-023 separado.
+
 > Estado operativo resumido del proyecto.
 > No reemplaza roadmap, ADR, código ni tests.
 
@@ -18,7 +24,7 @@ Si Git contradice este documento, Git prevalece.
 
 V03-001 APPROVED / CLOSED; V03-002 CLOSED / MERGED con condiciones de marca preservadas. V03-008 CLOSED / MERGED por PR #137 en main@eb87c68ee2a17b793e34e457c4e2914567889bb1; Human Review Checkpoint = APPROVED WITH CONDITIONS. Graph productivo legacy, escala corporativa, accesibilidad por superficie y robustez de longitud URL-return extensa siguen pendientes; esta última no bloquea V03-008 y no autoriza sessionStorage/global store sin evidencia.
 
-V03-003 Shell & Navigation 3.0 en feature/v03-003-shell-navigation desde ese baseline limpio; implementación y paquete de revisión en docs/product/v0.3-shell-navigation.md. Sidebar224/rail104, tablet768, drawer320, preferencias existentes, semántica current/focus, consumo de V03-008 sin owner paralelo. Mark B refinado es candidato reversible en shell y Storybook; NO asset definitivo ni favicon/manifest. A sólo fallback técnico si B falla objetivamente; C histórico/rechazado. V03-003 Human Review Checkpoint = PENDING; Draft PR, recomendación GO WITH CONDITIONS sujeta a CI final y revisión humana. No merge automático.
+V03-003 Shell & Navigation 3.0 en feature/v03-003-shell-navigation desde ese baseline limpio; implementación y paquete de revisión en docs/product/v0.3-shell-navigation.md. Sidebar224/rail104, tablet768, drawer320, preferencias existentes, semántica current/focus, consumo de V03-008 sin owner paralelo. Mark B refinado es candidato reversible en shell y Storybook; NO asset definitivo ni favicon/manifest. A sólo fallback técnico si B falla objetivamente; C histórico/rechazado. V03-003 VISUAL CHECKPOINT = NOT APPROVED; PRODUCT DIRECTION PIVOT APPROVED; Draft PR, recomendación GO WITH CONDITIONS sujeta a CI final y revisión humana. No merge automático.
 
 V03-005 NO INICIADO; V03-007 permanece representación Graph/Map dentro de V03-005. Overview, Asset360, Explorer, Graph y superficies especializadas conservan contenido/lógica. Sin backend, providers, router, fuentes, inteligencia, infraestructura o seguridad nuevos. V02-023 separado; Live real no verificado; tests/emulación no certifican accesibilidad completa. Roadmap y handoff son referencias de continuidad, Git prevalece.
 

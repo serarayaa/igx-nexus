@@ -1,5 +1,14 @@
 # IGX NEXUS v0.3 — Product Experience
 
+## Pivot humano vigente — V03-003A
+
+**V03-003 VISUAL CHECKPOINT = NOT APPROVED. PRODUCT DIRECTION PIVOT APPROVED.**
+PR #138 OPEN/DRAFT se conserva como TECHNICAL SHELL PROTOTYPE. Antes de reanudar implementación final de003: auditar capacidades → Product IA Global/IT/OT → investigación spatial/motion/render → prototipo aislado → revisión humana. Entrega en [003A review](product/evidence/v03-003a/review.md).
+
+Roadmap definitivo condicionado:003A aceptación humana →003 composición shell minimalista preservando foundations y regresión →005 Technology Workspace/Map con contracts/benchmarks/a11y →006Asset360 →004Command/Overview →013especializadas, con009/010/011 transversales →012readiness. Software/Facility completos dependen de contratos/fuentes futuros y aprobación separada; no esconderlos como features v0.3 disponibles. V03-005 NO INICIADO hasta aprobación. V02-023 separado.
+
+Recomendación003A: **GO WITH CONDITIONS**, no autorización automática. Mantener scope pequeño≤200nodes inicial como budget propuesto, alternativa semántica y coverage explícita; ninguna librería productiva nueva seleccionada. Matrix/IA/direction documentan preservation/restructure y migration impact de138. Los gates anteriores quedan subordinados a esta decisión visual.
+
 V03-001: **APPROVED / GO WITH CONDITIONS**, según cierre humano del archivo de solicitud. Baseline estable `80b07704c8ba719a6c7a53449168739dc1745d32`. V03-002: **Human Review Checkpoint = APPROVED WITH CONDITIONS**; integrado mediante PR #136 en `main@e04c4025dc3764bc668a6155df883e275c0519f6`. No adopción automática de marca.
 
 ## Secuencia recomendada y dependencias
@@ -9,7 +18,7 @@ V03-001: **APPROVED / GO WITH CONDITIONS**, según cierre humano del archivo de 
 | V03-001 · audit | Auditoría de experiencia, Innergex, benchmarks y Preservation/Restructure Matrix | Aprobado GO WITH CONDITIONS; preservar sus límites |
 | V03-002 · foundations | Tokens aditivos, semántica, tipografía, surfaces, componentes, marca propuesta y Visual QA | Checkpoint humano completado con condiciones; CI verde y merge manual; docs en design-system |
 | V03-008 · state/navigation | Contrato tipado URL, helpers/history, adaptador Explorer/360 y recorrido Graph controlado; [contrato](product/v0.3-navigation-state-contract.md) | CLOSED / MERGED PR #137; main@eb87c68. Checkpoint APPROVED WITH CONDITIONS; seguimiento preservado |
-| V03-003 · shell | Navegación, naming y aplicación de marca aprobada | En implementación desde eb87c68; Draft PR, paquete visual y checkpoint humano PENDING; GO WITH CONDITIONS técnico |
+| V03-003 · shell | Navegación, naming y aplicación de marca aprobada | En implementación desde eb87c68; Draft PR, paquete visual y checkpoint visual NOT APPROVED; pivot aprobado; GO WITH CONDITIONS técnico |
 | V03-005 · Technology Workspace | Explorer + Map como representaciones del contexto | Hipótesis; 002/008/003; validar performance y alternativa semántica |
 | V03-007 · Graph / Map | Implementación/evolución de Graph/Map dentro de V03-005; **no es una superficie independiente** | Comparte scope, filtros, selección, navegación, URL state y contexto de investigación; sin estado paralelo ni scope duplicado |
 | V03-006 · Asset 360 | Evolucionar identidad, evidencia y relaciones; mantener cuatro secciones | 002/008/005; no campos/historia inventados |
@@ -45,4 +54,4 @@ Condiciones pendientes: integración productiva del renderer Graph legacy en V03
 El patrón `#assets/:id?...&return=<encoded investigation URL>` queda aprobado. La robustez de longitud es una condición NO BLOQUEANTE para V03-008, pendiente como seguimiento de superficies consumidoras / V03-005 si corresponde. Validar longitud práctica de la URL final Asset 360 después del encoding y probar una investigación extensa representativa con 14 facetas, búsqueda, selección y parámetros Graph; comprobar navegación, refresh y retorno para evitar URLs excesivas o degradación inesperada. Este caso ampliado no fue ejecutado durante el cierre documental. Mantener límites actuales del contrato (hash4096, q256, facetas/IDs160); el límite del origen no demuestra robustez del destino codificado. No introducir sessionStorage/global store como workaround sin evidencia.
 
 
-V03-003: [Shell & Navigation 3.0](product/v0.3-shell-navigation.md) y [review package](product/evidence/v03-003/review.md). Mark B refinado candidato reversible, no definitivo; favicon/manifest pendientes de aprobación visual. Checkpoint humano PENDING, Draft y merge manual. V03-005 no iniciado.
+V03-003: [Shell & Navigation 3.0](product/v0.3-shell-navigation.md) y [review package](product/evidence/v03-003/review.md). Mark B refinado candidato reversible, no definitivo; favicon/manifest pendientes de aprobación visual. Checkpoint visual NOT APPROVED; pivot aprobado, Draft y merge manual. V03-005 no iniciado.
