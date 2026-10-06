@@ -156,6 +156,9 @@ jobs:
       - name: "Navigation contract: refresh físico y deep links"
         run: npm run test:navigation-refresh --workspace @igx-nexus/web
 
+      - name: "Shell 3.0: reflow, keyboard, contrast and navigation preservation"
+        run: npm run test:shell-review --workspace @igx-nexus/web
+
       - name: "Gate de readiness Demo v0.2"
         run: npm run test:readiness:v02
 

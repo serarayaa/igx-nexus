@@ -106,3 +106,4 @@ export {
   type SeverityBadgeProps,
   type SeverityState,
 } from "./components/SeverityBadge/SeverityBadge.js";
+export { ApplicationMark } from "./components/AppShell/ApplicationMark.js";

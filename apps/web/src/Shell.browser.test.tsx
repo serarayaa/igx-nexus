@@ -6,6 +6,7 @@ import { NexusShell } from "./NexusShell";
 import { DENSITY_STORAGE_KEY, THEME_STORAGE_KEY } from "./shell-preferences";
 import "@igx-nexus/ui/styles.css";
 import "./dashboard.css";
+import { assetReturnHash, buildContextualAssetLink, parseInvestigationHash } from "./navigation-state";
 
 function resetShellState() {
   window.localStorage.clear();
@@ -82,4 +83,76 @@ it("mantiene un árbol accesible sin violaciones axe obvias", async () => {
   render(<NexusShell view="assets" mode="demo"><h1>Activos</h1></NexusShell>);
   const result = await axe.run(document.body, { rules: { region: { enabled: false } } });
   expect(result.violations).toEqual([]);
+});
+
+it("reducir navegación persiste sólo disposición y preserva investigación y foco", async () => {
+  const origin = "#assets?view=graph&q=router&f.domain=OT&selected=NEXUS-42&root=NEXUS-24&depth=1&type=uses";
+  window.history.replaceState(null, "", origin);
+  render(<NexusShell view="assets"><h1>Inventario</h1></NexusShell>);
+  const control = screen.getByLabelText("Reducir navegación");
+  await userEvent.click(control);
+  expect(window.location.hash).toBe(origin);
+  expect(screen.getByRole("link", { name: "Activos" }).getAttribute("href")).toBe(origin);
+  expect(document.querySelector(".igx-app-shell")?.getAttribute("data-collapsed")).toBe("true");
+  expect(document.activeElement).toBe(screen.getByLabelText("Expandir navegación"));
+  expect(window.localStorage.getItem("igx-nexus:navigation-collapsed")).toBe("true");
+  cleanup();
+  render(<NexusShell view="assets"><h1>Inventario</h1></NexusShell>);
+  expect(screen.getByLabelText("Expandir navegación")).toBeTruthy();
+  window.history.replaceState(null, "", window.location.pathname);
+});
+
+it("enlace global Activos desde Asset360 consume return validado sin historia paralela", () => {
+  const origin = parseInvestigationHash("#assets?q=router&f.domain=OT&selected=NEXUS-42").state;
+  const hash = buildContextualAssetLink("NEXUS-42", origin);
+  window.history.replaceState(null, "", hash);
+  render(<NexusShell view="asset"><h1>Asset 360</h1></NexusShell>);
+  expect(screen.getByRole("link", { name: "Activos" }).getAttribute("href")).toBe(assetReturnHash(hash));
+  expect(window.location.hash).toBe(hash);
+  window.history.replaceState(null, "", window.location.pathname);
+});
+
+it("drawer a320 aísla fondo, retiene Tab/ShiftTab y restaura scroll/foco", async () => {
+  await page.viewport(320, 800);
+  render(<NexusShell><h1>Contenido</h1></NexusShell>);
+  const open = screen.getByRole("button", { name: "Abrir navegación" });
+  await userEvent.click(open);
+  const dialog = screen.getByRole("dialog", { name: "Navegación de la aplicación" });
+  expect(dialog.getAttribute("aria-modal")).toBe("true");
+  expect(screen.getByRole("main").hasAttribute("inert")).toBe(true);
+  expect(document.body.style.overflow).toBe("hidden");
+  await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+  expect(dialog.contains(document.activeElement)).toBe(true);
+  await userEvent.keyboard("{Tab}");
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Cerrar navegación" }));
+  await userEvent.keyboard("{Escape}");
+  await waitFor(() => expect(document.activeElement).toBe(open));
+  expect(document.body.style.overflow).not.toBe("hidden");
+  expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(320);
+});
+
+it("tablet mantiene rail etiquetado y resize no cambia query ni selección", async () => {
+  const hash = "#assets?q=OT&selected=NEXUS-42";
+  window.history.replaceState(null, "", hash);
+  await page.viewport(768, 1000);
+  render(<NexusShell view="assets"><h1>Activos</h1></NexusShell>);
+  expect(screen.queryByRole("button", { name: "Abrir navegación" })).toBeNull();
+  expect(screen.getByRole("link", { name: "Lifecycle & Investment" })).toBeTruthy();
+  expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(768);
+  await page.viewport(320, 800);
+  expect(window.location.hash).toBe(hash);
+  expect(screen.getByRole("button", { name: "Abrir navegación" })).toBeTruthy();
+  window.history.replaceState(null, "", window.location.pathname);
+});
+
+it("skip link mueve foco sin reemplazar el fragmento de investigación", async () => {
+  const hash = "#assets?q=OT&f.domain=OT&selected=NEXUS-42";
+  window.history.replaceState(null, "", hash);
+  render(<NexusShell view="assets"><h1>Activos</h1></NexusShell>);
+  const skip=screen.getByRole("link", {name:"Saltar al contenido principal"});
+  skip.focus();
+  await userEvent.keyboard("{Enter}");
+  expect(document.activeElement).toBe(screen.getByRole("main"));
+  expect(window.location.hash).toBe(hash);
+  window.history.replaceState(null, "", window.location.pathname);
 });

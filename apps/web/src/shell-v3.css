@@ -1,0 +1,75 @@
+/* V03-003: permanent structure; surface content remains owned by its consumer. */
+.igx-app-shell.nexus-shell-v3 { --igx-app-shell-sidebar-width: 14rem; }
+.igx-app-shell.nexus-shell-v3 .igx-app-shell__navigation { background: var(--igx-semantic-color-surface-secondary); }
+.igx-app-shell.nexus-shell-v3 .igx-app-sidebar__brand { min-block-size: 6rem; border: 0; padding: var(--igx-spacing-5); }
+.igx-app-shell.nexus-shell-v3 .nexus-brand { display: flex; align-items: center; gap: var(--igx-spacing-3); text-decoration: none; color: var(--igx-semantic-color-text-primary); }
+.nexus-brand > svg { flex: none; color: var(--igx-semantic-color-interaction-current-indicator); }
+.igx-app-shell.nexus-shell-v3 .nexus-brand-wordmark { display: grid; gap: var(--igx-spacing-1); }
+.nexus-brand-wordmark strong { font-size: var(--igx-font-size-lg); letter-spacing: .04em; }
+.igx-app-shell.nexus-shell-v3 .nexus-brand-wordmark > span { font-size: var(--igx-font-size-xs); }
+.igx-app-shell.nexus-shell-v3 .igx-app-sidebar__nav { padding: var(--igx-spacing-3); }
+.igx-app-shell.nexus-shell-v3 .nexus-nav-heading { font-size: var(--igx-font-size-xs); letter-spacing: .04em; text-transform: none; }
+.igx-app-shell.nexus-shell-v3 .nexus-nav-group { margin-block-start: var(--igx-spacing-5); }
+.igx-app-shell.nexus-shell-v3 .nexus-nav-link { position: relative; min-block-size: 44px; padding: var(--igx-spacing-3); border-radius: var(--igx-radius-sm); border-inline-start: 3px solid transparent; font-size: var(--igx-font-size-sm); line-height: var(--igx-line-height-normal); }
+.igx-app-shell.nexus-shell-v3 .nexus-nav-link[aria-current] { background: var(--igx-semantic-color-surface-base); color: var(--igx-semantic-color-text-primary); border-inline-start-color: var(--igx-semantic-color-interaction-current-indicator); font-weight: var(--igx-font-weight-semibold); }
+.igx-app-shell.nexus-shell-v3 .nexus-nav-link:hover { background: var(--igx-semantic-color-interaction-hover); }
+.igx-app-shell.nexus-shell-v3 .nexus-nav-link:active { box-shadow: inset 0 0 0 1px var(--igx-semantic-color-border-control); }
+.igx-app-shell.nexus-shell-v3 .nexus-nav-link:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 2px; }
+.igx-app-shell.nexus-shell-v3 .igx-app-header { min-block-size: 5rem; padding: var(--igx-spacing-3) var(--igx-spacing-5); gap: var(--igx-spacing-4); }
+.igx-app-shell.nexus-shell-v3 .igx-app-header__title { white-space: normal; overflow-wrap: anywhere; font-size: var(--igx-font-size-lg); }
+.nexus-mobile-identity { display: inline-flex; align-items: center; gap: var(--igx-spacing-2); }
+.nexus-mobile-identity > span { color: var(--igx-semantic-color-text-secondary); }
+.igx-app-shell.nexus-shell-v3 .igx-app-header__actions { gap: var(--igx-spacing-2); }
+.igx-app-shell.nexus-shell-v3 .igx-icon-button { min-inline-size: 44px; min-block-size: 44px; }
+.nexus-shell-mode { gap: var(--igx-spacing-2); margin-inline-end: var(--igx-spacing-3); }
+.nexus-mode-detail { color: var(--igx-semantic-color-text-secondary); font-size: var(--igx-font-size-xs); }
+.igx-app-shell.nexus-shell-v3 .nexus-source-context { gap: var(--igx-spacing-2); }
+.igx-app-shell.nexus-shell-v3 .igx-app-sidebar__footer { padding: var(--igx-spacing-4); }
+.nexus-collapse-control { margin-block-start: auto; padding-block-start: var(--igx-spacing-6); }
+[data-density="compact"] .igx-app-shell.nexus-shell-v3 .igx-app-header { min-block-size: 4rem; }
+[data-density="compact"] .igx-app-shell.nexus-shell-v3 .nexus-nav-link { padding-block: var(--igx-spacing-2); }
+@media (width >= 64rem) {
+  .igx-app-shell.nexus-shell-v3[data-collapsed="true"] { --igx-app-shell-sidebar-width: 6.5rem; }
+  .igx-app-shell.nexus-shell-v3[data-collapsed="true"] .nexus-brand { justify-content: center; }
+  .igx-app-shell.nexus-shell-v3[data-collapsed="true"] .nexus-brand-wordmark,
+  .igx-app-shell.nexus-shell-v3[data-collapsed="true"] .nexus-nav-heading,
+  .igx-app-shell.nexus-shell-v3[data-collapsed="true"] .igx-app-sidebar__footer { display: none; }
+  .igx-app-shell.nexus-shell-v3[data-collapsed="true"] .igx-app-sidebar__brand { padding-inline: var(--igx-spacing-2); }
+  .igx-app-shell.nexus-shell-v3[data-collapsed="true"] .nexus-nav-link { flex-direction: column; justify-content: center; text-align: center; padding-inline: var(--igx-spacing-1); gap: var(--igx-spacing-1); font-size: var(--igx-font-size-xs); overflow-wrap: anywhere; }
+  .igx-app-shell.nexus-shell-v3[data-collapsed="true"] .nexus-collapse-control { text-align: center; }
+}
+@media (48rem <= width < 64rem) {
+  .igx-app-shell.nexus-shell-v3 { --igx-app-shell-sidebar-width: 6.5rem; display: grid; grid-template-columns: var(--igx-app-shell-sidebar-width) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .igx-app-shell.nexus-shell-v3 .igx-app-shell__navigation { position: sticky; inset-block-start: 0; grid-row: 1 / -1; inline-size: auto; block-size: 100dvh; visibility: visible; transform: none; box-shadow: none; overflow-y: auto; }
+  .igx-app-shell.nexus-shell-v3 .igx-app-shell__navigation-open,
+  .igx-app-shell.nexus-shell-v3 .igx-app-shell__navigation-close,
+  .igx-app-shell.nexus-shell-v3 .igx-app-shell__scrim,
+  .igx-app-shell.nexus-shell-v3 .nexus-collapse-control,
+  .igx-app-shell.nexus-shell-v3 .nexus-brand-wordmark,
+  .igx-app-shell.nexus-shell-v3 .nexus-nav-heading,
+  .igx-app-shell.nexus-shell-v3 .igx-app-sidebar__footer { display: none; }
+  .igx-app-shell.nexus-shell-v3 .igx-app-shell__header-row, .igx-app-shell.nexus-shell-v3 .igx-app-shell__main { grid-column: 2; }
+  .igx-app-shell.nexus-shell-v3 .igx-app-sidebar__brand { padding-inline: var(--igx-spacing-2); }
+  .igx-app-shell.nexus-shell-v3 .nexus-brand { justify-content: center; }
+  .igx-app-shell.nexus-shell-v3 .nexus-nav-link { flex-direction: column; justify-content: center; text-align: center; padding-inline: var(--igx-spacing-1); gap: var(--igx-spacing-1); font-size: var(--igx-font-size-xs); overflow-wrap: anywhere; }
+  .nexus-mode-detail { font-size: var(--igx-font-size-xs); }
+}
+@media (width < 48rem) {
+  .nexus-collapse-control { display: none; }
+  .igx-app-shell.nexus-shell-v3 .igx-app-header { flex-wrap: wrap; padding: var(--igx-spacing-3); gap: var(--igx-spacing-2); }
+  .igx-app-shell.nexus-shell-v3 .igx-app-header__identity { flex: 1 1 100%; }
+  .igx-app-shell.nexus-shell-v3 .igx-app-header__context { display: block; }
+  .igx-app-shell.nexus-shell-v3 .igx-app-header__actions { flex: 1; justify-content: flex-end; }
+  .nexus-shell-mode { margin-inline-end: auto; }
+  .nexus-mode-detail { font-size: var(--igx-font-size-xs); }
+  .igx-app-shell.nexus-shell-v3 .igx-app-shell__navigation-open { align-items: flex-start; padding-block-start: var(--igx-spacing-3); }
+  .igx-app-shell.nexus-shell-v3 .igx-app-shell__main { padding: var(--igx-spacing-3); }
+}
+@media (forced-colors: active) {
+  .igx-app-shell.nexus-shell-v3 .nexus-nav-link[aria-current] { border-inline-start: var(--igx-border-width-strong) solid Highlight; outline: 1px solid CanvasText; text-decoration: underline; }
+  .igx-app-shell.nexus-shell-v3 .nexus-nav-link:focus-visible { outline: 2px solid Highlight; }
+  .nexus-brand > svg { color: CanvasText; }
+}
+
+.nexus-desktop-context { display: none; }
+@media (width >= 64rem) { .nexus-shell-v3[data-collapsed="false"] .nexus-mobile-identity { display: none; } .nexus-shell-v3[data-collapsed="false"] .nexus-desktop-context { display: inline; } }

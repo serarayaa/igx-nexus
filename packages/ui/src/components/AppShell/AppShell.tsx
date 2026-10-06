@@ -21,6 +21,8 @@ export interface AppShellProps {
   isNavigationOpen?: boolean;
   defaultNavigationOpen?: boolean;
   onNavigationOpenChange?: (isOpen: boolean) => void;
+  /** Layout preference only; does not own route/investigation state. */
+  isNavigationCollapsed?: boolean;
 }
 
 export interface AppHeaderProps {
@@ -63,7 +65,7 @@ function getFocusableElements(container: HTMLElement | null) {
 
   return Array.from(
     container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-  ).filter((element) => element.getAttribute("aria-hidden") !== "true");
+  ).filter((element) => element.getAttribute("aria-hidden") !== "true" && element.getClientRects().length > 0);
 }
 
 function focusFirstElement(container: HTMLElement | null) {
@@ -82,6 +84,7 @@ export function AppShell({
   isNavigationOpen: controlledNavigationOpen,
   defaultNavigationOpen = false,
   onNavigationOpenChange,
+  isNavigationCollapsed = false,
 }: AppShellProps) {
   const reactId = useId();
   const navigationId = `igx-app-navigation-${reactId}`;
@@ -127,7 +130,8 @@ export function AppShell({
       });
       document.body.style.overflow = "hidden";
     } else if (wasNavigationOpen) {
-      focusButton(openTriggerRef.current);
+      if (openTriggerRef.current?.getClientRects().length) focusButton(openTriggerRef.current);
+      else mainRef.current?.focus();
     }
 
     return () => {
@@ -192,11 +196,16 @@ export function AppShell({
   }, [isNavigationOpen]);
 
   return (
-    <div className={joinClasses("igx-app-shell", className)}>
+    <div className={joinClasses("igx-app-shell", className)} data-collapsed={isNavigationCollapsed ? "true" : "false"}>
       <a
         ref={skipLinkRef}
         className="igx-app-shell__skip-link"
         href={`#${mainId}`}
+        onClick={(event) => {
+          // A skip action moves DOM focus, not durable investigation state.
+          event.preventDefault();
+          mainRef.current?.focus();
+        }}
       >
         {skipLinkLabel}
       </a>
@@ -206,6 +215,9 @@ export function AppShell({
         id={navigationId}
         className="igx-app-shell__navigation"
         data-open={isNavigationOpen ? "true" : "false"}
+        role={isNavigationOpen ? "dialog" : undefined}
+        aria-modal={isNavigationOpen ? true : undefined}
+        aria-label={isNavigationOpen ? "Navegación de la aplicación" : undefined}
       >
         <div
           className="igx-app-shell__navigation-close"

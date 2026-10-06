@@ -1,0 +1,132 @@
+{
+  "baseline": "eb87c68ee2a17b793e34e457c4e2914567889bb1",
+  "capturedAt": "2026-10-06T15:51:21.646Z",
+  "status": "human visual review pending",
+  "screenshots": [
+    {
+      "file": "01-desktop-light-overview.png",
+      "url": "http://127.0.0.1:3019/#overview",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "theme": "light",
+      "density": "comfortable",
+      "sha256": "5c54d8a70da0c8eeebbc3358531f2de95bc9d7e9a3e3adae278573c9eecee427"
+    },
+    {
+      "file": "02-desktop-dark-overview.png",
+      "url": "http://127.0.0.1:3019/#overview",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "density": "comfortable",
+      "sha256": "9c1ba2b6d4b30ce1839bf0c2501a2e1608680c09b439f18c8ea7b1ca59357eb6"
+    },
+    {
+      "file": "03-desktop-dark-compact-assets.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "density": "compact",
+      "sha256": "e66cbae5af6006397e4c61b10bde530bf83480dd38911461112a49b3d6285ef8"
+    },
+    {
+      "file": "04-tablet-768.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 768,
+      "height": 900,
+      "scrollWidth": 768,
+      "theme": "light",
+      "density": "comfortable",
+      "sha256": "a8848a5c64965f9fbfa6de373cc2c92c7ce0628061fd71d608f822d266baa5e9"
+    },
+    {
+      "file": "05-mobile-320.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 320,
+      "height": 900,
+      "scrollWidth": 320,
+      "theme": "light",
+      "density": "comfortable",
+      "sha256": "821e377bd068db18bd33e76d4e2a5d57d513adf2636c6ba84e49a2896a0c62a1"
+    },
+    {
+      "file": "07-mobile-drawer.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 320,
+      "height": 900,
+      "scrollWidth": 320,
+      "theme": "light",
+      "density": "comfortable",
+      "sha256": "5258ee97eae57a46dd0d59b5b32a839f1035f01a062b23c9a0271f16cff1a351"
+    },
+    {
+      "file": "06-desktop-collapsed.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "theme": "light",
+      "density": "comfortable",
+      "sha256": "47a2c98249af23420b4b137363793e7c0482f79e07bf6e9377133d17ec06d358"
+    },
+    {
+      "file": "08-keyboard-light.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "theme": "light",
+      "density": "compact",
+      "sha256": "91c7eedd01312f6dec2939d5bf214670c0f71fb5afba9578d938e9e4b55d5902"
+    },
+    {
+      "file": "09-high-contrast-light.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "theme": "light",
+      "density": "compact",
+      "sha256": "29fee78e5e08965eb32684fdc47a7b1682a63823cd2e12b7b1cb45156f2055d5"
+    },
+    {
+      "file": "08-keyboard-dark.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "density": "compact",
+      "sha256": "cddf6374b28d3f02cfd2fa824bb1d8ae62375955750aadc709763012afaecb9a"
+    },
+    {
+      "file": "09-high-contrast-dark.png",
+      "url": "http://127.0.0.1:3019/#assets",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "density": "compact",
+      "sha256": "3b2e5b07b24b6fca1765077e9db66b9d8d66c3107882f458e23d551eb9b4f944"
+    },
+    {
+      "file": "10-mark-b-optical-review.png",
+      "url": "about:blank",
+      "width": 1000,
+      "height": 500,
+      "scrollWidth": 1000,
+      "sha256": "1c95547a7d58131c63a14967a5e513ff4c35e2caf420bb6bfe5bc761a4a39611"
+    }
+  ],
+  "sourceSha256": {
+    "packages/ui/styles/components/app-shell.css": "f753330abcd55a3856990d6781bd53ba36aa029b42b7295ded6e0746c076c9e7",
+    "apps/web/src/NexusShell.tsx": "f2312448468386e00c8c9056e9ab329dc63fdbd75b7fd5c0c3eca0f35c824810",
+    "packages/ui/src/components/AppShell/ApplicationMark.tsx": "7c421e4f322ed7a3d320b4592fed455210cae2269ab3e0fd9f1d36a000ce70c0",
+    "packages/ui/src/components/AppShell/AppShell.tsx": "e13602fb57a1547901e65b45fe7f1a115567a3536e53c7b9ae062b4f50217623",
+    "apps/web/src/shell-v3.css": "9d611bdd8518cad58962f6d620379f15d3390cf8519ed3809601a67cd45dd0b6"
+  }
+}
