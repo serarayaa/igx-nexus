@@ -89,3 +89,20 @@ export {
   type PageHeaderProps,
   type ToolbarProps,
 } from "./components/PageLayout/PageLayout.js";
+
+export {
+  EvidenceBadge,
+  type EvidenceBadgeProps,
+  type EvidenceState,
+} from "./components/EvidenceBadge/EvidenceBadge.js";
+
+export {
+  CoverageIndicator,
+  type CoverageIndicatorProps,
+} from "./components/CoverageIndicator/CoverageIndicator.js";
+
+export {
+  SeverityBadge,
+  type SeverityBadgeProps,
+  type SeverityState,
+} from "./components/SeverityBadge/SeverityBadge.js";

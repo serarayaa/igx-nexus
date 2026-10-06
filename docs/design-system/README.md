@@ -74,4 +74,16 @@ Los checks automatizados son una primera línea de QA; **no equivalen por sí so
 
 ## Estado de CMDB-005
 
-CMDB-005 permanece **en desarrollo** hasta completar la revisión documental, QA manual mínimo y el PR final. Su trabajo no debe contarse como ticket integrado hasta que la rama sea revisada y fusionada manualmente.
+Las foundations de CMDB-005 ya forman parte del baseline integrado. Este párrafo no reabre su trabajo histórico.
+
+## Product Experience v0.3
+
+V03-001 aprobado **GO WITH CONDITIONS**. V03-002: **Human Review Checkpoint = APPROVED WITH CONDITIONS**, cierre autorizado y merge manual de Sergio sujeto a CI verde. Mark B aprobado como dirección con refinamiento óptico pendiente; A sólo fallback técnico y C rechazado. Marca productiva sin adoptar. Ver [decisión de marca](v0.3-brand-system.md) y [checkpoint y límites](v0.3-visual-qa.md).
+
+- [Foundations e inventario](v0.3-foundations.md)
+- [Lenguaje semántico](v0.3-semantic-language.md)
+- [Brand system y alternativas](v0.3-brand-system.md)
+- [Data visualization](v0.3-data-visualization.md)
+- [Componentes y migración](v0.3-component-strategy.md)
+- [Visual QA y evidencia](v0.3-visual-qa.md)
+- [Roadmap](../roadmap-v0.3.md)

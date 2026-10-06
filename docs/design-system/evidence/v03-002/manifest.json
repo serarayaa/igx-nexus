@@ -1,0 +1,176 @@
+{
+  "baseline": "80b07704c8ba719a6c7a53449168739dc1745d32",
+  "branch": "feature/v03-002-design-system-foundations",
+  "mode": "synthetic review fixtures, not Live evidence",
+  "note": "Captured from local Storybook through browser UI. Full-page captures may exceed viewport height; classic scrollbar can reduce raster width. Human approval pending.",
+  "sources": [
+    {
+      "file": "packages/ui/generated/tokens.css",
+      "sha256": "3fd36a95ca5d72c78f4f9a0e7242b663af0fb2b4b4e3e3a970aa785601909878"
+    },
+    {
+      "file": "packages/ui/generated/theme-light.css",
+      "sha256": "a28e9878323662fd1e6c474f859789ee6fcefe7ef1db05fa4f1dfc18df223445"
+    },
+    {
+      "file": "packages/ui/generated/theme-dark.css",
+      "sha256": "46a38e0c57550879fe5d0c34905186a08dc035e1c4470f5ca3b6bd2b88b90c95"
+    },
+    {
+      "file": "packages/ui/stories/Foundations.stories.tsx",
+      "sha256": "cca2a42e8483fce731b948f7b9c080dacfa1c192f71f0b80b818fcc76c5f5540"
+    },
+    {
+      "file": "packages/ui/stories/BrandReview.stories.tsx",
+      "sha256": "14b9156398fab1cf60c67756e20f0296105f9dcd50aed4b589b653cc6d997a29"
+    },
+    {
+      "file": "packages/ui/stories/DataVisualization.stories.tsx",
+      "sha256": "40f15f1fac02083518ee6140cab75c511c748872b3754bf541a4283a206327a3"
+    },
+    {
+      "file": "packages/ui/stories/foundations.css",
+      "sha256": "5c3702a09cabb07c4f851f42ad9c8bea58fe83a1ac08487029164ed9e0e9d0bb"
+    }
+  ],
+  "captures": [
+    {
+      "file": "01-light-comfortable-1440.jpg",
+      "story": "foundations-product-experience-3--light-comfortable",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "theme": "light",
+      "density": "comfortable",
+      "capturedAt": "2026-10-06T13:12:59.341Z",
+      "raster": {
+        "width": 1425,
+        "height": 1344
+      },
+      "sha256": "a5fd86805ba981c598c232ebf8afccfe506a34b140b8f8cfe2770f65872648df",
+      "state": "first row selected; second checkbox focused and not selected"
+    },
+    {
+      "file": "02-dark-compact-1440.jpg",
+      "story": "foundations-product-experience-3--dark-compact",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "theme": "dark",
+      "density": "compact",
+      "capturedAt": "2026-10-06T13:13:22.787Z",
+      "raster": {
+        "width": 1425,
+        "height": 1220
+      },
+      "sha256": "3047b8a7a9d0ff3b8334ce0db8c9c160fa3440c0094495ced7b5a87b89243412",
+      "state": "first row selected; second checkbox focused and not selected"
+    },
+    {
+      "file": "03-dark-comfortable-long-768.jpg",
+      "story": "foundations-product-experience-3--dark-comfortable-long",
+      "viewport": {
+        "width": 768,
+        "height": 1100
+      },
+      "theme": "dark",
+      "density": "comfortable",
+      "capturedAt": "2026-10-06T13:14:48.177Z",
+      "raster": {
+        "width": 753,
+        "height": 1449
+      },
+      "sha256": "91e86d23596a7904b1ac83623e6a4902abaaf2d5af698c01211485d93c5510aa",
+      "state": "first row selected; second checkbox focused and not selected"
+    },
+    {
+      "file": "04-light-compact-long-320.jpg",
+      "story": "foundations-product-experience-3--light-compact-long",
+      "viewport": {
+        "width": 320,
+        "height": 900
+      },
+      "theme": "light",
+      "density": "compact",
+      "capturedAt": "2026-10-06T13:14:28.081Z",
+      "raster": {
+        "width": 305,
+        "height": 2207
+      },
+      "sha256": "997d384e9e9e68ff01bc229b5bb8b2dad0d0dc57cb70c83f4a9a57f425209ebb",
+      "state": "first row selected; second checkbox focused and not selected"
+    },
+    {
+      "file": "05-brand-light-1440.jpg",
+      "story": "foundations-brand-review--light",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "light",
+      "density": "comfortable",
+      "capturedAt": "2026-10-06T13:18:03.703Z",
+      "raster": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a7104029f7b92c49d489175b3598260800505b0345a648d63f36b9fa4c35acfb",
+      "state": "static proposal"
+    },
+    {
+      "file": "06-brand-dark-1440.jpg",
+      "story": "foundations-brand-review--dark",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "theme": "dark",
+      "density": "compact",
+      "capturedAt": "2026-10-06T13:21:31.476Z",
+      "raster": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "0f3086fb5e7c30e4da3b1238f64767d6c26d86bf837688f46842292647e79a46",
+      "state": "static proposal"
+    },
+    {
+      "file": "07-brand-light-320.jpg",
+      "story": "foundations-brand-review--light",
+      "viewport": {
+        "width": 320,
+        "height": 900
+      },
+      "theme": "light",
+      "density": "comfortable",
+      "capturedAt": "2026-10-06T13:20:57.252Z",
+      "raster": {
+        "width": 305,
+        "height": 1926
+      },
+      "sha256": "62a3428a3ad141ef6b0cee2f5f66c8903cf1ee913a46eef0084e2c2c39dea6a2",
+      "state": "static proposal"
+    },
+    {
+      "file": "08-data-viz-light-1440.jpg",
+      "story": "foundations-data-visualization--light",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "theme": "light",
+      "density": "comfortable",
+      "capturedAt": "2026-10-06T13:23:17.310Z",
+      "raster": {
+        "width": 1425,
+        "height": 1089
+      },
+      "sha256": "e961b5a2f8c5574c91b91d2b05cc87b6072783dbe5d1bbf76c6b38dba42d0ed4",
+      "state": "static proposal"
+    }
+  ],
+  "implementationCommit": "4f3a7b282ab0637e492b52541e9993ed8b126715",
+  "validationRun": "https://github.com/serarayaa/igx-nexus/actions/runs/37471179421"
+}

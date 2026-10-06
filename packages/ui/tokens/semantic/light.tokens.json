@@ -27,6 +27,38 @@
         },
         "inverse": {
           "$value": "{color.neutral.900}"
+        },
+        "workspace": {
+          "$type": "color",
+          "$value": "{semantic.color.background.canvas}"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.base}"
+        },
+        "secondary": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.muted}"
+        },
+        "panel": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.base}"
+        },
+        "popover": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.elevated}"
+        },
+        "dialog": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.elevated}"
+        },
+        "drawer": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.base}"
+        },
+        "floating": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.elevated}"
         }
       },
       "text": {
@@ -417,6 +449,211 @@
           "accent": {
             "$value": "{color.neutral.500}"
           }
+        }
+      },
+      "evidence": {
+        "observed": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.info.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.info.foreground}"
+          }
+        },
+        "inferred": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.foreground}"
+          }
+        },
+        "manual": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.foreground}"
+          }
+        },
+        "normalized": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.foreground}"
+          }
+        },
+        "unknown": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.foreground}"
+          }
+        },
+        "unavailable": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.foreground}"
+          }
+        },
+        "partial": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.foreground}"
+          }
+        },
+        "conflict": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.warning.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.warning.foreground}"
+          }
+        }
+      },
+      "severity": {
+        "healthy": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.success.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.success.foreground}"
+          }
+        },
+        "attention": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.warning.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.warning.foreground}"
+          }
+        },
+        "degraded": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.danger.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.danger.foreground}"
+          }
+        },
+        "critical": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.danger.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.danger.foreground}"
+          }
+        },
+        "stale": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.foreground}"
+          }
+        }
+      },
+      "experience": {
+        "demo": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.neutral.foreground}"
+          }
+        },
+        "live": {
+          "$type": "color",
+          "surface": {
+            "$type": "color",
+            "$value": "{semantic.color.status.info.surface}"
+          },
+          "foreground": {
+            "$type": "color",
+            "$value": "{semantic.color.status.info.foreground}"
+          }
+        }
+      },
+      "coverage": {
+        "$type": "color",
+        "surface": {
+          "$type": "color",
+          "$value": "{semantic.color.status.neutral.surface}"
+        },
+        "foreground": {
+          "$type": "color",
+          "$value": "{semantic.color.status.neutral.foreground}"
+        }
+      },
+      "interaction": {
+        "$type": "color",
+        "hover": {
+          "$type": "color",
+          "$value": "{semantic.color.surface.muted}"
+        },
+        "selectedSurface": {
+          "$type": "color",
+          "$value": "{semantic.color.status.info.surface}"
+        },
+        "selectedIndicator": {
+          "$type": "color",
+          "$value": "{semantic.color.text.link}"
+        },
+        "currentIndicator": {
+          "$type": "color",
+          "$value": "{semantic.color.text.link}"
+        },
+        "pressedIndicator": {
+          "$type": "color",
+          "$value": "{semantic.color.action.primary.foreground}"
         }
       }
     }

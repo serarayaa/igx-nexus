@@ -84,7 +84,7 @@
 }
 
 .igx-data-table tbody tr[data-selected="true"] {
-  background: var(--igx-semantic-color-status-info-surface);
+  background: var(--igx-semantic-color-interaction-selected-surface);
 }
 
 .igx-data-table th[data-align="center"],
@@ -216,4 +216,8 @@
     outline: var(--igx-border-width-medium) solid Highlight;
     outline-offset: calc(-1 * var(--igx-border-width-medium));
   }
+}
+
+.igx-data-table tbody tr[data-selected="true"] > :first-child {
+  box-shadow: inset var(--igx-border-width-medium) 0 var(--igx-semantic-color-interaction-selected-indicator);
 }

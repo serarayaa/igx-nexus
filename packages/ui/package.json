@@ -13,7 +13,8 @@
     "build:ui": "tsc -p tsconfig.json",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
-    "test:storybook": "vitest --project=storybook --run"
+    "test:storybook": "vitest --project=storybook --run",
+    "test:foundations": "node --test tests/foundations.test.mjs"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^10.6.0",

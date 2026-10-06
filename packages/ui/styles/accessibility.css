@@ -6,7 +6,9 @@
  */
 
 @media (prefers-reduced-motion: reduce) {
-  :root {
+  :root,
+  [data-theme="light"],
+  [data-theme="dark"] {
     --igx-semantic-motion-feedback-duration:
       var(--igx-semantic-motion-reduced-duration);
     --igx-semantic-motion-transition-duration:
@@ -17,7 +19,9 @@
 }
 
 @media (forced-colors: active) {
-  :root {
+  :root,
+  [data-theme="light"],
+  [data-theme="dark"] {
     --igx-semantic-color-background-canvas: Canvas;
     --igx-semantic-color-background-subtle: Canvas;
     --igx-semantic-color-background-inverse: Canvas;

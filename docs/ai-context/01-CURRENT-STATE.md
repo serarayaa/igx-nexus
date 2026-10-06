@@ -14,6 +14,12 @@ Este archivo representa el estado conocido de `main` en el momento de su última
 
 Si Git contradice este documento, Git prevalece.
 
+## Product Experience v0.3 — cierre humano con condiciones
+
+V03-001 fue aprobado por el usuario como **GO WITH CONDITIONS**. V03-002 agrega foundations aditivas en `feature/v03-002-design-system-foundations`, desde `main@80b07704c8ba719a6c7a53449168739dc1745d32`. **V03-002 Human Review Checkpoint = APPROVED WITH CONDITIONS**; cierre autorizado, integración pendiente del merge manual de Sergio en PR #136 tras CI verde. Mark B: APPROVED AS DESIGN DIRECTION, SVG no final y refinamiento óptico especialmente a 16 px pendiente; A: TECHNICAL FALLBACK sólo si B falla small-size testing; C: REJECTED, sólo evidencia histórica. Assets conceptuales no se usan en el shell. V03-007 es Graph/Map dentro de V03-005, sin estado paralelo de scope/filtros/selección/navegación; comparte URL e investigación. Contrato V03-008 requerido antes de implementación completa; V03-008 no iniciado. Live real sigue sin verificar y accesibilidad requiere auditoría por superficie. Ver `docs/design-system/v0.3-foundations.md`, `v0.3-visual-qa.md` y `docs/roadmap-v0.3.md`.
+
+Technology Workspace permanece hipótesis hasta validar estado/URL/scope/performance/a11y. V02-023 sigue separado; no nuevas capacidades backend, inteligencia, fuentes, infraestructura o seguridad.
+
 ---
 
 ## Visión actual
