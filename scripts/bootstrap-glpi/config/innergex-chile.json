@@ -172,5 +172,30 @@
     "show_in_assistance": false,
     "visible_for_physical_asset_types": true,
     "visible_for_other_item_types": false
-  }
+  },
+  "inventory_routing_rules": [
+    {
+      "name": "NEXUS - Entity - Santiago",
+      "description": "Assign inventories from the Santiago site to Innergex > Chile",
+      "active": true,
+      "match": "AND",
+      "criteria": [
+        {
+          "field": "inventory_tag",
+          "operator": "is",
+          "value": "nexus-live-lab"
+        }
+      ],
+      "actions": [
+        {
+          "field": "entity",
+          "value": "Innergex > Chile"
+        },
+        {
+          "field": "location",
+          "value": "Santiago"
+        }
+      ]
+    }
+  ]
 }

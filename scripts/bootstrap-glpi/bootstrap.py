@@ -5,7 +5,8 @@ Por defecto valida la configuración declarativa y muestra un dry-run local.
 Con ``--check-glpi`` consulta la API High-Level soportada por GLPI y compara
 el estado real con la configuración deseada.
 Con ``--apply`` crea o actualiza únicamente las ubicaciones declaradas que
-falten o diverjan. Nunca escribe directamente en MariaDB.
+falten o diverjan. Las reglas de enrutamiento de inventario se validan aquí y
+se reconcilian con ``inventory-rules.php``. Nunca escribe directamente en MariaDB.
 """
 
 from __future__ import annotations
@@ -118,6 +119,12 @@ LOCATION_FIELD_MAP = {
     "comment": "comment",
 }
 
+INVENTORY_ROUTING_MATCHES = {"AND", "OR"}
+INVENTORY_ROUTING_CRITERIA = {
+    "inventory_tag": {"is"},
+}
+INVENTORY_ROUTING_ACTIONS = {"entity", "location"}
+
 
 def load_config(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as file:
@@ -155,6 +162,134 @@ def validate_parent_references(
             raise ValueError(f"{section}: '{item['name']}' no puede ser su propio padre.")
 
 
+def build_entity_paths(entities: list[dict[str, Any]]) -> set[str]:
+    by_name = {item["name"]: item for item in entities}
+    cache: dict[str, str] = {}
+
+    def resolve(name: str, trail: tuple[str, ...] = ()) -> str:
+        if name in cache:
+            return cache[name]
+        if name in trail:
+            chain = " -> ".join((*trail, name))
+            raise ValueError(f"entities: ciclo de padres detectado: {chain}.")
+
+        parent = by_name[name].get("parent")
+        if parent is None:
+            path = name
+        else:
+            path = f"{resolve(parent, (*trail, name))} > {name}"
+
+        cache[name] = path
+        return path
+
+    return {resolve(name) for name in by_name}
+
+
+def validate_inventory_routing_rules(
+    rules: list[dict[str, Any]],
+    entity_paths: set[str],
+    location_names: set[str],
+) -> None:
+    require_unique_names(rules, "inventory_routing_rules")
+
+    for rule in rules:
+        name = rule["name"]
+
+        if not isinstance(rule.get("active"), bool):
+            raise ValueError(
+                f"inventory_routing_rules: '{name}'.active debe ser booleano."
+            )
+
+        match = rule.get("match")
+        if match not in INVENTORY_ROUTING_MATCHES:
+            raise ValueError(
+                f"inventory_routing_rules: '{name}'.match no soportado: {match!r}."
+            )
+
+        description = rule.get("description", "")
+        if not isinstance(description, str):
+            raise ValueError(
+                f"inventory_routing_rules: '{name}'.description debe ser texto."
+            )
+
+        criteria = rule.get("criteria")
+        actions = rule.get("actions")
+        if not isinstance(criteria, list) or not criteria:
+            raise ValueError(
+                f"inventory_routing_rules: '{name}' requiere al menos un criterio."
+            )
+        if not isinstance(actions, list) or not actions:
+            raise ValueError(
+                f"inventory_routing_rules: '{name}' requiere al menos una acción."
+            )
+
+        seen_criteria: set[str] = set()
+        for item in criteria:
+            if not isinstance(item, dict):
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' contiene un criterio inválido."
+                )
+            field = item.get("field")
+            operator = item.get("operator")
+            value = item.get("value")
+            if field not in INVENTORY_ROUTING_CRITERIA:
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' usa criterio no soportado: "
+                    f"{field!r}."
+                )
+            if operator not in INVENTORY_ROUTING_CRITERIA[field]:
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' usa operador no soportado "
+                    f"para {field!r}: {operator!r}."
+                )
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' requiere un valor no vacío "
+                    f"para {field!r}."
+                )
+            if field in seen_criteria:
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' repite el criterio {field!r}."
+                )
+            seen_criteria.add(field)
+
+        seen_actions: set[str] = set()
+        for item in actions:
+            if not isinstance(item, dict):
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' contiene una acción inválida."
+                )
+            field = item.get("field")
+            value = item.get("value")
+            if field not in INVENTORY_ROUTING_ACTIONS:
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' usa acción no soportada: "
+                    f"{field!r}."
+                )
+            if field in seen_actions:
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' repite la acción {field!r}."
+                )
+            seen_actions.add(field)
+
+            if not isinstance(value, str) or not value.strip():
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' requiere un valor no vacío "
+                    f"para la acción {field!r}."
+                )
+
+            if field == "entity" and value not in entity_paths:
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' referencia una entidad "
+                    f"inexistente: {value!r}."
+                )
+            if field == "location" and value not in location_names:
+                raise ValueError(
+                    f"inventory_routing_rules: '{name}' referencia una ubicación "
+                    f"inexistente: {value!r}."
+                )
+
+
 def validate_config(config: dict[str, Any]) -> None:
     required_sections = (
         "entities",
@@ -162,6 +297,7 @@ def validate_config(config: dict[str, Any]) -> None:
         "physical_asset_types",
         "statuses",
         "status_visibility_defaults",
+        "inventory_routing_rules",
     )
     for section in required_sections:
         if section not in config:
@@ -171,9 +307,15 @@ def validate_config(config: dict[str, Any]) -> None:
     locations = config["locations"]
     statuses = config["statuses"]
     physical_types = config["physical_asset_types"]
+    routing_rules = config["inventory_routing_rules"]
 
-    if not all(isinstance(section, list) for section in (entities, locations, statuses)):
-        raise ValueError("entities, locations y statuses deben ser listas.")
+    if not all(
+        isinstance(section, list)
+        for section in (entities, locations, statuses, routing_rules)
+    ):
+        raise ValueError(
+            "entities, locations, statuses e inventory_routing_rules deben ser listas."
+        )
     if not isinstance(physical_types, list) or not all(
         isinstance(item, str) and item.strip() for item in physical_types
     ):
@@ -187,6 +329,7 @@ def validate_config(config: dict[str, Any]) -> None:
 
     validate_parent_references(entities, entity_names, "entities")
     validate_parent_references(locations, location_names, "locations")
+    entity_paths = build_entity_paths(entities)
 
     for location in locations:
         entity = location.get("entity")
@@ -221,6 +364,12 @@ def validate_config(config: dict[str, Any]) -> None:
             "a una única entidad objetivo."
         )
 
+    validate_inventory_routing_rules(
+        routing_rules,
+        entity_paths,
+        location_names,
+    )
+
 
 def render_plan(config: dict[str, Any]) -> str:
     lines: list[str] = [
@@ -241,6 +390,24 @@ def render_plan(config: dict[str, Any]) -> str:
         lines.append(
             f"  [PLAN] {location['name']} (padre: {parent}, entidad: {location['entity']})"
         )
+
+    lines.append("")
+    lines.append("Reglas de enrutamiento de inventario:")
+    for rule in config["inventory_routing_rules"]:
+        state = "activa" if rule["active"] else "inactiva"
+        lines.append(
+            f"  [PLAN] {rule['name']} ({rule['match']}, {state})"
+        )
+        for criterion in rule["criteria"]:
+            lines.append(
+                "    IF "
+                f"{criterion['field']} {criterion['operator']} "
+                f"{criterion['value']}"
+            )
+        for action in rule["actions"]:
+            lines.append(
+                f"    THEN {action['field']} = {action['value']}"
+            )
 
     lines.append("")
     lines.append("Estados de ciclo de vida:")
