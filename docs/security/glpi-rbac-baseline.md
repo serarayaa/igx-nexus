@@ -172,3 +172,29 @@ La opción `--recursive` debe utilizarse de forma deliberada. La ausencia de rec
 ## Resultado de CMDB-004
 
 La línea base RBAC quedó validada en el entorno local, ambos perfiles custom demostraron idempotencia, la configuración sobrevivió un reinicio normal del stack y el cliente OAuth temporal utilizado para las pruebas fue eliminado al cerrar la validación. La identidad definitiva de NEXUS API se implementará más adelante, cuando exista un contrato técnico estable para esa integración.
+
+## Revalidación en GLPI 11.0.11 — 2026-10-07
+
+La línea base RBAC fue revalidada después del upgrade controlado desde GLPI 11.0.8 a GLPI 11.0.11.
+
+Resultados:
+
+- `NEXUS Asset Manager` (ID 9): 0 divergencias.
+- `NEXUS Auditor` (ID 10): 0 divergencias.
+- `system:status`: GLPI y base de datos en estado `OK`.
+- `db:check`: esquema de base de datos conforme.
+- HTTP local: `200 OK`.
+- Runtime Docker: `glpi/glpi:11.0.11`, healthy y expuesto únicamente en `127.0.0.1:8080`.
+- High-Level REST API: versión `2.3.0`.
+- Paths OpenAPI: 1219 antes y después del upgrade.
+- Operaciones añadidas/eliminadas: 0.
+- Schemas añadidos/eliminados: 0.
+- Security schemes modificados: no.
+
+El diff OpenAPI detectó únicamente tres schemas modificados:
+
+- `DashboardCard`: cambio de identificadores internos del enum de tipos de visualización.
+- `Monitor`: `size` incorpora `maximum: 999.99` y `multipleOf: 0.01`.
+- `UserPreferences`: cambios exclusivamente descriptivos en preferencias ITIL.
+
+No se detectaron cambios incompatibles para la integración CMDB actual de IGX NEXUS.

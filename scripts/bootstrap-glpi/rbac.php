@@ -51,7 +51,7 @@ function bootstrapGlpi(): string
 
     chdir($root);
 
-    // GLPI 11.0.8 ya no se inicializa mediante inc/includes.php. Replicamos el
+    // GLPI 11 usa el bootstrap CLI moderno en lugar de inc/includes.php. Replicamos el
     // bootstrap CLI oficial: ResourcesChecker -> Composer autoload -> Kernel::boot().
     require_once $root . '/src/Glpi/Application/ResourcesChecker.php';
     (new \Glpi\Application\ResourcesChecker($root))->checkResources();
