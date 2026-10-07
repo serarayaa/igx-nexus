@@ -209,6 +209,11 @@ Rights de lectura demostrados:
 
 ```text
 computer
+monitor
+printer
+peripheral
+networkequipment
+phone
 device
 software
 infocom
@@ -225,3 +230,18 @@ ampliar privilegios adicionales.
 
 La reconciliación declarativa del perfil se implementa mediante
 `scripts/bootstrap-glpi/rbac-api-readonly.php`.
+
+
+### Ampliación de activos físicos para el barrido V03-CMDB-01
+
+El OpenAPI local de GLPI 11.0.11 confirmó endpoints de colección y detalle para
+`Computer`, `Monitor`, `Printer`, `Peripheral`, `NetworkEquipment`
+y `Phone`. El probe inicial del perfil técnico devolvió HTTP 403 para todos
+excepto `Computer`.
+
+Se validó de forma aislada `monitor = READ` (mostrado como **VIEW ALL** en
+la interfaz de GLPI): el endpoint `Assets/Monitor` pasó de HTTP 403 a acceso
+exitoso y devolvió 3 registros. Con esa evidencia se incorpora al baseline el
+conjunto completo de activos físicos requerido por la CMDB TI v0.3 para hacer
+un barrido integral posterior. La política continúa siendo read-only y
+deny-by-default para cualquier otro right.

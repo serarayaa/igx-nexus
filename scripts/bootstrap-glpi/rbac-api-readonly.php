@@ -136,6 +136,11 @@ function buildDesiredRights(array $adminRights, array $currentRights): array
     // Capabilities demostradas en V03-CMDB-01.
     $validatedRights = [
         classRightName(Computer::class),
+        classRightName(Monitor::class),
+        classRightName(Printer::class),
+        classRightName(Peripheral::class),
+        classRightName(NetworkEquipment::class),
+        classRightName(Phone::class),
         'device',
         classRightName(Software::class),
         classRightName(Infocom::class),

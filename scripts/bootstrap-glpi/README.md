@@ -194,13 +194,18 @@ necesidad fue demostrada contra GLPI 11.0.11 durante V03-CMDB-01.
 Baseline validado:
 
 ```text
-computer = READ
-device   = READ
-software = READ
-infocom  = READ
-contract = READ
-entity   = READ
-location = READ
+computer          = READ
+monitor           = READ
+printer           = READ
+peripheral        = READ
+networkequipment  = READ
+phone             = READ
+device            = READ
+software          = READ
+infocom           = READ
+contract          = READ
+entity            = READ
+location          = READ
 ```
 
 El perfil permanece deny-by-default para cualquier otro right. En particular,

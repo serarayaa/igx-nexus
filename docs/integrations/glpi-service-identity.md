@@ -44,6 +44,11 @@ Baseline efectivo validado al 2026-10-07:
 | Área | Right GLPI | Permiso | Evidencia funcional |
 | --- | --- | --- | --- |
 | Assets | `computer` | Read | colección/detalle de Computer |
+| Assets | `monitor` | Read | colección de Monitor: 403 → 200; 3 registros en Live Lab |
+| Assets | `printer` | Read | requerido para barrido físico v0.3 |
+| Assets | `peripheral` | Read | requerido para barrido físico v0.3 |
+| Assets | `networkequipment` | Read | requerido para barrido físico v0.3 |
+| Assets | `phone` | Read | requerido para barrido físico v0.3 |
 | Setup | `device` | Read | Processor, Memory, HardDrive, NetworkCard |
 | Assets | `software` | Read | SoftwareInstallation / Software / Version |
 | Management | `infocom` | Read | lifecycle/financial contract expuesto; activo de lab sin registro |
