@@ -14,6 +14,7 @@ El bootstrap es **idempotente**: al ejecutarse varias veces debe detectar lo que
 - `bootstrap.py`: validación local, reconciliación read-only y aplicación controlada de ubicaciones contra la API High-Level de GLPI.
 - `rbac.php`: reconciliación declarativa del perfil operativo `NEXUS Asset Manager` mediante las clases internas de GLPI, sin editar manualmente cientos de casillas y sin SQL directo.
 - `rbac-auditor.php`: reconciliación declarativa del perfil de consulta `NEXUS Auditor`, con sólo lectura sobre la superficie CMDB/ITAM aprobada y deny-by-default para el resto.
+- `rbac-api-readonly.php`: reconciliación declarativa del perfil técnico `NEXUS API Read-Only`, limitado a capabilities read-only demostradas en Live Lab.
 - `inventory-rules.php`: reconciliación declarativa de reglas `RuleImportEntity` administradas por NEXUS, usando clases internas de GLPI y sin SQL directo.
 
 ## Validación local
@@ -182,6 +183,45 @@ docker compose exec glpi php /tmp/igx-nexus-rbac-auditor.php --apply
 ```
 
 Una segunda ejecución de `--apply` debe quedar sin divergencias ni cambios efectivos.
+
+
+## Bootstrap RBAC del perfil técnico NEXUS API Read-Only
+
+`rbac-api-readonly.php` administra el perfil utilizado por `svc-nexus-api`.
+La política es **least privilege by evidence**: sólo se habilitan rights cuya
+necesidad fue demostrada contra GLPI 11.0.11 durante V03-CMDB-01.
+
+Baseline validado:
+
+```text
+computer = READ
+device   = READ
+software = READ
+infocom  = READ
+contract = READ
+entity   = READ
+location = READ
+```
+
+El perfil permanece deny-by-default para cualquier otro right. En particular,
+el script no habilita escritura, Service Desk, reglas, administración de
+usuarios/perfiles, configuración global ni gestión de OAuth.
+
+```bash
+docker compose cp scripts/bootstrap-glpi/rbac-api-readonly.php glpi:/tmp/igx-nexus-rbac-api-readonly.php
+docker compose exec -T glpi php -l /tmp/igx-nexus-rbac-api-readonly.php
+docker compose exec -T glpi php /tmp/igx-nexus-rbac-api-readonly.php --check
+```
+
+Aplicar sólo después de revisar el plan:
+
+```bash
+docker compose exec -T glpi php /tmp/igx-nexus-rbac-api-readonly.php --apply
+```
+
+La autorización del usuario técnico a una entidad concreta sigue siendo una
+operación separada del perfil. Para el Live Lab validado, `svc-nexus-api`
+está acotado a `Innergex > Chile`, sin recursividad.
 
 ## Asignación usuario / perfil / entidad
 

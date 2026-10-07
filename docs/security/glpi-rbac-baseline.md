@@ -198,3 +198,30 @@ El diff OpenAPI detectó únicamente tres schemas modificados:
 - `UserPreferences`: cambios exclusivamente descriptivos en preferencias ITIL.
 
 No se detectaron cambios incompatibles para la integración CMDB actual de IGX NEXUS.
+
+
+## Revalidación del perfil técnico NEXUS API Read-Only — V03-CMDB-01
+
+Durante la auditoría de capabilities de GLPI 11.0.11 se consolidó el perfil
+técnico `NEXUS API Read-Only` con política deny-by-default.
+
+Rights de lectura demostrados:
+
+```text
+computer
+device
+software
+infocom
+contract
+entity
+location
+```
+
+No se habilitaron rights de escritura. La cuenta técnica quedó autorizada sólo
+en `Innergex > Chile`, sin recursividad. Las pruebas de catálogo demostraron
+que `entity = READ` y `location = READ` son suficientes para transformar
+los respectivos endpoints High-Level API desde HTTP 403 a acceso exitoso, sin
+ampliar privilegios adicionales.
+
+La reconciliación declarativa del perfil se implementa mediante
+`scripts/bootstrap-glpi/rbac-api-readonly.php`.
