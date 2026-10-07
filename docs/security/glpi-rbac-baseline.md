@@ -212,7 +212,7 @@ computer
 monitor
 printer
 peripheral
-networkequipment
+networking
 phone
 device
 software
