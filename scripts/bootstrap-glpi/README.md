@@ -13,7 +13,8 @@ El bootstrap es **idempotente**: al ejecutarse varias veces debe detectar lo que
 - `config/innergex-chile.json`: entidades, ubicaciones, estados de ciclo de vida y tipos de activos físicos validados durante CMDB-004.
 - `bootstrap.py`: validación local, reconciliación read-only y aplicación controlada de ubicaciones contra la API High-Level de GLPI.
 - `rbac.php`: reconciliación declarativa del perfil operativo `NEXUS Asset Manager` mediante las clases internas de GLPI, sin editar manualmente cientos de casillas y sin SQL directo.
-- `rbac-auditor.php`: reconciliación declarativa del perfil de consulta `NEXUS Auditor`, con sólo lectura sobre la superficie CMDB/ITAM aprobada y deny-by-default para el resto.\n- `inventory-rules.php`: reconciliación declarativa de reglas `RuleImportEntity` administradas por NEXUS, usando clases internas de GLPI y sin SQL directo.
+- `rbac-auditor.php`: reconciliación declarativa del perfil de consulta `NEXUS Auditor`, con sólo lectura sobre la superficie CMDB/ITAM aprobada y deny-by-default para el resto.
+- `inventory-rules.php`: reconciliación declarativa de reglas `RuleImportEntity` administradas por NEXUS, usando clases internas de GLPI y sin SQL directo.
 
 ## Validación local
 
