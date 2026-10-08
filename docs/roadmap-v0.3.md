@@ -1,131 +1,191 @@
-# IGX NEXUS v0.3 — IT CMDB
+# Road to IGX NEXUS 1.0 — IT CMDB & Asset Management
 
-Estado: **scope reset aprobado / ejecución por tickets V03-CMDB-***  
+Estado: **dirección de producto aprobada**  
+Workstream actual: `V03-CMDB-*`  
 Baseline de inicio: `main@eb87c68ee2a17b793e34e457c4e2914567889bb1`
 
-## Definición de v0.3
+## Visión de producto
 
-**IGX NEXUS v0.3 = CMDB TI completa, moderna y visualmente premium, construida sobre GLPI + GLPI Agent.**
+La primera versión mayor de NEXUS será **100% dedicada a CMDB TI & Asset Management**.
 
-Objetivo de release:
+> **NEXUS 1.0 debe funcionar en producción, con datos reales, workflows operativos completos y trazabilidad suficiente para administrar el ciclo de vida del equipamiento TI de Innergex.**
 
-> Entregar una CMDB TI utilizable en producción, integrada con GLPI, capaz de representar inventario, software, lifecycle, relaciones, calidad e historial mediante una experiencia moderna, confiable y extensible.
+No se inicia NEXUS 2.0 mientras el alcance definido para 1.0 no esté completo, probado y operando de forma estable.
 
-NEXUS no es sólo una skin de GLPI. GLPI permanece como System of Record CMDB/ITAM; NEXUS normaliza, relaciona, explica, visualiza y organiza la experiencia de inventario.
+Las versiones menores `1.1`, `1.2`, etc. pueden mejorar la CMDB antes de abrir el dominio OT.
 
-## Exit gate funcional
+## Qué debe lograr NEXUS 1.0
 
-La release no se considera utilizable mientras no pueda afirmarse:
+NEXUS 1.0 debe permitir:
 
-> “Puedo buscar un equipo, abrirlo, entender qué es, dónde está, quién lo usa, qué hardware/software tiene, cuándo fue observado y qué tan completa es su información.”
+- descubrir e inventariar activos TI;
+- buscar y comprender cada activo mediante Asset 360;
+- conocer ubicación, responsable, hardware, OS, software, estado y lifecycle;
+- administrar asignación, devolución, reasignación, reparación, bodega, baja y reemplazo;
+- generar documentos operativos de entrega/devolución y otros comprobantes del lifecycle;
+- conservar provenance, snapshots e historial semántico;
+- medir calidad/confiabilidad del inventario;
+- operar con seguridad, RBAC, backup/restore, tests y documentación suficientes para producción.
 
-## Secuencia V03-CMDB
+## Release gate 1.0
 
-| Orden / ID | Resultado esperado | Gate principal |
-| --- | --- | --- |
-| V03-CMDB-00 | Scope Freeze / Product Reset | definición única de v0.3, non-goals, IA, fuentes, preservación y roadmap |
-| V03-CMDB-01 | GLPI/Agent capability + Live data contract audit | matriz Exposed / Authorized / Populated / Gap con least privilege |
-| V03-CMDB-02 | Canonical CMDB + Provider 2.0 + provenance/history model | modelo estructurado sin aplanar GLPI en attributes; compatibilidad controlada |
-| V03-CMDB-03 | Premium CMDB Experience Foundation | shell CMDB, navegación, a11y y dirección visual aprobada |
-| V03-CMDB-04 | Overview | estado del inventario, atención, lifecycle, calidad y cambios |
-| V03-CMDB-05 | Assets Explorer | Visual + Table, filtros, URL state y búsqueda |
-| V03-CMDB-06 | Asset 360 | identity, assignment, hardware, OS, software, lifecycle, relations, history, provenance |
-| V03-CMDB-07 | Software | productos, versiones, instalaciones y activos |
-| V03-CMDB-08 | Network | inventario soportado por fuentes reales; gaps explícitos |
-| V03-CMDB-09 | Relationships | User ↔ Device ↔ Software ↔ Network ↔ Location con provenance |
-| V03-CMDB-10 | Lifecycle | reglas y campos reales; sin inferencia silenciosa |
-| V03-CMDB-11 | CMDB Health | completeness, freshness, consistency, uniqueness y relationship coverage |
-| V03-CMDB-12 | Changes / History | snapshots, diff semántico, timeline y evidencia |
-| V03-CMDB-13 | Global Search / Command Palette | búsqueda transversal y navegación rápida |
-| V03-CMDB-14 | Product Polish | responsive, motion, microinteracciones, visual QA y accesibilidad |
-| V03-CMDB-15 | Release Hardening | regresión, seguridad, performance, documentación y release gate |
+La release no está lista sólo porque compile o tenga todas las pantallas.
 
-No reutilizar los IDs históricos `V03-001..` para estos tickets.
+Debe ser posible afirmar:
 
-## IA objetivo
+> “Puedo descubrir o registrar un equipo, encontrarlo, abrirlo, entender qué es, dónde está, quién lo usa, qué hardware/software tiene, cuál es su estado, cuándo fue observado, qué cambió, qué tan completa es su información y ejecutar sus workflows normales de entrega/devolución con documentación trazable.”
 
-La IA de v0.3 queda acotada a:
+## Core obligatorio
 
-- Overview
-- Assets
-- Software
-- Network
-- Relationships
-- Lifecycle
-- Data Quality / CMDB Health
-- Changes / History
-- Asset 360
-- Global Search / Command Palette
+### GLPI + GLPI Agent + NEXUS
 
-Una superficie sólo se considera terminada si mantiene navegación por teclado, foco visible, contraste objetivo WCAG AA, reduced motion, alternativa semántica a visualizaciones y reflow móvil razonable.
+El core de 1.0 debe funcionar por sí solo con:
 
-## Estrategia de fuentes
+- GLPI como System of Record CMDB/ITAM;
+- GLPI Agent como fuente principal de inventario automático;
+- NEXUS como capa canónica, experiencia, provenance, history, quality y workflows.
 
-### GLPI + GLPI Agent
+Ninguna integración opcional puede impedir que este core sea utilizable.
 
-Base canónica para CMDB/ITAM v0.3:
+## Integraciones opcionales de 1.0 / 1.x
 
-- activos físicos;
-- hardware;
-- sistema operativo;
-- software;
-- users/assignment cuando la relación esté disponible;
-- entidades y ubicaciones;
-- lifecycle/status;
-- relaciones soportadas;
-- inventario observado por Agent.
+Sólo se incorporan si aportan valor demostrado y pueden mantenerse con least privilege.
 
-### NEXUS
+### Entra ID
 
-Responsable de modelo canónico independiente de IDs GLPI, provenance, reconciliación, snapshots, diff/historial semántico, calidad de datos y experiencia de producto.
+Candidato prioritario para enriquecer identidad y organización corporativa.
 
-### Complementarias
+### Intune
 
-- Entra: identidad/account/org.
-- Intune: management/enrollment/managed state/primary user/compliance.
-- Zabbix: disponibilidad y telemetría operacional.
+Candidato prioritario para management/enrollment/compliance/primary user y otros datos exclusivos del endpoint administrado.
 
-No recrear monitoreo operacional en GLPI/NEXUS si Zabbix es la fuente adecuada. No añadir una fuente nueva sólo porque técnicamente exista: primero debe haber gap probado y requisito real.
+### Google Workspace
 
-## Non-goals de v0.3
+Candidato condicionado a que entregue información útil que no duplique innecesariamente GLPI/Entra.
 
-Quedan fuera:
+### Regla de autoridad
 
-- OT CMDB & Discovery;
-- ciberseguridad TI/OT;
-- vulnerability scanning;
-- Wazuh / Greenbone productivo;
-- Malcolm / Zeek / ICSN productivo;
-- Intelligence / Analytics & Data Science;
-- ML/IA;
-- automatización autónoma;
-- topología inventada desde señales insuficientes.
+Una fuente nueva no sobrescribe silenciosamente a otra.
 
-Dirección futura:
+Ejemplo de intención:
 
-- **v0.4 — OT CMDB & Discovery**
-- **v0.5 — Cybersecurity**
-- **v0.6 — Intelligence / Analytics & Data Science**
+- GLPI → asset/lifecycle/assignment administrativo;
+- Entra → identity/account/org;
+- Intune → endpoint management/compliance;
+- Google Workspace → datos Workspace sólo donde agreguen valor;
+- Zabbix → telemetría operacional.
 
-## Preservación del trabajo anterior
+## Endpoint Health — opcional
 
-El reset no elimina trabajo previo.
+NEXUS 1.0 no depende de Endpoint Health para liberarse.
 
-| Trabajo previo | Decisión |
+Puede incorporarse como stretch goal de 1.0 o como 1.x si es suficientemente estable.
+
+Objetivo:
+
+> responder si existen señales observables de que un endpoint puede requerir atención.
+
+Candidatos:
+
+- battery health;
+- storage SMART / NVMe health;
+- media errors / wear;
+- Windows Event Log relevante;
+- unexpected restarts;
+- hardware/storage errors;
+- señales de temperatura o sensores cuando sean confiables.
+
+Estrategia preferida:
+
+1. exprimir primero GLPI Agent y fuentes ya disponibles;
+2. evaluar smartmontools para storage health;
+3. reutilizar Zabbix para telemetría si ya es fuente operacional;
+4. evitar convertir Wazuh/cybersecurity en dependencia de la CMDB sólo para leer errores;
+5. NEXUS consume señales semánticas/provenance, no necesariamente telemetría cruda histórica.
+
+## Workflows de Asset Management
+
+1.0 debe soportar un ciclo operativo como:
+
+```text
+Detected / Registered
+        ↓
+In stock / Preparation
+        ↓
+Assigned to user
+        ↓
+Generate delivery record
+        ↓
+In use
+        ↓
+Move / Repair / Replace
+        ↓
+Return
+        ↓
+Generate return record
+        ↓
+Stock / Reassign / Retire
+```
+
+Documentos candidatos:
+
+- acta de entrega;
+- acta de devolución;
+- comprobante de reemplazo/cambio;
+- ficha del activo;
+- inventario por usuario/ubicación;
+- etiquetas/QR;
+- exportaciones PDF/Excel cuando corresponda.
+
+## Secuencia técnica actual V03-CMDB
+
+Los tickets `V03-CMDB-*` son la ruta de construcción hacia NEXUS 1.0.
+
+| ID | Resultado |
 | --- | --- |
-| V03-002 Design System & Semantic/Brand Foundations | preservar como foundation reusable |
-| V03-008 Cross-Surface State & Navigation Contract | preservar; integrado en main mediante PR #137 |
-| V03-003 / V03-003A | no mergear; preservar como investigación histórica |
-| PR #138 | cerrado como superseded, sin merge |
-| research visual/spatial/2.5D/map | inspiración futura, no requisito v0.3 |
-| componentes/contratos v0.2 | reutilizar cuando encajen; no asumir suficiencia para Provider 2.0 |
+| V03-CMDB-00 | Scope Freeze / Product Reset / Road to 1.0 |
+| V03-CMDB-01 | GLPI/Agent capability + Live data contract audit |
+| V03-CMDB-02 | Canonical CMDB + Provider 2.0 + provenance/history |
+| V03-CMDB-03 | Premium CMDB Experience Foundation |
+| V03-CMDB-04 | Overview |
+| V03-CMDB-05 | Assets Explorer |
+| V03-CMDB-06 | Asset 360 |
+| V03-CMDB-07 | Software |
+| V03-CMDB-08 | Network |
+| V03-CMDB-09 | Relationships |
+| V03-CMDB-10 | Lifecycle & Asset Management workflows |
+| V03-CMDB-11 | CMDB Health |
+| V03-CMDB-12 | Changes / History |
+| V03-CMDB-13 | Global Search / Command Palette |
+| V03-CMDB-14 | Product Polish / a11y / responsive / motion |
+| V03-CMDB-15 | Release Hardening / production readiness |
 
-La dirección visual final de la CMDB se decide nuevamente en V03-CMDB-03.
+Los workflows documentales y de entrega/devolución se diseñan dentro de Lifecycle & Asset Management y pueden generar tickets específicos si el alcance lo requiere.
 
-## Estado inmediato
+## Versiones mayores
 
-- `V03-CMDB-00`: activo en `feature/v03-cmdb-00-scope-reset`.
-- `V03-CMDB-01`: auditoría Live ejecutada en `feature/v03-cmdb-01-glpi-capability-audit`; se integra después del scope reset.
-- `V03-CMDB-02`: no iniciar hasta integrar el scope reset y consolidar la auditoría de capacidades.
+### NEXUS 1.0 — IT CMDB & Asset Management
 
-Documento canónico de scope: `docs/product/v0.3-it-cmdb-scope.md`.
+Producto estable y operativo de inventario TI.
+
+### NEXUS 2.0 — OT CMDB & Passive Discovery
+
+Sólo después de 1.x estable. Incluye modelado OT y descubrimiento pasivo seguro.
+
+### NEXUS 3.0 — Cybersecurity & Exposure Management
+
+Construida sobre inventario IT/OT confiable. Wazuh, Greenbone u otras herramientas se evalúan aquí según necesidad.
+
+### NEXUS 4.0 — Intelligence, Analytics & Automation
+
+Analítica avanzada, detección de anomalías, IA/ML explicable y automatización sobre datos ya confiables.
+
+## Preservación
+
+- V03-002 design foundations: KEEP.
+- V03-008 navigation/state contract: KEEP.
+- PR #138 / spatial shell: CLOSED / NO MERGE / historical research.
+- research 2.5D/map/spatial: optional future inspiration.
+- v0.2 provenance/reconciliation: KEEP + EVOLVE.
+
+Documento de scope vigente: `docs/product/v0.3-it-cmdb-scope.md`.
