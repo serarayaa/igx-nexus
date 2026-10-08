@@ -14,6 +14,8 @@ El bootstrap es **idempotente**: al ejecutarse varias veces debe detectar lo que
 - `bootstrap.py`: validación local, reconciliación read-only y aplicación controlada de ubicaciones contra la API High-Level de GLPI.
 - `rbac.php`: reconciliación declarativa del perfil operativo `NEXUS Asset Manager` mediante las clases internas de GLPI, sin editar manualmente cientos de casillas y sin SQL directo.
 - `rbac-auditor.php`: reconciliación declarativa del perfil de consulta `NEXUS Auditor`, con sólo lectura sobre la superficie CMDB/ITAM aprobada y deny-by-default para el resto.
+- `rbac-api-readonly.php`: reconciliación declarativa del perfil técnico `NEXUS API Read-Only`, limitado a capabilities read-only demostradas en Live Lab.
+- `inventory-rules.php`: reconciliación declarativa de reglas `RuleImportEntity` administradas por NEXUS, usando clases internas de GLPI y sin SQL directo.
 
 ## Validación local
 
@@ -23,7 +25,7 @@ Desde la raíz del repositorio:
 python3 scripts/bootstrap-glpi/bootstrap.py
 ```
 
-El comando valida referencias, duplicados y consistencia básica, e imprime el plan sin conectarse a GLPI ni modificar datos.
+El comando valida referencias, duplicados y consistencia básica, incluidas las reglas declarativas de enrutamiento de inventario, e imprime el plan sin conectarse a GLPI ni modificar datos.
 
 ## Reconciliación read-only contra GLPI
 
@@ -78,6 +80,63 @@ El modo `--apply` actualmente se limita deliberadamente a **ubicaciones**:
 
 Una segunda ejecución sobre un GLPI ya conforme debe producir únicamente acciones `[SKIP]` y cero creaciones/actualizaciones.
 
+
+## Bootstrap declarativo de reglas de enrutamiento de inventario
+
+Las reglas de **Administration → Rules → Rules for assigning an item to an entity**
+se administran como configuración declarativa mediante
+`inventory_routing_rules` en `config/innergex-chile.json`.
+
+La primera regla validada end-to-end en V03-CMDB-01 es:
+
+```text
+Inventory tag = nexus-live-lab
+  -> Entity   = Innergex > Chile
+  -> Location = Santiago
+```
+
+GLPI procesa esta colección con semántica **first match wins**. Por seguridad,
+`inventory-rules.php`:
+
+1. administra únicamente reglas `RuleImportEntity` cuyos nombres están declarados;
+2. no modifica ni elimina reglas ajenas;
+3. no reordena rankings existentes;
+4. crea reglas faltantes al final de la colección, en el orden del archivo declarativo;
+5. detecta drift de metadata, criterios y acciones;
+6. reconcilia criterios/acciones faltantes o divergentes dentro de una regla administrada;
+7. rechaza automáticamente criterios o acciones extra dentro de una regla administrada,
+   en vez de borrarlos silenciosamente;
+8. valida que Entity y Location existan antes de escribir.
+
+El flujo usa clases internas de GLPI 11, no SQL directo. Copiar el script y la
+configuración al contenedor:
+
+```bash
+docker compose cp scripts/bootstrap-glpi/inventory-rules.php glpi:/tmp/igx-nexus-inventory-rules.php
+docker compose cp scripts/bootstrap-glpi/config/innergex-chile.json glpi:/tmp/igx-nexus-innergex-chile.json
+```
+
+Comprobar en modo read-only:
+
+```bash
+docker compose exec glpi php /tmp/igx-nexus-inventory-rules.php \
+  --check \
+  --config=/tmp/igx-nexus-innergex-chile.json
+```
+
+Aplicar únicamente después de revisar el plan:
+
+```bash
+docker compose exec glpi php /tmp/igx-nexus-inventory-rules.php \
+  --apply \
+  --config=/tmp/igx-nexus-innergex-chile.json
+```
+
+Una segunda ejecución de `--apply` debe resultar en `[SKIP]` y la
+verificación final debe quedar sin divergencias. Si el orden relativo de dos
+reglas administradas difiere del orden declarativo, el script reporta
+`ORDER-DRIFT` y no mueve rankings automáticamente.
+
 ## Bootstrap RBAC del perfil operativo
 
 La High-Level API 2.3.0 expone metadatos de perfiles, pero no toda la matriz granular de derechos. GLPI 11 sí dispone internamente de `Profile` y `ProfileRight`, incluyendo métodos para obtener y actualizar rights. Para evitar una configuración manual extensa, `rbac.php` se ejecuta **dentro del contenedor GLPI** y utiliza esas clases de aplicación; no realiza consultas SQL directas desde IGX NEXUS.
@@ -124,6 +183,50 @@ docker compose exec glpi php /tmp/igx-nexus-rbac-auditor.php --apply
 ```
 
 Una segunda ejecución de `--apply` debe quedar sin divergencias ni cambios efectivos.
+
+
+## Bootstrap RBAC del perfil técnico NEXUS API Read-Only
+
+`rbac-api-readonly.php` administra el perfil utilizado por `svc-nexus-api`.
+La política es **least privilege by evidence**: sólo se habilitan rights cuya
+necesidad fue demostrada contra GLPI 11.0.11 durante V03-CMDB-01.
+
+Baseline validado:
+
+```text
+computer          = READ
+monitor           = READ
+printer           = READ
+peripheral        = READ
+networking        = READ
+phone             = READ
+device            = READ
+software          = READ
+infocom           = READ
+contract          = READ
+entity            = READ
+location          = READ
+```
+
+El perfil permanece deny-by-default para cualquier otro right. En particular,
+el script no habilita escritura, Service Desk, reglas, administración de
+usuarios/perfiles, configuración global ni gestión de OAuth.
+
+```bash
+docker compose cp scripts/bootstrap-glpi/rbac-api-readonly.php glpi:/tmp/igx-nexus-rbac-api-readonly.php
+docker compose exec -T glpi php -l /tmp/igx-nexus-rbac-api-readonly.php
+docker compose exec -T glpi php /tmp/igx-nexus-rbac-api-readonly.php --check
+```
+
+Aplicar sólo después de revisar el plan:
+
+```bash
+docker compose exec -T glpi php /tmp/igx-nexus-rbac-api-readonly.php --apply
+```
+
+La autorización del usuario técnico a una entidad concreta sigue siendo una
+operación separada del perfil. Para el Live Lab validado, `svc-nexus-api`
+está acotado a `Innergex > Chile`, sin recursividad.
 
 ## Asignación usuario / perfil / entidad
 

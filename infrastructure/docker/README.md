@@ -6,7 +6,7 @@ IGX NEXUS utiliza Docker Compose para el entorno local de desarrollo y demostrac
 
 | Servicio | Imagen | Acceso desde el host |
 | --- | --- | --- |
-| GLPI | `glpi/glpi:11.0.8` | `http://127.0.0.1:8080` / `http://localhost:8080` |
+| GLPI | `glpi/glpi:11.0.11` | `http://127.0.0.1:8080` / `http://localhost:8080` |
 | MariaDB | `mariadb:11.4` | Solo red interna de Docker |
 | Redis | `redis:7.4-alpine` | Solo red interna de Docker |
 

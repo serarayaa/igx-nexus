@@ -10,7 +10,7 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.build.json",
-    "test": "vitest run src/*.test.ts"
+    "test": "vitest run"
   },
   "exports": {
     ".": {

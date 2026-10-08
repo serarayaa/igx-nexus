@@ -172,3 +172,98 @@ La opción `--recursive` debe utilizarse de forma deliberada. La ausencia de rec
 ## Resultado de CMDB-004
 
 La línea base RBAC quedó validada en el entorno local, ambos perfiles custom demostraron idempotencia, la configuración sobrevivió un reinicio normal del stack y el cliente OAuth temporal utilizado para las pruebas fue eliminado al cerrar la validación. La identidad definitiva de NEXUS API se implementará más adelante, cuando exista un contrato técnico estable para esa integración.
+
+## Revalidación en GLPI 11.0.11 — 2026-10-07
+
+La línea base RBAC fue revalidada después del upgrade controlado desde GLPI 11.0.8 a GLPI 11.0.11.
+
+Resultados:
+
+- `NEXUS Asset Manager` (ID 9): 0 divergencias.
+- `NEXUS Auditor` (ID 10): 0 divergencias.
+- `system:status`: GLPI y base de datos en estado `OK`.
+- `db:check`: esquema de base de datos conforme.
+- HTTP local: `200 OK`.
+- Runtime Docker: `glpi/glpi:11.0.11`, healthy y expuesto únicamente en `127.0.0.1:8080`.
+- High-Level REST API: versión `2.3.0`.
+- Paths OpenAPI: 1219 antes y después del upgrade.
+- Operaciones añadidas/eliminadas: 0.
+- Schemas añadidos/eliminados: 0.
+- Security schemes modificados: no.
+
+El diff OpenAPI detectó únicamente tres schemas modificados:
+
+- `DashboardCard`: cambio de identificadores internos del enum de tipos de visualización.
+- `Monitor`: `size` incorpora `maximum: 999.99` y `multipleOf: 0.01`.
+- `UserPreferences`: cambios exclusivamente descriptivos en preferencias ITIL.
+
+No se detectaron cambios incompatibles para la integración CMDB actual de IGX NEXUS.
+
+
+## Revalidación del perfil técnico NEXUS API Read-Only — V03-CMDB-01
+
+Durante la auditoría de capabilities de GLPI 11.0.11 se consolidó el perfil
+técnico `NEXUS API Read-Only` con política deny-by-default.
+
+Rights de lectura demostrados:
+
+```text
+computer
+monitor
+printer
+peripheral
+networking
+phone
+device
+software
+infocom
+contract
+entity
+location
+```
+
+No se habilitaron rights de escritura. La cuenta técnica quedó autorizada sólo
+en `Innergex > Chile`, sin recursividad. Las pruebas de catálogo demostraron
+que `entity = READ` y `location = READ` son suficientes para transformar
+los respectivos endpoints High-Level API desde HTTP 403 a acceso exitoso, sin
+ampliar privilegios adicionales.
+
+La reconciliación declarativa del perfil se implementa mediante
+`scripts/bootstrap-glpi/rbac-api-readonly.php`.
+
+
+### Ampliación de activos físicos para el barrido V03-CMDB-01
+
+El OpenAPI local de GLPI 11.0.11 confirmó endpoints de colección y detalle para
+`Computer`, `Monitor`, `Printer`, `Peripheral`, `NetworkEquipment`
+y `Phone`. El probe inicial del perfil técnico devolvió HTTP 403 para todos
+excepto `Computer`.
+
+Se validó de forma aislada `monitor = READ` (mostrado como **VIEW ALL** en
+la interfaz de GLPI): el endpoint `Assets/Monitor` pasó de HTTP 403 a acceso
+exitoso y devolvió 3 registros. Con esa evidencia se incorpora al baseline el
+conjunto completo de activos físicos requerido por la CMDB TI v0.3 para hacer
+un barrido integral posterior. La política continúa siendo read-only y
+deny-by-default para cualquier otro right.
+
+
+## Cierre de mínimo privilegio V03-CMDB-01
+
+El baseline técnico definitivo para la service identity fue sometido a un
+barrido runtime sobre GLPI 11.0.11. Computer, Monitor, Printer, Peripheral,
+NetworkEquipment y Phone quedaron autorizados en lectura; los tipos poblados
+también validaron detail.
+
+Se mantuvieron deliberadamente fuera del perfil:
+
+- `user`: la relación de asignación necesaria ya viene embebida en los assets
+  como `{id,name}`;
+- `system_logs`: `Administration/EventLog` devolvió HTTP 403 y no se
+  justifica ampliar privilegios para una superficie de logs potencialmente
+  sensible que no reemplaza un historial semántico estructurado.
+
+La segunda ejecución de `rbac-api-readonly.php --apply` finalizó con 0
+cambios, 0 divergencias de rights y 0 divergencias de metadata.
+
+Ver `docs/integrations/glpi-v03-cmdb-capability-audit.md` para la matriz
+completa de capacidades, población y gaps.

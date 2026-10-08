@@ -35,11 +35,29 @@ Nombre sugerido:
 NEXUS API Read-Only
 ```
 
-Configurar inicialmente sólo lo necesario para el vertical V02-005:
+La línea base original de V02-005 fue únicamente `Assets > Computers > Read`.
+V03-CMDB-01 amplió el perfil sólo después de probar cada capability contra el
+GLPI local 11.0.11.
 
-| Área | Objeto | Permiso |
-| --- | --- | --- |
-| Assets | Computers | Read |
+Baseline efectivo validado al 2026-10-07:
+
+| Área | Right GLPI | Permiso | Evidencia funcional |
+| --- | --- | --- | --- |
+| Assets | `computer` | Read | colección/detalle de Computer |
+| Assets | `monitor` | Read | colección de Monitor: 403 → 200; 3 registros en Live Lab |
+| Assets | `printer` | Read | requerido para barrido físico v0.3 |
+| Assets | `peripheral` | Read | requerido para barrido físico v0.3 |
+| Assets | `networking` | Read | NetworkEquipment; requerido para barrido físico v0.3 |
+| Assets | `phone` | Read | requerido para barrido físico v0.3 |
+| Setup | `device` | Read | Processor, Memory, HardDrive, NetworkCard |
+| Assets | `software` | Read | SoftwareInstallation / Software / Version |
+| Management | `infocom` | Read | lifecycle/financial contract expuesto; activo de lab sin registro |
+| Management | `contract` | Read | relación de Contracts accesible |
+| Administration | `entity` | Read | `Administration/Entity`: 403 → 200 al agregar sólo READ |
+| Setup | `location` | Read | `Dropdowns/Location`: 403 → 200 al agregar sólo READ |
+
+La configuración declarativa vive en
+`scripts/bootstrap-glpi/rbac-api-readonly.php`.
 
 No habilitar por defecto:
 
@@ -222,3 +240,57 @@ Especialmente prohibido como solución rápida:
 - compartir una cuenta humana existente.
 
 El principio es **least privilege by evidence**.
+
+
+## 10. Evidencia V03-CMDB-01 — Entity y Location
+
+En GLPI 11.0.11 se probó el acceso con el perfil técnico acotado a
+`Innergex > Chile`, sin recursividad.
+
+Antes de otorgar los rights específicos:
+
+```text
+GET Administration/Entity  -> HTTP 403
+GET Dropdowns/Location     -> HTTP 403
+```
+
+Después de agregar únicamente `entity = READ`:
+
+```text
+GET Administration/Entity
+status=ACCESSIBLE
+count=1
+Innergex > Chile
+```
+
+Después de agregar únicamente `location = READ`:
+
+```text
+GET Dropdowns/Location
+status=ACCESSIBLE
+count=15
+```
+
+La colección devolvió las 15 ubicaciones de Chile y preservó las jerarquías
+`Parque Eólico Cuel > CCO`, `Parque Solar Salvador > BESS Salvador` y
+`Parque Solar San Andrés > BESS San Andrés`.
+
+Conclusión: `entity` y `location` son rights independientes necesarios
+para navegar sus catálogos, aun cuando Computer ya incluya referencias
+embebidas a Entity/Location.
+
+
+## 11. Decisiones finales V03-CMDB-01
+
+La auditoría completa se documenta en
+`docs/integrations/glpi-v03-cmdb-capability-audit.md`.
+
+Decisiones de mínimo privilegio resultantes:
+
+- no agregar `user = READ`: Computer ya expone `user` / `user_tech` como
+  relaciones reducidas `{id,name}`;
+- no agregar `system_logs = READ`: EventLog devolvió HTTP 403 bajo el
+  baseline actual y no es necesario para el estado canónico ni para el
+  historial semántico de NEXUS;
+- mantener NetworkPort/IP como gap explícito de High-Level API, sin introducir
+  otra fuente hasta que exista un requisito funcional demostrado.
