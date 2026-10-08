@@ -1,7 +1,7 @@
 # V03-CMDB-01 — Auditoría de capacidades GLPI / Agent / Live Data Contract
 
-Estado: **runtime audit sustancialmente completo**  
-Fecha: 2026-10-07  
+Estado: **runtime audit sustancialmente completo**
+Fecha: 2026-10-07
 Baseline probado: **GLPI 11.0.11 / High-Level REST API 2.3.0**
 
 ## Objetivo
