@@ -21,10 +21,16 @@ No recorrer todo `docs/`, todo el código ni todo el historial Git salvo necesid
 
 ## Router de contexto
 
-### Desarrollo funcional v0.2
+### Desarrollo funcional v0.3
+
+- `../roadmap-v0.3.md`
+- `../product/v0.3-it-cmdb-scope.md`
+- documentos asociados al ticket `V03-CMDB-*` actual
+
+### Historia / mantenimiento v0.2
 
 - `../roadmap-v0.2.md`
-- documentos asociados al ticket actual
+- documentos asociados sólo cuando una tarea v0.2 lo requiera
 
 ### Arquitectura
 
