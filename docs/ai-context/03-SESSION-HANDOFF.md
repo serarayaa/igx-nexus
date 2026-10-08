@@ -2,45 +2,86 @@
 
 ## Repository state
 
-- Baseline verified: main@e04c4025dc3764bc668a6155df883e275c0519f6, merge of PR #136. main was updated fast-forward from origin/main with a clean tree before creating this branch.
-- Branch: feature/v03-008-cross-surface-state-navigation. V03-008 in existing PR #137 (https://github.com/serarayaa/igx-nexus/pull/137); not merged; human checkpoint APPROVED WITH CONDITIONS. Ready for Review after final CI SUCCESS and clean mergeability; manual merge by Sergio.
-- V03-001/002 human conditions remain. B approved design direction, not final production SVG; A technical fallback only if B fails small-size tests; C rejected/historical. No branding assets changed.
-- V03-003 and V03-005 NOT STARTED. V03-007 remains Graph/Map inside V03-005, never an independent surface/store. V02-023 separate and externally blocked; v0.2/hotfixes not reopened.
+- Stable baseline al iniciar el reset: `main@eb87c68ee2a17b793e34e457c4e2914567889bb1`.
+- Active branch: `feature/v03-cmdb-00-scope-reset`.
+- V03-CMDB-00 es documental/product-scope; no modifica product code.
+- PR #138 está CLOSED / NOT MERGED / SUPERSEDED.
+- V03-002 foundations y V03-008 navigation/state permanecen preservados.
+- V03-CMDB-01 existe en `feature/v03-cmdb-01-glpi-capability-audit` con HEAD observado `859d4c7e100a909020329151d754532ae29d97d8`.
 
-## Delivered foundation
+## Product decision
 
-Read docs/product/v0.3-navigation-state-contract.md for baseline audit, ownership matrix, canonical URL examples, precedence, history policies, journey diagram, graph scope/selection rules, return behavior, invalid/stale handling, a11y/responsive/performance and migration.
+El target de producto ya no se expresa como “v0.3 final”.
 
-Typed InvestigationState/parser/serializer/normalize/helpers reuse existing ExplorerQuery and graph enums. URL is durable owner; native history with useSyncExternalStore subscribes to hashchange/popstate and explicit notification of push/replace. No dependency/router migration or backend/provider changes.
+La versión mayor en construcción es:
 
-Representative production adapter: #assets query/search/facets/sort/page/size persist through refresh; Overview CTA transports selected classified domain; asset links and all four Asset360 sections preserve a bounded validated return hash. Selection, graph root and DOM focus are different concepts. Focus restored to visible identity link or result summary, not stolen by query updates. Stale page clamps via replace; stale facets remain visible and produce no matches.
+**NEXUS 1.0 — IT CMDB & Asset Management**
 
-Table↔Graph context contract is exercised by a test-only semantic harness, not a final Workspace renderer. New Graph URLs explicitly display inventory fallback and preserve requested view/context. Legacy #assets/:id/relations renderer is unchanged and still has its own selection reset behavior; migrate it only in V03-005 under the shared contract. Specialized views/QR/label adapters are later incremental work. No fake Live data or new sources.
+Los tickets y docs `V03-CMDB-*` se mantienen como workstream técnico por continuidad histórica.
 
-## Validation observed locally
+NEXUS 2.0 no se inicia hasta que 1.0 esté completa, probada y operando de forma estable.
 
-- UI/types prerequisite builds PASS; web build and typecheck PASS; diff formatting reviewed.
-- New model contract 13 tests + existing navigation 10 + canonical HTTP round-trip 2: 25/25 PASS in isolated run.
-- Affected production browser journeys + initial new harness: 34/34 PASS across five files after focus fixes. Final expanded navigation harness: 7/7 PASS, including stale page/facet and Live snapshot fail-closed under URL mode input.
-- Physical refresh/deep-link tests: 2/2 PASS (real Chromium reload, Explorer/Asset360 return, graph fallback and stale facet); dedicated npm script and CI step added with existing Playwright dependency.
-- Full local Web execution before the two additional tests: 354/356 PASS, two existing environment timing failures (canonical HTTP cold start 5s, Lifecycle axe/reflow 30s). Isolated reruns: HTTP 2/2 PASS and Lifecycle 6/6 PASS with original limits. Do not claim the full local run passed; no tests/timeouts weakened. Final CI on PR HEAD is the regression gate, recorded in PR body.
-- Generated CSS build artifacts were restored to baseline; tokens/styles/branding/shell unchanged. No new dependencies, providers, contracts in packages/types, tenant operations, intelligence/automation or infrastructure.
+## 1.0 Core
 
-## Remote validation evidence
+Core obligatorio:
 
-Implementation commit 21480ce6c904639051751b9f58a38c627acbc3cb: CI SUCCESS in https://github.com/serarayaa/igx-nexus/actions/runs/37482463481. Web 358/358, Storybook 54/54, foundation 4/4, physical reload 2/2 and readiness 1/1 PASS, plus contracts/API and existing production QA gates. This resolves the complete regression gate on Linux with unchanged timing limits. The final PR HEAD checks and SHA are recorded in PR #137 body after the documentation handoff commit; do not conflate the above implementation run with a later SHA.
+`GLPI + GLPI Agent + NEXUS`
 
-## Human checkpoint / next permitted step
+Debe cubrir inventario, Asset 360, software, lifecycle, relationships, CMDB Health, history y workflows de Asset Management con documentación de entrega/devolución.
 
-**V03-008 Human Review Checkpoint = APPROVED WITH CONDITIONS**. Se mantiene **GO WITH CONDITIONS**. Cierre humano autorizado; integración pendiente de merge manual de Sergio en PR #137 tras CI final SUCCESS y mergeability clean. V03-003/V03-005 NO iniciados.
+## Optional enrichments
 
-Aprobados por decisión humana: URL como owner durable de InvestigationState; state ownership model; parse / serialize / normalize; canonical URLs; Push vs Replace; Back / Forward; deep links; Selection != Focus != Graph root; Table ↔ Graph shared investigation contract; Asset 360 contextual return; InvestigationIntent; Demo / Live separation; invalid/stale-state handling; responsive state preservation; implementación sin nueva global-state/router library.
+No bloquean 1.0:
 
-Final delivery after these gates: V03-008 — READY FOR MANUAL MERGE BY SERGIO. No automatic merge.
+- Entra ID: identity/account/org;
+- Intune: endpoint management/enrollment/compliance/primary user;
+- Google Workspace: sólo si aporta datos útiles no redundantes;
+- Zabbix: telemetría operacional.
 
-Remaining conditions: legacy graph adapter migration and per-surface accessibility/performance review before final Workspace; real Live unverified; no absolute WCAG certification. This ticket does not authorize starting V03-003/V03-005. Preserve mark B optical refinement requirement before productive branding.
+Toda integración debe conservar authority/provenance y justificar su permiso/scope.
 
+## Optional Endpoint Health
 
-Condiciones pendientes: integración productiva del renderer Graph legacy en V03-005; performance a escala corporativa; auditoría de accesibilidad específica por superficie; Asset 360 return URL length robustness. No declarar Graph completamente migrado, accesibilidad completa ni escala corporativa resuelta.
+Stretch goal de 1.0 o 1.x:
 
-El patrón `#assets/:id?...&return=<encoded investigation URL>` queda aprobado. La robustez de longitud es una condición NO BLOQUEANTE para V03-008, pendiente como seguimiento de superficies consumidoras / V03-005 si corresponde. Validar longitud práctica de la URL final Asset 360 después del encoding y probar una investigación extensa representativa con 14 facetas, búsqueda, selección y parámetros Graph; comprobar navegación, refresh y retorno para evitar URLs excesivas o degradación inesperada. Este caso ampliado no fue ejecutado durante el cierre documental. Mantener límites actuales del contrato (hash4096, q256, facetas/IDs160); el límite del origen no demuestra robustez del destino codificado. No introducir sessionStorage/global store como workaround sin evidencia.
+- battery health;
+- SMART/NVMe/storage;
+- media errors/wear;
+- Windows Event Log relevante;
+- unexpected restarts;
+- hardware/storage errors.
+
+Orden de evaluación: GLPI Agent → smartmontools → Zabbix → collector Windows acotado.
+
+No usar Wazuh/cybersecurity como dependencia de la CMDB sólo para obtener señales básicas de health.
+
+## V03-CMDB-01 evidence
+
+Live Lab GLPI 11.0.11 / API 2.3.0:
+
+- physical collections read-only;
+- OS/hardware/storage/software/virtualization/antivirus/peripherals;
+- 145 software installations con paginación;
+- assignment embebido;
+- Entity/Location;
+- NetworkPort schema con gap de API directa/IP;
+- EventLog no requerido para history semántico;
+- no ampliar `user` ni `system_logs` por conveniencia.
+
+## Version ladder
+
+- 1.0 — IT CMDB & Asset Management
+- 2.0 — OT CMDB & Passive Discovery
+- 3.0 — Cybersecurity & Exposure Management
+- 4.0 — Intelligence, Analytics & Automation
+
+## Next sequence
+
+1. Merge V03-CMDB-00.
+2. Rebase/update V03-CMDB-01 sobre main.
+3. Merge V03-CMDB-01.
+4. Crear `feature/v03-cmdb-02-canonical-provider-v2`.
+5. Diseñar contratos CMDB estructurados antes de implementar el provider amplio.
+6. Mantener integraciones opcionales/Endpoint Health fuera del critical path hasta que el core esté estable.
+
+No iniciar el premium UI rebuild antes de estabilizar suficiente contrato canónico/provider para evitar retrabajo.
