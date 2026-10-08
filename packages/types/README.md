@@ -170,3 +170,70 @@ npm pack --dry-run --workspace @igx-nexus/types
 ```
 
 El package no contiene secretos, IDs corporativos reales ni integración de red.
+
+## Hardware & Peripherals Contracts V2 — V03-CMDB-02 / PR 1
+
+`hardware.ts` exporta `HardwareInventoryV2`, `ProcessorV2`, `MemoryModuleV2`,
+`PhysicalStorageDeviceV2`, `LogicalVolumeV2`, `DetectedPeripheralV2` y
+`ObservedPeripheralConnectionV2`. `hardware-validation.ts` proporciona
+`validateHardwareInventoryV2(unknown)` y devuelve los `ValidationIssue` existentes.
+
+Es un contrato complementario con `contractVersion="2"` y `assetId` canónico.
+No altera `TechnologySnapshot.schemaVersion="0.2"`, TechnologyAsset, HTTP,
+providers ni consumidores. Su transporte e integración quedan para PR 2.
+
+- Las seis secciones discriminan `complete`, `partial` (gaps no vacíos con
+  fieldPath/reason), `unavailable` (reason), `not_applicable` y `not_requested`.
+- Complete y partial incluyen `HardwareAcquisitionV2`: collectedAt, observedAt
+  original nullable y sourceReferences con al menos una fuente válida. Estos
+  metadatos son obligatorios incluso con items=[] y no crean provenance ficticia.
+- Complete expresa cobertura completa de la colección solicitada, no conocimiento
+  de cada propiedad. Una colección vacía completa representa cero observado.
+  Partial debe señalar capacidades, campos o páginas faltantes. No disponible
+  no equivale a una colección vacía.
+- Los motivos gobernados son `not_observed`, `unsupported`, `unauthorized`,
+  `not_implemented`, `source_error` y `pagination_incomplete`.
+- Los campos desconocidos son `null`; arrays vacíos significan ausencia de
+  identificadores disponibles. Cada registro exige al menos una SourceReference
+  válida o un ProvenanceRecord válido con fuente explícita; la evidencia de sección
+  no sustituye esta procedencia del registro. Una fuente manual usa source=manual
+  y observedAt=null si la observación original se desconoce. `other` significa un valor conocido
+  fuera del catálogo; no sustituye desconocido. No se generan defaults.
+- Capacidad y espacio disponible usan bytes enteros no negativos y seguros en
+  JavaScript. Frecuencia conserva unidad Hz/MHz/GHz; velocidad RAM MT/s o MHz
+  según evidencia, sin conversión que asuma doble transferencia.
+- DDR3/DDR4 no se colapsan. Medio, protocolo, interfaz y formato de almacenamiento
+  son ejes diferentes. M.2 es válido tanto para SATA/ATA como PCIe/NVMe.
+- Volúmenes pueden referenciar varios dispositivos físicos. Mapping null es
+  desconocido; [] es ausencia explícita de backing físico informado.
+- componentId/volumeId sólo se asignan con evidencia estable; null admite
+  múltiples componentes idénticos sin fusionarlos. Seriales usan AssetIdentifier
+  (serial_number); no hay un segundo modelo de identificadores.
+- detectionId sirve para correlacionar detección y conexión dentro del inventario;
+  puede ser null si no existe correlación defendible. Null no genera referencias,
+  matches por similitud ni fusión de dispositivos. Una conexión con detectionId=null
+  permanece observada pero no vinculada. Un ID conocido debe venir de evidencia
+  fuente, nunca de posición en lista. No demuestra
+  identidad física estable entre recopilaciones. managedAssetId es nullable y
+  requiere reconciliación explícita por el futuro adapter.
+- Conexiones son claims de inventario periódico, no conectividad en tiempo real.
+- collectedAt es recopilación; observedAt es observación original conocida o null.
+  SourceReference.observedAt mantiene su semántica actual de fuente/registro.
+  ProvenanceRecord se reutiliza sin cambio y se valida mediante el export aditivo
+  validateProvenanceRecord. Si se desconoce la fecha original, no se fabrica un
+  ProvenanceRecord fechado: se conservan referencias de fuente y observedAt=null.
+- fieldPath en provenance es relativo al registro. No duplicar evidencia en cada
+  propiedad: un record puede cubrir varias propiedades; provenance sólo cuando
+  se necesita la trazabilidad por atributo.
+- Referencias ausentes son errores cuando la sección destino es completa y
+  warnings cuando su cobertura es parcial/no disponible/no solicitada.
+  La validación reúne los IDs antes de resolver referencias y no asigna identidad.
+
+Pruebas: `npm run test --workspace @igx-nexus/types -- src/hardware.test.ts`.
+Los fixtures son exclusivamente sintéticos y están junto al validador.
+
+PR 2 debe definir normalización de unidades originales de GLPI, claves de
+componentes respaldadas por evidencia, paginación, clasificación de errores y
+mapping periférico → activo administrado. No inferir observación original desde
+hora de consulta ni inventar identidad si sólo existe un índice de colección.
+No se implementan transporte, persistencia, historial, UI ni Printer 360 aquí.
