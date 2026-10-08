@@ -1,225 +1,116 @@
 # IGX NEXUS — Current State
 
-> Estado operativo resumido del proyecto.
+> Estado operativo resumido del proyecto.  
 > No reemplaza roadmap, ADR, código ni tests.
 
 ## Baseline
 
 - Repository: `serarayaa/igx-nexus`
 - Branch estable: `main`
-- Release cerrada: **v0.2 — Technology Intelligence**
-- v0.1: **cerrada — 13/13 tickets**
-
-Este archivo representa el estado conocido de `main` en el momento de su última actualización.
+- Baseline de inicio v0.3 CMDB: `main@eb87c68ee2a17b793e34e457c4e2914567889bb1`
+- v0.1: cerrada
+- v0.2: cerrada
+- v0.3: **scope reset activo — IT CMDB**
 
 Si Git contradice este documento, Git prevalece.
 
-## Product Experience v0.3 — cierre humano con condiciones
+## Definición vigente de v0.3
 
-V03-001 fue aprobado por el usuario como **GO WITH CONDITIONS**. V03-002 agrega foundations aditivas en `feature/v03-002-design-system-foundations`, desde `main@80b07704c8ba719a6c7a53449168739dc1745d32`. **V03-002 Human Review Checkpoint = APPROVED WITH CONDITIONS**; integrado por merge de PR #136 en `main@e04c4025dc3764bc668a6155df883e275c0519f6`. Mark B: APPROVED AS DESIGN DIRECTION, SVG no final y refinamiento óptico especialmente a 16 px pendiente; A: TECHNICAL FALLBACK sólo si B falla small-size testing; C: REJECTED, sólo evidencia histórica. Assets conceptuales no se usan en el shell. V03-007 es Graph/Map dentro de V03-005, sin estado paralelo de scope/filtros/selección/navegación; comparte URL e investigación. V03-008 implementa la foundation de URL/ownership/navigation desde ese baseline, en `feature/v03-008-cross-surface-state-navigation`, con checkpoint humano APPROVED WITH CONDITIONS; cierre autorizado, integración pendiente de merge manual tras CI final. Ver `docs/product/v0.3-navigation-state-contract.md`. Adaptador Explorer, retorno contextual 360 y CTA Overview representativo; Table/Graph validado en harness, renderer Map legacy pendiente de migración. V03-003/V03-005 no iniciados. Live real sigue sin verificar y accesibilidad requiere auditoría por superficie. Ver `docs/design-system/v0.3-foundations.md`, `v0.3-visual-qa.md` y `docs/roadmap-v0.3.md`.
+**IGX NEXUS v0.3 = CMDB TI completa, moderna y visualmente premium sobre GLPI + GLPI Agent.**
 
-**V03-008 Human Review Checkpoint = APPROVED WITH CONDITIONS**. Se mantiene **GO WITH CONDITIONS**. Cierre humano autorizado; integración pendiente de merge manual de Sergio en PR #137 tras CI final SUCCESS y mergeability clean. V03-003/V03-005 NO iniciados.
+Objetivo:
 
-Condiciones pendientes: integración productiva del renderer Graph legacy en V03-005; performance a escala corporativa; auditoría de accesibilidad específica por superficie; Asset 360 return URL length robustness. No declarar Graph completamente migrado, accesibilidad completa ni escala corporativa resuelta.
+> Entregar una CMDB TI utilizable en producción, integrada con GLPI, capaz de representar inventario, software, lifecycle, relaciones, calidad e historial mediante una experiencia moderna, confiable y extensible.
 
-El patrón `#assets/:id?...&return=<encoded investigation URL>` queda aprobado. La robustez de longitud es una condición NO BLOQUEANTE para V03-008, pendiente como seguimiento de superficies consumidoras / V03-005 si corresponde. Validar longitud práctica de la URL final Asset 360 después del encoding y probar una investigación extensa representativa con 14 facetas, búsqueda, selección y parámetros Graph; comprobar navegación, refresh y retorno para evitar URLs excesivas o degradación inesperada. Este caso ampliado no fue ejecutado durante el cierre documental. Mantener límites actuales del contrato (hash4096, q256, facetas/IDs160); el límite del origen no demuestra robustez del destino codificado. No introducir sessionStorage/global store como workaround sin evidencia.
+Documento canónico de scope:
 
-Technology Workspace permanece hipótesis hasta validar estado/URL/scope/performance/a11y. V02-023 sigue separado; no nuevas capacidades backend, inteligencia, fuentes, infraestructura o seguridad.
+`docs/product/v0.3-it-cmdb-scope.md`
 
----
+Roadmap:
 
-## Visión actual
+`docs/roadmap-v0.3.md`
 
-IGX NEXUS evoluciona desde una CMDB/ITAM visual hacia una plataforma de **Technology Intelligence**.
+## Reset de la dirección Product Experience anterior
+
+El trabajo anterior no se elimina:
+
+- V03-002 Design System foundations permanece reusable.
+- V03-008 Cross-Surface State & Navigation Contract fue integrado mediante PR #137 y forma parte de `main@eb87c68`.
+- PR #138 (V03-003 / V03-003A) fue **cerrado sin merge** al quedar superseded por el scope CMDB.
+- su investigación visual/spatial permanece como evidencia histórica y puede reutilizarse selectivamente.
+
+No continuar el antiguo roadmap V03-003/V03-005 como si siguiera vigente.
+
+## V03-CMDB-00
+
+Scope Freeze / Product Reset.
+
+Responsabilidades:
+
+- una sola definición de v0.3;
+- IA CMDB;
+- source strategy;
+- non-goals;
+- preservation matrix;
+- namespace `V03-CMDB-*`;
+- cierre de PR #138 como superseded sin merge.
+
+Branch de trabajo:
+
+`feature/v03-cmdb-00-scope-reset`
+
+## V03-CMDB-01
+
+La auditoría GLPI/Agent/Live Data Contract se desarrolla en:
+
+`feature/v03-cmdb-01-glpi-capability-audit`
+
+HEAD observado durante el scope reset:
+
+`859d4c7e100a909020329151d754532ae29d97d8`
+
+Evidencia runtime ya levantada en el Live Lab incluye:
+
+- GLPI 11.0.11 / High-Level API 2.3.0;
+- service identity read-only con deny-by-default;
+- inventario físico Computer/Monitor/Peripheral y colecciones Printer/NetworkEquipment/Phone;
+- OS, CPU, RAM, disk, volumes, software installations, virtualization, antivirus y peripheral connections;
+- 145 SoftwareInstallation paginadas para el Computer real;
+- entity/location con least privilege;
+- assignment embebido `user/user_tech/group/group_tech`;
+- gap explícito de NetworkPort/IP en High-Level API;
+- EventLog expuesto por API pero no autorizado por defecto; no reemplaza history semántico.
+
+Esta evidencia debe integrarse formalmente después de V03-CMDB-00 antes de iniciar Provider 2.0.
+
+## Arquitectura de producto vigente
 
 Modelo conceptual:
 
-`fuentes reales → reconciliación/evidencia → modelo canónico NEXUS → contratos analíticos/API → experiencia de producto`
+`GLPI + Agent → source observations → canonical CMDB NEXUS → provenance/history/quality → product experience`
 
-Principios vigentes:
+Principios:
 
-- GLPI continúa como System of Record CMDB/ITAM.
-- NEXUS actúa como Intelligence Layer.
+- GLPI = System of Record CMDB/ITAM.
+- NEXUS no replica formularios GLPI; normaliza, relaciona y explica.
 - Evidence before inference.
-- IT y OT comparten plataforma, no necesariamente taxonomía.
-- Demo y Live comparten contratos, no datos.
-- No existe fallback silencioso Live → Demo.
-- Jira continúa como Service Desk.
-- No realizar active scanning OT.
-- Toda conclusión importante debe ser explicable mediante datos, procedencia o evidencia.
+- Live nunca cae silenciosamente a Demo.
+- una ausencia de datos se representa como coverage gap.
+- no direct GLPI DB writes.
+- nuevas fuentes no sobrescriben silenciosamente datos canónicos.
 
----
+## Scope futuro fuera de v0.3
 
-## v0.2 — Estado funcional
+- v0.4: OT CMDB & Discovery.
+- v0.5: Cybersecurity.
+- v0.6: Intelligence / Analytics & Data Science.
 
-Integrado:
+V02-023 Intune continúa como trabajo separado condicionado por acceso tenant; no bloquea el scope reset.
 
-**V02-001 .. V02-022 + V02-024 + V02-025 + V02-026 + V02-027 + V02-028 + V02-029**
+## Próximo paso
 
-Último desarrollo integrado:
+1. integrar V03-CMDB-00;
+2. poner V03-CMDB-01 sobre el baseline actualizado y cerrar su documentación/PR;
+3. iniciar V03-CMDB-02 sólo desde un main que contenga ambos.
 
-**V02-029 — v0.2 Demo / Live Lab Readiness**
-
-Resultado relevante de V02-028:
-
-- API compilado validado por TCP/HTTP real;
-- contrato vertical GLPI/provider/API cubierto con fixtures controlados;
-- OpenAPI y auth runtime alineados para el snapshot protegido;
-- Knowledge Research rechaza estados runtime no soportados;
-- CI mantiene Demo/Live, mínimo privilegio y fail-closed;
-- no se introducen secretos, tenant Intune ni servicios externos reales en GitHub Actions.
-
-Trabajo pendiente bloqueado:
-
-**V02-023 — Intune Analytics Feasibility Spike**
-
-Repo-side está preparado en draft PR #113, pero la validación tenant requiere una App Registration dedicada o intervención administrativa en Entra.
-
-Cierre v0.2:
-
-**V02-029 — PASS e integrado mediante PR #129 / `main @ 775e8a1`; CI post-merge #1016 verde. Demo + Live Lab PASS, 8/8 criterios de salida PASS.**
-
-El detalle completo permanece definido en:
-
-`../roadmap-v0.2.md`
-
-No cargar todos los tickets pendientes salvo que sean necesarios para la tarea actual.
-
----
-
-## Producto actualmente disponible
-
-Las principales superficies y capacidades disponibles incluyen:
-
-- Technology Overview;
-- Asset Explorer;
-- Asset 360;
-- Technology Map;
-- CMDB Quality 2.0 / CMDB Health;
-- infraestructura Demo / Live;
-- modelo canónico con provenance y relationship evidence;
-- Analytics Contract Layer;
-- Lifecycle & Investment;
-- IT / OT Intelligence;
-- Endpoint Experience;
-- Proactive Findings;
-- Knowledge Research.
-
-CMDB Quality y Device Operational Health permanecen conceptualmente separados.
-
-Las pantallas deben responder preguntas operacionales concretas y evitar métricas o inferencias sin contrato semántico defendible.
-
----
-
-## Arquitectura vigente
-
-Los ADR canónicos viven en:
-
-`../architecture/`
-
-Índice oficial:
-
-`../architecture/README.md`
-
-La arquitectura actual incluye decisiones hasta:
-
-**ADR-0026 — Lifecycle Evidence & Planning**
-
-Los ADR antiguos pueden ser supersedidos por decisiones posteriores.
-
-`docs/decisions/` es histórico y no debe utilizarse para duplicar decisiones canónicas.
-
----
-
-## Modelo de datos
-
-El modelo canónico NEXUS es independiente de IDs y taxonomías internas de GLPI, Intune, Entra u otras fuentes.
-
-Conceptos centrales:
-
-- identidad NEXUS;
-- source references;
-- provenance;
-- observations;
-- taxonomy assessment;
-- operational contexts;
-- relationship evidence;
-- reconciliation;
-- analytics contracts.
-
-Una señal débil como hostname o IP no debe fusionar CIs automáticamente.
-
-Una métrica o agregación tampoco debe adquirir semántica únicamente porque pueda calcularse técnicamente.
-
-Un conflicto sólo se presenta como tal cuando el contrato transporta evidencia explícita suficiente.
-
----
-
-## Demo / Live
-
-### Demo
-
-- dataset canónico versionado;
-- útil para producto, tests y escenarios reproducibles;
-- puede representar escenarios sintéticos explícitos;
-- mantiene `sourceInstanceId=demo-v0.2`;
-- no debe introducir comportamiento ficticio dentro de Live.
-
-### Live
-
-- usa únicamente fuentes reales soportadas;
-- debe mostrar explícitamente cobertura parcial o ausencia de datos;
-- no debe fabricar relaciones, clasificación, telemetría, métricas ni evidencia inexistente.
-
----
-
-## Auditoría
-
-Las remediaciones integradas en `main` forman parte del baseline actual.
-
-Remediaciones históricas relevantes ya integradas:
-
-- `AUD-API-001` — preservación del contrato canónico durante el HTTP round-trip;
-- `AUD-DATA-001` — endurecimiento de calidad de identificadores para reconciliación;
-- `AUD-DATA-002` — source identity namespaced by instance.
-
-Post-release audit 2026-10-05 — hotfixes prioritarios cerrados:
-
-- post-release `AUD-LIVE-001` — PR #131 / CI #1021;
-- post-release `AUD-API-001` — PR #132 / CI #1023;
-- post-release `AUD-DATA-001` — PR #133 / CI #1025;
-- post-release `AUD-SEC-001` — PR #134 / CI #1027.
-
-Baseline post-remediación: `main @ 8a1661f205fd872e8a117dc9e5b30e867b856cc0`.
-
-Los IDs post-release pueden coincidir con findings históricos. Usar siempre fecha/PR/SHA para desambiguar y no asumir que un finding histórico sigue activo.
-
-Cierre verificable:
-
-`../audits/v0.2-post-release-remediation-closure.md`
-
-Para trabajo de auditoría consultar `../audits/` y el handoff actual.
-
----
-
-## Regla de trabajo inmediata
-
-Para comenzar una nueva tarea:
-
-1. leer `00-START-HERE.md`;
-2. leer este archivo;
-3. leer `03-SESSION-HANDOFF.md`;
-4. consultar roadmap, ADR o documentación específica únicamente si la tarea lo requiere;
-5. verificar `git status`, branch y HEAD antes de modificar código.
-
----
-
-## Próximo objetivo funcional
-
-v0.2 está formalmente cerrada y sus cuatro hotfix prioritarios post-release están integrados.
-
-La siguiente fase funcional planificada es **v0.3 — Product Experience**, dedicada a UI/UX, interfaz, visualización, accesibilidad, responsive, motion y flujos por persona. No ampliar v0.3 hacia Intelligence & Automation.
-
-**v0.4 — Intelligence & Automation** concentra automatización, reporting/auditoría, observabilidad, ciencia de datos, Graph Intelligence, detección de anomalías e IA/ML explicable.
-
-V02-023 permanece pendiente y bloqueado hasta disponer de App Registration/intervención administrativa autorizada en Entra. Su estado no invalida el cierre de v0.2.
+V03-CMDB-02 diseñará el Canonical CMDB / Provider 2.0, evitando convertir `TechnologyAsset.attributes` en un contenedor plano de toda la semántica GLPI.
