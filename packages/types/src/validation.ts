@@ -375,3 +375,4 @@ export function validateTechnologySnapshot(snapshot: TechnologySnapshot): readon
 
   return issues;
 }
+export { validateProvenance as validateProvenanceRecord };
