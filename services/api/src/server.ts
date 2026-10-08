@@ -3,7 +3,7 @@ import type { FastifyInstance } from "fastify";
 import { buildApp } from "./app.js";
 import { loadConfig, type ApiConfig } from "./config.js";
 import {
-  createRuntimeTechnologyProvider,
+  createRuntimeTechnologyServices,
   type RuntimeTechnologyProviderOptions,
 } from "./glpi-runtime.js";
 import { createLabAuthenticationProvider } from "./lab-auth.js";
@@ -50,11 +50,11 @@ export async function startServer(
   config: ApiConfig = loadConfig(),
   runtimeOptions: RuntimeTechnologyProviderOptions = {},
 ): Promise<FastifyInstance> {
-  const technologyProvider = createRuntimeTechnologyProvider(config, runtimeOptions);
+  const technologyServices = createRuntimeTechnologyServices(config, runtimeOptions);
   const authenticationProvider = createLabAuthenticationProvider(config);
   const app = await buildApp({
     config,
-    ...(technologyProvider === undefined ? {} : { technologyProvider }),
+    ...technologyServices,
     ...(authenticationProvider === undefined ? {} : { authenticationProvider }),
   });
   installShutdownHandlers(app);

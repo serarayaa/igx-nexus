@@ -7,6 +7,7 @@ import {
 import { createGlpiLiveTechnologyProvider } from "./glpi-provider.js";
 import { createGlpiFetchTransport, GlpiConfigurationError } from "./glpi.js";
 import type { TechnologyProvider } from "./provider.js";
+import { createGlpiHardwareAdapter, type GlpiHardwareAdapter } from "./glpi-hardware.js";
 
 export interface GlpiLiveRuntimeConfig {
   readonly sourceInstanceId: string;
@@ -120,6 +121,14 @@ export function createRuntimeTechnologyProvider(
   config: ApiConfig,
   options: RuntimeTechnologyProviderOptions = {},
 ): TechnologyProvider | undefined {
+  return createRuntimeTechnologyServices(config, options)?.technologyProvider;
+}
+
+/** Both readers share one server-selected GLPI transport and instance. */
+export function createRuntimeTechnologyServices(
+  config: ApiConfig,
+  options: RuntimeTechnologyProviderOptions = {},
+): { readonly technologyProvider: TechnologyProvider; readonly hardwareAdapter: GlpiHardwareAdapter } | undefined {
   if (config.providerMode !== "live") return undefined;
 
   const environment = options.environment ?? process.env;
@@ -147,10 +156,14 @@ export function createRuntimeTechnologyProvider(
     ...(sharedFetch === undefined ? {} : { fetchImpl: sharedFetch }),
   });
 
-  return createGlpiLiveTechnologyProvider({
+  const readerOptions = {
     transport,
     sourceInstanceId: glpiConfig.sourceInstanceId,
     pageSize: glpiConfig.pageSize,
     maxRecords: glpiConfig.maxRecords,
-  });
+  };
+  return {
+    technologyProvider: createGlpiLiveTechnologyProvider(readerOptions),
+    hardwareAdapter: createGlpiHardwareAdapter(readerOptions),
+  };
 }

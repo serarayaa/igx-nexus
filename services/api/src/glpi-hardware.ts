@@ -8,6 +8,13 @@ import { GlpiAuthenticationError, GlpiConfigurationError, GlpiPayloadError, Glpi
 
 export const glpiHardwareSections = ["processors", "memoryModules", "physicalStorageDevices", "logicalVolumes"] as const;
 export type GlpiHardwareSection = (typeof glpiHardwareSections)[number];
+/** Compatible subtype: identity anchor failures, not operational configuration failures. */
+export class GlpiHardwareAnchorError extends GlpiConfigurationError {
+  constructor() {
+    super("Hardware requires one unambiguous GLPI Computer source reference");
+    this.name = "GlpiHardwareAnchorError";
+  }
+}
 type ComponentKind = "Processor" | "Memory" | "HardDrive";
 type Row = Readonly<Record<string, unknown>>;
 export interface GlpiHardwareAdapterOptions {
@@ -108,8 +115,9 @@ export function createGlpiHardwareAdapter(options: GlpiHardwareAdapterOptions): 
     async getInventory(asset, sections = glpiHardwareSections) {
       if (!asset.id.trim() || sections.some((s) => !glpiHardwareSections.includes(s))) throw new GlpiConfigurationError("Invalid hardware inventory request");
       const anchors = asset.sourceReferences.filter((s) => s.source === "glpi" && s.sourceInstanceId === options.sourceInstanceId && s.entityType === "Computer" && s.sourceScope === "Assets/Computer");
-      if (anchors.length !== 1 || validateSourceReference(anchors[0]!).length || !/^[1-9]\d*$/.test(anchors[0]!.externalId)) throw new GlpiConfigurationError("Hardware requires one unambiguous GLPI Computer source reference");
-      const computerId = id(Number(anchors[0]!.externalId));
+      if (anchors.length !== 1 || validateSourceReference(anchors[0]!).length || !/^[1-9]\d*$/.test(anchors[0]!.externalId)) throw new GlpiHardwareAnchorError();
+      const computerId = Number(anchors[0]!.externalId);
+      if (!Number.isSafeInteger(computerId) || computerId < 1) throw new GlpiHardwareAnchorError();
       const requested = new Set(sections);
       // Catalogue entries can be shared by distinct physical components. Cache detail, never merge items.
       const details = new Map<string, Promise<{ row: Row; source: SourceReference }>>();
