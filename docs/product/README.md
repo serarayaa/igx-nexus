@@ -115,3 +115,13 @@ ADR-0023 permanece como baseline normativo de Product IA. Cada ticket de impleme
 - [Ownership, URL, history, Table/Graph, retorno y migración](v0.3-navigation-state-contract.md)
 
 **V03-008 Human Review Checkpoint = APPROVED WITH CONDITIONS**. Se mantiene **GO WITH CONDITIONS**. Cierre humano autorizado; integración pendiente de merge manual de Sergio en PR #137 tras CI final SUCCESS y mergeability clean. V03-003/V03-005 NO iniciados. Foundation aprobada; condiciones y seguimiento de URL return en el contrato. Technology Workspace final no implementado; providers preservados.
+
+
+## v0.3 — IT CMDB Scope Reset
+
+- [Scope Freeze — IT CMDB](v0.3-it-cmdb-scope.md)
+- [Roadmap v0.3](../roadmap-v0.3.md)
+
+La definición vigente de v0.3 es una CMDB TI sobre GLPI + GLPI Agent.
+El trabajo Product Experience anterior se preserva como foundation/research,
+pero no amplía el scope hacia OT, cybersecurity o Intelligence.
