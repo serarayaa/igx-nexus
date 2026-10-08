@@ -1,45 +1,131 @@
-# IGX NEXUS v0.3 — Product Experience
+# IGX NEXUS v0.3 — IT CMDB
 
-V03-001: **APPROVED / GO WITH CONDITIONS**, según cierre humano del archivo de solicitud. Baseline estable `80b07704c8ba719a6c7a53449168739dc1745d32`. V03-002: **Human Review Checkpoint = APPROVED WITH CONDITIONS**; integrado mediante PR #136 en `main@e04c4025dc3764bc668a6155df883e275c0519f6`. No adopción automática de marca.
+Estado: **scope reset aprobado / ejecución por tickets V03-CMDB-***  
+Baseline de inicio: `main@eb87c68ee2a17b793e34e457c4e2914567889bb1`
 
-## Secuencia recomendada y dependencias
+## Definición de v0.3
 
-| Orden / ID | Resultado | Gate |
-|---|---|---|
-| V03-001 · audit | Auditoría de experiencia, Innergex, benchmarks y Preservation/Restructure Matrix | Aprobado GO WITH CONDITIONS; preservar sus límites |
-| V03-002 · foundations | Tokens aditivos, semántica, tipografía, surfaces, componentes, marca propuesta y Visual QA | Checkpoint humano completado con condiciones; CI verde y merge manual; docs en design-system |
-| V03-008 · state/navigation | Contrato tipado URL, helpers/history, adaptador Explorer/360 y recorrido Graph controlado; [contrato](product/v0.3-navigation-state-contract.md) | V03-008 Human Review Checkpoint = APPROVED WITH CONDITIONS; GO WITH CONDITIONS; CI final y merge manual en PR #137 |
-| V03-003 · shell | Navegación, naming y aplicación de marca aprobada | 002/008, keyboard/drawer/preferencias |
-| V03-005 · Technology Workspace | Explorer + Map como representaciones del contexto | Hipótesis; 002/008/003; validar performance y alternativa semántica |
-| V03-007 · Graph / Map | Implementación/evolución de Graph/Map dentro de V03-005; **no es una superficie independiente** | Comparte scope, filtros, selección, navegación, URL state y contexto de investigación; sin estado paralelo ni scope duplicado |
-| V03-006 · Asset 360 | Evolucionar identidad, evidencia y relaciones; mantener cuatro secciones | 002/008/005; no campos/historia inventados |
-| V03-004 · Overview | “Qué requiere atención ahora y por qué”; continuidad para investigar | Destinos/scopes resueltos, cobertura separada |
-| V03-013 · especializadas | Lifecycle, Calidad, Findings/Research y QR; disclosure | Preservar cálculos, razones, límites y legibilidad de impresión |
-| V03-009 · responsive/a11y | Gates transversales desde 002 | 320/768/1440, teclado/SR/focus/contrast/forced colors |
-| V03-010 · motion | Integración que explique cambios y preserve contexto | Política 002 y contratos 008; equivalente reduced |
-| V03-011 · screenshot/QA | Baselines aprobados por componente/superficie | Matriz mínima; no certificar desde screenshots/axe |
-| V03-012 · readiness | Handoff y revisión humana de integración | Todos los gates, límites Demo/Live documentados |
+**IGX NEXUS v0.3 = CMDB TI completa, moderna y visualmente premium, construida sobre GLPI + GLPI Agent.**
 
-La secuencia conserva los IDs propuestos por V03-001; no crea tickets de implementación masivos. No se inicia automáticamente el siguiente ticket.
+Objetivo de release:
 
-## Preservation / Restructure Matrix vigente
+> Entregar una CMDB TI utilizable en producción, integrada con GLPI, capaz de representar inventario, software, lifecycle, relaciones, calidad e historial mediante una experiencia moderna, confiable y extensible.
 
-| Área | Decisión | Límite |
-|---|---|---|
-| React, providers, modelos y contratos | KEEP | Sin nuevas fuentes/Intune/Graph/IA/backend/security/infra |
-| DTCG adapter, primitive/semantic, themes/density | KEEP + POLISH | Sin cambio de formato ni big-bang |
-| Semántica de evidencia/cobertura/condición | ADD / EVOLVE | Nuevas APIs, legacy preservado hasta migración |
-| Shell y branding raster | KEEP concept + EVOLVE assets | B dirección aprobada; SVG no final, refinamiento 16/24/32 antes de producción; A sólo fallback si B falla, C rechazado |
-| Explorer y Technology Map | EVOLVE como hipótesis | State contract, scope/URL/performance/a11y primero |
-| Asset 360 | KEEP + POLISH / EVOLVE | Cuatro secciones y contratos actuales |
-| Overview | EVOLVE composición | Prioridad de atención; no KPI/card soup |
-| Especializadas | KEEP lógica + EVOLVE disclosure | QR físico y fuentes/cálculos preservados |
-| Motion y accesibilidad | KEEP + POLISH | CSS actual, sin heavy dependency ni compliance absoluto |
+NEXUS no es sólo una skin de GLPI. GLPI permanece como System of Record CMDB/ITAM; NEXUS normaliza, relaciona, explica, visualiza y organiza la experiencia de inventario.
 
-**GO WITH CONDITIONS** para el siguiente nivel de trabajo, con revisión humana de 002 completada. Condiciones: refinamiento óptico de B antes de asset productivo y aplicación posterior de branding; contrato V03-008 antes de implementación completa de Workspace; Live real no verificado; auditoría específica de accesibilidad por superficie, sin compliance WCAG absoluto; migración incremental. **V03-008 aprobado con condiciones**, desde baseline `e04c402…`; V03-003/V03-005 no iniciados. El renderer Map legacy no se declara convergido antes de su migración por consumidor. V02-023 permanece separado, bloqueado por tenant externo y no bloqueante para v0.3; v0.2 y hotfixes no se reabren.
+## Exit gate funcional
 
-**V03-008 Human Review Checkpoint = APPROVED WITH CONDITIONS**. Se mantiene **GO WITH CONDITIONS**. Cierre humano autorizado; integración pendiente de merge manual de Sergio en PR #137 tras CI final SUCCESS y mergeability clean. V03-003/V03-005 NO iniciados.
+La release no se considera utilizable mientras no pueda afirmarse:
 
-Condiciones pendientes: integración productiva del renderer Graph legacy en V03-005; performance a escala corporativa; auditoría de accesibilidad específica por superficie; Asset 360 return URL length robustness. No declarar Graph completamente migrado, accesibilidad completa ni escala corporativa resuelta.
+> “Puedo buscar un equipo, abrirlo, entender qué es, dónde está, quién lo usa, qué hardware/software tiene, cuándo fue observado y qué tan completa es su información.”
 
-El patrón `#assets/:id?...&return=<encoded investigation URL>` queda aprobado. La robustez de longitud es una condición NO BLOQUEANTE para V03-008, pendiente como seguimiento de superficies consumidoras / V03-005 si corresponde. Validar longitud práctica de la URL final Asset 360 después del encoding y probar una investigación extensa representativa con 14 facetas, búsqueda, selección y parámetros Graph; comprobar navegación, refresh y retorno para evitar URLs excesivas o degradación inesperada. Este caso ampliado no fue ejecutado durante el cierre documental. Mantener límites actuales del contrato (hash4096, q256, facetas/IDs160); el límite del origen no demuestra robustez del destino codificado. No introducir sessionStorage/global store como workaround sin evidencia.
+## Secuencia V03-CMDB
+
+| Orden / ID | Resultado esperado | Gate principal |
+| --- | --- | --- |
+| V03-CMDB-00 | Scope Freeze / Product Reset | definición única de v0.3, non-goals, IA, fuentes, preservación y roadmap |
+| V03-CMDB-01 | GLPI/Agent capability + Live data contract audit | matriz Exposed / Authorized / Populated / Gap con least privilege |
+| V03-CMDB-02 | Canonical CMDB + Provider 2.0 + provenance/history model | modelo estructurado sin aplanar GLPI en attributes; compatibilidad controlada |
+| V03-CMDB-03 | Premium CMDB Experience Foundation | shell CMDB, navegación, a11y y dirección visual aprobada |
+| V03-CMDB-04 | Overview | estado del inventario, atención, lifecycle, calidad y cambios |
+| V03-CMDB-05 | Assets Explorer | Visual + Table, filtros, URL state y búsqueda |
+| V03-CMDB-06 | Asset 360 | identity, assignment, hardware, OS, software, lifecycle, relations, history, provenance |
+| V03-CMDB-07 | Software | productos, versiones, instalaciones y activos |
+| V03-CMDB-08 | Network | inventario soportado por fuentes reales; gaps explícitos |
+| V03-CMDB-09 | Relationships | User ↔ Device ↔ Software ↔ Network ↔ Location con provenance |
+| V03-CMDB-10 | Lifecycle | reglas y campos reales; sin inferencia silenciosa |
+| V03-CMDB-11 | CMDB Health | completeness, freshness, consistency, uniqueness y relationship coverage |
+| V03-CMDB-12 | Changes / History | snapshots, diff semántico, timeline y evidencia |
+| V03-CMDB-13 | Global Search / Command Palette | búsqueda transversal y navegación rápida |
+| V03-CMDB-14 | Product Polish | responsive, motion, microinteracciones, visual QA y accesibilidad |
+| V03-CMDB-15 | Release Hardening | regresión, seguridad, performance, documentación y release gate |
+
+No reutilizar los IDs históricos `V03-001..` para estos tickets.
+
+## IA objetivo
+
+La IA de v0.3 queda acotada a:
+
+- Overview
+- Assets
+- Software
+- Network
+- Relationships
+- Lifecycle
+- Data Quality / CMDB Health
+- Changes / History
+- Asset 360
+- Global Search / Command Palette
+
+Una superficie sólo se considera terminada si mantiene navegación por teclado, foco visible, contraste objetivo WCAG AA, reduced motion, alternativa semántica a visualizaciones y reflow móvil razonable.
+
+## Estrategia de fuentes
+
+### GLPI + GLPI Agent
+
+Base canónica para CMDB/ITAM v0.3:
+
+- activos físicos;
+- hardware;
+- sistema operativo;
+- software;
+- users/assignment cuando la relación esté disponible;
+- entidades y ubicaciones;
+- lifecycle/status;
+- relaciones soportadas;
+- inventario observado por Agent.
+
+### NEXUS
+
+Responsable de modelo canónico independiente de IDs GLPI, provenance, reconciliación, snapshots, diff/historial semántico, calidad de datos y experiencia de producto.
+
+### Complementarias
+
+- Entra: identidad/account/org.
+- Intune: management/enrollment/managed state/primary user/compliance.
+- Zabbix: disponibilidad y telemetría operacional.
+
+No recrear monitoreo operacional en GLPI/NEXUS si Zabbix es la fuente adecuada. No añadir una fuente nueva sólo porque técnicamente exista: primero debe haber gap probado y requisito real.
+
+## Non-goals de v0.3
+
+Quedan fuera:
+
+- OT CMDB & Discovery;
+- ciberseguridad TI/OT;
+- vulnerability scanning;
+- Wazuh / Greenbone productivo;
+- Malcolm / Zeek / ICSN productivo;
+- Intelligence / Analytics & Data Science;
+- ML/IA;
+- automatización autónoma;
+- topología inventada desde señales insuficientes.
+
+Dirección futura:
+
+- **v0.4 — OT CMDB & Discovery**
+- **v0.5 — Cybersecurity**
+- **v0.6 — Intelligence / Analytics & Data Science**
+
+## Preservación del trabajo anterior
+
+El reset no elimina trabajo previo.
+
+| Trabajo previo | Decisión |
+| --- | --- |
+| V03-002 Design System & Semantic/Brand Foundations | preservar como foundation reusable |
+| V03-008 Cross-Surface State & Navigation Contract | preservar; integrado en main mediante PR #137 |
+| V03-003 / V03-003A | no mergear; preservar como investigación histórica |
+| PR #138 | cerrado como superseded, sin merge |
+| research visual/spatial/2.5D/map | inspiración futura, no requisito v0.3 |
+| componentes/contratos v0.2 | reutilizar cuando encajen; no asumir suficiencia para Provider 2.0 |
+
+La dirección visual final de la CMDB se decide nuevamente en V03-CMDB-03.
+
+## Estado inmediato
+
+- `V03-CMDB-00`: activo en `feature/v03-cmdb-00-scope-reset`.
+- `V03-CMDB-01`: auditoría Live ejecutada en `feature/v03-cmdb-01-glpi-capability-audit`; se integra después del scope reset.
+- `V03-CMDB-02`: no iniciar hasta integrar el scope reset y consolidar la auditoría de capacidades.
+
+Documento canónico de scope: `docs/product/v0.3-it-cmdb-scope.md`.
