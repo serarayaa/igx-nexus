@@ -278,3 +278,19 @@ La colección devolvió las 15 ubicaciones de Chile y preservó las jerarquías
 Conclusión: `entity` y `location` son rights independientes necesarios
 para navegar sus catálogos, aun cuando Computer ya incluya referencias
 embebidas a Entity/Location.
+
+
+## 11. Decisiones finales V03-CMDB-01
+
+La auditoría completa se documenta en
+`docs/integrations/glpi-v03-cmdb-capability-audit.md`.
+
+Decisiones de mínimo privilegio resultantes:
+
+- no agregar `user = READ`: Computer ya expone `user` / `user_tech` como
+  relaciones reducidas `{id,name}`;
+- no agregar `system_logs = READ`: EventLog devolvió HTTP 403 bajo el
+  baseline actual y no es necesario para el estado canónico ni para el
+  historial semántico de NEXUS;
+- mantener NetworkPort/IP como gap explícito de High-Level API, sin introducir
+  otra fuente hasta que exista un requisito funcional demostrado.

@@ -245,3 +245,25 @@ exitoso y devolvió 3 registros. Con esa evidencia se incorpora al baseline el
 conjunto completo de activos físicos requerido por la CMDB TI v0.3 para hacer
 un barrido integral posterior. La política continúa siendo read-only y
 deny-by-default para cualquier otro right.
+
+
+## Cierre de mínimo privilegio V03-CMDB-01
+
+El baseline técnico definitivo para la service identity fue sometido a un
+barrido runtime sobre GLPI 11.0.11. Computer, Monitor, Printer, Peripheral,
+NetworkEquipment y Phone quedaron autorizados en lectura; los tipos poblados
+también validaron detail.
+
+Se mantuvieron deliberadamente fuera del perfil:
+
+- `user`: la relación de asignación necesaria ya viene embebida en los assets
+  como `{id,name}`;
+- `system_logs`: `Administration/EventLog` devolvió HTTP 403 y no se
+  justifica ampliar privilegios para una superficie de logs potencialmente
+  sensible que no reemplaza un historial semántico estructurado.
+
+La segunda ejecución de `rbac-api-readonly.php --apply` finalizó con 0
+cambios, 0 divergencias de rights y 0 divergencias de metadata.
+
+Ver `docs/integrations/glpi-v03-cmdb-capability-audit.md` para la matriz
+completa de capacidades, población y gaps.
