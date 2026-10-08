@@ -1,0 +1,1005 @@
+{
+  "evidence": {
+    "glpiVersion": "11.0.11",
+    "apiVersion": "2.3.0",
+    "source": "Local GLPI generated OpenAPI backup, 2026-10-07",
+    "sha256": "31281705e3f44d39226bff3120513efa00ae096745d9670514afc5e3653825bf",
+    "containsInventory": false,
+    "extraction": "Only verified GET parameters, JSON response schema, error statuses and referenced component schemas; no server URLs, examples, credentials or inventory."
+  },
+  "paths": {
+    "/Assets/Computer/{id}/Component/Processor": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/filter"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "name": "id",
+            "description": "",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "pattern": "\\d+"
+            }
+          }
+        ],
+        "response200": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ProcessorItem"
+          }
+        },
+        "errorStatuses": [
+          "400",
+          "401",
+          "403",
+          "404",
+          "500"
+        ]
+      }
+    },
+    "/Assets/Computer/{id}/Component/Memory": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/filter"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "name": "id",
+            "description": "",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "pattern": "\\d+"
+            }
+          }
+        ],
+        "response200": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/MemoryItem"
+          }
+        },
+        "errorStatuses": [
+          "400",
+          "401",
+          "403",
+          "404",
+          "500"
+        ]
+      }
+    },
+    "/Assets/Computer/{id}/Component/HardDrive": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/filter"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          },
+          {
+            "name": "id",
+            "description": "",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "pattern": "\\d+"
+            }
+          }
+        ],
+        "response200": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/HardDriveItem"
+          }
+        },
+        "errorStatuses": [
+          "400",
+          "401",
+          "403",
+          "404",
+          "500"
+        ]
+      }
+    },
+    "/Assets/Computer/{asset_id}/Volume": {
+      "get": {
+        "parameters": [
+          {
+            "name": "asset_id",
+            "description": "The ID of the Asset",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "pattern": "\\d+"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/filter"
+          },
+          {
+            "$ref": "#/components/parameters/start"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          }
+        ],
+        "response200": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Volume"
+          }
+        },
+        "errorStatuses": [
+          "400",
+          "401",
+          "403",
+          "404",
+          "500"
+        ]
+      }
+    },
+    "/Components/Processor/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "description": "",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "pattern": "\\d+"
+            }
+          }
+        ],
+        "response200": {
+          "$ref": "#/components/schemas/Processor"
+        },
+        "errorStatuses": [
+          "400",
+          "401",
+          "403",
+          "404",
+          "500"
+        ]
+      }
+    },
+    "/Components/Memory/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "description": "",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "pattern": "\\d+"
+            }
+          }
+        ],
+        "response200": {
+          "$ref": "#/components/schemas/Memory"
+        },
+        "errorStatuses": [
+          "400",
+          "401",
+          "403",
+          "404",
+          "500"
+        ]
+      }
+    },
+    "/Components/HardDrive/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "description": "",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "pattern": "\\d+"
+            }
+          }
+        ],
+        "response200": {
+          "$ref": "#/components/schemas/HardDrive"
+        },
+        "errorStatuses": [
+          "400",
+          "401",
+          "403",
+          "404",
+          "500"
+        ]
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "start": {
+        "name": "start",
+        "in": "query",
+        "description": "The first item to return",
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "default": 0,
+          "minimum": 0
+        }
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "The maximum number of items to return",
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "default": 100,
+          "minimum": 0
+        }
+      },
+      "sort": {
+        "name": "sort",
+        "in": "query",
+        "description": "One or more properties to sort by in the form of property:direction where property is the full property name in dot notation and direction is either asc or desc. If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "filter": {
+        "name": "filter",
+        "in": "query",
+        "description": "RSQL query string",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "ProcessorItem": {
+        "x-itemtype": "Item_DeviceProcessor",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "itemtype": {
+            "type": "string"
+          },
+          "items_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "entity": {
+            "type": "object",
+            "x-itemtype": "Entity",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Entity"
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "serial": {
+            "type": "string"
+          },
+          "otherserial": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "x-itemtype": "Location",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Location"
+          },
+          "status": {
+            "type": "object",
+            "x-itemtype": "State",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "State"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "is_dynamic": {
+            "type": "boolean"
+          },
+          "processor": {
+            "type": "object",
+            "x-itemtype": "DeviceProcessor",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "designation": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Processor"
+          },
+          "busID": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "nbcores": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nbthreads": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Processor item"
+      },
+      "Processor": {
+        "x-itemtype": "DeviceProcessor",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "designation": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "manufacturer": {
+            "type": "object",
+            "x-itemtype": "Manufacturer",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Manufacturer"
+          },
+          "entity": {
+            "type": "object",
+            "x-itemtype": "Entity",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Entity"
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "frequency_default": {
+            "type": "string"
+          },
+          "nbcores_default": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nbthreads_default": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "model": {
+            "type": "object",
+            "x-itemtype": "DeviceProcessorModel",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "ProcessorModel"
+          }
+        },
+        "description": "Processor"
+      },
+      "MemoryItem": {
+        "x-itemtype": "Item_DeviceMemory",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "itemtype": {
+            "type": "string"
+          },
+          "items_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "entity": {
+            "type": "object",
+            "x-itemtype": "Entity",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Entity"
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "serial": {
+            "type": "string"
+          },
+          "otherserial": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "x-itemtype": "Location",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Location"
+          },
+          "status": {
+            "type": "object",
+            "x-itemtype": "State",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "State"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "is_dynamic": {
+            "type": "boolean"
+          },
+          "memory": {
+            "type": "object",
+            "x-itemtype": "DeviceMemory",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "designation": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Memory"
+          },
+          "busID": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Memory item"
+      },
+      "Memory": {
+        "x-itemtype": "DeviceMemory",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "designation": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "manufacturer": {
+            "type": "object",
+            "x-itemtype": "Manufacturer",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Manufacturer"
+          },
+          "entity": {
+            "type": "object",
+            "x-itemtype": "Entity",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Entity"
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "size_default": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "object",
+            "x-itemtype": "DeviceMemoryType",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "MemoryType"
+          },
+          "model": {
+            "type": "object",
+            "x-itemtype": "DeviceMemoryModel",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "MemoryModel"
+          }
+        },
+        "description": "Memory"
+      },
+      "HardDriveItem": {
+        "x-itemtype": "Item_DeviceHardDrive",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "itemtype": {
+            "type": "string"
+          },
+          "items_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "entity": {
+            "type": "object",
+            "x-itemtype": "Entity",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Entity"
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "serial": {
+            "type": "string"
+          },
+          "otherserial": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "x-itemtype": "Location",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Location"
+          },
+          "status": {
+            "type": "object",
+            "x-itemtype": "State",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "State"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "is_dynamic": {
+            "type": "boolean"
+          },
+          "hard_drive": {
+            "type": "object",
+            "x-itemtype": "DeviceHardDrive",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "designation": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "HardDrive"
+          },
+          "busID": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Hard drive item"
+      },
+      "HardDrive": {
+        "x-itemtype": "DeviceHardDrive",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "designation": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "manufacturer": {
+            "type": "object",
+            "x-itemtype": "Manufacturer",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Manufacturer"
+          },
+          "entity": {
+            "type": "object",
+            "x-itemtype": "Entity",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Entity"
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rpm": {
+            "type": "string"
+          },
+          "cache": {
+            "type": "string"
+          },
+          "capacity_default": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "interface": {
+            "type": "object",
+            "x-itemtype": "InterfaceType",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "InterfaceType"
+          },
+          "model": {
+            "type": "object",
+            "x-itemtype": "DeviceHardDriveModel",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "HardDriveModel"
+          }
+        },
+        "description": "Hard drive"
+      },
+      "Volume": {
+        "x-itemtype": "Item_Disk",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "itemtype": {
+            "type": "string"
+          },
+          "items_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "entity": {
+            "type": "object",
+            "x-itemtype": "Entity",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Entity"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "device": {
+            "type": "string",
+            "description": "The device/partition path, e.g. /dev/sda1",
+            "maxLength": 255
+          },
+          "mount_point": {
+            "type": "string",
+            "description": "The mount point of the volume, e.g. /home",
+            "maxLength": 255
+          },
+          "filesystem": {
+            "type": "object",
+            "x-itemtype": "Filesystem",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "x-full-schema": "Filesystem"
+          },
+          "total_size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "free_size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "is_dynamic": {
+            "type": "boolean"
+          },
+          "encryption_status": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "description": "                            Encryption status of the volume:\n                            - 0: No encryption\n                            - 1: Fully encrypted\n                            - 2: Partially encrypted"
+          },
+          "encryption_tool": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "encryption_algorithm": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "encryption_type": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Volume"
+      }
+    }
+  }
+}
