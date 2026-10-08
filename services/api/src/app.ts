@@ -15,11 +15,14 @@ import {
   type AuthenticationProvider,
 } from "./security.js";
 import { registerTechnologyRoutes } from "./technology-routes.js";
+import { registerHardwareRoutes } from "./hardware-routes.js";
+import type { GlpiHardwareAdapter } from "./glpi-hardware.js";
 
 export interface BuildAppOptions {
   readonly config?: ApiConfig;
   readonly authenticationProvider?: AuthenticationProvider;
   readonly technologyProvider?: TechnologyProvider;
+  readonly hardwareAdapter?: GlpiHardwareAdapter;
 }
 
 function loggerOptions(config: ApiConfig) {
@@ -129,6 +132,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   registerSecurity(app, authenticationProvider);
   registerBaseRoutes(app, technologyProvider);
   registerTechnologyRoutes(app, technologyProvider);
+  registerHardwareRoutes(app, technologyProvider, options.hardwareAdapter);
 
   return app;
 }
