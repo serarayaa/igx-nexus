@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Badge, Button, EmptyState, ErrorState, LoadingState, PageHeader, StatusBadge } from "@igx-nexus/ui";
 import {
   ageInDays,
@@ -29,6 +29,8 @@ import { assetHash, assetSectionHash, demoQrHash, labelHash, relationsHash, type
 import { demoLocatorForAsset } from "./qr-locator";
 import { assetReturnHash } from "./navigation-state";
 import "./asset-360.css";
+import { HardwareExperience } from "./HardwareExperience";
+import type { HardwareReader } from "./hardware-client";
 
 type LoadState =
   | { status: "loading" }
@@ -39,6 +41,7 @@ type Asset360Props = {
   assetId: string;
   section?: AssetSection;
   relationshipProvider?: RelationshipInventoryProvider;
+  hardwareReader?: HardwareReader;
 } & ModeAwareProviderProps<InventoryProvider>;
 
 type RelationshipLoadState =
@@ -64,6 +67,7 @@ const lifecycleTones = {
 const sectionLabels: Record<AssetSection, string> = {
   summary: "Resumen",
   inventory: "Inventario",
+  hardware: "Hardware",
   evidence: "Evidencia y fuentes",
   relationships: "Relaciones",
 };
@@ -110,12 +114,28 @@ function Field({ label, value, mono = false }: { label: string; value: string | 
 }
 
 function AssetSectionNav({ assetId, section, returnHash }: { assetId: string; section: AssetSection; returnHash: string | null }) {
-  return <nav className="nexus-asset-local-nav" aria-label="Secciones de Asset 360">
-    {(["summary", "inventory", "evidence", "relationships"] as const).map(candidate =>
+  const navRef = useRef<HTMLElement>(null);
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const update = () => {
+      const active = nav.querySelector<HTMLElement>('[aria-current="page"]');
+      if (active) setIndicator({ left: active.offsetLeft, width: active.offsetWidth });
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(nav);
+    nav.querySelectorAll("a").forEach(link => observer.observe(link));
+    return () => observer.disconnect();
+  }, [section]);
+  return <nav ref={navRef} className="nexus-asset-local-nav" aria-label="Secciones de Asset 360">
+    {(["summary", "inventory", "hardware", "evidence", "relationships"] as const).map(candidate =>
       <a key={candidate} href={assetSectionHash(assetId, candidate) + (returnHash ? `${candidate === "summary" ? "?" : "&"}return=${encodeURIComponent(returnHash)}` : "")} aria-current={candidate === section ? "page" : undefined}>
         {sectionLabels[candidate]}
       </a>
     )}
+    <span className="nexus-asset-nav-indicator" aria-hidden="true" style={{ transform: `translateX(${indicator.left}px)`, width: indicator.width }} />
   </nav>;
 }
 
@@ -521,6 +541,7 @@ export function Asset360(props: Asset360Props) {
 
     {section === "summary" && <SummaryPanel asset={asset} snapshot={state.snapshot} isLive={isLive} {...(relationshipProvider ? { relationshipProvider } : {})} />}
     {section === "inventory" && <InventoryPanel asset={asset} snapshot={state.snapshot} isLive={isLive} />}
+    {section === "hardware" && <HardwareExperience assetId={asset.id} mode={mode} {...(props.hardwareReader ? { reader: props.hardwareReader } : {})} />}
     {section === "evidence" && <EvidencePanel asset={asset} snapshot={state.snapshot} isLive={isLive} />}
     {section === "relationships" && <RelationshipPanel asset={asset} inventory={state.snapshot} isLive={isLive} {...(relationshipProvider ? { provider: relationshipProvider } : {})} />}
   </div>;

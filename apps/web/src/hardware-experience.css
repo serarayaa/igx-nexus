@@ -1,0 +1,99 @@
+.nexus-hardware-heading, .nexus-hardware-section-heading { display: flex; align-items: start; justify-content: space-between; gap: var(--igx-spacing-4); }
+.nexus-hardware-heading h2 { margin: var(--igx-spacing-2) 0; font-size: 1.75rem; }
+.nexus-hardware-heading p, .nexus-hardware-note, .nexus-hardware-section-heading span, .nexus-hardware-identity, .nexus-hardware-fields dt, .nexus-hardware-evidence { color: var(--igx-semantic-color-text-secondary); }
+.nexus-hardware-kicker { font-size: var(--igx-font-size-sm); font-weight: 600; letter-spacing: .06em; }
+.nexus-hardware-ready { display: grid; gap: var(--igx-spacing-8); animation: nexus-hardware-enter var(--igx-semantic-motion-panel-duration) var(--igx-semantic-motion-panel-easing); }
+.nexus-hardware-collection { display: grid; gap: var(--igx-spacing-4); min-width: 0; scroll-margin-block-start: 6rem; }
+.nexus-hardware-section-heading h3 { margin: 0 0 var(--igx-spacing-1); font-size: 1.25rem; }
+.nexus-hardware-section-heading span { font-size: var(--igx-font-size-sm); }
+.nexus-hardware-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--igx-spacing-4); }
+[aria-labelledby="hardware-processors"] .nexus-hardware-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+[aria-labelledby="hardware-volumes"] .nexus-hardware-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.nexus-hardware-card { display: flex; flex-direction: column; gap: var(--igx-spacing-4); padding: var(--igx-spacing-5); border: 0; border-top: 1px solid var(--igx-semantic-color-border-default); border-radius: 0; background: transparent; min-width: 0; overflow-wrap: anywhere; }
+.nexus-hardware-card header, .nexus-hardware-tags { display: flex; flex-wrap: wrap; gap: var(--igx-spacing-3); align-items: center; }
+.nexus-hardware-card h4 { margin: 0; font-size: 1.0625rem; line-height: 1.4; }
+.nexus-hardware-card header h4 { flex: 1; }
+.nexus-hardware-capacity { font-size: 2rem; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.nexus-hardware-cpu { padding-inline: 0; }
+.nexus-hardware-memory { border: 0; border-radius: var(--igx-semantic-shape-card); background: var(--igx-semantic-color-surface-panel); }
+.nexus-hardware-cpu-metrics, .nexus-hardware-volume-metrics, .nexus-hardware-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--igx-spacing-3); margin: 0; }
+.nexus-hardware-volume-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.nexus-hardware-cpu-metrics dd { font-size: 2rem; font-weight: 600; }
+.nexus-hardware-cpu-metrics .nexus-hardware-unknown { font-size: 1rem; font-weight: 400; }
+.nexus-hardware-card dt { font-size: var(--igx-font-size-sm); color: var(--igx-semantic-color-text-secondary); }
+.nexus-hardware-card dd { margin: var(--igx-spacing-1) 0 0; font-variant-numeric: tabular-nums; }
+.nexus-hardware-identity { display: grid; gap: var(--igx-spacing-1); font-size: var(--igx-font-size-sm); }
+.nexus-hardware-identity dl { margin-top: var(--igx-spacing-2); }
+.nexus-hardware-card meter { width: 100%; height: 1rem; accent-color: var(--igx-semantic-color-text-link); }
+.nexus-hardware-note { font-size: var(--igx-font-size-sm); line-height: 1.5; }
+.nexus-hardware-evidence { border-top: 1px solid var(--igx-semantic-color-border-subtle); font-size: var(--igx-font-size-sm); margin-top: auto; }
+.nexus-hardware-evidence summary, .nexus-hardware-gaps summary { cursor: pointer; min-height: 44px; padding-block: var(--igx-spacing-3); }
+.nexus-hardware-evidence summary span { margin-inline-start: var(--igx-spacing-2); }
+.nexus-hardware-evidence dl { display: grid; gap: var(--igx-spacing-3); margin: var(--igx-spacing-3) 0; }
+.nexus-hardware-evidence dd { margin: var(--igx-spacing-1) 0 0; color: var(--igx-semantic-color-text-primary); }
+.nexus-hardware-evidence li { margin-block: var(--igx-spacing-2); overflow-wrap: anywhere; }
+.nexus-hardware-evidence li span { display: block; }
+.nexus-hardware-evidence summary:focus-visible, .nexus-hardware-gaps summary:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 2px; }
+.nexus-hardware-gaps, .nexus-hardware-state-message, .nexus-hardware-demo { padding: var(--igx-spacing-4); border-inline-start: 3px solid var(--igx-semantic-color-border-default); background: var(--igx-semantic-color-surface-secondary); }
+.nexus-hardware-gaps { border-color: var(--igx-semantic-color-status-warning-solid); }
+.nexus-hardware-more { display: flex; gap: var(--igx-spacing-3); align-items: center; flex-wrap: wrap; }
+.nexus-hardware-skeleton-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--igx-spacing-4); margin-block: var(--igx-spacing-5); }
+.nexus-hardware-skeleton { padding: var(--igx-spacing-5); border: 1px solid var(--igx-semantic-color-border-default); display: grid; gap: var(--igx-spacing-4); }
+.nexus-hardware-skeleton span { display: block; height: 1rem; width: 75%; background: var(--igx-semantic-color-border-subtle); }
+.nexus-hardware-skeleton span:nth-child(2) { height: 2rem; width: 50%; }
+@keyframes nexus-hardware-enter { from { transform: translateY(.25rem); } to { transform: translateY(0); } }
+
+/* Connected Infrastructure: semantic surfaces, readable metadata, one finite SVG signature. */
+.nexus-hardware { font-size: var(--igx-semantic-typography-body-font-size); line-height: var(--igx-semantic-typography-body-line-height); }
+.nexus-hardware-heading h2 { font-size: var(--igx-font-size-2xl); }
+.nexus-hardware-heading h2:focus { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 4px; border-radius: var(--igx-semantic-shape-control); width: fit-content; }
+.nexus-confluence:disabled { cursor: default; }
+.nexus-hardware-heading p { max-width: 48rem; }
+.nexus-hardware-overview { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); border-radius: var(--igx-semantic-shape-card); overflow: hidden; background: var(--igx-semantic-color-surface-panel); }
+.nexus-hardware-overview-intro { padding: var(--igx-spacing-8); display: grid; gap: var(--igx-spacing-4); align-content: center; }
+.nexus-hardware-overview h3 { margin: 0; font-size: var(--igx-font-size-2xl); font-weight: var(--igx-font-weight-medium); line-height: 1.3; }
+.nexus-hardware-overview-intro p { color: var(--igx-semantic-color-text-secondary); max-width: 44ch; }
+.nexus-hardware-overview-intro button { justify-self: start; color: var(--igx-semantic-color-text-link); border: 0; padding: var(--igx-spacing-2) 0; min-height: 44px; cursor: pointer; background: transparent; font: inherit; text-align: start; }
+.nexus-hardware-overview-memory { background: var(--igx-semantic-color-surface-secondary); padding: var(--igx-spacing-6); display: flex; align-items: center; gap: var(--igx-spacing-5); }
+.nexus-hardware-overview-memory { background: color-mix(in srgb, var(--igx-semantic-color-text-link) 8%, var(--igx-semantic-color-surface-panel)); }
+.nexus-hardware-overview-memory > div { display: grid; gap: var(--igx-spacing-3); min-width: 0; }
+.nexus-hardware-overview-memory > div > span { font-size: var(--igx-font-size-sm); color: var(--igx-semantic-color-text-secondary); }
+.nexus-hardware-overview-memory strong { font-size: var(--igx-font-size-4xl); font-weight: var(--igx-font-weight-medium); line-height: 1.2; font-variant-numeric: tabular-nums; }
+.nexus-hardware-overview-memory .igx-status-badge { justify-self: start; }
+.nexus-hardware-overview-note { grid-column: 1 / -1; padding: var(--igx-spacing-4) var(--igx-spacing-8); background: var(--igx-semantic-color-surface-secondary); font-size: var(--igx-font-size-sm); }
+.nexus-confluence { flex: 0 1 10rem; min-width: 6rem; border: 0; background: transparent; color: var(--igx-semantic-color-text-link); cursor: pointer; padding: var(--igx-spacing-2); border-radius: var(--igx-semantic-shape-control); perspective: 500px; }
+.nexus-confluence svg { display: block; width: 100%; height: auto; overflow: visible; transform: rotateY(-8deg) rotateX(5deg); transition: transform var(--igx-semantic-motion-workspace-duration) var(--igx-semantic-motion-workspace-easing); }
+.nexus-confluence:hover svg, .nexus-confluence:focus-visible svg { transform: rotateY(0) rotateX(0); }
+.nexus-confluence > span { display: block; font: inherit; font-size: var(--igx-font-size-sm); margin-top: var(--igx-spacing-2); }
+.nexus-confluence-depth { fill: none; stroke: currentColor; stroke-width: 14; opacity: .12; transform: translate(2px, 4px); }
+.nexus-confluence-lines { fill: none; stroke: currentColor; stroke-width: 1.5; }
+.nexus-confluence-lines path { stroke-dasharray: 1; animation: nexus-confluence-draw calc(var(--igx-semantic-motion-workspace-duration) * 3) var(--igx-semantic-motion-workspace-easing) both; }
+.nexus-confluence-lines path:nth-child(2) { animation-delay: var(--igx-semantic-motion-micro-duration); }
+.nexus-confluence-nodes { fill: var(--igx-semantic-color-surface-panel); stroke: currentColor; stroke-width: 1.5; }
+@keyframes nexus-confluence-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.nexus-hardware-layout { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: var(--igx-spacing-8); }
+.nexus-hardware-index { position: sticky; top: var(--igx-spacing-6); align-self: start; display: grid; gap: var(--igx-spacing-2); }
+.nexus-hardware-index button { display: flex; gap: var(--igx-spacing-3); align-items: center; text-align: start; min-height: 44px; padding: var(--igx-spacing-2) 0; border: 0; font: inherit; font-size: var(--igx-font-size-sm); color: var(--igx-semantic-color-text-secondary); background: transparent; cursor: pointer; }
+.nexus-hardware-index button:hover { color: var(--igx-semantic-color-text-link); }
+.nexus-hardware-index button span { font-variant-numeric: tabular-nums; color: var(--igx-semantic-color-text-link); }
+.nexus-hardware-index p { margin-top: var(--igx-spacing-6); font-size: var(--igx-font-size-sm); color: var(--igx-semantic-color-text-secondary); }
+.nexus-hardware-sections { display: grid; gap: var(--igx-spacing-10); min-width: 0; }
+.nexus-hardware-card-grid { gap: var(--igx-spacing-6); }
+.nexus-hardware-card p { margin: 0; }
+.nexus-hardware-card header > svg { display: none; }
+.nexus-hardware-identity small { font-size: inherit; }
+.nexus-hardware-technical summary { cursor: pointer; color: var(--igx-semantic-color-text-link); min-height: 44px; padding-block: var(--igx-spacing-3); }
+.nexus-hardware-technical > div { display: grid; gap: var(--igx-spacing-4); }
+.nexus-hardware details[open] > :not(summary) { animation: nexus-hardware-enter var(--igx-semantic-motion-panel-duration) var(--igx-semantic-motion-panel-easing); }
+.nexus-hardware button:focus-visible, .nexus-hardware summary:focus-visible, .nexus-hardware h3:focus-visible { outline: 2px solid var(--igx-semantic-color-focus-ring); outline-offset: 4px; }
+.nexus-hardware-loading { padding-block: var(--igx-spacing-6); }
+.nexus-hardware-skeleton { border: 0; border-radius: var(--igx-semantic-shape-card); background: var(--igx-semantic-color-surface-panel); animation: nexus-hardware-enter var(--igx-semantic-motion-workspace-duration) var(--igx-semantic-motion-workspace-easing); }
+.nexus-hardware-volume meter { animation: nexus-hardware-enter var(--igx-semantic-motion-workspace-duration) var(--igx-semantic-motion-workspace-easing); }
+.nexus-hardware-volume meter::-webkit-meter-optimum-value { transform-origin: left; animation: nexus-hardware-capacity var(--igx-semantic-motion-workspace-duration) var(--igx-semantic-motion-workspace-easing); }
+@keyframes nexus-hardware-capacity { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (max-width: 1200px) { .nexus-hardware-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .nexus-hardware-overview-memory { gap: var(--igx-spacing-3); padding: var(--igx-spacing-4); } .nexus-hardware-layout { grid-template-columns: 9rem minmax(0, 1fr); gap: var(--igx-spacing-5); } }
+@media (max-width: 900px) { .nexus-hardware-overview { grid-template-columns: minmax(0, 1fr); } .nexus-hardware-overview-memory { padding: var(--igx-spacing-5) var(--igx-spacing-8); } .nexus-confluence { flex-basis: 7rem; } .nexus-hardware-layout { grid-template-columns: minmax(0, 1fr); } .nexus-hardware-index { position: static; display: flex; gap: var(--igx-spacing-4); flex-wrap: wrap; } .nexus-hardware-index p { flex-basis: 100%; margin: 0; } .nexus-hardware-index button { padding-inline: var(--igx-spacing-1); } }
+@media (max-width: 600px) { .nexus-hardware-card-grid, [aria-labelledby="hardware-processors"] .nexus-hardware-card-grid, [aria-labelledby="hardware-volumes"] .nexus-hardware-card-grid, .nexus-hardware-skeleton-grid { grid-template-columns: minmax(0, 1fr); } .nexus-hardware-heading, .nexus-hardware-section-heading { flex-wrap: wrap; } .nexus-hardware-card { padding: var(--igx-spacing-4); } .nexus-hardware-cpu { padding-inline: 0; } .nexus-hardware-overview-intro, .nexus-hardware-overview-memory, .nexus-hardware-overview-note { padding: var(--igx-spacing-5); } .nexus-hardware-overview-memory { gap: var(--igx-spacing-3); } .nexus-hardware-overview-memory strong { font-size: var(--igx-font-size-3xl); } .nexus-hardware-volume-metrics { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .nexus-hardware-ready, .nexus-confluence-lines path, .nexus-hardware details[open] > :not(summary), .nexus-hardware-skeleton, .nexus-hardware-volume meter { animation: none; } .nexus-confluence svg, .nexus-confluence:hover svg, .nexus-confluence:focus-visible svg { transform: none; transition: none; } }
+@media (prefers-reduced-motion: reduce) { .nexus-hardware-volume meter::-webkit-meter-optimum-value { animation: none; } }
+@media (forced-colors: active) { .nexus-hardware-card, .nexus-hardware-overview, .nexus-hardware-evidence, .nexus-hardware-gaps, .nexus-hardware-demo, .nexus-hardware-state-message { border: 1px solid CanvasText; } .nexus-hardware-card meter { forced-color-adjust: auto; } .nexus-hardware-skeleton span { background: GrayText; } .nexus-confluence-depth { display: none; } .nexus-confluence { color: ButtonText; } }

@@ -1,0 +1,6 @@
+/* The complete application shell needs the viewport, not the component canvas gutter. */
+.igx-storybook-canvas:has(.nexus-hardware) { padding: 0; }
+.nexus-hardware-review-note { padding: var(--igx-spacing-3) var(--igx-spacing-4); margin-bottom: var(--igx-spacing-6); color: var(--igx-semantic-color-text-secondary); background: var(--igx-semantic-color-surface-secondary); border-radius: var(--igx-semantic-shape-control); font-size: var(--igx-font-size-sm); }
+/* Full-shell fixtures exercise the live branch without representing an authenticated session. */
+.nexus-hardware-review .nexus-shell-mode, .nexus-hardware-review .nexus-source-context { display: none; }
+.nexus-hardware-review .nexus-hardware-review-note { border-inline-start: 3px solid var(--igx-semantic-color-text-link); font-weight: var(--igx-font-weight-semibold); }
