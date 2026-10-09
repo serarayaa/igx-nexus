@@ -11,6 +11,7 @@ describe("routeFromHash", () => {
   });
 
   it("reconoce deep links de Asset 360, sus secciones y acciones", () => {
+    expect(routeFromHash(assetSectionHash("canonical/id", "hardware"))).toEqual({ view: "asset", assetId: "canonical/id", section: "hardware" });
     expect(routeFromHash("#assets/DEMO-0002")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "summary" });
     expect(routeFromHash("#assets/DEMO-0002?section=inventory")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "inventory" });
     expect(routeFromHash("#assets/DEMO-0002?section=evidence")).toEqual({ view: "asset", assetId: "DEMO-0002", section: "evidence" });

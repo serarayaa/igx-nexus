@@ -32,7 +32,7 @@ function savedRoute(): AppRoute | null {
   const route = value as Partial<AppRoute> & { view?: unknown; assetId?: unknown; locator?: unknown; section?: unknown; mapState?: unknown };
   if (route.view === "dashboard" || route.view === "assets" || route.view === "health" || route.view === "lifecycle") return { view: route.view };
   if (route.view === "asset" && typeof route.assetId === "string" && route.assetId) {
-    const section: AssetSection = route.section === "inventory" || route.section === "evidence" || route.section === "relationships"
+    const section: AssetSection = route.section === "inventory" || route.section === "hardware" || route.section === "evidence" || route.section === "relationships"
       ? route.section
       : "summary";
     return { view: "asset", assetId: route.assetId, section };
