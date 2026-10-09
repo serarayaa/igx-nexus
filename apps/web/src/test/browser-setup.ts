@@ -1,5 +1,5 @@
 import { beforeEach } from "vitest";
-import { DENSITY_STORAGE_KEY, THEME_STORAGE_KEY } from "../shell-preferences";
+import { DENSITY_STORAGE_KEY, THEME_STORAGE_KEY, NAVIGATION_STORAGE_KEY } from "../shell-preferences";
 
 /**
  * Keep browser tests deterministic while preserving the product's real
@@ -10,6 +10,7 @@ import { DENSITY_STORAGE_KEY, THEME_STORAGE_KEY } from "../shell-preferences";
  * historical test must not become the starting state of the next one.
  */
 beforeEach(() => {
+  window.localStorage.removeItem(NAVIGATION_STORAGE_KEY);
   window.localStorage.setItem(THEME_STORAGE_KEY, "light");
   window.localStorage.setItem(DENSITY_STORAGE_KEY, "comfortable");
   document.documentElement.dataset.theme = "light";

@@ -254,6 +254,9 @@
 }
 
 @media (width >= 64rem) {
+  .igx-app-shell[data-navigation="rail"] {
+    --igx-app-shell-sidebar-width: 5.5rem;
+  }
   .igx-app-shell {
     display: grid;
     grid-template-columns: var(--igx-app-shell-sidebar-width) minmax(0, 1fr);

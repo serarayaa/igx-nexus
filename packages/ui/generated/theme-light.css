@@ -137,6 +137,12 @@
   --igx-semantic-color-interaction-pressed-indicator: #FFFFFF;
   --igx-semantic-color-interaction-selected-indicator: #014790;
   --igx-semantic-color-interaction-selected-surface: #DBEAFE;
+  --igx-semantic-color-navigation-background: #001849;
+  --igx-semantic-color-navigation-foreground: #FFFFFF;
+  --igx-semantic-color-navigation-hover: #013374;
+  --igx-semantic-color-navigation-indicator: #01B6F8;
+  --igx-semantic-color-navigation-muted: #BBC7D6;
+  --igx-semantic-color-navigation-selected: #014790;
   --igx-semantic-color-severity-attention-foreground: #78350F;
   --igx-semantic-color-severity-attention-surface: #FEF3C7;
   --igx-semantic-color-severity-critical-foreground: #7F1D1D;

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   DENSITY_STORAGE_KEY,
   THEME_STORAGE_KEY,
+  NAVIGATION_STORAGE_KEY,
+  readNavigationPreference,
   parseDensity,
   parseTheme,
   persistPreference,
@@ -22,6 +24,12 @@ function memoryStorage(initial: Record<string, string> = {}): PreferenceStorage 
 }
 
 describe("shell preferences", () => {
+  it("keeps presentation independent of route, theme and density, with safe storage fallback", () => {
+    expect(readNavigationPreference(null)).toBe("expanded");
+    expect(readNavigationPreference(memoryStorage({ [NAVIGATION_STORAGE_KEY]: "rail" }))).toBe("rail");
+    expect(readNavigationPreference(memoryStorage({ [NAVIGATION_STORAGE_KEY]: "unknown" }))).toBe("expanded");
+    expect(readNavigationPreference({ getItem: () => { throw new Error("blocked"); }, setItem: () => {} })).toBe("expanded");
+  });
   it("acepta sólo valores gobernados", () => {
     expect(parseTheme("dark")).toBe("dark");
     expect(parseTheme("system")).toBeNull();

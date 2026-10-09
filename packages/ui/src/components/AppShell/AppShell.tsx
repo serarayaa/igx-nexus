@@ -21,6 +21,8 @@ export interface AppShellProps {
   isNavigationOpen?: boolean;
   defaultNavigationOpen?: boolean;
   onNavigationOpenChange?: (isOpen: boolean) => void;
+  /** Desktop presentation only; mobile always uses the complete drawer. */
+  navigationPresentation?: "expanded" | "rail";
 }
 
 export interface AppHeaderProps {
@@ -63,7 +65,9 @@ function getFocusableElements(container: HTMLElement | null) {
 
   return Array.from(
     container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-  ).filter((element) => element.getAttribute("aria-hidden") !== "true");
+  ).filter((element) => element.getAttribute("aria-hidden") !== "true"
+    && element.getClientRects().length > 0
+    && getComputedStyle(element).visibility !== "hidden");
 }
 
 function focusFirstElement(container: HTMLElement | null) {
@@ -82,6 +86,7 @@ export function AppShell({
   isNavigationOpen: controlledNavigationOpen,
   defaultNavigationOpen = false,
   onNavigationOpenChange,
+  navigationPresentation = "expanded",
 }: AppShellProps) {
   const reactId = useId();
   const navigationId = `igx-app-navigation-${reactId}`;
@@ -127,7 +132,12 @@ export function AppShell({
       });
       document.body.style.overflow = "hidden";
     } else if (wasNavigationOpen) {
-      focusButton(openTriggerRef.current);
+      if (openTriggerRef.current?.getClientRects().length) {
+        focusButton(openTriggerRef.current);
+      } else {
+        // Desktop breakpoint hides the mobile trigger; keep focus in visible navigation.
+        focusFirstElement(navigationRef.current);
+      }
     }
 
     return () => {
@@ -192,7 +202,7 @@ export function AppShell({
   }, [isNavigationOpen]);
 
   return (
-    <div className={joinClasses("igx-app-shell", className)}>
+    <div className={joinClasses("igx-app-shell", className)} data-navigation={navigationPresentation}>
       <a
         ref={skipLinkRef}
         className="igx-app-shell__skip-link"

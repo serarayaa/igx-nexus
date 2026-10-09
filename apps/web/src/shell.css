@@ -1,0 +1,114 @@
+/* Connected Infrastructure: the navigation plane is independent of data surfaces. */
+.nexus-shell-3 { --igx-app-shell-sidebar-width: 17.5rem; }
+.nexus-shell-3 .igx-app-shell__navigation {
+  background: var(--igx-semantic-color-navigation-background);
+  color: var(--igx-semantic-color-navigation-foreground);
+  border: 0;
+}
+.nexus-shell-3 .igx-app-sidebar { min-height: 100%; }
+.nexus-shell-3 .igx-app-sidebar__brand { padding: 1.5rem 1.25rem; min-height: 6rem; box-sizing: border-box; border: 0; color: var(--igx-semantic-color-navigation-foreground); }
+.nexus-shell-3 .nexus-brand { display: grid; align-items: center; gap: .5rem; }
+.nexus-brand-home { display: flex; align-items: center; gap: .875rem; text-decoration: none; color: inherit; }
+.nexus-brand-home:focus-visible { outline-color: var(--igx-semantic-color-navigation-indicator); }
+.nexus-shell-3 .nexus-mark { display: inline-flex; width: 2rem; height: 2rem; flex: none; color: var(--igx-semantic-color-navigation-indicator); }
+.nexus-mark svg { width: 100%; height: 100%; }
+.nexus-shell-3 .nexus-brand-lockup { display: grid; gap: .125rem; color: inherit; }
+.nexus-brand-lockup strong { font-size: 1.125rem; letter-spacing: -.03em; font-weight: 600; line-height: 1.2; white-space: nowrap; }
+.nexus-shell-3 .nexus-brand-lockup > span { font-size: .875rem; color: var(--igx-semantic-color-navigation-muted); }
+.nexus-rail-toggle { display: none; }
+.nexus-shell-3 .igx-app-sidebar__nav { gap: .5rem; padding: 0 1rem 1.5rem; }
+.nexus-shell-3 .nexus-nav-heading { display: flex; align-items: center; gap: .75rem; margin: 1rem .75rem 1rem; font-size: .875rem; letter-spacing: 0; text-transform: none; font-weight: 400; color: var(--igx-semantic-color-navigation-muted); }
+.nexus-shell-3 .nexus-nav-heading::after { content: ""; height: 1px; flex: 1; background: var(--igx-semantic-color-navigation-hover); }
+.nexus-shell-3 .nexus-nav-link {
+  position: relative; min-height: 3.25rem; gap: .875rem; padding: .75rem;
+  border-radius: .625rem; font-size: .9375rem; line-height: 1.45;
+  color: var(--igx-semantic-color-navigation-foreground);
+  transition: background-color var(--igx-semantic-motion-micro-duration) var(--igx-semantic-motion-micro-easing);
+}
+.nexus-shell-3 .nexus-nav-link:hover { background: var(--igx-semantic-color-navigation-hover); }
+.nexus-shell-3 .nexus-nav-link:active { background: var(--igx-semantic-color-navigation-selected); }
+.nexus-shell-3 .nexus-nav-link[aria-current="page"] { background: var(--igx-semantic-color-navigation-selected); color: var(--igx-semantic-color-navigation-foreground); font-weight: 600; }
+.nexus-shell-3 .nexus-nav-link[aria-current="page"] > svg { color: var(--igx-semantic-color-navigation-indicator); }
+.nexus-shell-3 .nexus-nav-link::before {
+  content: ""; position: absolute; inset-inline-start: -.25rem; inset-block: .875rem; width: .1875rem; border-radius: 1rem;
+  background: var(--igx-semantic-color-navigation-indicator); transform: scaleY(0);
+  transition: transform var(--igx-semantic-motion-component-duration) var(--igx-semantic-motion-component-easing);
+}
+.nexus-shell-3 .nexus-nav-link[aria-current="page"]::before { transform: scaleY(1); }
+.nexus-shell-3 .nexus-nav-link:focus { outline-color: var(--igx-semantic-color-navigation-indicator); outline-offset: 3px; }
+.nexus-shell-3 .igx-app-sidebar__footer { margin: auto 1.5rem 0; padding: 1.5rem 0; border-color: var(--igx-semantic-color-navigation-hover); }
+.nexus-shell-3 .nexus-source-context { gap: .75rem; }
+.nexus-shell-3 .nexus-source-context strong { font-size: .875rem; color: var(--igx-semantic-color-navigation-foreground); }
+.nexus-shell-3 .nexus-source-context p { font-size: .875rem; line-height: 1.5; color: var(--igx-semantic-color-navigation-muted); }
+.nexus-shell-3 .igx-app-shell__navigation-close { border: 0; padding: 1rem; }
+.nexus-shell-3 .nexus-rail-toggle button, .nexus-shell-3 .igx-app-shell__navigation-close button {
+  background: transparent; color: var(--igx-semantic-color-navigation-foreground); border-color: transparent; min-width: 44px; min-height: 44px;
+}
+.nexus-shell-3 .nexus-rail-toggle button:hover, .nexus-shell-3 .igx-app-shell__navigation-close button:hover { background: var(--igx-semantic-color-navigation-hover); }
+.nexus-shell-3 .nexus-rail-toggle .igx-icon-button__icon { color: var(--igx-semantic-color-navigation-foreground); }
+.nexus-shell-3 .igx-app-header { padding: 1.25rem clamp(1rem, 2.5vw, 2.5rem); min-height: 6rem; }
+.nexus-shell-3 .igx-app-header__context { font-size: .875rem; line-height: 1.5; margin-bottom: .5rem; }
+.nexus-header-product { display: flex; align-items: center; gap: .625rem; color: var(--igx-semantic-color-text-primary); }
+.nexus-header-product strong { font-size: 1.125rem; line-height: 1.2; letter-spacing: .09em; font-weight: 600; }
+.nexus-header-mark { display: inline-flex; width: 1.5rem; height: 1.5rem; flex: none; color: var(--igx-semantic-color-text-link); }
+.nexus-header-mark svg { width: 100%; height: 100%; }
+.nexus-header-scope { padding-inline-start: .875rem; margin-inline-start: .25rem; border-inline-start: 1px solid var(--igx-semantic-color-border-subtle); color: var(--igx-semantic-color-text-secondary); }
+.nexus-shell-3 .igx-app-header__title { font-size: 1rem; font-weight: 500; line-height: 1.5; white-space: normal; overflow-wrap: anywhere; overflow: visible; }
+.nexus-workspace-context { position: relative; display: flex; flex-wrap: wrap; column-gap: .75rem; padding-bottom: .5rem; }
+.nexus-workspace-label { color: var(--igx-semantic-color-text-secondary); font-size: .875rem; font-weight: 400; }
+.nexus-workspace-signal { position: absolute; inset-inline-start: 0; bottom: 0; width: 2.5rem; height: 2px; background: var(--igx-semantic-color-text-link); transform-origin: left; animation: nexus-workspace-arrive var(--igx-semantic-motion-workspace-duration) var(--igx-semantic-motion-workspace-easing); }
+@keyframes nexus-workspace-arrive { from { transform: scaleX(.25); } to { transform: scaleX(1); } }
+.nexus-shell-3 .igx-app-header__actions { gap: .75rem; }
+.nexus-shell-3 .igx-app-header__actions button { min-width: 44px; min-height: 44px; }
+.nexus-shell-3 .igx-app-shell__header-row { border: 0; border-block-start: 3px solid var(--igx-semantic-color-navigation-background); box-shadow: inset 0 -1px var(--igx-semantic-color-border-subtle); }
+.nexus-shell-3 .igx-app-shell__main { padding: clamp(1rem, 2.5vw, 2.5rem); }
+.nexus-brand-home:is(:hover, :focus-visible) .nexus-mark path { animation: nexus-connection var(--igx-semantic-motion-workspace-duration) var(--igx-semantic-motion-workspace-easing); }
+@keyframes nexus-connection { from { stroke-dasharray: 72; stroke-dashoffset: 72; } to { stroke-dasharray: 72; stroke-dashoffset: 0; } }
+@keyframes nexus-navigation-reveal { from { transform: translateX(-4px); } to { transform: translateX(0); } }
+@media (min-width: 64rem) {
+  .nexus-shell-3[data-navigation="expanded"] .nexus-nav-label { animation: nexus-navigation-reveal var(--igx-semantic-motion-component-duration) var(--igx-semantic-motion-component-easing); }
+  .nexus-rail-toggle { display: flex; }
+  .nexus-shell-3[data-navigation="expanded"] .nexus-brand { grid-template-columns: minmax(0, 1fr) 44px; }
+  .nexus-shell-3[data-navigation="expanded"] .nexus-brand-home { gap: .5rem; }
+  .nexus-shell-3[data-navigation="rail"] { --igx-app-shell-sidebar-width: 5.5rem; }
+  .nexus-shell-3[data-navigation="rail"] .igx-app-sidebar__brand { padding: 1.5rem 1.375rem .5rem; }
+  .nexus-shell-3[data-navigation="rail"] .nexus-brand { align-items: center; gap: 1rem; }
+  .nexus-shell-3[data-navigation="rail"] .nexus-mark { margin-inline: .375rem; }
+  .nexus-shell-3[data-navigation="rail"] .nexus-nav-label,
+  .nexus-shell-3[data-navigation="rail"] .nexus-brand-lockup,
+  .nexus-shell-3[data-navigation="rail"] .nexus-nav-heading,
+  .nexus-shell-3[data-navigation="rail"] .nexus-source-context strong,
+  .nexus-shell-3[data-navigation="rail"] .nexus-source-context p {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; clip-path: inset(50%); overflow: hidden; white-space: nowrap;
+  }
+  .nexus-shell-3[data-navigation="rail"] .igx-app-sidebar__nav { padding-inline: 1rem; padding-top: .5rem; }
+  .nexus-shell-3[data-navigation="rail"] .nexus-nav-link { justify-content: center; padding: 0; }
+  .nexus-shell-3[data-navigation="rail"] .igx-app-sidebar__footer { margin-inline: .75rem; }
+  .nexus-shell-3[data-navigation="rail"] .nexus-source-context > div { justify-content: center; }
+}
+@media (max-width: 63.999rem) {
+  .nexus-shell-3 .igx-app-sidebar__brand { padding-top: .5rem; }
+  .nexus-shell-3 .igx-app-header { min-height: 5.5rem; padding: 1rem; }
+}
+@media (max-width: 35rem) {
+  .nexus-shell-3 .igx-app-header { flex-wrap: wrap; gap: .75rem; padding: .75rem; }
+  .nexus-shell-3 .igx-app-header__identity { flex: 1 1 100%; }
+  .nexus-shell-3 .igx-app-header__context { display: block; }
+  .nexus-shell-3 .nexus-header-scope { display: none; }
+  .nexus-shell-3 .nexus-workspace-label { display: none; }
+  .nexus-shell-3 .igx-app-header__actions { flex: 1; justify-content: flex-end; }
+  .nexus-shell-3 .igx-app-shell__navigation-open { align-items: flex-start; padding-top: .75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nexus-shell-3 *, .nexus-shell-3 *::before { animation: none !important; transition-duration: 0s !important; }
+}
+@media (forced-colors: active) {
+  .nexus-shell-3 .igx-app-shell__navigation { background: Canvas; color: CanvasText; border-inline-end: 1px solid CanvasText; }
+  .nexus-shell-3 .nexus-nav-link, .nexus-shell-3 .nexus-brand-lockup > span, .nexus-shell-3 .nexus-source-context p, .nexus-shell-3 .nexus-source-context strong, .nexus-shell-3 .nexus-nav-heading { color: CanvasText; }
+  .nexus-shell-3 .nexus-nav-link[aria-current="page"] { outline: 2px solid Highlight; text-decoration: underline; }
+  .nexus-shell-3 .nexus-nav-link[aria-current="page"]::before { background: Highlight; forced-color-adjust: none; }
+  .nexus-shell-3 .nexus-mark { color: CanvasText; }
+  .nexus-shell-3 .nexus-header-mark { color: CanvasText; }
+  .nexus-shell-3 .nexus-workspace-signal { background: Highlight; }
+  .nexus-shell-3 .nexus-nav-link:focus, .nexus-brand-home:focus-visible { outline-color: Highlight; }
+}

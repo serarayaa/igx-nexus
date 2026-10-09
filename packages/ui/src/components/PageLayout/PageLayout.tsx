@@ -16,6 +16,8 @@ export interface ContentSectionProps {
   actions?: ReactNode;
   headingLevel?: 2 | 3;
   className?: string;
+  /** Distinguishes regions with repeated headings without changing heading text. */
+  ariaLabel?: string;
 }
 
 export interface ToolbarProps {
@@ -63,6 +65,7 @@ export function ContentSection({
   actions,
   headingLevel = 2,
   className,
+  ariaLabel,
 }: ContentSectionProps) {
   const headingId = useId();
   const classes = ["igx-content-section", className]
@@ -73,7 +76,7 @@ export function ContentSection({
   return (
     <section
       className={classes}
-      {...(title !== undefined ? { "aria-labelledby": headingId } : {})}
+      {...(ariaLabel ? { "aria-label": ariaLabel } : title !== undefined ? { "aria-labelledby": headingId } : {})}
     >
       {title !== undefined || description !== undefined || actions !== undefined ? (
         <div className="igx-content-section__header">

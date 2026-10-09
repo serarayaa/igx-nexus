@@ -3,6 +3,8 @@ export type NexusDensity = "comfortable" | "compact";
 
 export const THEME_STORAGE_KEY = "igx-nexus:theme";
 export const DENSITY_STORAGE_KEY = "igx-nexus:density";
+export const NAVIGATION_STORAGE_KEY = "igx-nexus:navigation";
+export type NavigationPresentation = "expanded" | "rail";
 
 export interface PreferenceStorage {
   getItem(key: string): string | null;
@@ -49,5 +51,13 @@ export function persistPreference(storage: PreferenceStorage | null, key: string
     storage.setItem(key, value);
   } catch {
     // El shell debe seguir funcionando cuando storage esté bloqueado o sin cuota.
+  }
+}
+
+export function readNavigationPreference(storage: PreferenceStorage | null): NavigationPresentation {
+  try {
+    return storage?.getItem(NAVIGATION_STORAGE_KEY) === "rail" ? "rail" : "expanded";
+  } catch {
+    return "expanded";
   }
 }
