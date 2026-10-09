@@ -1,17 +1,33 @@
 # IGX NEXUS — Session Handoff
 
-## Repository state
+## PR 5 — Visual Foundations & Shell 3.0
 
-- Baseline de esta entrega: `2213aea35a3738f888f7e730ce6c8ca4a9d11411`, árbol inicial limpio; incorpora PR #143 (Hardware API V2) y sus predecesores.
-- Active branch: `feature/v03-cmdb-02-pr4-asset360-hardware-ui`.
-- V03-CMDB-02 / PR 4 implementa Hardware Experience V2 en Asset 360. Auditoría técnica y visual completada; alcance cerrado. Commit, push y PR hacia main autorizados tras validación de cierre. NO merge ni auto-merge; smoke GLPI Live autenticado NO autorizado.
-- Detalles, invariantes, reproducción sintética y límites: `docs/product/asset360-hardware-v2.md`. No cambia API, contratos, permisos, provider GLPI ni persistencia.
-- Connected Infrastructure integrada en React/Asset 360 con tipografía operativa 14–16 px, panorama asimétrico, navegación local animada, índice accesible de componentes, detalles CPU y firma Confluencia CSS/SVG finita. Cliente HTTP, hook, contratos, fixtures, backend y GLPI preservados. Cierre: foco Hardware con token semántico de 2 px; Confluencia estática/deshabilitada y sin anunciar replay bajo reduced motion; historias rotuladas como fixtures sin sesión GLPI ni HTTP, ocultando indicadores Live del shell sólo en Storybook. Mejoras transversales reservadas para NEXUS Visual Foundations & Shell 3.0; no reabrir investigación ni rediseño global.
-- Validación de convergencia: específicas 51/51; web completa alternativa serial 399/399; API serial 258/258; Storybook 60/60; reduced-motion específico 23/23; refresh 3/3; foundations 4/4; typecheck y build aprobados. npm test original falló 8 timeouts API (250/258), web original 2 timeouts (396/398); no se reprodujo EACCES en esta ejecución y no se declara global verde. Evidencia nueva captura componentes React reales vía Storybook sintético y app Vite Demo, sin consultas Live.
-- Se conservan resultados originales fallidos de Windows separados de suites alternativas. No declarar `npm test` global verde. El informe de entrega registra cifras y logs exactos.
-- PR #138 está CLOSED / NOT MERGED / SUPERSEDED.
-- V03-002 foundations y V03-008 navigation/state permanecen preservados.
-- V03-CMDB-01 existe en `feature/v03-cmdb-01-glpi-capability-audit` con HEAD observado `859d4c7e100a909020329151d754532ae29d97d8`.
+- Base verificada: `713956222fc928d4787d1123faecad4eb7174c3b`, merge PR #144; incorpora PR #141–144. Árbol inicial limpio.
+- Rama activa con tracking: `feature/v03-visual-foundations-shell-3`. HEAD conserva la base; cambios locales para auditoría humana. No commit, push, PR, merge ni auto-merge autorizados para esta entrega.
+- Implementación Connected Infrastructure real: plano de navegación navy, rail desktop persistido, drawer completo móvil, cabecera responsive, refinamiento vectorial Mark B, tokens de navegación por tema y movimiento finito CSS/SVG.
+- Arquitectura, decisiones, contratos aditivos y límites: `docs/product/visual-foundations-shell-3.md`. Branding refinado pendiente de aprobación humana. Originales históricos preservados.
+- Navegación hash/history, investigación, filtros, providers, modos, APIs, contratos Hardware V2, backend y permisos conservados. No consultas GLPI Live. Smoke autenticado sigue pendiente y sin autorización.
+- Focus trap/restore, Escape, inert y scroll lock conservados; cierre por breakpoint enfoca un enlace visible. Preferencia rail no cambia ruta ni remonta contenido. Theme/density conservan reglas existentes.
+- Tres overrides globales del Shell en asset-360.css retirados para una composición consistente; contenido Hardware y navegación local preservados. ContentSection añade ariaLabel opcional sólo para distinguir regiones repetidas de findings; headings visibles originales conservados.
+- Cambio de tema inmediato: se retiró una transición de fondo que produjo contraste transitorio inválido. Tests/aserciones/timeouts no debilitados.
+- Pruebas específicas verificadas 79/79; Storybook 67/67; reduced motion/forced colors Chromium 36/36; foundations 4/4; refresh navegación 3/3; API serial 258/258; audit high aprobado con un advisory moderate Fastify existente. Typecheck, build global y Storybook build aprobados. Pasada Web final 407/408: un timeout Lifecycle de 30 s; rerun aislado 6/6 sin ampliar límites. Los restantes casos, incluidas las específicas, aprobaron. No declarar la pasada Web completa verde. Sin fallos de contraste en la versión corregida.
+- npm test global original Windows falló: types 149/149 y API 250/258, ocho timeouts ya observados, sin ejecutar las etapas posteriores. Logs originales separados de suites seriales y configuraciones de puerto externas. No declarar npm test global verde.
+- Evidencia before/after de React real en app Demo y Storybook con fixtures sintéticos, tamaños 320/390/768/1024/1440/1920 y distintas combinaciones theme/density. Before aislado mediante git archive de la base, sin reset del árbol de trabajo. Sin información corporativa real.
+- Checkpoint siguiente: revisar ZIP, diff, resultados técnicos, identidad y composición; esperar aprobación estética/técnica antes de commit.
+
+## Segunda pasada limitada de PR 5 (2026-10-09)
+
+- Cabecera con firma NEXUS visible incluso a 320 px; contexto de workspace sin nuevo heading. Control de contracción integrado junto a marca, proporciones y selección refinadas. No cambia geometría Mark B ni contenido interno.
+- Llegada visual finita de 320 ms sólo en una línea decorativa de cabecera al montar/cambiar view. No anima datos ni main, no introduce remount/esperas del contenido ni modifica foco, scroll, rutas o estado; reduced motion la deja estática.
+- Afectadas 95/95; Shell final 14/14; reduced motion/forced colors final 38/38; Storybook 67/67; refresh 3/3; typecheck/build finales aprobados. Primera afectada 61/62 falló por timeout Lifecycle; el filtro Hardware inicialmente incorrecto se corrigió y no se cuenta como cobertura de ese archivo. Lifecycle aislado pasó 6/6 en base exacta y 6/6 actual. Antecedente del mismo timeout en PR 4 y primera pasada PR 5; no se demuestra su causa ni se declara suite completa verde.
+- Se conservan logs originales. No se repiten npm test global, Web/API completas ni foundations en esta pasada. Los resultados previos anteriores son históricos, no gates ejecutados sobre el refinamiento final.
+- Veinte capturas adicionales: before/after del PR 5 previamente auditado, light/dark, cómoda/compacta, expandido/rail y cuatro vistas móviles. Patch incremental y consolidado; revisión estética/técnica humana pendiente. Sin commit, push, PR ni consultas Live.
+
+## Arquitectura vigente y continuidad histórica
+
+Este handoff actualiza el estado de trabajo, no sustituye decisiones de producto. Se preservan abajo las decisiones del handoff base; su evidencia Live es histórica y no autoriza nuevas consultas. El estado previo completo se consulta con `git show 713956222fc928d4787d1123faecad4eb7174c3b:docs/ai-context/03-SESSION-HANDOFF.md`. Su Next sequence correspondía a una fase anterior y no debe ejecutarse como plan actual.
+
+Referencias normativas vigentes: [índice de arquitectura](../architecture/README.md), [límites de producto](../architecture/adr-0001-product-boundaries.md), [sistema de diseño](../architecture/adr-0003-ui-design-system.md), [routing Asset 360](../architecture/adr-0006-asset-360-routing.md), [modelo canónico](../architecture/adr-0011-canonical-technology-model.md), [Demo/Live](../architecture/adr-0014-provider-mode-contract.md), [provenance](../architecture/adr-0019-provenance-reconciliation.md) e [IA de producto](../architecture/adr-0023-product-information-architecture-v2.md). PR 5 no cambia estas decisiones.
 
 ## Product decision
 
@@ -59,7 +75,7 @@ Orden de evaluación: GLPI Agent → smartmontools → Zabbix → collector Wind
 
 No usar Wazuh/cybersecurity como dependencia de la CMDB sólo para obtener señales básicas de health.
 
-## V03-CMDB-01 evidence
+## V03-CMDB-01 evidence (histórica; no revalidada en PR 5)
 
 Live Lab GLPI 11.0.11 / API 2.3.0:
 
@@ -78,18 +94,3 @@ Live Lab GLPI 11.0.11 / API 2.3.0:
 - 2.0 — OT CMDB & Passive Discovery
 - 3.0 — Cybersecurity & Exposure Management
 - 4.0 — Intelligence, Analytics & Automation
-
-## Next sequence
-
-1. Merge V03-CMDB-00.
-2. Rebase/update V03-CMDB-01 sobre main.
-3. Merge V03-CMDB-01.
-4. Crear `feature/v03-cmdb-02-canonical-provider-v2`.
-5. Diseñar contratos CMDB estructurados antes de implementar el provider amplio.
-6. Mantener integraciones opcionales/Endpoint Health fuera del critical path hasta que el core esté estable.
-
-No iniciar el premium UI rebuild antes de estabilizar suficiente contrato canónico/provider para evitar retrabajo.
-
-Validación definitiva de cierre PR 4 (2026-10-09): Hardware/cliente/formato/navegación 52/52; Web completa serial 400/400; API serial 258/258; Hardware en Chromium con reduced motion real 24/24; Storybook 60/60; refresh de navegación 3/3. Typecheck y build globales aprobados; git diff --check sin errores. npm test global falló (exit 1): types 149/149 y API 250/258, con ocho timeouts; no ejecutó las etapas siguientes. Los resultados seriales usan configuraciones temporales externas, sin modificar aserciones ni timeouts del repositorio, y no sustituyen el resultado global fallido. No se reprodujo EACCES en este cierre. Persiste la advertencia de chunk >500 kB y el smoke GLPI Live autenticado pendiente; no se realizaron consultas Live.
-
-Auditoría técnica y visual aprobada por el usuario. Alcance congelado: foco Hardware con token de diseño, Confluencia estática y sin control de reproducción bajo reduced motion, y aviso inequívoco de fixtures sintéticos exclusivo de Storybook. Se autoriza commit/push/PR hacia main, sin merge ni auto-merge. Backend, contratos Hardware V2, API v1/0.2, permisos y modos productivos conservados. Las mejoras globales se reservan para NEXUS Visual Foundations & Shell 3.0.

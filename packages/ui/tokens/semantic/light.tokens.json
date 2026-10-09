@@ -655,6 +655,27 @@
           "$type": "color",
           "$value": "{semantic.color.action.primary.foreground}"
         }
+      },
+      "navigation": {
+        "$type": "color",
+        "background": {
+          "$value": "{color.brand.navy}"
+        },
+        "foreground": {
+          "$value": "{color.neutral.0}"
+        },
+        "muted": {
+          "$value": "{color.neutral.300}"
+        },
+        "hover": {
+          "$value": "{color.brand.blueDeep}"
+        },
+        "selected": {
+          "$value": "{color.brand.blue}"
+        },
+        "indicator": {
+          "$value": "{color.brand.cyan}"
+        }
       }
     }
   }

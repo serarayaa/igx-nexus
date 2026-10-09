@@ -100,9 +100,6 @@
 .nexus-asset-local-nav a:hover { transform: none; color: var(--igx-semantic-color-text-link); }
 .nexus-asset-local-nav a[aria-current="page"] { background: transparent; color: var(--igx-semantic-color-text-primary); }
 .nexus-asset-nav-indicator { position: absolute; inset-inline-start: 0; bottom: 0; height: 3px; background: var(--igx-semantic-color-text-link); border-radius: var(--igx-radius-1); pointer-events: none; transition: transform var(--igx-semantic-motion-component-duration) var(--igx-semantic-motion-component-easing), width var(--igx-semantic-motion-component-duration) var(--igx-semantic-motion-component-easing); }
-.igx-app-shell:has(.nexus-asset-360) .nexus-nav-heading, .igx-app-shell:has(.nexus-asset-360) .nexus-source-context p, .igx-app-shell:has(.nexus-asset-360) .nexus-source-context strong, .igx-app-shell:has(.nexus-asset-360) .igx-app-header__context { font-size: var(--igx-font-size-sm); line-height: var(--igx-line-height-normal); }
-.igx-app-shell:has(.nexus-asset-360) .nexus-nav-link { border-radius: 0; border-inline-start: 3px solid transparent; }
-.igx-app-shell:has(.nexus-asset-360) .nexus-nav-link[aria-current] { color: var(--igx-semantic-color-text-primary); background: var(--igx-semantic-color-surface-secondary); border-inline-start-color: var(--igx-semantic-color-text-link); }
 @media (max-width: 767px) { .nexus-asset-summary > div:nth-child(-n+2), .nexus-asset-summary > div { border: 0; } .nexus-asset-local-nav { gap: var(--igx-spacing-5); } }
 @media (max-width: 767px) { .nexus-asset-summary { gap: var(--igx-spacing-4); } .nexus-asset-summary > div { flex: 1 1 calc(50% - var(--igx-spacing-4)); } }
 @media (prefers-reduced-motion: reduce) { .nexus-asset-nav-indicator, .nexus-asset-local-nav a { transition: none; } }

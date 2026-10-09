@@ -97,6 +97,7 @@ export function ProactiveFindingsSummary({ report, mode = "demo" }: { report: Pr
             return <Card key={finding.id}>
               <ContentSection
                 title={finding.title}
+                ariaLabel={`${finding.title} · ${finding.assetId}`}
                 description={finding.summary}
                 actions={<a href={assetHash(finding.assetId)}>Abrir Asset 360</a>}
               >

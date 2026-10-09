@@ -1,0 +1,7 @@
+.igx-storybook-canvas:has(.nexus-shell-review) { padding: 0; }
+.nexus-shell-review-note { margin: 0 0 1.5rem; padding: .75rem 1rem; border-inline-start: 3px solid var(--igx-semantic-color-text-link); font-size: .875rem; background: var(--igx-semantic-color-surface-base); }
+.nexus-mark-review { max-width: 60rem; margin: auto; padding: 2rem; }
+.nexus-mark-review-plane { padding: 2rem; background: var(--igx-semantic-color-surface-base); color: var(--igx-semantic-color-text-primary); }
+.nexus-mark-review-plane figure { display: inline-grid; gap: 1rem; margin: 1rem; }
+.nexus-mark-review-plane span { display: inline-flex; }
+.nexus-mark-review-plane svg { width: 100%; height: 100%; }
