@@ -11,3 +11,5 @@ export * from "./proactive-findings.js";
 export * from "./knowledge-research.js";
 export * from "./hardware.js";
 export * from "./hardware-validation.js";
+export * from "./software.js";
+export * from "./software-validation.js";

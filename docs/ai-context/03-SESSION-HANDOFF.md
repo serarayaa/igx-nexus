@@ -1,33 +1,19 @@
 # IGX NEXUS — Session Handoff
 
-## PR 5 — Visual Foundations & Shell 3.0
+## PR 6 — Software & Operating System Contracts V2
 
-- Base verificada: `713956222fc928d4787d1123faecad4eb7174c3b`, merge PR #144; incorpora PR #141–144. Árbol inicial limpio.
-- Rama activa con tracking: `feature/v03-visual-foundations-shell-3`. HEAD conserva la base; cambios locales para auditoría humana. No commit, push, PR, merge ni auto-merge autorizados para esta entrega.
-- Implementación Connected Infrastructure real: plano de navegación navy, rail desktop persistido, drawer completo móvil, cabecera responsive, refinamiento vectorial Mark B, tokens de navegación por tema y movimiento finito CSS/SVG.
-- Arquitectura, decisiones, contratos aditivos y límites: `docs/product/visual-foundations-shell-3.md`. Branding refinado pendiente de aprobación humana. Originales históricos preservados.
-- Navegación hash/history, investigación, filtros, providers, modos, APIs, contratos Hardware V2, backend y permisos conservados. No consultas GLPI Live. Smoke autenticado sigue pendiente y sin autorización.
-- Focus trap/restore, Escape, inert y scroll lock conservados; cierre por breakpoint enfoca un enlace visible. Preferencia rail no cambia ruta ni remonta contenido. Theme/density conservan reglas existentes.
-- Tres overrides globales del Shell en asset-360.css retirados para una composición consistente; contenido Hardware y navegación local preservados. ContentSection añade ariaLabel opcional sólo para distinguir regiones repetidas de findings; headings visibles originales conservados.
-- Cambio de tema inmediato: se retiró una transición de fondo que produjo contraste transitorio inválido. Tests/aserciones/timeouts no debilitados.
-- Pruebas específicas verificadas 79/79; Storybook 67/67; reduced motion/forced colors Chromium 36/36; foundations 4/4; refresh navegación 3/3; API serial 258/258; audit high aprobado con un advisory moderate Fastify existente. Typecheck, build global y Storybook build aprobados. Pasada Web final 407/408: un timeout Lifecycle de 30 s; rerun aislado 6/6 sin ampliar límites. Los restantes casos, incluidas las específicas, aprobaron. No declarar la pasada Web completa verde. Sin fallos de contraste en la versión corregida.
-- npm test global original Windows falló: types 149/149 y API 250/258, ocho timeouts ya observados, sin ejecutar las etapas posteriores. Logs originales separados de suites seriales y configuraciones de puerto externas. No declarar npm test global verde.
-- Evidencia before/after de React real en app Demo y Storybook con fixtures sintéticos, tamaños 320/390/768/1024/1440/1920 y distintas combinaciones theme/density. Before aislado mediante git archive de la base, sin reset del árbol de trabajo. Sin información corporativa real.
-- Checkpoint siguiente: revisar ZIP, diff, resultados técnicos, identidad y composición; esperar aprobación estética/técnica antes de commit.
-
-## Segunda pasada limitada de PR 5 (2026-10-09)
-
-- Cabecera con firma NEXUS visible incluso a 320 px; contexto de workspace sin nuevo heading. Control de contracción integrado junto a marca, proporciones y selección refinadas. No cambia geometría Mark B ni contenido interno.
-- Llegada visual finita de 320 ms sólo en una línea decorativa de cabecera al montar/cambiar view. No anima datos ni main, no introduce remount/esperas del contenido ni modifica foco, scroll, rutas o estado; reduced motion la deja estática.
-- Afectadas 95/95; Shell final 14/14; reduced motion/forced colors final 38/38; Storybook 67/67; refresh 3/3; typecheck/build finales aprobados. Primera afectada 61/62 falló por timeout Lifecycle; el filtro Hardware inicialmente incorrecto se corrigió y no se cuenta como cobertura de ese archivo. Lifecycle aislado pasó 6/6 en base exacta y 6/6 actual. Antecedente del mismo timeout en PR 4 y primera pasada PR 5; no se demuestra su causa ni se declara suite completa verde.
-- Se conservan logs originales. No se repiten npm test global, Web/API completas ni foundations en esta pasada. Los resultados previos anteriores son históricos, no gates ejecutados sobre el refinamiento final.
-- Veinte capturas adicionales: before/after del PR 5 previamente auditado, light/dark, cómoda/compacta, expandido/rail y cuatro vistas móviles. Patch incremental y consolidado; revisión estética/técnica humana pendiente. Sin commit, push, PR ni consultas Live.
-
+- Base verificada y árbol inicial limpio: `main@af53ccfa8459b12487539ed219204d4d53db215c`. PR #145 — Visual Foundations & Shell 3.0 ya está integrado.
+- Rama de trabajo: `feature/v03-cmdb-software-os-contracts-v2`. Auditoría humana aprobada; commit, push y Draft PR autorizados el 2026-10-10. PR 6 todavía no integrado; merge y auto-merge no autorizados.
+- Contratos aditivos Software/OS, validador puro, fixtures sintéticos y pruebas en `packages/types`; separación de producto, versión e instalación, evidencia por registro/sección y ventanas de paginación explícitas.
+- Contrato y matriz de compatibilidad: [Software/OS V2](../product/software-os-contracts-v2.md). No cambia contratos 0.2, Hardware V2, providers, API, UI ni persistencia; ninguna dependencia nueva.
+- Evidencia V03-CMDB-01 histórica: GLPI 11.0.11 / API 2.3.0, 145 instalaciones paginadas. No representa el estado actual ni autoriza consultas Live. Smoke autenticado pendiente.
+- Las decisiones y la entrega histórica de PR 5 se conservan en `git show af53ccfa8459b12487539ed219204d4d53db215c:docs/ai-context/03-SESSION-HANDOFF.md` y [Visual Foundations & Shell 3.0](../product/visual-foundations-shell-3.md). Sus limitaciones de pruebas Windows siguen documentadas allí; no son resultados de PR 6.
+- Siguiente checkpoint: revisión de CI del Draft PR y autorización humana antes del merge. No avanzar automáticamente a adapter, API, UI o PR 7.
 ## Arquitectura vigente y continuidad histórica
 
 Este handoff actualiza el estado de trabajo, no sustituye decisiones de producto. Se preservan abajo las decisiones del handoff base; su evidencia Live es histórica y no autoriza nuevas consultas. El estado previo completo se consulta con `git show 713956222fc928d4787d1123faecad4eb7174c3b:docs/ai-context/03-SESSION-HANDOFF.md`. Su Next sequence correspondía a una fase anterior y no debe ejecutarse como plan actual.
 
-Referencias normativas vigentes: [índice de arquitectura](../architecture/README.md), [límites de producto](../architecture/adr-0001-product-boundaries.md), [sistema de diseño](../architecture/adr-0003-ui-design-system.md), [routing Asset 360](../architecture/adr-0006-asset-360-routing.md), [modelo canónico](../architecture/adr-0011-canonical-technology-model.md), [Demo/Live](../architecture/adr-0014-provider-mode-contract.md), [provenance](../architecture/adr-0019-provenance-reconciliation.md) e [IA de producto](../architecture/adr-0023-product-information-architecture-v2.md). PR 5 no cambia estas decisiones.
+Referencias normativas vigentes: [índice de arquitectura](../architecture/README.md), [límites de producto](../architecture/adr-0001-product-boundaries.md), [sistema de diseño](../architecture/adr-0003-ui-design-system.md), [routing Asset 360](../architecture/adr-0006-asset-360-routing.md), [modelo canónico](../architecture/adr-0011-canonical-technology-model.md), [Demo/Live](../architecture/adr-0014-provider-mode-contract.md), [provenance](../architecture/adr-0019-provenance-reconciliation.md) e [IA de producto](../architecture/adr-0023-product-information-architecture-v2.md). PR 6 no cambia estas decisiones.
 
 ## Product decision
 
@@ -75,7 +61,7 @@ Orden de evaluación: GLPI Agent → smartmontools → Zabbix → collector Wind
 
 No usar Wazuh/cybersecurity como dependencia de la CMDB sólo para obtener señales básicas de health.
 
-## V03-CMDB-01 evidence (histórica; no revalidada en PR 5)
+## V03-CMDB-01 evidence (histórica; no revalidada en PR 6)
 
 Live Lab GLPI 11.0.11 / API 2.3.0:
 
