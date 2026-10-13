@@ -1,17 +1,18 @@
 # IGX NEXUS — Session Handoff
 
-## PR 7 — GLPI Software & Operating System Adapter V2
+## PR 8 — Software API V2: estado vigente, 2026-10-13
 
-- Base verificada: `main@ae8ae38a9b64888bee500af4d977a837e9e5f2fe`, árbol inicial limpio. PR #146 — Software & Operating System Contracts V2 ya está integrado.
-- Rama: `feature/v03-cmdb-software-os-glpi-adapter-v2`. Segunda auditoría humana aprobada; commit, push y Draft PR autorizados el 2026-10-10. PR 7 todavía no integrado; merge y auto-merge no autorizados.
-- Adapter interno aditivo y read-only, con GlpiApiTransport existente: ancla Computer de la instancia configurada, identidad canónica preservada, OS/software independientes y catálogos vinculados sólo por IDs explícitos.
-- Paginación con agotamiento verificado, límites y deadline; 401/403 fail-closed incluso después de páginas previas o durante catálogos. Sin fuentes Demo, secretos, SQL, nuevos permisos ni consultas GLPI Live.
-- Contratos PR 6, Hardware V2, provider 0.2, endpoints, frontend y Shell 3.0 sin cambios. Mapeos, rutas verificadas, cobertura y riesgos: [adapter Software/OS V2](../integrations/glpi-software-os-v2.md).
-- La entrega y decisiones históricas de PR 6 se consultan en `git show ae8ae38a9b64888bee500af4d977a837e9e5f2fe:docs/ai-context/03-SESSION-HANDOFF.md` y [contratos Software/OS V2](../product/software-os-contracts-v2.md). La evidencia de 145 instalaciones es histórica, no una validación actual del laboratorio. Smoke autenticado pendiente, sin autorización.
-- Corrección puntual de auditoría: consumir exactamente el presupuesto tras la última colección agotada no genera gap; si quedan páginas/productos pendientes, collect conserva pagination_incomplete explícito. Tres regresiones nuevas (presupuesto 4, presupuesto 3 y otro producto pendiente); instalaciones, vínculos explícitos y 401/403 fail-closed preservados.
-- Validación tras corrección: 74 pruebas nuevas; afectadas 158/158, API completa 332/332, types 229/229, typecheck y build generales aprobados. La primera afectada previa a esta corrección falló 154/155 por timeout de 5 s en readiness existente; se conserva el log y no se declara esa pasada verde. Rerun idéntico aprobado sin cambiar aserciones/timeouts. No se ejecutó npm test global ni suites UI/Web.
-- Verificación de publicación: API completa 332/332, types 229/229, typecheck y build aprobados. Primera afectada 157/158 por timeout de 5000 ms en readiness existente; repetición idéntica 158/158 sin modificar aserciones ni timeouts. Logs originales y repetición conservados por separado; no se declara verde la pasada fallida.
-- Siguiente checkpoint: revisión de CI del Draft PR y autorización humana antes del merge. No iniciar PR 8.
+- Baseline verificado `main@a242d21a0b3de3774182d1fa367dfff7b730af90`, árbol inicial limpio tras materializar el repositorio vacío. **PR #146 y PR #147 ya están integrados en main.** El estado histórico PR 7 se consulta en `git show a242d21a0b3de3774182d1fa367dfff7b730af90:docs/ai-context/03-SESSION-HANDOFF.md`; su afirmación de no integrado queda supersedida.
+- Rama local `feature/v03-cmdb-software-os-api-v2`; cambios sin commit, push ni PR. Auditoría humana favorable del endurecimiento y Software API V2. Corrección puntual de assetId entregada para cierre; publicación todavía no autorizada.
+- Implementado GET `/api/v2/technology/assets/:assetId/software`: autenticación + technology:read, ID exacto en snapshot configurado, ancla Computer válida, Demo/Live separados, contrato validado y OpenAPI 3.0.3. Sin UI, escritura GLPI, nuevos permisos, cache de inventario ni persistencia.
+- Transporte/instancia/token compartidos por snapshot, Hardware y Software. Deadline total monotónico, presupuesto agregado y gate por proceso sin cola. Cupos retenidos mientras quede trabajo tardío. OAuth ya iniciado puede terminar para v1/Hardware, sin iniciar consultas de Software vencido.
+- Defaults iniciales: 5 s, 64 llamadas, 20.000 registros aceptados (+ un probe rechazado de un registro si upstream respeta limit), dos operaciones. Snapshot de 10.000 Computers supera presupuesto con pageSize=100; 503, nunca snapshot truncado exitoso. Calibración Live pendiente.
+- Cierre puntual: assetId permite espacios interiores válidos y preserva ID literal; rechaza vacío/whitespace inicial/final. Regresiones `SYNTH ASSET`=200, extremos=400, variantes distintas=404. Sin cambios a auth, lookup ni límites operacionales. Alcance original de 16 archivos; sólo cinco ajustados frente a la entrega auditada.
+- Validación actual de cierre: afectadas 180/180, API 400/400 con un worker, Types 229/229, typecheck/build completos aprobados. Primera afectada 179/180 por timeout Hardware; repetición idéntica aprobada. Resultados anteriores separados: API default 378/381, dos workers 383/385 y un worker 385/385. No se ampliaron timeouts ni quitaron aserciones. La pasada actual con un worker no prueba estabilidad con otros números.
+- Mediciones sintéticas: 145 instalaciones/11 llamadas; 20 productos × 20 versiones/49; catálogo grande corta en 64 conservando instalaciones partial. Deadline, presupuesto de registros, rechazo del tercer lector y retención hasta drain demostrados. No son latencia productiva ni evidencia Live.
+- Referencias: [documentación técnica](../integrations/software-api-v2.md), [auditoría y resultados originales](../audits/pr8-software-api-v2-audit.md), [adapter PR #147](../integrations/glpi-software-os-v2.md), [contratos PR #146](../product/software-os-contracts-v2.md).
+- No GLPI Live ni revalidación de 145 instalaciones históricas. Smoke requiere autorización explícita. No suites UI/browser ni npm test global.
+- Próximo checkpoint: revisión de la corrección de cierre y autorización posterior de publicación. Informe, parche y ZIP actualizados; paquete anterior y logs fallidos conservados. **No commit, push, Draft PR, merge, auto-merge ni PR 9 sin autorización posterior.**
 
 ## Arquitectura vigente y continuidad histórica
 
