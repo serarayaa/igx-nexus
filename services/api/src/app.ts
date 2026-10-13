@@ -17,12 +17,17 @@ import {
 import { registerTechnologyRoutes } from "./technology-routes.js";
 import { registerHardwareRoutes } from "./hardware-routes.js";
 import type { GlpiHardwareAdapter } from "./glpi-hardware.js";
+import { registerSoftwareRoutes, type GlpiSoftwareAdapter } from "./software-routes.js";
+import type { SoftwareOperationLimits } from "./software-operation.js";
+import { openApi30Nulls } from "./openapi-nullable.js";
 
 export interface BuildAppOptions {
   readonly config?: ApiConfig;
   readonly authenticationProvider?: AuthenticationProvider;
   readonly technologyProvider?: TechnologyProvider;
   readonly hardwareAdapter?: GlpiHardwareAdapter;
+  readonly softwareAdapter?: GlpiSoftwareAdapter;
+  readonly softwareOperationLimits?: SoftwareOperationLimits;
 }
 
 function loggerOptions(config: ApiConfig) {
@@ -104,6 +109,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   });
 
   await app.register(swagger, {
+    transformObject: document => "openapiObject" in document ? openApi30Nulls(document.openapiObject) : document.swaggerObject,
     openapi: {
       openapi: "3.0.3",
       info: {
@@ -133,6 +139,7 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
   registerBaseRoutes(app, technologyProvider);
   registerTechnologyRoutes(app, technologyProvider);
   registerHardwareRoutes(app, technologyProvider, options.hardwareAdapter);
+  registerSoftwareRoutes(app, technologyProvider, options.softwareAdapter, options.softwareOperationLimits);
 
   return app;
 }

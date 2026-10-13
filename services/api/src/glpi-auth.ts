@@ -3,6 +3,7 @@ import {
   GlpiConfigurationError,
   type GlpiAccessTokenProvider,
 } from "./glpi.js";
+import { SoftwareBudgetError, SoftwareDeadlineError } from "./software-operation.js";
 
 export interface GlpiServiceCredentials {
   readonly clientSecret: string;
@@ -176,7 +177,8 @@ export function createGlpiPasswordGrantAccessTokenProvider(
         redirect: "error",
         signal: AbortSignal.timeout(requestTimeoutMs),
       });
-    } catch {
+    } catch (error) {
+      if (error instanceof SoftwareBudgetError || error instanceof SoftwareDeadlineError) throw error;
       throw new GlpiAuthenticationError();
     }
 

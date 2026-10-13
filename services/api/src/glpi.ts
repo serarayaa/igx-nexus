@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { SoftwareBudgetError, SoftwareDeadlineError, softwareCheckpoint, softwareOperationSignal, softwarePageLimit } from "./software-operation.js";
 import {
   technologySchemaVersion,
   isIsoTimestamp,
@@ -24,7 +25,7 @@ export type GlpiQueryValue = string | number | boolean;
 export type GlpiQuery = Readonly<Record<string, GlpiQueryValue>>;
 
 export interface GlpiApiTransport {
-  get(path: string, query?: GlpiQuery): Promise<unknown>;
+  get(path: string, query?: GlpiQuery, context?: { readonly signal?: AbortSignal }): Promise<unknown>;
 }
 
 export type GlpiAccessTokenProvider = () => Promise<string>;
@@ -252,6 +253,7 @@ async function getAccessToken(provider: GlpiAccessTokenProvider): Promise<string
   try {
     return normalizeAccessToken(await provider());
   } catch (error) {
+    if (error instanceof SoftwareBudgetError || error instanceof SoftwareDeadlineError) throw error;
     if (error instanceof GlpiAuthenticationError) throw error;
     throw new GlpiAuthenticationError();
   }
@@ -273,10 +275,14 @@ export function createGlpiFetchTransport(options: GlpiFetchTransportOptions): Gl
   const fetchImpl = options.fetchImpl ?? fetch;
 
   return Object.freeze({
-    async get(path: string, query: GlpiQuery = {}) {
+    async get(path: string, query: GlpiQuery = {}, context?: { readonly signal?: AbortSignal }) {
+      softwareCheckpoint();
       const endpoint = new URL(validateApiPath(path), apiBaseUrl);
       for (const [key, value] of Object.entries(query)) endpoint.searchParams.set(key, String(value));
       const token = await getAccessToken(options.accessTokenProvider);
+      softwareCheckpoint();
+      const operationSignal = softwareOperationSignal();
+      const signals = [AbortSignal.timeout(timeoutMs), ...(context?.signal ? [context.signal] : []), ...(operationSignal ? [operationSignal] : [])];
 
       let response: Response;
       try {
@@ -287,7 +293,7 @@ export function createGlpiFetchTransport(options: GlpiFetchTransportOptions): Gl
             authorization: `Bearer ${token}`,
           }),
           redirect: "error",
-          signal: AbortSignal.timeout(timeoutMs),
+          signal: AbortSignal.any(signals),
         });
       } catch {
         throw new GlpiRequestError();
@@ -485,7 +491,7 @@ async function readAllComputers(
   let start = 0;
 
   while (records.length < maxRecords) {
-    const requestLimit = Math.min(pageSize, maxRecords - records.length);
+    const requestLimit = softwarePageLimit(Math.min(pageSize, maxRecords - records.length));
     const page = parseComputerCollection(
       await transport.get(COMPUTER_COLLECTION_PATH, { start, limit: requestLimit }),
     );

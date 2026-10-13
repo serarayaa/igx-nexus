@@ -8,6 +8,9 @@ import { createGlpiLiveTechnologyProvider } from "./glpi-provider.js";
 import { createGlpiFetchTransport, GlpiConfigurationError } from "./glpi.js";
 import type { TechnologyProvider } from "./provider.js";
 import { createGlpiHardwareAdapter, type GlpiHardwareAdapter } from "./glpi-hardware.js";
+import { createGlpiSoftwareAdapter } from "./glpi-software.js";
+import type { GlpiSoftwareAdapter } from "./software-routes.js";
+import { defaultSoftwareOperationLimits, guardSoftwareTransport, guardSoftwareOAuthFetch, type SoftwareOperationLimits } from "./software-operation.js";
 
 export interface GlpiLiveRuntimeConfig {
   readonly sourceInstanceId: string;
@@ -124,17 +127,24 @@ export function createRuntimeTechnologyProvider(
   return createRuntimeTechnologyServices(config, options)?.technologyProvider;
 }
 
-/** Both readers share one server-selected GLPI transport and instance. */
+/** Snapshot, Hardware and Software share one server-selected GLPI transport and instance. */
 export function createRuntimeTechnologyServices(
   config: ApiConfig,
   options: RuntimeTechnologyProviderOptions = {},
-): { readonly technologyProvider: TechnologyProvider; readonly hardwareAdapter: GlpiHardwareAdapter } | undefined {
+): { readonly technologyProvider: TechnologyProvider; readonly hardwareAdapter: GlpiHardwareAdapter; readonly softwareAdapter: GlpiSoftwareAdapter; readonly softwareOperationLimits: SoftwareOperationLimits } | undefined {
   if (config.providerMode !== "live") return undefined;
 
   const environment = options.environment ?? process.env;
   const glpiConfig = loadGlpiLiveRuntimeConfig(environment, config.environment);
   const credentialSource = options.credentialSource ?? createEnvironmentGlpiCredentialSource(environment);
   const sharedFetch = options.fetchImpl;
+  const defaults = defaultSoftwareOperationLimits;
+  const softwareOperationLimits: SoftwareOperationLimits = Object.freeze({
+    deadlineMs: parseBoundedInteger(environment.NEXUS_SOFTWARE_DEADLINE_MS, "NEXUS_SOFTWARE_DEADLINE_MS", defaults.deadlineMs, 1, 60000),
+    maxRequests: parseBoundedInteger(environment.NEXUS_SOFTWARE_MAX_REQUESTS, "NEXUS_SOFTWARE_MAX_REQUESTS", defaults.maxRequests, 1, 2000),
+    maxRecords: parseBoundedInteger(environment.NEXUS_SOFTWARE_MAX_RECORDS, "NEXUS_SOFTWARE_MAX_RECORDS", defaults.maxRecords, 1, 100000),
+    maxConcurrent: parseBoundedInteger(environment.NEXUS_SOFTWARE_MAX_CONCURRENT, "NEXUS_SOFTWARE_MAX_CONCURRENT", defaults.maxConcurrent, 1, 16),
+  });
 
   const accessTokenProvider = createGlpiPasswordGrantAccessTokenProvider({
     baseUrl: glpiConfig.baseUrl,
@@ -144,26 +154,29 @@ export function createRuntimeTechnologyServices(
     requestTimeoutMs: glpiConfig.requestTimeoutMs,
     refreshSkewSeconds: glpiConfig.tokenRefreshSkewSeconds,
     allowInsecureHttp: glpiConfig.allowInsecureHttp,
-    ...(sharedFetch === undefined ? {} : { fetchImpl: sharedFetch }),
+    fetchImpl: guardSoftwareOAuthFetch(sharedFetch ?? fetch),
     ...(options.now === undefined ? {} : { now: options.now }),
   });
 
-  const transport = createGlpiFetchTransport({
+  const transport = guardSoftwareTransport(createGlpiFetchTransport({
     baseUrl: glpiConfig.baseUrl,
     accessTokenProvider,
     requestTimeoutMs: glpiConfig.requestTimeoutMs,
     allowInsecureHttp: glpiConfig.allowInsecureHttp,
     ...(sharedFetch === undefined ? {} : { fetchImpl: sharedFetch }),
-  });
+  }));
 
   const readerOptions = {
     transport,
     sourceInstanceId: glpiConfig.sourceInstanceId,
     pageSize: glpiConfig.pageSize,
     maxRecords: glpiConfig.maxRecords,
+    ...(options.now === undefined ? {} : { now: () => new Date(options.now!()) }),
   };
   return {
     technologyProvider: createGlpiLiveTechnologyProvider(readerOptions),
     hardwareAdapter: createGlpiHardwareAdapter(readerOptions),
+    softwareAdapter: createGlpiSoftwareAdapter({ ...readerOptions, requestTimeoutMs: glpiConfig.requestTimeoutMs }),
+    softwareOperationLimits,
   };
 }

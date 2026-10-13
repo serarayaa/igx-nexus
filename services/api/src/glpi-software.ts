@@ -5,6 +5,7 @@ import {
   type SoftwareIdentityV2, type SoftwareVersionV2, type OperatingSystemInstallationV2,
 } from "@igx-nexus/types";
 import { GlpiAuthenticationError, GlpiConfigurationError, GlpiPayloadError, GlpiRequestError, type GlpiApiTransport, type GlpiQuery } from "./glpi.js";
+import { SoftwareBudgetError, softwareCheckpoint, softwarePageLimit } from "./software-operation.js";
 
 export const glpiSoftwareSections = ["operatingSystems", "installations"] as const;
 export type GlpiSoftwareSection = typeof glpiSoftwareSections[number];
@@ -45,6 +46,7 @@ function ref(v: unknown): Row | null {
 const refId = (v: Row | null): number | null => v?.id === undefined || v.id === null || v.id === 0 ? null : id(v.id);
 const refName = (v: unknown): string | null => text(ref(v)?.name);
 function reason(error: unknown): HardwareCoverageReason {
+  if (error instanceof SoftwareBudgetError) return "pagination_incomplete";
   if (error instanceof GlpiAuthenticationError || (error instanceof GlpiRequestError && [401, 403].includes(error.statusCode ?? 0))) return "unauthorized";
   if (error instanceof GlpiRequestError && [405, 501].includes(error.statusCode ?? 0)) return "unsupported";
   return "source_error";
@@ -54,7 +56,7 @@ function bound(v: number, max: number): number {
   return v;
 }
 
-/** Internal read-only adapter. No runtime/provider composition or public route is added. */
+/** Read-only adapter; HTTP authorization and operation budgets are composed by the server. */
 export function createGlpiSoftwareAdapter(options: GlpiSoftwareAdapterOptions): {
   getInventory(asset: TechnologyAsset, sections?: readonly GlpiSoftwareSection[]): Promise<SoftwareInventoryV2>;
 } {
@@ -100,7 +102,7 @@ export function createGlpiSoftwareAdapter(options: GlpiSoftwareAdapterOptions): 
         let last = 0;
         for (let page = 0; page < maxPages && result.consumed < maxRecords; page++) {
           const start = result.consumed;
-          const limit = Math.min(pageSize, maxRecords - start);
+          const limit = softwarePageLimit(Math.min(pageSize, maxRecords - start));
           if (catalogue && catalogueRequests >= maxCatalogueRequests) break;
           let payload: unknown;
           try {
@@ -141,6 +143,7 @@ export function createGlpiSoftwareAdapter(options: GlpiSoftwareAdapterOptions): 
         const result: Catalogue = { versions: new Map(), gaps: [...products.gaps] };
         const ambiguous = new Set<number>();
         for (const acquired of products.rows) {
+          softwareCheckpoint();
           const productId = id(acquired.row.id);
           let product: SoftwareIdentityV2;
           try {
@@ -154,6 +157,7 @@ export function createGlpiSoftwareAdapter(options: GlpiSoftwareAdapterOptions): 
           const versions = await collect(`Assets/Software/${productId}/Version`, "SoftwareVersion", true);
           result.gaps.push(...versions.gaps);
           for (const acquiredVersion of versions.rows) {
+            softwareCheckpoint();
             const versionId = id(acquiredVersion.row.id);
             try {
               const linked = refId(ref(acquiredVersion.row.software));
@@ -191,6 +195,7 @@ export function createGlpiSoftwareAdapter(options: GlpiSoftwareAdapterOptions): 
           let catalogueGapsAdded = false;
           const items: (OperatingSystemInstallationV2 | SoftwareInstallationV2)[] = [];
           for (const { row, source: itemSource } of collected.rows) {
+            softwareCheckpoint();
             try {
               if ((row.itemtype !== undefined && row.itemtype !== "Computer") || (row.items_id !== undefined && row.items_id !== computerId)) throw new GlpiPayloadError();
               if (os && row.is_deleted !== undefined && typeof row.is_deleted !== "boolean") throw new GlpiPayloadError();
