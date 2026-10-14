@@ -13,3 +13,5 @@ export * from "./hardware.js";
 export * from "./hardware-validation.js";
 export * from "./software.js";
 export * from "./software-validation.js";
+export * from "./network.js";
+export * from "./network-validation.js";

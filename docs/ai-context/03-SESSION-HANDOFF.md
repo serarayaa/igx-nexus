@@ -1,17 +1,15 @@
 # IGX NEXUS — Session Handoff
 
-## PR 9 — Sistema y software en Asset 360: estado vigente, 2026-10-14
+## PR 10 — contratos Computer Network Cards, 2026-10-14
 
-- Baseline verificado main@3f666abb08e585ce29bdc13ba5ad43d0b3790d1f y árbol inicial limpio. **PR #146, #147 y #148 están integrados.** CI posterior al merge #148: success, [run 38456125206](https://github.com/serarayaa/igx-nexus/actions/runs/38456125206). El estado PR 8 pendiente de publicación queda supersedido por su integración.
-- Rama local feature/v03-cmdb-software-os-asset360-v2; HEAD conserva el baseline. Implementación local pendiente de auditoría humana; sin commit, push ni PR.
-- Nueva sección contextual Sistema y software después de Hardware, sobre el modelo hash vigente. OS múltiples sin principal; tabla semántica de instalaciones, búsqueda/editor/orden local y páginas de 25. Contadores de registros cargados y visibles; cinco estados de cobertura, nulls, gaps y paginación de adquisición explícitos.
-- Reader same-origin/no-store con AbortSignal, validación SoftwareInventoryV2 y assetId exacto, incluidos espacios interiores. Hook aborta al cambiar activo/sección y descarta respuestas tardías; estado anterior nunca se presenta como perteneciente al activo nuevo. Demo explicativo sin consultas. Fixtures exclusivamente en tests/Storybook.
-- Identidades, versiones, SourceReference, provenance, observación y recopilación literales preservadas. Fechas date sin hora/zona inventada; timestamps presentados en UTC explícito y valor original accesible. No inferencias de salud, compliance, licencias ni vulnerabilidades.
-- Shell 3.0, tokens oficiales, @igx-nexus/ui y Lucide; light/dark, comfortable/compact, scroll horizontal local, foco/teclado, reduced motion y forced colors. Evidencia auténtica desktop/tablet/móvil y zoom CSS 200%; no certifica por sí sola WCAG ni zoom nativo/lectores de pantalla.
-- Resultados y cada fallo/repetición se registran separadamente en [auditoría PR 9](../audits/pr9-software-os-asset360-v2.md); [decisiones funcionales y UI](../product/software-os-asset360-v2.md). Afectadas finales 89/89; Web final por proyectos consecutivos model 279/279 + browser 172/172 (35 archivos completos); Types 229/229, typecheck y build globales aprobados. Las últimas pasadas conjuntas tuvieron timeouts/bloqueos conservados: no se declara validado el runner conjunto ni con múltiples workers. Flags y excepciones axe explícitos en informe.
-- Backend, RBAC, adaptador, provider 0.2, Types y límites operacionales sin cambios. No GLPI Live. La evidencia histórica de 145 instalaciones no se revalida: aquí son 145 instalaciones sintéticas.
-- Storybook final 74/74; refresh físico 4/4 y foundations 4/4. QA nueva 12 escenarios/13 capturas; visual existente adaptada para Windows 65 comprobaciones/61 capturas. Fallos originales y repeticiones en paquete. No solicitudes API/GLPI en QA sintética nueva.
-- Próximo checkpoint: auditoría humana del informe, parche y ZIP con 21 archivos de cambio. **No commit, push, PR, merge, auto-merge ni PR 10.** Smoke real, lectores de pantalla/dispositivos y escalas mayores requieren trabajo futuro autorizado.
+- Baseline y HEAD main@3a1f4eef9147323103c88c2d77ad04670b733bb4; entrega local para revisión humana, sin commit/push/PR.
+- Auditoría humana favorable; implementados únicamente contratos canónicos, validadores puros y fixtures sintéticos Network V2. networkCards representa asociaciones de un Computer, sin interfaces completas, IP ni topología.
+- [Contrato vigente](../product/network-inventory-v2-contracts.md) e [informe de entrega](../audits/pr10-network-contracts-v2.md). La propuesta y auditoría de investigación conservan su texto histórico; el ZIP original conserva los cinco documentos auditados, incluido el handoff anterior.
+- IDs literales, MAC observada separada del catálogo, enriquecimiento opcional, evidencia independiente, cobertura y paginación reutilizadas. Denegación de autorización: unavailable sin datos retenidos.
+- Pruebas relevantes 231/231; Types 319/319, incluidas 90 Network; typecheck y build aprobados. Fallo inicial de typecheck y repetición conservados separadamente. No se declara validado el runner paralelo API/Web.
+- Ocho fixtures coinciden exactamente con los ejemplos auditados. Cuatro documentos de investigación intactos; respaldo OpenAPI bruto fuera del repo y entrega. Sin GLPI Live.
+- Hardware V2, Software/OS V2 y snapshot 0.2 sin cambios. No adaptador, endpoint, UI, RBAC, discovery, SNMP ni infraestructura. Nuevos dominios Network necesitan decisión explícita de versión o contrato complementario.
+- Detenerse para revisión humana antes de commit, push y PR. No iniciar integración ni asumir permisos efectivos o datos poblados a partir de schemas.
 
 ## Arquitectura vigente y continuidad histórica
 
