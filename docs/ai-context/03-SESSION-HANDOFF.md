@@ -1,15 +1,15 @@
 # IGX NEXUS — Session Handoff
 
-## PR 10 — contratos Computer Network Cards, 2026-10-14
+## PR 11 — GLPI Network Cards Adapter V2, 2026-10-14
 
-- Baseline y HEAD main@3a1f4eef9147323103c88c2d77ad04670b733bb4; entrega local para revisión humana, sin commit/push/PR.
-- Auditoría humana favorable; implementados únicamente contratos canónicos, validadores puros y fixtures sintéticos Network V2. networkCards representa asociaciones de un Computer, sin interfaces completas, IP ni topología.
-- [Contrato vigente](../product/network-inventory-v2-contracts.md) e [informe de entrega](../audits/pr10-network-contracts-v2.md). La propuesta y auditoría de investigación conservan su texto histórico; el ZIP original conserva los cinco documentos auditados, incluido el handoff anterior.
-- IDs literales, MAC observada separada del catálogo, enriquecimiento opcional, evidencia independiente, cobertura y paginación reutilizadas. Denegación de autorización: unavailable sin datos retenidos.
-- Pruebas relevantes 231/231; Types 319/319, incluidas 90 Network; typecheck y build aprobados. Fallo inicial de typecheck y repetición conservados separadamente. No se declara validado el runner paralelo API/Web.
-- Ocho fixtures coinciden exactamente con los ejemplos auditados. Cuatro documentos de investigación intactos; respaldo OpenAPI bruto fuera del repo y entrega. Sin GLPI Live.
-- Hardware V2, Software/OS V2 y snapshot 0.2 sin cambios. No adaptador, endpoint, UI, RBAC, discovery, SNMP ni infraestructura. Nuevos dominios Network necesitan decisión explícita de versión o contrato complementario.
-- Detenerse para revisión humana antes de commit, push y PR. No iniciar integración ni asumir permisos efectivos o datos poblados a partir de schemas.
+- PR #150 integrado en main@bfc4b19f448d2f623a7159ac47d2a68b41622a80; CI posterior success, [run 38593208120](https://github.com/serarayaa/igx-nexus/actions/runs/38593208120).
+- Rama local feature/v03-cmdb-network-glpi-adapter-v2 desde ese baseline. PR 11 **no publicado**; sin commit/push/PR y pendiente de revisión humana.
+- Adaptador interno de sólo lectura Computer Network Cards, transporte inyectado, catálogo opcional desactivado por defecto. Identidad literal, ancla GLPI única/instancia correcta, propietario explícito validado, evidencia independiente y validación canónica.
+- Páginas/registros/detalles/timeout acotados; agotamiento requiere [] explícito. 401/403 descartan toda la sección. Fallos ordinarios y límites producen unavailable/partial con gaps, nunca vacío exitoso artificial. Sin deduplicar asociaciones por MAC/catálogo ni completar MAC observada desde default.
+- [Mapeos y límites](../integrations/glpi-network-adapter-v2.md), [informe y resultados reales](../audits/pr11-glpi-network-adapter-v2.md). Fallos/repeticiones se conservan en logs separados; no se declara validado el runner paralelo.
+- Preflight: árbol inicial limpio, sin agentes concurrentes activos. .agents/ y skills-lock.json no versionados; ausentes en este checkout y presentes en C:/Proyectos/igx-nexus. Se preservan sin incluir ni modificar; no cambios de skills.
+- Hardware V2, Software/OS V2, snapshot 0.2 y contratos Network aprobados sin cambios. No endpoint, runtime productivo, UI, consultas GLPI Live, discovery, SNMP, RBAC ni infraestructura. No interfaces completas/IP/VLAN/topología inferidas.
+- Detenerse antes de commit, push y PR. No iniciar API Network ni adaptador productivo desplegado; auditoría humana decidirá publicación.
 
 ## Arquitectura vigente y continuidad histórica
 
