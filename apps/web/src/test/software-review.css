@@ -1,0 +1,4 @@
+.igx-storybook-canvas:has(.nexus-software-review) { padding: 0; }
+.nexus-software-review-note { padding: var(--igx-spacing-3) var(--igx-spacing-4); margin-bottom: var(--igx-spacing-6); border-inline-start: 3px solid var(--igx-semantic-color-text-link); color: var(--igx-semantic-color-text-secondary); background: var(--igx-semantic-color-surface-secondary); font-size: var(--igx-font-size-sm); }
+/* Fixtures, never an authenticated Live session. Keep this treatment outside product CSS. */
+.nexus-software-review .nexus-shell-mode, .nexus-software-review .nexus-source-context { display: none; }

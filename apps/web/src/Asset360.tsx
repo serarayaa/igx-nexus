@@ -25,12 +25,14 @@ import {
   type RelationshipInventoryProvider,
   type RelationshipSnapshot,
 } from "./relationship-model";
-import { assetHash, assetSectionHash, demoQrHash, labelHash, relationsHash, type AssetSection } from "./navigation-model";
+import { assetHash, assetSectionHash, assetSections, demoQrHash, labelHash, relationsHash, type AssetSection } from "./navigation-model";
 import { demoLocatorForAsset } from "./qr-locator";
 import { assetReturnHash } from "./navigation-state";
 import "./asset-360.css";
 import { HardwareExperience } from "./HardwareExperience";
 import type { HardwareReader } from "./hardware-client";
+import { SoftwareExperience } from "./SoftwareExperience";
+import type { SoftwareReader } from "./software-client";
 
 type LoadState =
   | { status: "loading" }
@@ -42,6 +44,7 @@ type Asset360Props = {
   section?: AssetSection;
   relationshipProvider?: RelationshipInventoryProvider;
   hardwareReader?: HardwareReader;
+  softwareReader?: SoftwareReader;
 } & ModeAwareProviderProps<InventoryProvider>;
 
 type RelationshipLoadState =
@@ -68,6 +71,7 @@ const sectionLabels: Record<AssetSection, string> = {
   summary: "Resumen",
   inventory: "Inventario",
   hardware: "Hardware",
+  software: "Sistema y software",
   evidence: "Evidencia y fuentes",
   relationships: "Relaciones",
 };
@@ -121,7 +125,13 @@ function AssetSectionNav({ assetId, section, returnHash }: { assetId: string; se
     if (!nav) return;
     const update = () => {
       const active = nav.querySelector<HTMLElement>('[aria-current="page"]');
-      if (active) setIndicator({ left: active.offsetLeft, width: active.offsetWidth });
+      if (active) {
+        setIndicator({ left: active.offsetLeft, width: active.offsetWidth });
+        // The added section must be visible on a narrow deep link without scrolling the page vertically.
+        if (section === "software" && (active.offsetLeft < nav.scrollLeft || active.offsetLeft + active.offsetWidth > nav.scrollLeft + nav.clientWidth)) {
+          nav.scrollLeft = Math.max(0, active.offsetLeft + active.offsetWidth - nav.clientWidth);
+        }
+      }
     };
     update();
     const observer = new ResizeObserver(update);
@@ -130,7 +140,7 @@ function AssetSectionNav({ assetId, section, returnHash }: { assetId: string; se
     return () => observer.disconnect();
   }, [section]);
   return <nav ref={navRef} className="nexus-asset-local-nav" aria-label="Secciones de Asset 360">
-    {(["summary", "inventory", "hardware", "evidence", "relationships"] as const).map(candidate =>
+    {assetSections.map(candidate =>
       <a key={candidate} href={assetSectionHash(assetId, candidate) + (returnHash ? `${candidate === "summary" ? "?" : "&"}return=${encodeURIComponent(returnHash)}` : "")} aria-current={candidate === section ? "page" : undefined}>
         {sectionLabels[candidate]}
       </a>
@@ -542,6 +552,7 @@ export function Asset360(props: Asset360Props) {
     {section === "summary" && <SummaryPanel asset={asset} snapshot={state.snapshot} isLive={isLive} {...(relationshipProvider ? { relationshipProvider } : {})} />}
     {section === "inventory" && <InventoryPanel asset={asset} snapshot={state.snapshot} isLive={isLive} />}
     {section === "hardware" && <HardwareExperience assetId={asset.id} mode={mode} {...(props.hardwareReader ? { reader: props.hardwareReader } : {})} />}
+    {section === "software" && <SoftwareExperience assetId={asset.id} mode={mode} {...(props.softwareReader ? { reader: props.softwareReader } : {})} />}
     {section === "evidence" && <EvidencePanel asset={asset} snapshot={state.snapshot} isLive={isLive} />}
     {section === "relationships" && <RelationshipPanel asset={asset} inventory={state.snapshot} isLive={isLive} {...(relationshipProvider ? { provider: relationshipProvider } : {})} />}
   </div>;

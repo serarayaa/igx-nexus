@@ -93,3 +93,20 @@ test("Hardware deep link survives physical refresh, history, and contextual retu
     assert.deepEqual(requests, []);
   } finally { await page.close(); }
 });
+
+test("Software deep link survives physical refresh, focus, history and return without Demo HTTP", async () => {
+  const page = await browser.newPage(); const requests = [];
+  page.on("request", request => { if (request.url().includes("/api/")) requests.push(request.url()); });
+  try {
+    const returnHash = "#assets?q=SYNTH-SN-000002&selected=DEMO-0002";
+    const hash = `#assets/DEMO-0002?section=software&return=${encodeURIComponent(returnHash)}`;
+    await page.goto(url + "/" + hash); await page.getByText("Sistema y software disponible en Live", { exact: true }).waitFor();
+    await page.reload(); const heading = page.getByRole("heading", { name: "Sistema y software", level: 2 }); await heading.waitFor();
+    assert.equal(new URL(page.url()).hash, hash);
+    await page.waitForFunction(() => document.activeElement?.id === "software-heading");
+    await page.getByRole("link", { name: "Hardware", exact: true }).click(); await page.getByRole("heading", { name: "Hardware", level: 2 }).waitFor();
+    await page.goBack(); await heading.waitFor(); await page.goForward(); await page.getByRole("heading", { name: "Hardware", level: 2 }).waitFor();
+    assert.equal(await page.getByRole("link", { name: "Volver a investigación" }).getAttribute("href"), returnHash);
+    assert.deepEqual(requests, []);
+  } finally { await page.close(); }
+});
