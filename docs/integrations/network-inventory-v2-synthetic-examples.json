@@ -1,0 +1,287 @@
+{
+  "syntheticOnly": true,
+  "proposalOnly": true,
+  "notRuntimeEvidence": true,
+  "description": "Review examples of the proposed card-only contract. No GLPI response, interface data, IP addressing or topology is claimed.",
+  "examples": [
+    {
+      "case": "complete-repeated-MAC-distinct-attachments",
+      "inventory": {
+        "contractVersion": "2",
+        "assetId": "SYNTH ASSET",
+        "networkCards": {
+          "collectedAt": "2026-10-14T12:00:00Z",
+          "observedAt": null,
+          "sourceReferences": [
+            {
+              "source": "demo",
+              "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+              "sourceScope": "synthetic/network-card-attachments",
+              "entityType": "NetworkCardCollection",
+              "externalId": "SYNTH-COLLECTION",
+              "observedAt": "2026-10-14T12:00:00Z",
+              "authority": "trusted"
+            }
+          ],
+          "state": "complete",
+          "items": [
+            {
+              "collectedAt": "2026-10-14T12:00:00Z",
+              "observedAt": null,
+              "sourceReferences": [
+                {
+                  "source": "demo",
+                  "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+                  "sourceScope": "synthetic/network-card-attachments",
+                  "entityType": "NetworkCardItem",
+                  "externalId": "SYNTH-ATTACHMENT-1",
+                  "observedAt": "2026-10-14T12:00:00Z",
+                  "authority": "trusted"
+                }
+              ],
+              "provenance": [],
+              "attachmentId": "[\"demo\",\"SYNTH-NETWORK-AUDIT\",\"synthetic/network-card-attachments\",\"NetworkCardItem\",\"SYNTH-ATTACHMENT-1\"]",
+              "definitionId": "[\"demo\",\"SYNTH-NETWORK-AUDIT\",\"synthetic/network-card-definitions\",\"NetworkCard\",\"SYNTH-DEFINITION-7\"]",
+              "designation": "Tarjeta sintética",
+              "definition": {
+                "collectedAt": "2026-10-14T12:00:00Z",
+                "observedAt": null,
+                "sourceReferences": [
+                  {
+                    "source": "demo",
+                    "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+                    "sourceScope": "synthetic/network-card-definitions",
+                    "entityType": "NetworkCard",
+                    "externalId": "SYNTH-DEFINITION-7",
+                    "observedAt": "2026-10-14T12:00:00Z",
+                    "authority": "trusted"
+                  }
+                ],
+                "provenance": [],
+                "definitionId": "[\"demo\",\"SYNTH-NETWORK-AUDIT\",\"synthetic/network-card-definitions\",\"NetworkCard\",\"SYNTH-DEFINITION-7\"]",
+                "designation": "Tarjeta sintética",
+                "manufacturer": "Fabricante sintético",
+                "model": "Modelo sintético",
+                "defaultMacAddress": "02:00:00:00:00:FF",
+                "bandwidthLabel": "1000"
+              },
+              "macAddress": "02:00:00:00:00:01",
+              "busId": "SYNTH-BUS-1"
+            },
+            {
+              "collectedAt": "2026-10-14T12:00:00Z",
+              "observedAt": null,
+              "sourceReferences": [
+                {
+                  "source": "demo",
+                  "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+                  "sourceScope": "synthetic/network-card-attachments",
+                  "entityType": "NetworkCardItem",
+                  "externalId": "SYNTH-ATTACHMENT-2",
+                  "observedAt": "2026-10-14T12:00:00Z",
+                  "authority": "trusted"
+                }
+              ],
+              "provenance": [],
+              "attachmentId": "[\"demo\",\"SYNTH-NETWORK-AUDIT\",\"synthetic/network-card-attachments\",\"NetworkCardItem\",\"SYNTH-ATTACHMENT-2\"]",
+              "definitionId": "[\"demo\",\"SYNTH-NETWORK-AUDIT\",\"synthetic/network-card-definitions\",\"NetworkCard\",\"SYNTH-DEFINITION-7\"]",
+              "designation": "Tarjeta sintética",
+              "definition": {
+                "collectedAt": "2026-10-14T12:00:00Z",
+                "observedAt": null,
+                "sourceReferences": [
+                  {
+                    "source": "demo",
+                    "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+                    "sourceScope": "synthetic/network-card-definitions",
+                    "entityType": "NetworkCard",
+                    "externalId": "SYNTH-DEFINITION-7",
+                    "observedAt": "2026-10-14T12:00:00Z",
+                    "authority": "trusted"
+                  }
+                ],
+                "provenance": [],
+                "definitionId": "[\"demo\",\"SYNTH-NETWORK-AUDIT\",\"synthetic/network-card-definitions\",\"NetworkCard\",\"SYNTH-DEFINITION-7\"]",
+                "designation": "Tarjeta sintética",
+                "manufacturer": "Fabricante sintético",
+                "model": "Modelo sintético",
+                "defaultMacAddress": "02:00:00:00:00:FF",
+                "bandwidthLabel": "1000"
+              },
+              "macAddress": "02:00:00:00:00:01",
+              "busId": null
+            }
+          ],
+          "pagination": {
+            "offset": 0,
+            "retrieved": 2,
+            "total": 2,
+            "nextOffset": null
+          }
+        }
+      }
+    },
+    {
+      "case": "complete-empty-does-not-prove-no-network-interfaces",
+      "inventory": {
+        "contractVersion": "2",
+        "assetId": "SYNTH ASSET",
+        "networkCards": {
+          "collectedAt": "2026-10-14T12:00:00Z",
+          "observedAt": null,
+          "sourceReferences": [
+            {
+              "source": "demo",
+              "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+              "sourceScope": "synthetic/network-card-attachments",
+              "entityType": "NetworkCardCollection",
+              "externalId": "SYNTH-COLLECTION",
+              "observedAt": "2026-10-14T12:00:00Z",
+              "authority": "trusted"
+            }
+          ],
+          "state": "complete",
+          "items": [],
+          "pagination": {
+            "offset": 0,
+            "retrieved": 0,
+            "total": 0,
+            "nextOffset": null
+          }
+        }
+      }
+    },
+    {
+      "case": "partial-unresolved-catalog-unknown-MAC",
+      "inventory": {
+        "contractVersion": "2",
+        "assetId": "SYNTH ASSET",
+        "networkCards": {
+          "collectedAt": "2026-10-14T12:00:00Z",
+          "observedAt": null,
+          "sourceReferences": [
+            {
+              "source": "demo",
+              "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+              "sourceScope": "synthetic/network-card-attachments",
+              "entityType": "NetworkCardCollection",
+              "externalId": "SYNTH-COLLECTION",
+              "observedAt": "2026-10-14T12:00:00Z",
+              "authority": "trusted"
+            }
+          ],
+          "state": "partial",
+          "items": [
+            {
+              "collectedAt": "2026-10-14T12:00:00Z",
+              "observedAt": null,
+              "sourceReferences": [
+                {
+                  "source": "demo",
+                  "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+                  "sourceScope": "synthetic/network-card-attachments",
+                  "entityType": "NetworkCardItem",
+                  "externalId": "SYNTH-ATTACHMENT-1",
+                  "observedAt": "2026-10-14T12:00:00Z",
+                  "authority": "trusted"
+                }
+              ],
+              "provenance": [],
+              "attachmentId": "[\"demo\",\"SYNTH-NETWORK-AUDIT\",\"synthetic/network-card-attachments\",\"NetworkCardItem\",\"SYNTH-ATTACHMENT-1\"]",
+              "definitionId": "[\"demo\",\"SYNTH-NETWORK-AUDIT\",\"synthetic/network-card-definitions\",\"NetworkCard\",\"SYNTH-DEFINITION-7\"]",
+              "designation": "Tarjeta sintética",
+              "definition": null,
+              "macAddress": null,
+              "busId": "SYNTH-BUS-1"
+            }
+          ],
+          "pagination": {
+            "offset": 0,
+            "retrieved": 1,
+            "total": null,
+            "nextOffset": null
+          },
+          "gaps": [
+            {
+              "fieldPath": "networkCards.definition",
+              "reason": "source_error"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "partial-empty-acquisition-limited",
+      "inventory": {
+        "contractVersion": "2",
+        "assetId": "SYNTH ASSET",
+        "networkCards": {
+          "collectedAt": "2026-10-14T12:00:00Z",
+          "observedAt": null,
+          "sourceReferences": [
+            {
+              "source": "demo",
+              "sourceInstanceId": "SYNTH-NETWORK-AUDIT",
+              "sourceScope": "synthetic/network-card-attachments",
+              "entityType": "NetworkCardCollection",
+              "externalId": "SYNTH-COLLECTION",
+              "observedAt": "2026-10-14T12:00:00Z",
+              "authority": "trusted"
+            }
+          ],
+          "state": "partial",
+          "items": [],
+          "pagination": null,
+          "gaps": [
+            {
+              "fieldPath": "networkCards",
+              "reason": "pagination_incomplete"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": "unavailable-unauthorized-no-residual-items",
+      "inventory": {
+        "contractVersion": "2",
+        "assetId": "SYNTH ASSET",
+        "networkCards": {
+          "state": "unavailable",
+          "reason": "unauthorized"
+        }
+      }
+    },
+    {
+      "case": "unavailable-unsupported-source-capability",
+      "inventory": {
+        "contractVersion": "2",
+        "assetId": "SYNTH ASSET",
+        "networkCards": {
+          "state": "unavailable",
+          "reason": "unsupported"
+        }
+      }
+    },
+    {
+      "case": "not-applicable-explicit-other-contract-scope-only",
+      "inventory": {
+        "contractVersion": "2",
+        "assetId": "SYNTH NON-COMPUTER",
+        "networkCards": {
+          "state": "not_applicable"
+        }
+      }
+    },
+    {
+      "case": "not-requested-demo-no-reader",
+      "inventory": {
+        "contractVersion": "2",
+        "assetId": "SYNTH ASSET",
+        "networkCards": {
+          "state": "not_requested"
+        }
+      }
+    }
+  ]
+}

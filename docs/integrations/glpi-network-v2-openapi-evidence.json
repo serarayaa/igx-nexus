@@ -1,0 +1,2828 @@
+{
+  "evidence": {
+    "version": "GLPI 11.0.11 / High-Level 2.3.0",
+    "originalSHA256": "31281705e3f44d39226bff3120513efa00ae096745d9670514afc5e3653825bf",
+    "originalPathCount": 1219,
+    "originalSchemaCount": 332,
+    "rawBackupIncluded": false,
+    "containsInventory": false,
+    "extraction": "GET metadata and selected schema fields only; no servers, auth URLs, examples, credentials or inventory; sensitive/unneeded object properties omitted."
+  },
+  "paths": {
+    "/Assets/Computer": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Computer"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Assets/NetworkEquipment": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NetworkEquipment"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Assets/Printer": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Printer"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Assets/Computer/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/Computer"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Assets/NetworkEquipment/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/NetworkEquipment"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Assets/Printer/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/Printer"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Components/NetworkCard": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NetworkCard"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Components/NetworkCard/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/NetworkCard"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Components/NetworkCard/{id}/Items": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NetworkCardItem"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Components/NetworkCard/Items/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/NetworkCardItem"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Assets/Computer/{id}/Component/NetworkCard": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NetworkCardItem"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Assets/NetworkEquipment/{id}/Component/NetworkCard": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NetworkCardItem"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Assets/Printer/{id}/Component/NetworkCard": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NetworkCardItem"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Dropdowns/WifiNetwork": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/WifiNetwork"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Dropdowns/NetworkPortFiberchannelType": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NetworkPortFiberchannelType"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Dropdowns/NetworkPortType": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/NetworkPortType"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Dropdowns/Network": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/filter"
+        },
+        {
+          "$ref": "#/components/parameters/start"
+        },
+        {
+          "$ref": "#/components/parameters/limit"
+        },
+        {
+          "$ref": "#/components/parameters/sort"
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Network"
+        }
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Dropdowns/WifiNetwork/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/WifiNetwork"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Dropdowns/NetworkPortFiberchannelType/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/NetworkPortFiberchannelType"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Dropdowns/NetworkPortType/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/NetworkPortType"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/Dropdowns/Network/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "pattern": "\\d+"
+          }
+        },
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": {
+        "$ref": "#/components/schemas/Network"
+      },
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    },
+    "/GraphQL/Schema": {
+      "parameters": [
+        {
+          "name": "GLPI-Entity",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Profile",
+          "in": "header",
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "GLPI-Entity-Recursive",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          }
+        },
+        {
+          "name": "Accept-Language",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "response200": null,
+      "errorStatuses": [
+        "400",
+        "401",
+        "403",
+        "404",
+        "500"
+      ]
+    }
+  },
+  "components": {
+    "parameters": {
+      "start": {
+        "name": "start",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "default": 0,
+          "minimum": 0
+        },
+        "description": "The first item to return"
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "default": 100,
+          "minimum": 0
+        },
+        "description": "The maximum number of items to return"
+      },
+      "sort": {
+        "name": "sort",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "description": "One or more properties to sort by in the form of property:direction where property is the full property name in dot notation and direction is either asc or desc. If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma."
+      },
+      "filter": {
+        "name": "filter",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "description": "RSQL query string"
+      }
+    },
+    "schemas": {
+      "Computer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "entity": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              },
+              "completename": {
+                "type": "string"
+              }
+            }
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "manufacturer": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "serial": {
+            "type": "string"
+          },
+          "otherserial": {
+            "type": "string"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "type": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "model": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "uuid": {
+            "type": "string",
+            "pattern": "/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i",
+            "readOnly": true
+          },
+          "network": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "autoupdatesystem": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "is_template": {
+            "type": "boolean",
+            "default": false
+          },
+          "template_name": {
+            "type": "string"
+          },
+          "is_dynamic": {
+            "type": "boolean",
+            "default": false
+          },
+          "ticket_tco": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0
+          },
+          "last_inventory_update": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "last_boot": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "description": "Computer"
+      },
+      "NetworkEquipment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "entity": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              },
+              "completename": {
+                "type": "string"
+              }
+            }
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "manufacturer": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "serial": {
+            "type": "string"
+          },
+          "otherserial": {
+            "type": "string"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "type": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "model": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "uuid": {
+            "type": "string",
+            "pattern": "/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i",
+            "readOnly": true
+          },
+          "network": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "autoupdatesystem": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "ram": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "is_template": {
+            "type": "boolean",
+            "default": false
+          },
+          "template_name": {
+            "type": "string"
+          },
+          "ticket_tco": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0
+          },
+          "is_dynamic": {
+            "type": "boolean",
+            "default": false
+          },
+          "sysdescr": {
+            "type": "string"
+          },
+          "cpu": {
+            "type": "integer"
+          },
+          "last_inventory_update": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "description": "Network device"
+      },
+      "Printer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "entity": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              },
+              "completename": {
+                "type": "string"
+              }
+            }
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "manufacturer": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "serial": {
+            "type": "string"
+          },
+          "otherserial": {
+            "type": "string"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "type": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "model": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "uuid": {
+            "type": "string",
+            "pattern": "/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i",
+            "readOnly": true
+          },
+          "network": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "autoupdatesystem": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "has_serial": {
+            "type": "boolean",
+            "default": false
+          },
+          "has_parallel": {
+            "type": "boolean",
+            "default": false
+          },
+          "has_usb": {
+            "type": "boolean",
+            "default": false
+          },
+          "has_wifi": {
+            "type": "boolean",
+            "default": false
+          },
+          "has_ethernet": {
+            "type": "boolean",
+            "default": false
+          },
+          "is_global": {
+            "type": "boolean",
+            "default": false
+          },
+          "is_template": {
+            "type": "boolean",
+            "default": false
+          },
+          "template_name": {
+            "type": "string"
+          },
+          "ticket_tco": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0
+          },
+          "is_dynamic": {
+            "type": "boolean",
+            "default": false
+          },
+          "sysdescr": {
+            "type": "string"
+          },
+          "last_inventory_update": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "description": "Printer"
+      },
+      "NetworkCard": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "designation": {
+            "type": "string"
+          },
+          "manufacturer": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "entity": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bandwidth": {
+            "type": "string"
+          },
+          "mac_default": {
+            "type": "string"
+          },
+          "model": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          }
+        },
+        "description": "Network card"
+      },
+      "NetworkCardItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "itemtype": {
+            "type": "string"
+          },
+          "items_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "entity": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "serial": {
+            "type": "string"
+          },
+          "otherserial": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "is_dynamic": {
+            "type": "boolean"
+          },
+          "network_card": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "designation": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "busID": {
+            "type": "string"
+          },
+          "mac": {
+            "type": "string"
+          }
+        },
+        "description": "Network card item"
+      },
+      "NetworkPort": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "itemtype": {
+            "type": "string",
+            "readOnly": true
+          },
+          "items_id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "instantiation_type": {
+            "type": "string",
+            "enum": [
+              "NetworkPortEthernet",
+              "NetworkPortWifi",
+              "NetworkPortAggregate",
+              "NetworkPortAlias",
+              "NetworkPortDialup",
+              "NetworkPortLocal",
+              "NetworkPortFiberchannel"
+            ]
+          },
+          "logical_number": {
+            "type": "integer"
+          },
+          "mac": {
+            "type": "string"
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "is_dynamic": {
+            "type": "boolean"
+          },
+          "if_mtu": {
+            "type": "integer"
+          },
+          "if_speed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "if_internal_status": {
+            "type": "string"
+          },
+          "if_connection_status": {
+            "type": "integer"
+          },
+          "if_last_change": {
+            "type": "string"
+          },
+          "if_in_bytes": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "if_out_bytes": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "if_in_errors": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "if_out_errors": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "if_status": {
+            "type": "string"
+          },
+          "if_description": {
+            "type": "string"
+          },
+          "if_alias": {
+            "type": "string"
+          },
+          "port_duplex": {
+            "type": "string"
+          },
+          "trunk": {
+            "type": "integer"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Network port"
+      },
+      "NetworkPortEthernet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "network_port": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "network_card": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "serial": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "",
+              "T",
+              "SX",
+              "LX"
+            ],
+            "description": "                        Type of Ethernet port.\n                        - '': Not specified\n                        - 'T': Twisted Pair (RJ-45)\n                        - 'SX': Multimode fiber\n                        - 'LX': Single mode fiber"
+          },
+          "speed": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Speed of the Ethernet port in Mbps",
+            "default": 10
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Ethernet port"
+      },
+      "NetworkPortWifi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "network_port": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "network_card": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "serial": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "wifinetwork": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "version": {
+            "type": "string",
+            "enum": [
+              "",
+              "a",
+              "b",
+              "a/b",
+              "a/b/g",
+              "a/b/g/n",
+              "a/b/g/n/y",
+              "ac",
+              "ax",
+              "be",
+              "bn"
+            ],
+            "description": "                        Wi-Fi version.\n                        - '': Not specified\n                        - 'a': 802.11a\n                        - 'b': 802.11b\n                        - 'a/b': 802.11a/b\n                        - 'a/b/g': 802.11a/b/g\n                        - 'a/b/g/n': 802.11a/b/g/n\n                        - 'a/b/g/n/y': 802.11a/b/g/n/y\n                        - 'ac': 802.11ac (Wi-Fi 5)\n                        - 'ax': 802.11ax (Wi-Fi 6)\n                        - 'be': 802.11be (Wi-Fi 7)\n                        - 'bn': 802.11bn (Wi-Fi 8)"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "",
+              "ad-hoc",
+              "managed",
+              "master",
+              "repeater",
+              "secondary",
+              "monitor",
+              "auto"
+            ],
+            "description": "                        Wi-Fi mode.\n                        - '': Not specified\n                        - 'ad-hoc': Ad-Hoc mode\n                        - 'managed': Managed mode\n                        - 'master': Master mode\n                        - 'repeater': Repeater mode\n                        - 'secondary': Secondary mode\n                        - 'monitor': Monitor mode\n                        - 'auto': Automatic mode"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Wifi port"
+      },
+      "NetworkPortAggregate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "network_port": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "network_port_list": {
+            "type": "string",
+            "description": "JSON-encoded array of Network Port IDs that are part of this aggregate port"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Aggregation port"
+      },
+      "NetworkPortAlias": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "network_port": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "aliased_network_port": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Alias port"
+      },
+      "NetworkPortDialup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "network_port": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Connection by dial line - Dialup Port"
+      },
+      "NetworkPortLocal": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "network_port": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Local loop port"
+      },
+      "NetworkPortFiberchannel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "network_port": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "network_card": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "serial": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "type": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "wwn": {
+            "type": "string"
+          },
+          "speed": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Speed of the Fiber Channel port in Mbps",
+            "default": 10
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Fiber channel port"
+      },
+      "Network": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Network"
+      },
+      "WifiNetwork": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "entity": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "is_recursive": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "essid": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Wifi network"
+      },
+      "NetworkPortType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64",
+                "readOnly": true
+              },
+              "name": {
+                "type": "string",
+                "readOnly": true
+              }
+            }
+          },
+          "is_recursive": {
+            "type": "boolean",
+            "default": false
+          },
+          "iftype": {
+            "type": "integer",
+            "description": "The interface type as defined by IANA. See https://www.iana.org/assignments/smi-numbers/smi-numbers.xhtml"
+          },
+          "is_importable": {
+            "type": "boolean",
+            "default": false
+          },
+          "instantiation_type": {
+            "type": "string",
+            "enum": [
+              "NetworkPortEthernet",
+              "NetworkPortWifi",
+              "NetworkPortAggregate",
+              "NetworkPortAlias",
+              "NetworkPortDialup",
+              "NetworkPortLocal",
+              "NetworkPortFiberchannel"
+            ]
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Network port type",
+        "required": [
+          "iftype"
+        ]
+      },
+      "NetworkPortFiberchannelType": {
+        "type": "object",
+        "description": "Fiber type",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "date_creation": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_mod": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "negativeSearch": {
+    "networkPortOrIPPaths": [],
+    "missingSchemas": [
+      "IPAddress",
+      "NetworkName",
+      "IPNetwork"
+    ]
+  },
+  "comparisons": [
+    {
+      "schema": "Computer",
+      "matchesPinnedSource": true,
+      "propertyCount": 30
+    },
+    {
+      "schema": "NetworkEquipment",
+      "matchesPinnedSource": true,
+      "propertyCount": 33
+    },
+    {
+      "schema": "Printer",
+      "matchesPinnedSource": true,
+      "propertyCount": 37
+    },
+    {
+      "schema": "NetworkCard",
+      "matchesPinnedSource": true,
+      "propertyCount": 11
+    },
+    {
+      "schema": "NetworkCardItem",
+      "matchesPinnedSource": true,
+      "propertyCount": 14
+    },
+    {
+      "schema": "NetworkPort",
+      "matchesPinnedSource": true,
+      "propertyCount": 28
+    },
+    {
+      "schema": "NetworkPortEthernet",
+      "matchesPinnedSource": true,
+      "propertyCount": 7
+    },
+    {
+      "schema": "NetworkPortWifi",
+      "matchesPinnedSource": true,
+      "propertyCount": 8
+    },
+    {
+      "schema": "NetworkPortAggregate",
+      "matchesPinnedSource": true,
+      "propertyCount": 5
+    },
+    {
+      "schema": "NetworkPortAlias",
+      "matchesPinnedSource": true,
+      "propertyCount": 5
+    },
+    {
+      "schema": "NetworkPortDialup",
+      "matchesPinnedSource": true,
+      "propertyCount": 4
+    },
+    {
+      "schema": "NetworkPortLocal",
+      "matchesPinnedSource": true,
+      "propertyCount": 4
+    },
+    {
+      "schema": "NetworkPortFiberchannel",
+      "matchesPinnedSource": true,
+      "propertyCount": 8
+    },
+    {
+      "schema": "Network",
+      "matchesPinnedSource": true,
+      "propertyCount": 5
+    },
+    {
+      "schema": "WifiNetwork",
+      "matchesPinnedSource": true,
+      "propertyCount": 9
+    },
+    {
+      "schema": "NetworkPortType",
+      "matchesPinnedSource": true,
+      "propertyCount": 10
+    },
+    {
+      "schema": "NetworkPortFiberchannelType",
+      "matchesPinnedSource": true,
+      "propertyCount": 5
+    }
+  ],
+  "unauthorizedAlternatives": {
+    "graphQL": {
+      "path": "/GraphQL/",
+      "method": "POST",
+      "scope": "graphql",
+      "scopeEvidence": "GLPI 11.0.11 GraphQLController.php:50",
+      "authorizedForThisWork": false,
+      "performed": false
+    },
+    "introspection": {
+      "path": "/GraphQL/Schema",
+      "method": "GET",
+      "scope": "graphql",
+      "inventoryData": false,
+      "performed": false
+    }
+  }
+}
