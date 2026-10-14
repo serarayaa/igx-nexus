@@ -1,4 +1,4 @@
-export const assetSections = ["summary", "inventory", "hardware", "evidence", "relationships"] as const;
+export const assetSections = ["summary", "inventory", "hardware", "software", "evidence", "relationships"] as const;
 export type AssetSection = (typeof assetSections)[number];
 
 export const technologyMapRelationshipTypes = ["all", "depends_on", "uses", "connected_to"] as const;
